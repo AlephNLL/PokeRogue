@@ -1,0 +1,6 @@
+namespace GameData
+{
+    public enum Stance { OFFENSIVE, DEFFENSIVE, AGILE, SERENE, IMPERATIVE }
+    public enum AbilityEffect { NONE, HEAL, UPATK, UPDEF, UPSPATK, UPSPDEF, UPSPEED, DOWNATK, DOWNDEF, DOWNSPATK, DOWNSPDEF, DOWNSPEED, STANCECHANGE}
+    public enum AbilityType { PHYSICAL, SPECIAL, STATUS }
+}

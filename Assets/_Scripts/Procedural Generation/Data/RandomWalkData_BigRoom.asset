@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: RandomWalkData_BigRoom
   m_EditorClassIdentifier: Assembly-CSharp::RandomWalkSO
   iterations: 1000
-  walkLength: 100
+  walkLength: 50
   startRandomly: 0

@@ -40,6 +40,7 @@ public class MapGenerator : MonoBehaviour
                 currentGrid[floor, room] = new MapNode();
                 currentGrid[floor, room].id = nextId++;
                 currentGrid[floor, room].position = new Vector3(floor * 3, 0, room * 3);
+                currentGrid[floor, room].gridPosition = new Vector2Int(floor, room);
                 currentGrid[floor, room].floorLevel = floor;
             }
         }
@@ -97,21 +98,30 @@ public class MapGenerator : MonoBehaviour
                 Debug.Log("Max attempts reached");
                 break;
             }
-            randomRoom = (int)Math.Clamp(Random.Range(room - 1, room + 1), 0, gridWidth - 1);
+            randomRoom = (int)Math.Clamp(Random.Range(room - 1, room + 2), 0, gridWidth - 1);
             int nextFloor = floor + 1;
 
             nextRoom = currentGrid[nextFloor, randomRoom];
             attempt++;
         }
-        currentRoom.AddConnection(nextRoom);
-        mapView.DrawConnection(currentRoom, nextRoom);
-        if (!path.Contains(nextRoom)) { path.Add(nextRoom); mapView.DrawNode(nextRoom); }
+        if (nextRoom != null) 
+        {
+            if (!currentRoom.connectedNodes.Contains(nextRoom)) { currentRoom.AddConnection(nextRoom); }
+            mapView.DrawConnection(currentRoom, nextRoom);
+            if (!path.Contains(nextRoom)) { path.Add(nextRoom); mapView.DrawNode(nextRoom); }
+        }
+
         return randomRoom;
     }
 
     private bool CrossExistingPaths(int room, int floor, MapNode nextRoom)
     {
         // Comprueba que el camino no se cruce con otros ya existentes antes de conectarlo.
+
+        if (nextRoom == null)
+        {
+            return true;
+        }
 
         MapNode leftNeighbour = null;
         MapNode rightNeighbour = null;
@@ -124,12 +134,14 @@ public class MapGenerator : MonoBehaviour
             rightNeighbour = currentGrid[floor, room + 1];
         }
 
+        if (nextRoom.gridPosition.x == room) { return false; }
+
         // Comprobar que no se crucen los caminos con el vecino izquierdo.
-        if (leftNeighbour != null && nextRoom.position.x < room)
+        if (leftNeighbour != null && nextRoom.gridPosition.x < room)
         {
             foreach (MapNode connections in leftNeighbour.connectedNodes)
             {
-                if (connections.position.x / 3 > room)
+                if (connections.gridPosition.x > leftNeighbour.gridPosition.x)
                 {
                     return true;
                 }
@@ -137,11 +149,11 @@ public class MapGenerator : MonoBehaviour
         }
 
         // Comprobar que no se crucen los caminos con el vecino derecho.
-        if (rightNeighbour != null && nextRoom.position.x > room)
+        if (rightNeighbour != null && nextRoom.gridPosition.x > room)
         {
             foreach (MapNode connections in rightNeighbour.connectedNodes)
             {
-                if (connections.position.x / 3 < room)
+                if (connections.gridPosition.x < rightNeighbour.gridPosition.x)
                 {
                     return true;
                 }

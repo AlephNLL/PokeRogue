@@ -13,15 +13,18 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private MapView mapView;
 
     private MapNode[,] currentGrid;
+    List<MapNode> path;
 
-    void Start()
+    public void GenerateMap()
     {
-        GameObject map = new("Map");
-        GameObject connections = new("Connections");
-        connections.transform.parent = map.transform;
+        mapView.ClearMap();
+        mapView.CreateEmptyMap();
 
         currentGrid = InitializeGrid();
-        List<MapNode> path = GeneratePaths(currentGrid, startingPaths);
+        Debug.Log(currentGrid);
+        path = GeneratePaths(currentGrid, startingPaths);
+        Debug.Log(path);
+
     }
 
     private MapNode[,] InitializeGrid()
@@ -44,7 +47,7 @@ public class MapGenerator : MonoBehaviour
     }
     private List<MapNode> GeneratePaths(MapNode[,] grid, int startingPaths) 
     {
-        List<MapNode> path = new();
+        path = new();
 
         // Elegir puntos de inicio
         for (int i = 0; i < startingPaths; i++)
@@ -77,16 +80,28 @@ public class MapGenerator : MonoBehaviour
 
     private int SetupConnection(List<MapNode> path, int room, int floor)
     {
+        // Conecta un nodo con otro del siguiente piso.
+
         int randomRoom = 0;
         MapNode nextRoom = null;
         MapNode currentRoom = currentGrid[floor, room];
 
+        int maxAttempts = 100;
+        int attempt = 0;
+
         while (nextRoom == null || CrossExistingPaths(room, floor, nextRoom))
         {
+            // Limitar intentos para evitar crasheos :D
+            if (attempt == maxAttempts)
+            {
+                Debug.Log("Max attempts reached");
+                break;
+            }
             randomRoom = (int)Math.Clamp(Random.Range(room - 1, room + 1), 0, gridWidth - 1);
             int nextFloor = floor + 1;
 
             nextRoom = currentGrid[nextFloor, randomRoom];
+            attempt++;
         }
         currentRoom.AddConnection(nextRoom);
         mapView.DrawConnection(currentRoom, nextRoom);
@@ -96,6 +111,8 @@ public class MapGenerator : MonoBehaviour
 
     private bool CrossExistingPaths(int room, int floor, MapNode nextRoom)
     {
+        // Comprueba que el camino no se cruce con otros ya existentes antes de conectarlo.
+
         MapNode leftNeighbour = null;
         MapNode rightNeighbour = null;
         if (room > 0)
@@ -107,7 +124,7 @@ public class MapGenerator : MonoBehaviour
             rightNeighbour = currentGrid[floor, room + 1];
         }
 
-        // Comprobar que no se crucen los caminos con el vecino izquierdo
+        // Comprobar que no se crucen los caminos con el vecino izquierdo.
         if (leftNeighbour != null && nextRoom.position.x < room)
         {
             foreach (MapNode connections in leftNeighbour.connectedNodes)
@@ -119,7 +136,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        // Comprobar que no se crucen los caminos con el vecino derecho
+        // Comprobar que no se crucen los caminos con el vecino derecho.
         if (rightNeighbour != null && nextRoom.position.x > room)
         {
             foreach (MapNode connections in rightNeighbour.connectedNodes)

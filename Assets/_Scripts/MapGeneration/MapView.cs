@@ -8,22 +8,27 @@ public class MapView : MonoBehaviour
 {
     [SerializeField] private GameObject nodePrefab;
     [SerializeField] private Material lineMaterial;
+    GameObject map;
+    GameObject connections;
+    GameObject nodes;
 
+    public void CreateEmptyMap()
+    {
+        map = new("Map");
+        connections = new("Conections");
+        connections.transform.parent = map.transform;
+        nodes = new("Nodes");
+        nodes.transform.parent = map.transform;
+    }
 
     public void DrawNode(MapNode node)
     {
-        GameObject map = GameObject.Find("Map");
-        GameObject connections = GameObject.Find("Connections");
-
         GameObject mapNode = Instantiate(nodePrefab, node.position, Quaternion.identity);
-        mapNode.transform.parent = map.transform;
+        mapNode.transform.parent = nodes.transform;
     }
 
     public void DrawConnection(MapNode nodeA, MapNode nodeB)
     {
-        GameObject map = GameObject.Find("Map");
-        GameObject connections = GameObject.Find("Connections");
-
         GameObject connectionGO = new GameObject("Connection", typeof(LineRenderer));
         LineRenderer lr = connectionGO.GetComponent<LineRenderer>();
         lr.material = lineMaterial;
@@ -33,5 +38,10 @@ public class MapView : MonoBehaviour
         lr.SetPosition(0, nodeA.position);
         lr.SetPosition(1, nodeB.position);
         connectionGO.transform.parent = connections.transform;
+    }
+
+    public void ClearMap()
+    {
+        if (map != null) { Destroy(map); }
     }
 }

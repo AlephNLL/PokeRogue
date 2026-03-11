@@ -11,7 +11,7 @@ public enum RoomType
     Treasure
 }
 
-public class MapNode
+public class MapNode : ScriptableObject
 {
     public int id;
     public Vector3 position = Vector3.zero;
@@ -20,11 +20,6 @@ public class MapNode
     public RoomType roomType;
     public GameObject roomPrefab;
     public int floorLevel;
-
-    void Start()
-    {
-
-    }
 
     public void AddConnection(MapNode node)
     {

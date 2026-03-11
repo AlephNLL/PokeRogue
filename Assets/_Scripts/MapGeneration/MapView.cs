@@ -25,6 +25,14 @@ public class MapView : MonoBehaviour
     {
         GameObject mapNode = Instantiate(nodePrefab, node.position, Quaternion.identity);
         mapNode.transform.parent = nodes.transform;
+        Node nodeData = mapNode.GetComponent<Node>();
+        nodeData.position = node.position;
+        nodeData.gridPosition = node.gridPosition;
+        nodeData.connectedNodes = node.connectedNodes;
+        nodeData.roomType = node.roomType;
+        nodeData.roomPrefab = node.roomPrefab;
+        nodeData.id = node.id;
+        nodeData.floorLevel = node.floorLevel;
     }
 
     public void DrawConnection(MapNode nodeA, MapNode nodeB)

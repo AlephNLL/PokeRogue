@@ -9,6 +9,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private int gridWidth = 10;
     [SerializeField] private int gridHeight = 10;
     [SerializeField] private int startingPaths = 2;
+    [SerializeField] private int iterations = 2;
 
     [SerializeField] private MapView mapView;
 
@@ -53,15 +54,19 @@ public class MapGenerator : MonoBehaviour
         // Elegir puntos de inicio
         for (int i = 0; i < startingPaths; i++)
         {
-            int randomRoom = SelectRandomNode(path, grid);
-            path.Add(grid[0, randomRoom]);
+            int randomStartRoom = SelectRandomNode(path, grid);
+            path.Add(grid[0, randomStartRoom]);
 
-            mapView.DrawNode(grid[0, randomRoom]);
+            mapView.DrawNode(grid[0, randomStartRoom]);
             Debug.Log("Creacion nodo nicial");
 
-            for (int floor = 0; floor < gridHeight - 1; floor++)
+            for (int iteration = 0; iteration < iterations; iteration++)
             {
-                randomRoom = SetupConnection(path, randomRoom, floor);
+                int randomRoom = randomStartRoom;
+                for (int floor = 0; floor < gridHeight - 1; floor++)
+                {
+                    randomRoom = SetupConnection(path, randomRoom, floor);
+                }
             }
         }
         return path;
@@ -134,14 +139,14 @@ public class MapGenerator : MonoBehaviour
             rightNeighbour = currentGrid[floor, room + 1];
         }
 
-        if (nextRoom.gridPosition.x == room) { return false; }
+        if (nextRoom.gridPosition.y == room) { return false; }
 
         // Comprobar que no se crucen los caminos con el vecino izquierdo.
-        if (leftNeighbour != null && nextRoom.gridPosition.x < room)
+        if (leftNeighbour != null && nextRoom.gridPosition.y < room)
         {
             foreach (MapNode connections in leftNeighbour.connectedNodes)
             {
-                if (connections.gridPosition.x > leftNeighbour.gridPosition.x)
+                if (connections.gridPosition.y > leftNeighbour.gridPosition.y)
                 {
                     return true;
                 }
@@ -149,11 +154,11 @@ public class MapGenerator : MonoBehaviour
         }
 
         // Comprobar que no se crucen los caminos con el vecino derecho.
-        if (rightNeighbour != null && nextRoom.gridPosition.x > room)
+        if (rightNeighbour != null && nextRoom.gridPosition.y > room)
         {
             foreach (MapNode connections in rightNeighbour.connectedNodes)
             {
-                if (connections.gridPosition.x < rightNeighbour.gridPosition.x)
+                if (connections.gridPosition.y < rightNeighbour.gridPosition.y)
                 {
                     return true;
                 }

@@ -390,6 +390,7 @@ MonoBehaviour:
   gridWidth: 7
   gridHeight: 10
   startingPaths: 3
+  iterations: 2
   mapView: {fileID: 2034614706}
 --- !u!4 &714817374
 Transform:
@@ -721,13 +722,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1380664020}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.5, y: 0.5, z: -0.5, w: 0.5}
+  m_LocalPosition: {x: 15, y: 30, z: 15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: -90}
 --- !u!1 &2017229619
 GameObject:
   m_ObjectHideFlags: 0
@@ -825,7 +826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 705ef5e1fc76924478c2a1227ca30e7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapView
-  nodePrefab: {fileID: 5162666568920561364, guid: 5fafda027a4bb224fa19be36726216cb, type: 3}
+  nodePrefab: {fileID: 5162666568920561364, guid: eda0ac0652f0ffc4696992435fdf8f0f, type: 3}
   lineMaterial: {fileID: 2100000, guid: 36ccf668458b1194181950ef872475fd, type: 2}
 --- !u!4 &2034614707
 Transform:

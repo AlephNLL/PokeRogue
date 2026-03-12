@@ -2,6 +2,7 @@ using UnityEngine;
 using Cinemachine;
 using UnityEngine.UI;
 using GameData;
+using TMPro;
 public class Unit : MonoBehaviour
 {
     [Header("Properties")]
@@ -10,13 +11,13 @@ public class Unit : MonoBehaviour
     public Stance[] stances;
     public Stance currentStance;
     public int level;
+    public Status status;
 
     [Header("Base Stats")]
     public int strength;
     public int constitution;
     public int dexterity;
-    public int intelligence;
-    public int charisma;
+    public int luck;
 
     [Header("Stats")]
     [SerializeField]
@@ -26,10 +27,6 @@ public class Unit : MonoBehaviour
     private int attack;
     [SerializeField]
     private int defense;
-    [SerializeField]
-    private int spattack;
-    [SerializeField]
-    private int spdefense;
     [SerializeField]
     private int speed;
 
@@ -46,15 +43,21 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private Canvas battleMenu;
     [SerializeField]
+    private Canvas abilityMenu;
+    [SerializeField]
     private Button attackButton;
     [SerializeField]
     private Button runButton;
+    [SerializeField]
+    private Button[] abilityButtons;
 
     private void Awake()
     {
         InitializeStats();
 
         actionCamera.LookAt = GameObject.Find("ENEMYSIDE").transform;
+
+        selectionCamera = CameraManager.instance.selectCamera;
     }
 
     private void InitializeStats()
@@ -62,8 +65,6 @@ public class Unit : MonoBehaviour
         maxHp = constitution * level + 1;
         attack = (int)(strength / 5f * level + 1);
         defense = (int)(constitution / 5f * level + 1);
-        spattack = (int)(intelligence / 5f * level + 1);
-        spdefense = (int)(charisma / 5f * level + 1);
         speed = (int)(dexterity / 5f * level + 1);
     }
     public bool ActivateCamera()
@@ -84,7 +85,7 @@ public class Unit : MonoBehaviour
         if (selectionCamera == null) return false;
 
         selectionCamera.LookAt = target.transform;
-        selectionCamera.gameObject.SetActive(true);
+        CameraManager.instance.ActivateSelectionCamera();
         return true;
     }
 
@@ -98,7 +99,7 @@ public class Unit : MonoBehaviour
         if(battleMenu == null) return;
         battleMenu.gameObject.SetActive(true);
 
-        attackButton.onClick.AddListener(delegate { TBBS.instance.Attack(this); });
+        attackButton.onClick.AddListener(delegate { TBBS.instance.AbilityMenu(this); });
         runButton.onClick.AddListener(delegate { TBBS.instance.Run(this); });
     }
     public void CloseBattleMenu()
@@ -110,6 +111,61 @@ public class Unit : MonoBehaviour
         runButton.onClick.RemoveAllListeners();
     }
 
+    public void OpenAbilityMenu()
+    {
+        if (abilityMenu == null) return;
+        
+        abilityMenu.gameObject.SetActive(true);
+
+        for (int i = 0; i < knownAbilities.Length; i++)
+        {
+            abilityButtons[i].gameObject.SetActive(true);
+            abilityButtons[i].GetComponentInChildren<TMP_Text>().text = knownAbilities[i].name;
+            int index = i;
+
+            abilityButtons[index].onClick.AddListener(delegate { TBBS.instance.SelectAbility(knownAbilities[index]); });
+
+            if (knownAbilities[i].abilityType == AbilityType.PASSIVE) abilityButtons[i].interactable = false;
+        }
+    }
+
+    public void CloseAbilityMenu()
+    {
+        if (abilityMenu == null) return;
+        abilityMenu.gameObject.SetActive(false);
+
+        for (int i = 0; i < knownAbilities.Length; i++)
+        {
+            int index = i;
+            abilityButtons[index].onClick.RemoveAllListeners();
+        }
+    }
+
+    public void ApplyStatModifier(Stats stat, float mod)
+    {
+        switch (stat)
+        {
+            case Stats.ATK:
+                attack = (int)(attack*mod);
+                break;
+            case Stats.DEF:
+                defense = (int)(defense * mod);
+                break;
+            case Stats.SPEED:
+                speed = (int)(speed * mod);
+                break;
+            case Stats.LUCK:
+                luck = (int)(luck * mod);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void Heal(float healAmount)
+    {
+        currentHp = (int)(currentHp + healAmount);
+    }
     public int GetAttackStat()
     {
         return attack;
@@ -122,5 +178,22 @@ public class Unit : MonoBehaviour
     public int GetSpeedStat()
     {
         return speed;
+    }
+
+    public void OnTurnEnd()
+    {
+        switch (status)
+        {
+            case Status.NONE:
+                break;
+            case Status.BURNED:
+                Debug.Log(name + " lost " + (Mathf.FloorToInt(currentHp * .1f) + 1) + " hp due to his burns");
+                break;
+            case Status.POISONED:
+                Debug.Log(name + " lost " + (Mathf.FloorToInt(currentHp * .1f) + 1) + " hp due to poison");
+                break;
+            default:
+                break;
+        }
     }
 }

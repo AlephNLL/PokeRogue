@@ -4,14 +4,15 @@ using UnityEngine;
 public enum RoomType
 {
     NOT_ASSIGNED,
-    Normal,
-    Entrance,
-    Shop,
     Enemy,
-    Treasure
+    Shop,
+    HardEnemy,
+    Treasure,
+    Boss,
+    Heal,
 }
 
-public class MapNode : ScriptableObject
+public class MapNode
 {
     public int id;
     public Vector3 position = Vector3.zero;

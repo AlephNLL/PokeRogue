@@ -7,25 +7,25 @@ using Random = UnityEngine.Random;
 public class MapGenerator : MonoBehaviour
 {
     [SerializeField] private int gridWidth = 10;
-    [SerializeField] private int gridHeight = 10;
+    [SerializeField] public int gridHeight = 10;
     [SerializeField] private int startingPaths = 2;
     [SerializeField] private int iterations = 2;
 
     [SerializeField] private MapView mapView;
+    [SerializeField] private RoomAssigner roomAssigner;
 
     private MapNode[,] currentGrid;
     List<MapNode> path;
 
     public void GenerateMap()
     {
-        mapView.ClearMap();
-        mapView.CreateEmptyMap();
-
         currentGrid = InitializeGrid();
-        Debug.Log(currentGrid);
         path = GeneratePaths(currentGrid, startingPaths);
-        Debug.Log(path);
+        GenerateBossRoom();
 
+        roomAssigner.AssignRoomTypes(path);
+
+        mapView.DrawMap(path);
     }
 
     private MapNode[,] InitializeGrid()
@@ -56,9 +56,6 @@ public class MapGenerator : MonoBehaviour
         {
             int randomStartRoom = SelectRandomNode(path, grid);
             path.Add(grid[0, randomStartRoom]);
-
-            mapView.DrawNode(grid[0, randomStartRoom]);
-            Debug.Log("Creacion nodo nicial");
 
             for (int iteration = 0; iteration < iterations; iteration++)
             {
@@ -112,8 +109,7 @@ public class MapGenerator : MonoBehaviour
         if (nextRoom != null) 
         {
             if (!currentRoom.connectedNodes.Contains(nextRoom)) { currentRoom.AddConnection(nextRoom); }
-            mapView.DrawConnection(currentRoom, nextRoom);
-            if (!path.Contains(nextRoom)) { path.Add(nextRoom); mapView.DrawNode(nextRoom); }
+            if (!path.Contains(nextRoom)) { path.Add(nextRoom); }
         }
 
         return randomRoom;
@@ -165,5 +161,22 @@ public class MapGenerator : MonoBehaviour
             }
         }
         return false;
+    }
+
+    private void GenerateBossRoom()
+    {
+        MapNode bossRoom = new MapNode();
+        bossRoom.roomType = RoomType.Boss;
+        bossRoom.position = new Vector3(gridHeight * 3 + 2, 0, (gridWidth * 3)/2);
+        bossRoom.floorLevel = gridHeight;
+
+        foreach (MapNode room in path)
+        {
+            if (room.floorLevel == gridHeight - 1)
+            {
+                room.AddConnection(bossRoom);
+            }
+        }
+        path.Add(bossRoom);
     }
 }

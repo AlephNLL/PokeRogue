@@ -59,6 +59,14 @@ public class MapView : MonoBehaviour
                     GameObject enemyNode = Instantiate(enemyPrefab, node.position, Quaternion.identity);
                     passNodeData(enemyNode, node);
                     break;
+                case RoomType.Shop:
+                    GameObject shopNode = Instantiate(shopPrefab, node.position, Quaternion.identity);
+                    passNodeData(shopNode, node);
+                    break;
+                case RoomType.Treasure:
+                    GameObject treasureNode = Instantiate(treasurePrefab, node.position, Quaternion.identity);
+                    passNodeData(treasureNode, node);
+                    break;
             }
         }
     }

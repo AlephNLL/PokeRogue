@@ -21,9 +21,6 @@ public class MapView : MonoBehaviour
     private GameObject connections;
     private GameObject nodes;
 
-    public List<GameObject> createdNodes = new List<GameObject>();
-    [SerializeField] private MapManager mapManager;
-
 
     public void DrawMap(List<MapNode> path)
     {
@@ -32,7 +29,7 @@ public class MapView : MonoBehaviour
         DrawNodes(path);
         DrawConnections(path);
         PassConnectedRooms(path);
-        mapManager.UnlockStartingPaths(createdNodes);
+        MapManager.instance.UnlockStartingPaths();
     }
 
     public void CreateEmptyMap()
@@ -54,37 +51,37 @@ public class MapView : MonoBehaviour
                     GameObject mapNode = Instantiate(notAssignedPrefab, node.position, Quaternion.identity);
                     mapNode.name = node.roomType + "-" + node.id;
                     PassNodeData(mapNode, node);
-                    createdNodes.Add(mapNode);
+                    MapManager.instance.createdNodes.Add(mapNode);
                     break;
                 case RoomType.Boss:
                     GameObject bossNode = Instantiate(bossPrefab, node.position, Quaternion.identity);
                     bossNode.name = node.roomType + "-" + node.id;
                     PassNodeData(bossNode, node);
-                    createdNodes.Add(bossNode);
+                    MapManager.instance.createdNodes.Add(bossNode);
                     break;
                 case RoomType.Heal:
                     GameObject healNode = Instantiate(healPrefab, node.position, Quaternion.identity);
                     healNode.name = node.roomType + "-" + node.id;
                     PassNodeData(healNode, node);
-                    createdNodes.Add(healNode);
+                    MapManager.instance.createdNodes.Add(healNode);
                     break;
                 case RoomType.Enemy:
                     GameObject enemyNode = Instantiate(enemyPrefab, node.position, Quaternion.identity);
                     enemyNode.name = node.roomType + "-" + node.id;
                     PassNodeData(enemyNode, node);
-                    createdNodes.Add(enemyNode);
+                    MapManager.instance.createdNodes.Add(enemyNode);
                     break;
                 case RoomType.Shop:
                     GameObject shopNode = Instantiate(shopPrefab, node.position, Quaternion.identity);
                     shopNode.name = node.roomType + "-" + node.id;
                     PassNodeData(shopNode, node);
-                    createdNodes.Add(shopNode);
+                    MapManager.instance.createdNodes.Add(shopNode);
                     break;
                 case RoomType.Treasure:
                     GameObject treasureNode = Instantiate(treasurePrefab, node.position, Quaternion.identity);
                     treasureNode.name = node.roomType + "-" + node.id;
                     PassNodeData(treasureNode, node);
-                    createdNodes.Add(treasureNode);
+                    MapManager.instance.createdNodes.Add(treasureNode);
                     break;
             }
         }
@@ -121,7 +118,7 @@ public class MapView : MonoBehaviour
         nodeData.position = node.position;
         nodeData.gridPosition = node.gridPosition;
         nodeData.roomType = node.roomType;
-        nodeData.roomPrefab = node.roomPrefab;
+        nodeData.sceneName = "TestScene"; // Escena de testeo de momento
         nodeData.id = node.id;
         nodeData.floorLevel = node.floorLevel;
     }
@@ -130,14 +127,14 @@ public class MapView : MonoBehaviour
     {
         foreach (MapNode node in path)
         {
-            GameObject instance = createdNodes.FirstOrDefault(g => g.name == $"{node.roomType}-{node.id}");
+            GameObject instance = MapManager.instance.createdNodes.FirstOrDefault(g => g.name == $"{node.roomType}-{node.id}");
             Node mapNode = instance.GetComponent<Node>();
 
             if (mapNode != null)
             {
                 foreach (MapNode connectionTarget in node.connectedNodes)
                 {
-                    GameObject targetInstance = createdNodes.FirstOrDefault(g => g.name == $"{connectionTarget.roomType}-{connectionTarget.id}");
+                    GameObject targetInstance = MapManager.instance.createdNodes.FirstOrDefault(g => g.name == $"{connectionTarget.roomType}-{connectionTarget.id}");
 
                     if (targetInstance != null)
                     {

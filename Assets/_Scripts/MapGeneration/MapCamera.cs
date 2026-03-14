@@ -1,18 +1,20 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraNodeFollower : MonoBehaviour
 {
     public MapView mapView;
     [Header("Referencias")]
-    public Transform targetCameraTarget;
+    public GameObject targetCameraTarget;
 
     [Header("Ajustes del Seguimiento")]
     public float followOffsetY = 3.0f;
     public float followOffsetX = 2.0f;
     public float smoothSpeed = 15.0f;
     public LayerMask nodeLayerMask;
+    public bool reachedTarget = false;
 
     [Header("Opciones de Interacción")]
     public bool enableFollowMode = true;
@@ -33,7 +35,12 @@ public class CameraNodeFollower : MonoBehaviour
 
         if (targetCameraTarget != null && targetCameraTarget.gameObject.activeInHierarchy)
         {
-            FollowTarget();
+            if (!reachedTarget) { FollowTarget(); }
+        }
+
+        if (reachedTarget)
+        {
+            SceneManager.LoadSceneAsync(targetCameraTarget.gameObject.GetComponent<Node>().sceneName);
         }
     }
 
@@ -47,29 +54,43 @@ public class CameraNodeFollower : MonoBehaviour
         if (Physics.Raycast(ray, out hit, float.MaxValue, nodeLayerMask))
         {
             Debug.Log($"Selección: {hit.collider.gameObject.name}");
+            GameObject obj = hit.collider.gameObject;
 
-            BlockOtherPaths(mapView.createdNodes, hit.collider.gameObject);
-            SetSelectedObject(hit.collider.gameObject);
+            MapManager.instance.BlockOtherPaths(obj);
+            SetSelectedObject(obj);
+            MapManager.instance.selectedNodes.Add(obj);
         }
     }
 
     private void FollowTarget()
     {
-        Vector3 currentPos = targetCameraTarget.position;
+        Vector3 currentPos = targetCameraTarget.transform.position;
+
 
         Vector3 desiredPosition = new Vector3(
             currentPos.x - followOffsetX,
             currentPos.y + followOffsetY,
             currentPos.z
         );
+
+        if (Vector3.Distance(transform.position, desiredPosition) < 0.01f)
+        {
+            reachedTarget = true;
+            transform.position = desiredPosition;
+        } else
+        {
+            reachedTarget = false;
+        }
+
         transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * smoothSpeed);
     }
 
     private void SetSelectedObject(GameObject obj)
     {
         Debug.Log("Objeto actual seleccionado: " + obj.name);
+        reachedTarget = false;
 
-        targetCameraTarget = obj.transform;
+        targetCameraTarget = obj;
 
         if (obj.GetComponent<Node>())
         {
@@ -81,17 +102,6 @@ public class CameraNodeFollower : MonoBehaviour
                 {
                     conection.layer = LayerMask.NameToLayer("Node");
                 }
-            }
-        }
-    }
-
-    private void BlockOtherPaths(List<GameObject> createdNodes, GameObject obj)
-    {
-        foreach (GameObject node in createdNodes)
-        {
-            if (node.layer == LayerMask.NameToLayer("Node") && node != obj)
-            {
-                node.layer = 0;
             }
         }
     }

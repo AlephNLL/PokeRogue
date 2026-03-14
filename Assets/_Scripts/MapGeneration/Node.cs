@@ -9,6 +9,6 @@ public class Node : MonoBehaviour
     public Vector2Int gridPosition = Vector2Int.zero;
     public List<GameObject> connectedNodes = new List<GameObject>();
     public RoomType roomType;
-    public GameObject roomPrefab;
+    public string sceneName;
     public int floorLevel;
 }

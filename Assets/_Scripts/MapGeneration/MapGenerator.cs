@@ -26,6 +26,7 @@ public class MapGenerator : MonoBehaviour
         roomAssigner.AssignRoomTypes(path);
 
         mapView.DrawMap(path);
+        MapManager.instance.PassNodeData();
     }
 
     private MapNode[,] InitializeGrid()

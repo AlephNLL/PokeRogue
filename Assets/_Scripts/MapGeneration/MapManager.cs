@@ -1,15 +1,18 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class MapManager : MonoBehaviour
 {
     public static MapManager instance;
 
-    public List<GameObject> createdNodes = new List<GameObject>();
-    public List<GameObject> selectedNodes = new List<GameObject>();
+    public List<GameObject> createdRooms = new List<GameObject>();
+    public List<GameObject> selectedRooms = new List<GameObject>();
+    public List<Node> nodes = new List<Node>();
 
     public MapView mapView;
+    public MapGenerator mapGenerator;
 
     private void Awake()
     {
@@ -20,6 +23,11 @@ public class MapManager : MonoBehaviour
         } else
         {
             Destroy(gameObject);
+        }
+
+        if (createdRooms.Count() == 0)
+        {
+            mapGenerator.GenerateMap();
         }
     }
 
@@ -37,7 +45,7 @@ public class MapManager : MonoBehaviour
 
     public void UnlockStartingPaths()
     {
-        foreach (GameObject node in createdNodes)
+        foreach (GameObject node in createdRooms)
         {
             if (node != null)
             {
@@ -51,7 +59,7 @@ public class MapManager : MonoBehaviour
     }
     public void BlockOtherPaths(GameObject obj)
     {
-        foreach (GameObject node in createdNodes)
+        foreach (GameObject node in createdRooms)
         {
             if (node.layer == LayerMask.NameToLayer("Node") && node != obj)
             {
@@ -70,4 +78,13 @@ public class MapManager : MonoBehaviour
         SceneManager.LoadSceneAsync("MapScene");
     }
 
+    public void PassNodeData()
+    {
+        nodes.Clear();
+        foreach (GameObject obj in createdRooms)
+        {
+            Node node = obj.GetComponent<Node>();
+            nodes.Add(node);
+        }
+    }
 }

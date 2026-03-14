@@ -58,7 +58,7 @@ public class CameraNodeFollower : MonoBehaviour
 
             MapManager.instance.BlockOtherPaths(obj);
             SetSelectedObject(obj);
-            MapManager.instance.selectedNodes.Add(obj);
+            MapManager.instance.selectedRooms.Add(obj);
         }
     }
 

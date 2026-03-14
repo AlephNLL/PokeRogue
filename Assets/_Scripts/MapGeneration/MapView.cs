@@ -51,37 +51,37 @@ public class MapView : MonoBehaviour
                     GameObject mapNode = Instantiate(notAssignedPrefab, node.position, Quaternion.identity);
                     mapNode.name = node.roomType + "-" + node.id;
                     PassNodeData(mapNode, node);
-                    MapManager.instance.createdNodes.Add(mapNode);
+                    MapManager.instance.createdRooms.Add(mapNode);
                     break;
                 case RoomType.Boss:
                     GameObject bossNode = Instantiate(bossPrefab, node.position, Quaternion.identity);
                     bossNode.name = node.roomType + "-" + node.id;
                     PassNodeData(bossNode, node);
-                    MapManager.instance.createdNodes.Add(bossNode);
+                    MapManager.instance.createdRooms.Add(bossNode);
                     break;
                 case RoomType.Heal:
                     GameObject healNode = Instantiate(healPrefab, node.position, Quaternion.identity);
                     healNode.name = node.roomType + "-" + node.id;
                     PassNodeData(healNode, node);
-                    MapManager.instance.createdNodes.Add(healNode);
+                    MapManager.instance.createdRooms.Add(healNode);
                     break;
                 case RoomType.Enemy:
                     GameObject enemyNode = Instantiate(enemyPrefab, node.position, Quaternion.identity);
                     enemyNode.name = node.roomType + "-" + node.id;
                     PassNodeData(enemyNode, node);
-                    MapManager.instance.createdNodes.Add(enemyNode);
+                    MapManager.instance.createdRooms.Add(enemyNode);
                     break;
                 case RoomType.Shop:
                     GameObject shopNode = Instantiate(shopPrefab, node.position, Quaternion.identity);
                     shopNode.name = node.roomType + "-" + node.id;
                     PassNodeData(shopNode, node);
-                    MapManager.instance.createdNodes.Add(shopNode);
+                    MapManager.instance.createdRooms.Add(shopNode);
                     break;
                 case RoomType.Treasure:
                     GameObject treasureNode = Instantiate(treasurePrefab, node.position, Quaternion.identity);
                     treasureNode.name = node.roomType + "-" + node.id;
                     PassNodeData(treasureNode, node);
-                    MapManager.instance.createdNodes.Add(treasureNode);
+                    MapManager.instance.createdRooms.Add(treasureNode);
                     break;
             }
         }
@@ -108,7 +108,7 @@ public class MapView : MonoBehaviour
 
     public void ClearMap()
     {
-        if (map != null) { Destroy(map); }
+        if (map != null) { Destroy(map); MapManager.instance.createdRooms.Clear(); }
     }
 
     public void PassNodeData(GameObject mapNode, MapNode node)
@@ -127,14 +127,14 @@ public class MapView : MonoBehaviour
     {
         foreach (MapNode node in path)
         {
-            GameObject instance = MapManager.instance.createdNodes.FirstOrDefault(g => g.name == $"{node.roomType}-{node.id}");
+            GameObject instance = MapManager.instance.createdRooms.FirstOrDefault(g => g.name == $"{node.roomType}-{node.id}");
             Node mapNode = instance.GetComponent<Node>();
 
             if (mapNode != null)
             {
                 foreach (MapNode connectionTarget in node.connectedNodes)
                 {
-                    GameObject targetInstance = MapManager.instance.createdNodes.FirstOrDefault(g => g.name == $"{connectionTarget.roomType}-{connectionTarget.id}");
+                    GameObject targetInstance = MapManager.instance.createdRooms.FirstOrDefault(g => g.name == $"{connectionTarget.roomType}-{connectionTarget.id}");
 
                     if (targetInstance != null)
                     {

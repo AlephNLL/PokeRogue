@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8639331305207403}
   - component: {fileID: 6712761741596646350}
   - component: {fileID: -6597933657715611056}
+  - component: {fileID: 7863430570976942255}
   m_Layer: 0
   m_Name: EnemyNode
   m_TagString: Untagged
@@ -133,3 +134,24 @@ MonoBehaviour:
   roomType: 0
   roomPrefab: {fileID: 0}
   floorLevel: 0
+--- !u!65 &7863430570976942255
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5162666568920561364}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10, y: 2.220446e-16, z: 10}
+  m_Center: {x: 0, y: 0, z: 0}

@@ -129,6 +129,7 @@ MonoBehaviour:
   id: 0
   position: {x: 0, y: 0, z: 0}
   gridPosition: {x: 0, y: 0}
+  connectedNodes: []
   roomType: 0
   roomPrefab: {fileID: 0}
   floorLevel: 0

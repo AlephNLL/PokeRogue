@@ -29,7 +29,11 @@ public class MapView : MonoBehaviour
         DrawNodes(path);
         DrawConnections(path);
         PassConnectedRooms(path);
-        MapManager.instance.UnlockStartingPaths();
+        if (!MapManager.instance.mapCreated)
+        {
+            MapManager.instance.UnlockStartingPaths();
+            MapManager.instance.mapCreated = true;
+        }
     }
 
     public void CreateEmptyMap()
@@ -108,7 +112,7 @@ public class MapView : MonoBehaviour
 
     public void ClearMap()
     {
-        if (map != null) { Destroy(map); MapManager.instance.createdRooms.Clear(); }
+        if (map != null && MapManager.instance.nodes.Count() != 0) { Destroy(map); MapManager.instance.createdRooms.Clear(); MapManager.instance.nodes.Clear(); }
     }
 
     public void PassNodeData(GameObject mapNode, MapNode node)
@@ -121,6 +125,11 @@ public class MapView : MonoBehaviour
         nodeData.sceneName = "TestScene"; // Escena de testeo de momento
         nodeData.id = node.id;
         nodeData.floorLevel = node.floorLevel;
+
+        if (!MapManager.instance.nodes.Contains(node))
+        {
+            MapManager.instance.nodes.Add(node);
+        }
     }
 
     public void PassConnectedRooms(List<MapNode> path)

@@ -6,8 +6,6 @@ using UnityEngine.SceneManagement;
 public class CameraNodeFollower : MonoBehaviour
 {
     public MapView mapView;
-    [Header("Referencias")]
-    public GameObject targetCameraTarget;
 
     [Header("Ajustes del Seguimiento")]
     public float followOffsetY = 3.0f;
@@ -22,6 +20,19 @@ public class CameraNodeFollower : MonoBehaviour
     void Start()
     {
         nodeLayerMask = LayerMask.GetMask("Node");
+        if (MapManager.instance.mapCreated)
+        {
+            UpdateLayers(MapManager.instance.currentRoom);
+
+            Vector3 currentPos = MapManager.instance.currentRoom.transform.position;
+            Vector3 desiredPosition = new Vector3(
+            currentPos.x - followOffsetX,
+            currentPos.y + followOffsetY,
+            currentPos.z
+            );
+
+            transform.position = desiredPosition;
+        }
     }
 
     void Update()
@@ -33,14 +44,14 @@ public class CameraNodeFollower : MonoBehaviour
             CheckRaycast();
         }
 
-        if (targetCameraTarget != null && targetCameraTarget.gameObject.activeInHierarchy)
+        if (MapManager.instance.currentRoom != null && MapManager.instance.currentRoom.gameObject.activeInHierarchy)
         {
             if (!reachedTarget) { FollowTarget(); }
         }
 
         if (reachedTarget)
         {
-            SceneManager.LoadSceneAsync(targetCameraTarget.gameObject.GetComponent<Node>().sceneName);
+            MapManager.instance.LoadScene(MapManager.instance.currentRoom.GetComponent<Node>().sceneName);
         }
     }
 
@@ -64,7 +75,7 @@ public class CameraNodeFollower : MonoBehaviour
 
     private void FollowTarget()
     {
-        Vector3 currentPos = targetCameraTarget.transform.position;
+        Vector3 currentPos = MapManager.instance.currentRoom.transform.position;
 
 
         Vector3 desiredPosition = new Vector3(
@@ -90,18 +101,26 @@ public class CameraNodeFollower : MonoBehaviour
         Debug.Log("Objeto actual seleccionado: " + obj.name);
         reachedTarget = false;
 
-        targetCameraTarget = obj;
+        MapManager.instance.currentRoom = obj;
+        MapManager.instance.loadRooms = true;
 
         if (obj.GetComponent<Node>())
         {
             Node node = obj.GetComponent<Node>();
+            MapNode mapNode = MapManager.instance.NodeToMapNode(node);
+            MapManager.instance.currentNode = mapNode;
 
-            foreach (GameObject conection in node.connectedNodes)
+            UpdateLayers(obj);
+        }
+    }
+
+    private void UpdateLayers(GameObject obj)
+    {
+        foreach (GameObject conection in obj.GetComponent<Node>().connectedNodes)
+        {
+            if (conection != null)
             {
-                if (conection != null)
-                {
-                    conection.layer = LayerMask.NameToLayer("Node");
-                }
+                conection.layer = LayerMask.NameToLayer("Node");
             }
         }
     }

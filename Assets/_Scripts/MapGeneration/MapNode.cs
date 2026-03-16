@@ -12,7 +12,8 @@ public enum RoomType
     Heal,
 }
 
-public class MapNode
+[System.Serializable]
+public class MapNode : ScriptableObject
 {
     public int id;
     public Vector3 position = Vector3.zero;
@@ -21,6 +22,7 @@ public class MapNode
     public RoomType roomType;
     public GameObject roomPrefab;
     public int floorLevel;
+    public string sceneName;
 
     public void AddConnection(MapNode node)
     {

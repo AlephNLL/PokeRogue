@@ -9,10 +9,16 @@ public class MapManager : MonoBehaviour
 
     public List<GameObject> createdRooms = new List<GameObject>();
     public List<GameObject> selectedRooms = new List<GameObject>();
-    public List<Node> nodes = new List<Node>();
+    public List<MapNode> nodes = new List<MapNode>();
+    public GameObject currentRoom;
+    public MapNode currentNode;
 
     public MapView mapView;
     public MapGenerator mapGenerator;
+
+    public bool loadRooms = false;
+    public bool canLoadRooms = false;
+    public bool mapCreated = false;
 
     private void Awake()
     {
@@ -24,10 +30,17 @@ public class MapManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
 
-        if (createdRooms.Count() == 0)
+   private void Start()
+    {
+        if (createdRooms.Count() == 0 && nodes.Count() == 0)
         {
+            nodes.Clear();
+            createdRooms.Clear();
+
             mapGenerator.GenerateMap();
+            Debug.Log("Mapa Generado");
         }
     }
 
@@ -41,6 +54,17 @@ public class MapManager : MonoBehaviour
     {
         Debug.Log("OnSceneLoaded: " + scene.name);
         Debug.Log(mode);
+
+        if (scene.name == "MapGeneration")
+        {
+            Debug.Log("Mapa Generado en escena de mapa");
+            mapView.DrawMap(nodes);
+            
+            if (mapCreated)
+            {
+                FindCurrentRoom(currentNode);
+            }
+        }
     }
 
     public void UnlockStartingPaths()
@@ -70,21 +94,43 @@ public class MapManager : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
-        SceneManager.LoadSceneAsync(sceneName);
+        if (loadRooms && canLoadRooms)
+        {
+            SceneManager.LoadSceneAsync(sceneName);
+        }
     }
 
     public void LoadMapScene()
     {
-        SceneManager.LoadSceneAsync("MapScene");
+        createdRooms.Clear();
+        loadRooms = false;
+        SceneManager.LoadSceneAsync("MapGeneration");
     }
 
-    public void PassNodeData()
+    public MapNode NodeToMapNode(Node node)
     {
-        nodes.Clear();
-        foreach (GameObject obj in createdRooms)
+        MapNode mapNode = new();
+
+        mapNode.position = node.position;
+        mapNode.gridPosition = node.gridPosition;
+        mapNode.roomType = node.roomType;
+        mapNode.sceneName = "TestScene"; // Escena de testeo de momento
+        mapNode.id = node.id;
+        mapNode.floorLevel = node.floorLevel;
+
+        return mapNode;
+    }
+
+    public void FindCurrentRoom(MapNode mapNode)
+    {
+        foreach (GameObject nodeprefab in createdRooms)
         {
-            Node node = obj.GetComponent<Node>();
-            nodes.Add(node);
+            Node node = nodeprefab.GetComponent<Node>();
+
+            if (node.position == mapNode.position && node != null)
+            {
+                currentRoom = nodeprefab;
+            }
         }
     }
 }

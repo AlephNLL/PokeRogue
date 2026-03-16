@@ -19,6 +19,7 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
+        MapManager.instance.mapCreated = false;
         currentGrid = InitializeGrid();
         path = GeneratePaths(currentGrid, startingPaths);
         GenerateBossRoom();
@@ -26,7 +27,6 @@ public class MapGenerator : MonoBehaviour
         roomAssigner.AssignRoomTypes(path);
 
         mapView.DrawMap(path);
-        MapManager.instance.PassNodeData();
     }
 
     private MapNode[,] InitializeGrid()

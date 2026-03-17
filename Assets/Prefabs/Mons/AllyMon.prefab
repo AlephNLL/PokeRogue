@@ -557,16 +557,14 @@ MonoBehaviour:
   strength: 12
   constitution: 8
   dexterity: 5
-  intelligence: 6
-  charisma: 7
+  luck: 0
   maxHp: 0
   attack: 0
   defense: 0
-  spattack: 0
-  spdefense: 0
   speed: 0
   knownAbilities:
   - {fileID: 11400000, guid: 37b116ffb03a7ba449ee1d2d55c6776b, type: 2}
+  - {fileID: 11400000, guid: f7fc1359e0469d3409bda307c8625e91, type: 2}
   - {fileID: 11400000, guid: bc32a2fe51070b244b1f1a3a5f3282b4, type: 2}
   abilityPool: []
   actionCamera: {fileID: 5568178585810127271}
@@ -580,6 +578,7 @@ MonoBehaviour:
   - {fileID: 8731045238506905577}
   - {fileID: 6400586469861202894}
   - {fileID: 4365168224979187505}
+  skipTurn: 0
 --- !u!1 &2662726525338721580
 GameObject:
   m_ObjectHideFlags: 0

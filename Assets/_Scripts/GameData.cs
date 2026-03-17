@@ -10,7 +10,7 @@ namespace GameData
 
     public enum Stats { ATK, DEF, SPEED, LUCK }
 
-    public enum PassiveEffects { UPATK, UPDEF, UPSPEED, DOWNATK, DOWNDEF, DOWNSPEED }
+    public enum PassiveEffects { UPATK, UPDEF, UPSPEED, DOWNATK, DOWNDEF, DOWNSPEED, ADDTURN, SKIPTURN }
 
-    public enum PassiveExecutionTime { TURNSTART, TURNEND, ONABILITYUSE, ONHURT, OUTSIDEBATTLE, ONDEATH, ONKILL }
+    public enum PassiveExecutionTime { BATTLESTART, TURNSTART, TURNEND, ONABILITYUSE, ONHURT, OUTSIDEBATTLE, ONDEATH, ONKILL }
 }

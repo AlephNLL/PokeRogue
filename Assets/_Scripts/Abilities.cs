@@ -16,7 +16,6 @@ public class Abilities : ScriptableObject
     [Header("PassiveData")]
     public PassiveEffects passiveEffects;
     public PassiveExecutionTime passiveExecutionTime;
-    public AbilityTarget passiveTargets;
 
     [Header("Ability Effect")]
     public AbilityEffect effect1;

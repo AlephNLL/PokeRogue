@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
-  m_Name: Surf
+  m_Name: Double Trouble
   m_EditorClassIdentifier: 
-  name: Surf
-  description: Creates a huge wave damaging everyone.
-  power: 100
-  accuracy: 100
-  abilityType: 0
-  target: 5
+  name: Double Trouble
+  description: User can act twice but halves attack.
+  power: 0
+  accuracy: 0
+  abilityType: 1
+  target: 0
   stance: 0
   mustUseStance: 0
   passiveEffects: 6

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Slash
   m_EditorClassIdentifier: 
   name: Slash
-  description: Bites an enemy with its powerful jaws
+  description: Slashes enemies with its claws.
   power: 60
   accuracy: 100
   abilityType: 0
@@ -22,7 +22,6 @@ MonoBehaviour:
   mustUseStance: 0
   passiveEffects: 3
   passiveExecutionTime: 2
-  passiveTargets: 0
   effect1: 11
   effect1Chance: 100
   effect2: 5

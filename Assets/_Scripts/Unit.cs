@@ -3,6 +3,8 @@ using Cinemachine;
 using UnityEngine.UI;
 using GameData;
 using TMPro;
+using NUnit.Framework;
+using System.Collections.Generic;
 public class Unit : MonoBehaviour
 {
     [Header("Properties")]
@@ -34,7 +36,6 @@ public class Unit : MonoBehaviour
     public Abilities[] knownAbilities;
     public Abilities[] abilityPool;
 
-
     [Header("Misc")]
     [SerializeField]
     private CinemachineVirtualCamera actionCamera;
@@ -51,6 +52,9 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private Button[] abilityButtons;
 
+    private bool additionalTurn = false;
+    public bool skipTurn = false;
+
     private void Awake()
     {
         InitializeStats();
@@ -59,7 +63,6 @@ public class Unit : MonoBehaviour
 
         selectionCamera = CameraManager.instance.selectCamera;
     }
-
     private void InitializeStats()
     {
         maxHp = constitution * level + 1;
@@ -146,16 +149,16 @@ public class Unit : MonoBehaviour
         switch (stat)
         {
             case Stats.ATK:
-                attack = (int)(attack*mod);
+                attack = Mathf.FloorToInt(attack*mod);
                 break;
             case Stats.DEF:
-                defense = (int)(defense * mod);
+                defense = Mathf.FloorToInt(defense * mod);
                 break;
             case Stats.SPEED:
-                speed = (int)(speed * mod);
+                speed = Mathf.FloorToInt(speed * mod);
                 break;
             case Stats.LUCK:
-                luck = (int)(luck * mod);
+                luck = Mathf.FloorToInt(luck * mod);
                 break;
             default:
                 break;
@@ -180,6 +183,16 @@ public class Unit : MonoBehaviour
         return speed;
     }
 
+    public void OnBattleStart()
+    {
+        ResolvePassiveEffect(PassiveExecutionTime.BATTLESTART);
+    }
+
+    public void OnTurnStart()
+    {
+        ResolvePassiveEffect(PassiveExecutionTime.TURNSTART);
+    }
+
     public void OnTurnEnd()
     {
         switch (status)
@@ -195,5 +208,117 @@ public class Unit : MonoBehaviour
             default:
                 break;
         }
+
+        ResolvePassiveEffect(PassiveExecutionTime.TURNEND);
+    }
+
+    public void ResolvePassiveEffect(PassiveExecutionTime battleStage)
+    {
+        
+
+        foreach (var item in knownAbilities)
+        {
+            if(item.abilityType == AbilityType.PASSIVE && item.passiveExecutionTime == battleStage)
+            {
+                List<Unit> target = new List<Unit>();
+
+                switch (item.target)
+                {
+                    case AbilityTarget.SELF:
+                        target.Add(this);
+                        break;
+                    case AbilityTarget.ONEALLY:
+                        target.Add(TBBS.instance.allUnits[Random.Range(0, TBBS.instance.allUnits.Count - 1)]);
+                        break;
+                    case AbilityTarget.ONEENEMY:
+                        target.Add(TBBS.instance.allUnits[Random.Range(0, TBBS.instance.allUnits.Count - 1)]);
+                        break;
+                    case AbilityTarget.ALLALLIES:
+                        target.AddRange(TBBS.instance.playerUnits);
+                        break;
+                    case AbilityTarget.ALLENEMIES:
+                        target.AddRange(TBBS.instance.enemyUnits);
+                        break;
+                    case AbilityTarget.ALL:
+                        target.AddRange(TBBS.instance.allUnits);
+                        break;
+                }
+                switch (item.passiveEffects)
+                {
+                    case PassiveEffects.UPATK:
+                        foreach (var unit in target)
+                        {
+                            Debug.Log(unit.name + " attack raises!");
+                            unit.ApplyStatModifier(Stats.ATK, 1.5f);
+                        }
+                        break;
+                    case PassiveEffects.UPDEF:
+                        foreach (var unit in target)
+                        {
+                            Debug.Log(unit.name + " defense raises!");
+                            unit.ApplyStatModifier(Stats.DEF, 1.5f);
+                        }
+                        break;
+                    case PassiveEffects.UPSPEED:
+                        foreach (var unit in target)
+                        {
+                            Debug.Log(unit.name + " speed raises!");
+                            unit.ApplyStatModifier(Stats.SPEED, 1.5f);
+                        }
+                        break;
+                    case PassiveEffects.DOWNATK:
+                        foreach (var unit in target)
+                        {
+                            Debug.Log(unit.name + " attack fell!");
+                            unit.ApplyStatModifier(Stats.ATK, .75f);
+                        }
+                        break;
+                    case PassiveEffects.DOWNDEF:
+                        foreach (var unit in target)
+                        {
+                            Debug.Log(unit.name + " defense fell!");
+                            unit.ApplyStatModifier(Stats.DEF, .75f);
+                        }
+                        break;
+                    case PassiveEffects.DOWNSPEED:
+                        foreach (var unit in target)
+                        {
+                            Debug.Log(unit.name + " speed fell!");
+                            unit.ApplyStatModifier(Stats.SPEED, .75f);
+                        }
+                        break;
+                    case PassiveEffects.ADDTURN:
+                        ApplyStatModifier(Stats.ATK, .5f);
+                        break;
+                    case PassiveEffects.SKIPTURN:
+                        if (33 >= Random.Range(1, 100))
+                        {
+                            Debug.Log(name + " is slacking.");
+                            skipTurn = true;
+                        }
+                        else skipTurn = false;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    public bool HasAdditionalTurn()
+    {
+        foreach (var item in knownAbilities)
+        {
+            if (item.abilityType == AbilityType.PASSIVE && item.passiveEffects == PassiveEffects.ADDTURN && !additionalTurn)
+            {
+                Debug.Log(name + " gains an extra turn!");
+                additionalTurn = true;
+                return true;
+            }
+        }
+
+        Debug.Log("No add turn ability");
+        additionalTurn = false;
+        return false;
     }
 }

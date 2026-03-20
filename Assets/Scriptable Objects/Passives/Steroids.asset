@@ -10,21 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
-  m_Name: Crunch
+  m_Name: Steroids
   m_EditorClassIdentifier: 
-  name: Crunch
-  description: Bites an enemy with its powerful jaws
-  power: 60
-  accuracy: 100
-  abilityType: 2
+  name: Steroids
+  description: Ups attack at the start of battle.
+  power: 0
+  accuracy: 0
+  abilityType: 1
+  target: 0
   stance: 0
   mustUseStance: 0
-  targetAllies: 0
-  targetAll: 0
-  targetAllEnemies: 0
+  passiveEffects: 0
+  passiveExecutionTime: 0
   effect1: 0
   effect1Chance: 0
   effect2: 0
   effect2Chance: 0
-  affectSelfOnly: 0
-  affectSelfAndTarget: 0
+  affectSelf: 0

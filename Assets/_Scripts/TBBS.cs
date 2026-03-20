@@ -1,7 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
+using UnityEditor;
 using UnityEngine;
+using System;
+using GameData;
 
 
 //Turn Based Battle System
@@ -15,14 +19,14 @@ public class TBBS : MonoBehaviour
     public Transform playerSide;
     public Transform enemySide;
 
-    private List<Unit> playerUnits;
-    private List<Unit> enemyUnits;
+    public List<Unit> playerUnits;
+    public List<Unit> enemyUnits;
 
     private BattleState battleState;
     private int currentTurnIndex = 0;
     private int round = 0;
 
-    private List<Unit> allUnits;
+    public List<Unit> allUnits;
 
     private Coroutine currentTurnCoroutine;
 
@@ -62,16 +66,26 @@ public class TBBS : MonoBehaviour
 
         yield return new WaitForNextFrameUnit();
 
+        yield return new WaitForSeconds(2);
+
+        foreach (var unit in allUnits)
+        {
+            unit.OnBattleStart();
+        }
+
         CalculateTurnOrder(allUnits);
         currentTurnIndex = 0;
 
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(.2f);
 
         StartNextTurn();
     }
 
-    void StartNextTurn()
+    public void StartNextTurn()
     {
+        CameraManager.instance.ActivateMainCamera();
+
+        CameraManager.instance.SetBlendTime(1);
         // Detener la corrutina anterior si existe
         if (currentTurnCoroutine != null)
             StopCoroutine(currentTurnCoroutine);
@@ -120,10 +134,22 @@ public class TBBS : MonoBehaviour
     {
         battleState = BattleState.PLAYERTURN;
         currentUnit.ActivateCamera();
+        currentUnit.OnTurnStart();
+        if (currentUnit.skipTurn)
+        {
+            currentUnit.OnTurnEnd();
+            yield return new WaitForSeconds(1);
+            currentUnit.DeactivateCamera();
+            currentTurnIndex++;
+            StartNextTurn();
+            yield break;
+        }
+        else
+        {
+            currentUnit.OpenBattleMenu();
 
-        currentUnit.OpenBattleMenu();
-
-        yield return null;
+            yield return null;
+        }
     }
 
     IEnumerator EnemyTurn(Unit currentUnit)
@@ -132,66 +158,191 @@ public class TBBS : MonoBehaviour
         yield return new WaitForSeconds(2);
 
         // Ejecutar el ataque y esperar a que termine
-        yield return StartCoroutine(AttackSequence(currentUnit, playerUnits[UnityEngine.Random.Range(0, playerUnits.Count)]));
+
+        yield return StartCoroutine(AttackSequence(currentUnit, playerUnits[UnityEngine.Random.Range(0, playerUnits.Count)], currentUnit.knownAbilities[0]));
     }
 
-    public void Attack(Unit attacker) //Se llama desde la interfaz del jugador, los botones se suscriben al activarse
+    public void AbilityMenu(Unit attacker) //Se llama desde la interfaz del jugador, los botones se suscriben al activarse
     {
-        attacker.SelectTarget(enemyUnits[0].gameObject);
-        attacker.DeactivateCamera();
         attacker.CloseBattleMenu();
-
-        StartCoroutine(SelectTarget(attacker));
+        attacker.OpenAbilityMenu();
     }
 
-    IEnumerator SelectTarget(Unit attacker)
+    public void SelectAbility(Abilities ability)
     {
+        StartCoroutine(ActivateAbility(ability));
+    }
+    public IEnumerator ActivateAbility(Abilities ability)
+    {
+        Unit currentUnit = allUnits[currentTurnIndex];
+        CameraManager.instance.SetBlendTime(2f);
+        currentUnit.CloseAbilityMenu();
+        currentUnit.DeactivateCamera();
+
+        bool confirm = false;
         int selection = 0;
 
-        while (true) 
+        switch (ability.target)
         {
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                if (selection == 0)
-                {
-                    selection = enemyUnits.Count - 1;
-                }
-                else
-                {
-                    selection--;
-                }
+            case GameData.AbilityTarget.SELF:
+                currentUnit.SelectTarget(currentUnit.gameObject);
+                yield return Run<bool>(WaitForConfirm(), (output) => confirm = output);
 
-                attacker.SelectTarget(enemyUnits[selection].gameObject);
-            }
+                if (!confirm) StartCoroutine(PlayerTurn(currentUnit));
+                else StartCoroutine(AttackSequence(currentUnit, currentUnit, ability));
 
-            if (Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                if (selection == enemyUnits.Count - 1)
-                {
-                    selection = 0;
-                }
-                else
-                {
-                    selection++;
-                }
+                break;
 
-                attacker.SelectTarget(enemyUnits[selection].gameObject);
-            }
+            case GameData.AbilityTarget.ONEENEMY:
+                yield return Run<int>(SelectTarget(currentUnit), (output) => selection = output);
+                StartCoroutine(AttackSequence(currentUnit, enemyUnits[selection], ability));
+                break;
 
+            case GameData.AbilityTarget.ONEALLY:
+                yield return Run<int>(SelectTarget(currentUnit, false), (output) => selection = output);
+                StartCoroutine(AttackSequence(currentUnit, playerUnits[selection], ability));
+                break;
+
+            case GameData.AbilityTarget.ALLENEMIES:
+                currentUnit.SelectTarget(enemySide.gameObject);
+                yield return Run<bool>(WaitForConfirm(), (output) => confirm = output);
+                if (!confirm) StartCoroutine(PlayerTurn(currentUnit));
+                else StartCoroutine(AttackSequence(currentUnit, enemyUnits.ToArray(), ability));
+                break;
+
+            case GameData.AbilityTarget.ALLALLIES:
+                currentUnit.SelectTarget(playerSide.gameObject);
+                yield return Run<bool>(WaitForConfirm(), (output) => confirm = output);
+                if (!confirm) StartCoroutine(PlayerTurn(currentUnit));
+                else StartCoroutine(AttackSequence(currentUnit, playerUnits.ToArray(), ability));
+                break;
+
+            case GameData.AbilityTarget.ALL:
+                CameraManager.instance.SetBlendTime(.75f);
+                CameraManager.instance.ActivateMainCamera();
+                yield return Run<bool>(WaitForConfirm(), (output) => confirm = output);
+                if (!confirm) StartCoroutine(PlayerTurn(currentUnit));
+                else StartCoroutine(AttackSequence(currentUnit, allUnits.ToArray(), ability));
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    IEnumerator WaitForConfirm()
+    {
+        Unit currentUnit = allUnits[currentTurnIndex];
+        bool result;
+        while (true)
+        {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                StartCoroutine(AttackSequence(attacker, enemyUnits[selection]));
+                result = true;
+                yield return result;
                 break;
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                StartCoroutine(PlayerTurn(attacker));
-                attacker.EndSelect();
+                result = false;
+                yield return result;
                 break;
             }
 
             yield return null;
+        }
+    }
+
+    IEnumerator SelectTarget(Unit attacker, bool enemySide = true)
+    {
+        int selection = 0;
+
+        if (enemySide)
+        {
+            attacker.SelectTarget(enemyUnits[selection].gameObject);
+
+            while (true)
+            {
+                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    if (selection == 0)
+                    {
+                        selection = enemyUnits.Count - 1;
+                    }
+                    else
+                    {
+                        selection--;
+                    }
+
+                    attacker.SelectTarget(enemyUnits[selection].gameObject);
+                }
+
+                if (Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    if (selection == enemyUnits.Count - 1)
+                    {
+                        selection = 0;
+                    }
+                    else
+                    {
+                        selection++;
+                    }
+
+                    attacker.SelectTarget(enemyUnits[selection].gameObject);
+                }
+
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    yield return selection;
+                    yield break;
+                }
+
+                yield return null;
+            }
+        }
+        else
+        {
+            attacker.SelectTarget(playerUnits[selection].gameObject);
+
+            while (true)
+            {
+                if (Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    if (selection == 0)
+                    {
+                        selection = playerUnits.Count - 1;
+                    }
+                    else
+                    {
+                        selection--;
+                    }
+
+                    attacker.SelectTarget(playerUnits[selection].gameObject);
+                }
+
+                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    if (selection == playerUnits.Count - 1)
+                    {
+                        selection = 0;
+                    }
+                    else
+                    {
+                        selection++;
+                    }
+
+                    attacker.SelectTarget(playerUnits[selection].gameObject);
+                }
+
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    yield return selection;
+                    yield break;
+                }
+
+                yield return null;
+            }
         }
     }
     public void Run(Unit attacker) //Se llama desde la interfaz del jugador, los botones se suscriben al activarse
@@ -220,7 +371,100 @@ public class TBBS : MonoBehaviour
         // Avanzar al siguiente turno
         StartNextTurn();
     }
-    IEnumerator AttackSequence(Unit attacker, Unit target)
+    IEnumerator AttackSequence(Unit attacker, Unit[] targets, Abilities ability)
+    {
+        Transform visualTarget = playerUnits.Contains(targets[0]) ? playerSide : enemySide;
+        attacker.EndSelect();
+        CameraManager.instance.ActivateAttackCamera();
+
+        Debug.Log("Atacando con: " + attacker.name);
+
+        Vector3 attackerStartPos = attacker.transform.position;
+        float t = 0;
+        float elapsedTime = 0;
+
+        yield return new WaitForSeconds(.2f);
+
+        if (ability.vfxPrefab)
+        {
+            if (ability.spawnVfxOnSelf)
+            {
+                Vector3 dir = visualTarget.position - attackerStartPos;
+                GameObject vfx = Instantiate(ability.vfxPrefab, attackerStartPos + .1f * dir, Quaternion.LookRotation(dir));
+                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration);
+                Destroy(vfx);
+            }
+            else
+            {
+                GameObject vfx = Instantiate(ability.vfxPrefab, visualTarget);
+                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration);
+                Destroy(vfx);
+            }
+        }
+        else
+        {
+            //Se abalanza el personaje (ida)
+            while (t < .8f)
+            {
+                elapsedTime += Time.deltaTime;
+                t += elapsedTime * elapsedTime / 10;
+                attacker.transform.position = Vector3.Lerp(attackerStartPos, visualTarget.transform.position, t);
+                yield return null;
+            }
+
+            Vector3 attackerEndPos = attacker.transform.position;
+
+            t = 0;
+            yield return new WaitForSeconds(0.1f); // Pequeña pausa en el impacto
+
+            // Regreso
+            while (t < 1)
+            {
+                t += Time.deltaTime;
+                attacker.transform.position = Vector3.Lerp(attackerEndPos, attackerStartPos, t);
+                yield return null;
+            }
+
+            // Asegurar que regresó a su posición exacta
+            attacker.transform.position = attackerStartPos;
+        }
+
+            
+        //Check if attack hit
+        if (!CheckHit(ability))
+        {
+            Debug.Log(attacker.name + "missed");
+        }
+        else
+        {
+            for (int i = 0; i < targets.Length; i++)
+            {
+                Debug.Log(attacker.name + " attacks " + visualTarget.name + " dealing: " + CalculateAttackDamage(attacker, targets[i], ability) + " damage.");
+                ResolveAbilityEffect(attacker, targets[i], ability.effect1, ability.effect1Chance, ability.affectSelf);
+                ResolveAbilityEffect(attacker, targets[i], ability.effect2, ability.effect2Chance, ability.affectSelf);
+            }
+        }     
+
+        CameraManager.instance.SetBlendTime(1);
+
+        attacker.OnTurnEnd();
+        // Importante: Esperar un frame antes de activar la cámara principal
+        yield return new WaitForSeconds(0.3f);
+
+        if (attacker.HasAdditionalTurn())
+        {
+            StartNextTurn();
+        }
+        else
+        {
+            currentTurnIndex++;
+            // Avanzar al siguiente turno
+            StartNextTurn();
+        }
+        
+    }
+
+    IEnumerator AttackSequence(Unit attacker, Unit target, Abilities ability)
     {
         attacker.EndSelect();
         CameraManager.instance.ActivateAttackCamera();
@@ -233,51 +477,158 @@ public class TBBS : MonoBehaviour
 
         yield return new WaitForSeconds(.2f);
 
-        //Se abalanza el personaje (ida)
-        while (t < .8f)
+        if (ability.vfxPrefab)
         {
-            elapsedTime += Time.deltaTime;
-            t += elapsedTime * elapsedTime/10;
-            attacker.transform.position = Vector3.Lerp(attackerStartPos, target.transform.position, t);
-            yield return null;
+            if (ability.spawnVfxOnSelf)
+            {
+                Vector3 dir = target.transform.position - attackerStartPos;
+                GameObject vfx = Instantiate(ability.vfxPrefab, attackerStartPos + .1f * dir, Quaternion.LookRotation(dir));
+                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration);
+                Destroy(vfx);
+            }
+            else
+            {
+                GameObject vfx = Instantiate(ability.vfxPrefab, target.transform);
+                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration);
+                Destroy(vfx);
+            }
         }
-
-        Debug.Log(attacker.name + " attacks " + target.name + " dealing: " + CalculateAttackDamage(attacker, target) + " damage.");
-        Vector3 attackerEndPos = attacker.transform.position;
-
-        t = 0;
-        yield return new WaitForSeconds(0.1f); // Pequeña pausa en el impacto
-
-        // Regreso
-        while (t < 1)
+        else 
         {
-            t += Time.deltaTime;
-            attacker.transform.position = Vector3.Lerp(attackerEndPos, attackerStartPos, t);
-            yield return null;
+            //Se abalanza el personaje (ida)
+            while (t < .8f)
+            {
+                elapsedTime += Time.deltaTime;
+                t += elapsedTime * elapsedTime / 10;
+                attacker.transform.position = Vector3.Lerp(attackerStartPos, target.transform.position, t);
+                yield return null;
+            }
+
+            Vector3 attackerEndPos = attacker.transform.position;
+
+            t = 0;
+            yield return new WaitForSeconds(0.1f); // Pequeña pausa en el impacto
+
+            // Regreso
+            while (t < 1)
+            {
+                t += Time.deltaTime;
+                attacker.transform.position = Vector3.Lerp(attackerEndPos, attackerStartPos, t);
+                yield return null;
+            }
+
+            // Asegurar que regresó a su posición exacta
+            attacker.transform.position = attackerStartPos;
         }
+        
+        //Check if attack hit
+        if (!CheckHit(ability))
+        {
+            Debug.Log(attacker.name + "missed");
+        }
+        else
+        {
+            Debug.Log(attacker.name + " attacks " + target.name + " dealing: " + CalculateAttackDamage(attacker, target, ability) + " damage.");
+            ResolveAbilityEffect(attacker, target, ability.effect1, ability.effect1Chance, ability.affectSelf);
+            ResolveAbilityEffect(attacker, target, ability.effect2, ability.effect2Chance, ability.affectSelf);
+        }
+        
 
-        // Asegurar que regresó a su posición exacta
-        attacker.transform.position = attackerStartPos;
+        CameraManager.instance.SetBlendTime(1);
 
+        attacker.OnTurnEnd();
         // Importante: Esperar un frame antes de activar la cámara principal
-        yield return null;
+        yield return new WaitForSeconds(0.3f);
 
-        CameraManager.instance.ActivateMainCamera();
-
-        currentTurnIndex++;
-        // Avanzar al siguiente turno
-        StartNextTurn();
+        if (attacker.HasAdditionalTurn())
+        {
+            StartNextTurn();
+        }
+        else
+        {
+            currentTurnIndex++;
+            // Avanzar al siguiente turno
+            StartNextTurn();
+        }
     }
-
-    int CalculateAttackDamage(Unit attacker, Unit target)
+    void ResolveAbilityEffect(Unit attacker, Unit target, AbilityEffect effect, float effectChance, bool affectSelf)
+    {
+        if (effectChance >= UnityEngine.Random.Range(1, 100))
+        {
+            switch (effect)
+            {
+                case GameData.AbilityEffect.NONE:
+                    break;
+                case GameData.AbilityEffect.HEAL:
+                    /*to do*/
+                    break;
+                case GameData.AbilityEffect.UPATK:
+                    if(affectSelf) attacker.ApplyStatModifier(Stats.ATK, 1.5f);
+                    else target.ApplyStatModifier(Stats.ATK, 1.5f);
+                    break;
+                case GameData.AbilityEffect.UPDEF:
+                    if (affectSelf) attacker.ApplyStatModifier(Stats.DEF, 1.5f);
+                    else target.ApplyStatModifier(Stats.DEF, 1.5f);
+                    break;
+                case GameData.AbilityEffect.UPSPEED:
+                    if (affectSelf) attacker.ApplyStatModifier(Stats.SPEED, 1.5f);
+                    else target.ApplyStatModifier(Stats.SPEED, 1.5f);
+                    break;
+                case GameData.AbilityEffect.DOWNATK:
+                    if (affectSelf) attacker.ApplyStatModifier(Stats.ATK, .75f);
+                    else target.ApplyStatModifier(Stats.ATK, .75f);
+                    break;
+                case GameData.AbilityEffect.DOWNDEF:
+                    if (affectSelf) attacker.ApplyStatModifier(Stats.DEF, .75f);
+                    else target.ApplyStatModifier(Stats.DEF, .75f);
+                    break;
+                case GameData.AbilityEffect.DOWNSPEED:
+                    if (affectSelf) attacker.ApplyStatModifier(Stats.SPEED, .75f);
+                    else target.ApplyStatModifier(Stats.SPEED, .75f);
+                    break;
+                case GameData.AbilityEffect.STANCECHANGE:
+                    /*to do*/
+                    break;
+                case GameData.AbilityEffect.APPLYBURN:
+                    if (affectSelf) attacker.ApplyStatus(Status.BURNED);
+                    else target.ApplyStatus(Status.BURNED);
+                    break;
+                case GameData.AbilityEffect.APPLYPARA:
+                    if (affectSelf) attacker.ApplyStatus(Status.PARALYZED);
+                    else target.ApplyStatus(Status.PARALYZED);
+                    break;
+                case GameData.AbilityEffect.APPLYPOISON:
+                    if (affectSelf) attacker.ApplyStatus(Status.POISONED);
+                    else target.ApplyStatus(Status.POISONED);
+                    break;
+                case GameData.AbilityEffect.APPLYFRZ:
+                    if (affectSelf) attacker.ApplyStatus(Status.FROZEN);
+                    else target.ApplyStatus(Status.FROZEN);
+                        break;
+                case GameData.AbilityEffect.APPLYSLP:
+                    if (affectSelf) attacker.ApplyStatus(Status.ASLEEP);
+                    else target.ApplyStatus(Status.ASLEEP);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    bool CheckHit(Abilities ability)
+    {
+        if (ability.accuracy >= UnityEngine.Random.Range(1,100)) return true;
+        else return false;
+    }
+    int CalculateAttackDamage(Unit attacker, Unit target, Abilities ability)
     {
         int attackStat = attacker.GetAttackStat();
         int defenseStat = target.GetDefenseStat();
 
-        float roll = Random.Range(.8f, 1f);
-        bool isCritical = Random.Range(0, 16) == 0;
+        float roll = UnityEngine.Random.Range(.8f, 1f);
+        bool isCritical = UnityEngine.Random.Range(0, 15) == 0;
+        float critMod = isCritical ? 1.5f : 1f;
 
-        return Mathf.FloorToInt((((2 * attacker.level / 5) + 2) * (attackStat / defenseStat) / 50 + 2) * roll);
+        return Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * ability.power * attackStat / (5*defenseStat)) + 2) * roll * critMod);
     }
 
     private void CalculateTurnOrder(List<Unit> allUnits)
@@ -291,5 +642,16 @@ public class TBBS : MonoBehaviour
         {
             Debug.Log(allUnits[i].name + " position: " + i);
         }
+    }
+
+    public static IEnumerator Run<T>(IEnumerator target, Action<T> output)
+    {
+        object result = null;
+        while (target.MoveNext())
+        {
+            result = target.Current;
+            yield return result;
+        }
+        output((T)result);
     }
 }

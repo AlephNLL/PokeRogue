@@ -23,4 +23,8 @@ public class Abilities : ScriptableObject
     public AbilityEffect effect2;
     public float effect2Chance;
     public bool affectSelf;
+
+    [Header("Ability Effect")]
+    public GameObject vfxPrefab;
+    public bool spawnVfxOnSelf;
 }

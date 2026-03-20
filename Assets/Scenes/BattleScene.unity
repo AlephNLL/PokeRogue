@@ -834,6 +834,9 @@ MonoBehaviour:
   - {fileID: 2950656723951348137, guid: 38b314b855b8ffa41a38a676cc35f2bc, type: 3}
   playerSide: {fileID: 108010993}
   enemySide: {fileID: 1216503018}
+  playerUnits: []
+  enemyUnits: []
+  allUnits: []
 --- !u!1 &1216503017
 GameObject:
   m_ObjectHideFlags: 0

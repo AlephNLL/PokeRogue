@@ -165,6 +165,26 @@ public class Unit : MonoBehaviour
         }
     }
 
+    public void RemoveStatModifier(Stats stat)
+    {
+        switch (stat)
+        {
+            case Stats.ATK:
+                attack = (int)(strength / 5f * level + 1);
+                break;
+            case Stats.DEF:
+                defense = (int)(constitution / 5f * level + 1);
+                break;
+            case Stats.SPEED:
+                speed = (int)(dexterity / 5f * level + 1);
+                break;
+            case Stats.LUCK:
+                break;
+            default:
+                break;
+        }
+    }
+
     public void Heal(float healAmount)
     {
         currentHp = (int)(currentHp + healAmount);
@@ -303,6 +323,50 @@ public class Unit : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void ApplyStatus(Status statusToApply)
+    {
+        if (status != Status.NONE) return;
+        
+        status = statusToApply;
+
+        switch (statusToApply)
+        {
+            case Status.NONE:
+                break;
+            case Status.BURNED:
+                ApplyStatModifier(Stats.ATK, .5f);
+                break;
+            case Status.POISONED:
+                break;
+            case Status.PARALYZED:
+                ApplyStatModifier(Stats.SPEED, .5f);
+                break;
+            case Status.FROZEN:
+                break;
+            case Status.ASLEEP:
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void CureStatus()
+    {
+        switch (status)
+        {
+            case Status.BURNED:
+                RemoveStatModifier(Stats.ATK);
+                break;
+            case Status.PARALYZED:
+                RemoveStatModifier(Stats.SPEED);
+                break;
+            default:
+                break;
+        }
+
+        status = Status.NONE;
     }
 
     public bool HasAdditionalTurn()

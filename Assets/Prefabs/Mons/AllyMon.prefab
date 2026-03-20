@@ -557,7 +557,7 @@ MonoBehaviour:
   strength: 12
   constitution: 8
   dexterity: 5
-  luck: 0
+  luck: 1
   maxHp: 0
   attack: 0
   defense: 0
@@ -566,6 +566,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 37b116ffb03a7ba449ee1d2d55c6776b, type: 2}
   - {fileID: 11400000, guid: f7fc1359e0469d3409bda307c8625e91, type: 2}
   - {fileID: 11400000, guid: bc32a2fe51070b244b1f1a3a5f3282b4, type: 2}
+  - {fileID: 11400000, guid: ee107580067682943890aaa7b1ebf88d, type: 2}
   abilityPool: []
   actionCamera: {fileID: 5568178585810127271}
   selectionCamera: {fileID: 0}

@@ -28,5 +28,6 @@ MonoBehaviour:
   effect2: 0
   effect2Chance: 0
   affectSelf: 0
+  stanceToChangeTo: 0
   vfxPrefab: {fileID: 1411769535005688, guid: 4a0bd4851180bcd4984636d1e22f128b, type: 3}
   spawnVfxOnSelf: 0

@@ -18,8 +18,8 @@ MonoBehaviour:
   accuracy: 100
   abilityType: 0
   target: 1
-  stance: 2
-  mustUseStance: 0
+  stance: 0
+  mustUseStance: 1
   passiveEffects: 0
   passiveExecutionTime: 1
   passiveEffectChance: 0

@@ -149,6 +149,7 @@ public class TBBS : MonoBehaviour
             currentUnit.OnTurnEnd();
             yield return new WaitForSeconds(1);
             currentUnit.DeactivateCamera();
+            currentUnit.skipTurn = false;
             currentTurnIndex++;
             StartNextTurn();
             yield break;
@@ -164,15 +165,46 @@ public class TBBS : MonoBehaviour
     IEnumerator EnemyTurn(Unit currentUnit)
     {
         battleState = BattleState.ENEMYTURN;
+
         yield return new WaitForSeconds(2);
 
-        // Ejecutar el ataque y esperar a que termine
+        List<Abilities> usableAbilities = new List<Abilities>();
 
-        yield return StartCoroutine(AttackSequence(currentUnit, playerUnits[UnityEngine.Random.Range(0, playerUnits.Count)], currentUnit.knownAbilities[0]));
+        for (int i = 0; i < currentUnit.knownAbilities.Length; i++)
+        {
+            if (currentUnit.knownAbilities[i].abilityType == AbilityType.ACTIVE) usableAbilities.Add(currentUnit.knownAbilities[i]);
+        }
+
+        Abilities chosenAbility = usableAbilities[UnityEngine.Random.Range(0, usableAbilities.Count)];
+
+        switch (chosenAbility.target)
+        {
+            case AbilityTarget.SELF:
+                yield return StartCoroutine(AttackSequence(currentUnit, currentUnit, chosenAbility));
+                break;
+            case AbilityTarget.ONEENEMY:
+                yield return StartCoroutine(AttackSequence(currentUnit, playerUnits[UnityEngine.Random.Range(0, playerUnits.Count)], chosenAbility));
+                break;
+            case AbilityTarget.ONEALLY:
+                yield return StartCoroutine(AttackSequence(currentUnit, enemyUnits[UnityEngine.Random.Range(0, enemyUnits.Count)], chosenAbility));
+                break;
+            case AbilityTarget.ALLENEMIES:
+                StartCoroutine(AttackSequence(currentUnit, playerUnits.ToArray(), chosenAbility));
+                break;
+            case AbilityTarget.ALLALLIES:
+                StartCoroutine(AttackSequence(currentUnit, enemyUnits.ToArray(), chosenAbility));
+                break;
+            case AbilityTarget.ALL:
+                StartCoroutine(AttackSequence(currentUnit, allUnits.ToArray(), chosenAbility));
+                break;
+            default:
+                break;
+        }
     }
 
     public void AbilityMenu(Unit attacker) //Se llama desde la interfaz del jugador, los botones se suscriben al activarse
     {
+        attacker.ActivateCamera();
         attacker.CloseBattleMenu();
         attacker.OpenAbilityMenu();
     }
@@ -197,32 +229,54 @@ public class TBBS : MonoBehaviour
                 currentUnit.SelectTarget(currentUnit.gameObject);
                 yield return Run<bool>(WaitForConfirm(), (output) => confirm = output);
 
-                if (!confirm) StartCoroutine(PlayerTurn(currentUnit));
+                if (!confirm)
+                {
+                    AbilityMenu(currentUnit);
+                    break;
+                }
                 else StartCoroutine(AttackSequence(currentUnit, currentUnit, ability));
 
                 break;
 
             case GameData.AbilityTarget.ONEENEMY:
                 yield return Run<int>(SelectTarget(currentUnit), (output) => selection = output);
+                if (selection == -1)
+                {
+                    AbilityMenu(currentUnit);
+                    break;
+                }
                 StartCoroutine(AttackSequence(currentUnit, enemyUnits[selection], ability));
                 break;
 
             case GameData.AbilityTarget.ONEALLY:
                 yield return Run<int>(SelectTarget(currentUnit, false), (output) => selection = output);
+                if (selection == -1)
+                {
+                    AbilityMenu(currentUnit);
+                    break;
+                }
                 StartCoroutine(AttackSequence(currentUnit, playerUnits[selection], ability));
                 break;
 
             case GameData.AbilityTarget.ALLENEMIES:
                 currentUnit.SelectTarget(enemySide.gameObject);
                 yield return Run<bool>(WaitForConfirm(), (output) => confirm = output);
-                if (!confirm) StartCoroutine(PlayerTurn(currentUnit));
+                if (!confirm)
+                {
+                    AbilityMenu(currentUnit);
+                    break;
+                }
                 else StartCoroutine(AttackSequence(currentUnit, enemyUnits.ToArray(), ability));
                 break;
 
             case GameData.AbilityTarget.ALLALLIES:
                 currentUnit.SelectTarget(playerSide.gameObject);
                 yield return Run<bool>(WaitForConfirm(), (output) => confirm = output);
-                if (!confirm) StartCoroutine(PlayerTurn(currentUnit));
+                if (!confirm)
+                {
+                    AbilityMenu(currentUnit);
+                    break;
+                }
                 else StartCoroutine(AttackSequence(currentUnit, playerUnits.ToArray(), ability));
                 break;
 
@@ -230,7 +284,11 @@ public class TBBS : MonoBehaviour
                 CameraManager.instance.SetBlendTime(.75f);
                 CameraManager.instance.ActivateMainCamera();
                 yield return Run<bool>(WaitForConfirm(), (output) => confirm = output);
-                if (!confirm) StartCoroutine(PlayerTurn(currentUnit));
+                if (!confirm)
+                {
+                    AbilityMenu(currentUnit);
+                    break;
+                }
                 else StartCoroutine(AttackSequence(currentUnit, allUnits.ToArray(), ability));
                 break;
 
@@ -307,6 +365,13 @@ public class TBBS : MonoBehaviour
                     yield break;
                 }
 
+                if(Input.GetKeyDown(KeyCode.Escape))
+                {
+                    StartCoroutine(PlayerTurn(attacker));
+                    yield return -1;
+                    yield break;
+                }
+
                 yield return null;
             }
         }
@@ -347,6 +412,13 @@ public class TBBS : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     yield return selection;
+                    yield break;
+                }
+
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    StartCoroutine(PlayerTurn(attacker));
+                    yield return -1;
                     yield break;
                 }
 
@@ -655,12 +727,15 @@ public class TBBS : MonoBehaviour
         int attackStat = attacker.GetStat(Stats.ATK);
         int defenseStat = target.GetStat(Stats.DEF);
         float stanceBonus = attacker.currentStance == ability.stance ? 1.5f : 1;
+        float efficacy = GetAbilityEfficacy(ability.stance, target.currentStance);
         float roll = UnityEngine.Random.Range(.8f, 1f);
         bool isCritical = UnityEngine.Random.Range(0, 16) == 0;
         float critMod = isCritical ? 1.5f : 1f;
+
+        if (efficacy == 2) Debug.Log("It's super effective!");
         if (isCritical) Debug.Log("Critical Hit!");
 
-        return Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * ability.power * attackStat / (5*defenseStat)) + 2) * stanceBonus * roll * critMod);
+        return Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * ability.power * attackStat / (5*defenseStat)) + 2) * efficacy * stanceBonus * roll * critMod);
     }
 
     private void CalculateTurnOrder(List<Unit> allUnits)
@@ -695,7 +770,7 @@ public class TBBS : MonoBehaviour
             enemiesDestroyed &= enemyUnits[i].waitingForDestroy;
         }
 
-        for (int i = 0; i < enemyUnits.Count; i++)
+        for (int i = 0; i < playerUnits.Count; i++)
         {
             playersDestroyed &= playerUnits[i].waitingForDestroy;
         }
@@ -715,5 +790,27 @@ public class TBBS : MonoBehaviour
         }
 
         return enemiesDestroyed;
+    }
+
+    float GetAbilityEfficacy(Stance abilityStance, Stance defenderStance)
+    {
+        switch (abilityStance)
+        {
+            case Stance.AGRESSIVE:
+                if (defenderStance == Stance.AGILE) return 2f;
+                else return 1;
+            case Stance.DEFENSIVE:
+                if (defenderStance == Stance.AGRESSIVE) return 2f;
+                else return 1;
+            case Stance.AGILE:
+                if (defenderStance == Stance.DEFENSIVE) return 2f;
+                else return 1;
+            case Stance.CAUTIOUS:
+                return 1;
+            case Stance.TRICKY:
+                return 1;
+            default:
+                return 1;
+        }
     }
 }

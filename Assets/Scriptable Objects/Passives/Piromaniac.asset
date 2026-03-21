@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
-  m_Name: Clumsy
+  m_Name: Piromaniac
   m_EditorClassIdentifier: 
-  name: Clumsy
-  description: Lowers speed at the start of battle.
+  name: Piromaniac
+  description: Ups attack when burned.
   power: 0
   accuracy: 0
   abilityType: 1
   target: 0
   stance: 0
   mustUseStance: 0
-  passiveEffects: 5
-  passiveExecutionTime: 0
+  passiveEffects: 1
+  passiveExecutionTime: 9
   passiveEffectChance: 100
   effect1: 0
   effect1Chance: 0

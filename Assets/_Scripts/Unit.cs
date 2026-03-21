@@ -3,8 +3,8 @@ using Cinemachine;
 using UnityEngine.UI;
 using GameData;
 using TMPro;
-using NUnit.Framework;
 using System.Collections.Generic;
+using System.Collections;
 public class Unit : MonoBehaviour
 {
     [Header("Properties")]
@@ -14,6 +14,7 @@ public class Unit : MonoBehaviour
     public Stance currentStance;
     public int level;
     public Status status;
+    private float stanceModifier = 1.5f;
 
     [Header("Base Stats")]
     public int strength;
@@ -51,15 +52,23 @@ public class Unit : MonoBehaviour
     private Button runButton;
     [SerializeField]
     private Button[] abilityButtons;
+    [SerializeField]
+    private Slider healthBar;
+    [SerializeField]
+    private GameObject nameText;
 
     private bool additionalTurn = false;
     public bool skipTurn = false;
+
+    public bool waitingForDestroy = false;
 
     private void Awake()
     {
         InitializeStats();
 
-        actionCamera.LookAt = GameObject.Find("ENEMYSIDE").transform;
+        if (nameText) nameText.GetComponent<TextMeshProUGUI>().text = name;
+
+        if (actionCamera) actionCamera.LookAt = GameObject.Find("ENEMYSIDE").transform;
 
         selectionCamera = CameraManager.instance.selectCamera;
     }
@@ -69,6 +78,8 @@ public class Unit : MonoBehaviour
         attack = (int)(strength / 5f * level + 1);
         defense = (int)(constitution / 5f * level + 1);
         speed = (int)(dexterity / 5f * level + 1);
+
+        currentHp = maxHp;
     }
     public bool ActivateCamera()
     {
@@ -129,6 +140,8 @@ public class Unit : MonoBehaviour
             abilityButtons[index].onClick.AddListener(delegate { TBBS.instance.SelectAbility(knownAbilities[index]); });
 
             if (knownAbilities[i].abilityType == AbilityType.PASSIVE) abilityButtons[i].interactable = false;
+
+            if (knownAbilities[i].mustUseStance && currentStance != knownAbilities[i].stance) abilityButtons[i].interactable = false;
         }
     }
 
@@ -185,22 +198,68 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void Heal(float healAmount)
+    public void Heal(int healAmount)
     {
-        currentHp = (int)(currentHp + healAmount);
-    }
-    public int GetAttackStat()
-    {
-        return attack;
+        if(currentHp + healAmount >= maxHp) currentHp = maxHp;
+        else currentHp = currentHp + healAmount;
+
+        StartCoroutine(UpdateHealthBar());
     }
 
-    public int GetDefenseStat()
+    public void TakeDamage(int dmgAmount)
     {
-        return defense;
+        if (currentHp - dmgAmount <= 0) 
+        {
+            currentHp = 0;
+            waitingForDestroy = true;
+        } 
+        else currentHp = currentHp - dmgAmount;
+
+        StartCoroutine(UpdateHealthBar());
     }
-    public int GetSpeedStat()
+
+    IEnumerator UpdateHealthBar()
     {
-        return speed;
+        if(!healthBar) yield break;
+
+        healthBar.gameObject.SetActive(true);
+        float t = 0;
+        float startValue = healthBar.value;
+
+        while (t < 1) 
+        {
+            healthBar.value = Mathf.Lerp(startValue, (float)currentHp/maxHp, t);
+            t += Time.deltaTime;
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(.3f);
+
+        healthBar.gameObject.SetActive(false);
+
+        if (currentHp == 0) TBBS.instance.Death(this);
+    }
+
+    public int GetStat(Stats stat)
+    {
+        switch (stat)
+        {
+            case Stats.ATK:
+                int atk = status == Status.BURNED ? Mathf.FloorToInt(attack *.5f) : attack;
+                if (currentStance == Stance.AGRESSIVE) return Mathf.FloorToInt(atk * stanceModifier);
+                else return atk;
+            case Stats.DEF:
+                if (currentStance == Stance.DEFFENSIVE) return Mathf.FloorToInt(defense * stanceModifier);
+                else return defense;
+            case Stats.SPEED:
+                int spd = status == Status.PARALYZED ? Mathf.FloorToInt(speed * .5f) : speed;
+                if (currentStance == Stance.AGILE) return Mathf.FloorToInt(spd * stanceModifier);
+                else return spd;
+            case Stats.LUCK:
+                return luck;
+            default:
+                return 0;
+        }
     }
 
     public void OnBattleStart()
@@ -232,7 +291,7 @@ public class Unit : MonoBehaviour
         ResolvePassiveEffect(PassiveExecutionTime.TURNEND);
     }
 
-    public void ResolvePassiveEffect(PassiveExecutionTime battleStage)
+    public void ResolvePassiveEffect(PassiveExecutionTime battleStage, Unit lastHitUnit = null)
     {
         
 
@@ -248,10 +307,12 @@ public class Unit : MonoBehaviour
                         target.Add(this);
                         break;
                     case AbilityTarget.ONEALLY:
-                        target.Add(TBBS.instance.allUnits[Random.Range(0, TBBS.instance.allUnits.Count - 1)]);
+                        if(lastHitUnit) target.Add(lastHitUnit);
+                        else target.Add(TBBS.instance.playerUnits[Random.Range(0, TBBS.instance.playerUnits.Count)]);
                         break;
                     case AbilityTarget.ONEENEMY:
-                        target.Add(TBBS.instance.allUnits[Random.Range(0, TBBS.instance.allUnits.Count - 1)]);
+                        if (lastHitUnit) target.Add(lastHitUnit);
+                        else target.Add(TBBS.instance.enemyUnits[Random.Range(0, TBBS.instance.enemyUnits.Count)]);
                         break;
                     case AbilityTarget.ALLALLIES:
                         target.AddRange(TBBS.instance.playerUnits);
@@ -311,12 +372,30 @@ public class Unit : MonoBehaviour
                         ApplyStatModifier(Stats.ATK, .5f);
                         break;
                     case PassiveEffects.SKIPTURN:
-                        if (33 >= Random.Range(1, 100))
+                        if (item.passiveEffectChance >= Random.Range(1, 100))
                         {
                             Debug.Log(name + " is slacking.");
                             skipTurn = true;
                         }
                         else skipTurn = false;
+                        break;
+                    case PassiveEffects.APPLYBURN:
+                        if (item.passiveEffectChance >= Random.Range(1, 100))
+                        {
+                            foreach (var unit in target)
+                            { 
+                                unit.ApplyStatus(Status.BURNED);
+                            }
+                        }
+                        break;
+                    case PassiveEffects.APPLYPARA:
+                        if (item.passiveEffectChance >= Random.Range(1, 100))
+                        {
+                            foreach (var unit in target)
+                            {
+                                unit.ApplyStatus(Status.PARALYZED);
+                            }
+                        }
                         break;
                     default:
                         break;
@@ -330,42 +409,10 @@ public class Unit : MonoBehaviour
         if (status != Status.NONE) return;
         
         status = statusToApply;
-
-        switch (statusToApply)
-        {
-            case Status.NONE:
-                break;
-            case Status.BURNED:
-                ApplyStatModifier(Stats.ATK, .5f);
-                break;
-            case Status.POISONED:
-                break;
-            case Status.PARALYZED:
-                ApplyStatModifier(Stats.SPEED, .5f);
-                break;
-            case Status.FROZEN:
-                break;
-            case Status.ASLEEP:
-                break;
-            default:
-                break;
-        }
     }
 
     public void CureStatus()
     {
-        switch (status)
-        {
-            case Status.BURNED:
-                RemoveStatModifier(Stats.ATK);
-                break;
-            case Status.PARALYZED:
-                RemoveStatModifier(Stats.SPEED);
-                break;
-            default:
-                break;
-        }
-
         status = Status.NONE;
     }
 

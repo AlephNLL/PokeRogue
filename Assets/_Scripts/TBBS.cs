@@ -91,22 +91,31 @@ public class TBBS : MonoBehaviour
             StopCoroutine(currentTurnCoroutine);
 
         // Verificar si hay unidades vivas
-        if (enemyUnits.Count <= 0)
+        if (IsBattleOver())
         {
-            Debug.Log("Win");
-            battleState = BattleState.WIN;
-            return;
-        }
-        if (playerUnits.Count <= 0)
-        {
-            Debug.Log("Game over");
-            battleState = BattleState.LOSS;
-            return;
+            if (IsBattleWon())
+            {
+                Debug.Log("Win");
+                battleState = BattleState.WIN;
+                return;
+            }
+            else
+            {
+                Debug.Log("Game over");
+                battleState = BattleState.LOSS;
+                return;
+            }
         }
 
         if (currentTurnIndex < allUnits.Count)
         {
             Unit currentUnit = allUnits[currentTurnIndex];
+            if (currentUnit.waitingForDestroy)
+            {
+                currentTurnIndex++;
+                StartNextTurn();
+                return;
+            }
             Debug.Log("Iniciando turno de: " + currentUnit.name + " (Índice: " + currentTurnIndex + ")");
 
             if (playerUnits.Contains(currentUnit))
@@ -345,6 +354,14 @@ public class TBBS : MonoBehaviour
             }
         }
     }
+    public void Death(Unit attacker)
+    {
+        allUnits.Remove(attacker);
+        if(enemyUnits.Contains(attacker)) enemyUnits.Remove(attacker);
+        else playerUnits.Remove(attacker);
+
+        Destroy(attacker.gameObject);
+    }
     public void Run(Unit attacker) //Se llama desde la interfaz del jugador, los botones se suscriben al activarse
     {
         attacker.DeactivateCamera();
@@ -439,9 +456,15 @@ public class TBBS : MonoBehaviour
         {
             for (int i = 0; i < targets.Length; i++)
             {
-                Debug.Log(attacker.name + " attacks " + visualTarget.name + " dealing: " + CalculateAttackDamage(attacker, targets[i], ability) + " damage.");
-                ResolveAbilityEffect(attacker, targets[i], ability.effect1, ability.effect1Chance, ability.affectSelf);
-                ResolveAbilityEffect(attacker, targets[i], ability.effect2, ability.effect2Chance, ability.affectSelf);
+                if(ability.power != 0)
+                {
+                    Debug.Log(attacker.name + " attacks " + visualTarget.name + " dealing: " + CalculateAttackDamage(attacker, targets[i], ability) + " damage.");
+                    targets[i].TakeDamage(CalculateAttackDamage(attacker, targets[i], ability));
+                    attacker.ResolvePassiveEffect(PassiveExecutionTime.ONHIT, targets[i]);
+                }
+                
+                ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
+                ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
             }
         }     
 
@@ -468,8 +491,6 @@ public class TBBS : MonoBehaviour
     {
         attacker.EndSelect();
         CameraManager.instance.ActivateAttackCamera();
-
-        Debug.Log("Atacando con: " + attacker.name);
 
         Vector3 attackerStartPos = attacker.transform.position;
         float t = 0;
@@ -528,9 +549,15 @@ public class TBBS : MonoBehaviour
         }
         else
         {
-            Debug.Log(attacker.name + " attacks " + target.name + " dealing: " + CalculateAttackDamage(attacker, target, ability) + " damage.");
-            ResolveAbilityEffect(attacker, target, ability.effect1, ability.effect1Chance, ability.affectSelf);
-            ResolveAbilityEffect(attacker, target, ability.effect2, ability.effect2Chance, ability.affectSelf);
+            if (ability.power != 0)
+            {
+                Debug.Log(attacker.name + " attacks " + target.name + " dealing: " + CalculateAttackDamage(attacker, target, ability) + " damage.");
+                target.TakeDamage(CalculateAttackDamage(attacker, target, ability));
+                attacker.ResolvePassiveEffect(PassiveExecutionTime.ONHIT, target);
+            }
+            
+            ResolveAbilityEffect(attacker, target, ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
+            ResolveAbilityEffect(attacker, target, ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
         }
         
 
@@ -551,9 +578,9 @@ public class TBBS : MonoBehaviour
             StartNextTurn();
         }
     }
-    void ResolveAbilityEffect(Unit attacker, Unit target, AbilityEffect effect, float effectChance, bool affectSelf)
+    void ResolveAbilityEffect(Unit attacker, Unit target, Abilities ability, AbilityEffect effect, float effectChance, bool affectSelf)
     {
-        if (effectChance >= UnityEngine.Random.Range(1, 100))
+        if (effectChance >= UnityEngine.Random.Range(1, 101))
         {
             switch (effect)
             {
@@ -587,7 +614,8 @@ public class TBBS : MonoBehaviour
                     else target.ApplyStatModifier(Stats.SPEED, .75f);
                     break;
                 case GameData.AbilityEffect.STANCECHANGE:
-                    /*to do*/
+                    if(affectSelf) attacker.currentStance = ability.stanceToChangeTo;
+                    else target.currentStance = ability.stanceToChangeTo;
                     break;
                 case GameData.AbilityEffect.APPLYBURN:
                     if (affectSelf) attacker.ApplyStatus(Status.BURNED);
@@ -609,6 +637,9 @@ public class TBBS : MonoBehaviour
                     if (affectSelf) attacker.ApplyStatus(Status.ASLEEP);
                     else target.ApplyStatus(Status.ASLEEP);
                     break;
+                case AbilityEffect.CURESTATUS:
+                    target.CureStatus();
+                    break;
                 default:
                     break;
             }
@@ -621,27 +652,23 @@ public class TBBS : MonoBehaviour
     }
     int CalculateAttackDamage(Unit attacker, Unit target, Abilities ability)
     {
-        int attackStat = attacker.GetAttackStat();
-        int defenseStat = target.GetDefenseStat();
-
+        int attackStat = attacker.GetStat(Stats.ATK);
+        int defenseStat = target.GetStat(Stats.DEF);
+        float stanceBonus = attacker.currentStance == ability.stance ? 1.5f : 1;
         float roll = UnityEngine.Random.Range(.8f, 1f);
-        bool isCritical = UnityEngine.Random.Range(0, 15) == 0;
+        bool isCritical = UnityEngine.Random.Range(0, 16) == 0;
         float critMod = isCritical ? 1.5f : 1f;
+        if (isCritical) Debug.Log("Critical Hit!");
 
-        return Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * ability.power * attackStat / (5*defenseStat)) + 2) * roll * critMod);
+        return Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * ability.power * attackStat / (5*defenseStat)) + 2) * stanceBonus * roll * critMod);
     }
 
     private void CalculateTurnOrder(List<Unit> allUnits)
     {
         allUnits.Sort(delegate (Unit x, Unit y)
         {
-            return y.GetSpeedStat().CompareTo(x.GetSpeedStat());
+            return y.GetStat(Stats.SPEED).CompareTo(x.GetStat(Stats.SPEED));
         });
-
-        for (int i = 0; i < allUnits.Count; i++)
-        {
-            Debug.Log(allUnits[i].name + " position: " + i);
-        }
     }
 
     public static IEnumerator Run<T>(IEnumerator target, Action<T> output)
@@ -653,5 +680,40 @@ public class TBBS : MonoBehaviour
             yield return result;
         }
         output((T)result);
+    }
+
+    bool IsBattleOver()
+    {
+        if (enemyUnits.Count == 0) return true;
+        if (playerUnits.Count == 0) return true;
+
+        bool enemiesDestroyed = true;
+        bool playersDestroyed = true;
+
+        for (int i = 0; i < enemyUnits.Count; i++) 
+        {
+            enemiesDestroyed &= enemyUnits[i].waitingForDestroy;
+        }
+
+        for (int i = 0; i < enemyUnits.Count; i++)
+        {
+            playersDestroyed &= playerUnits[i].waitingForDestroy;
+        }
+
+        return enemiesDestroyed || playersDestroyed;
+    }
+
+    bool IsBattleWon()
+    {
+        if (enemyUnits.Count == 0) return true;
+
+        bool enemiesDestroyed = true;
+
+        for (int i = 0; i < enemyUnits.Count; i++)
+        {
+            enemiesDestroyed &= enemyUnits[i].waitingForDestroy;
+        }
+
+        return enemiesDestroyed;
     }
 }

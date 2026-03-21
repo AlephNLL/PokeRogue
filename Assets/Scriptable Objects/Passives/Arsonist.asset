@@ -10,20 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
-  m_Name: Crunch
+  m_Name: Arsonist
   m_EditorClassIdentifier: 
-  name: Crunch
-  description: Bites an enemy with its powerful jaws
-  power: 60
-  accuracy: 100
-  abilityType: 0
+  name: Arsonist
+  description: Has a chance to burn foes on hit.
+  power: 0
+  accuracy: 0
+  abilityType: 1
   target: 1
   stance: 0
   mustUseStance: 0
-  passiveEffects: 0
-  passiveExecutionTime: 1
+  passiveEffects: 8
+  passiveExecutionTime: 3
+  passiveEffectChance: 100
   effect1: 0
   effect1Chance: 0
   effect2: 0
   effect2Chance: 0
   affectSelf: 0
+  vfxPrefab: {fileID: 0}
+  spawnVfxOnSelf: 0

@@ -3,8 +3,8 @@ using Cinemachine;
 using UnityEngine.UI;
 using GameData;
 using TMPro;
-using NUnit.Framework;
 using System.Collections.Generic;
+using System.Collections;
 public class Unit : MonoBehaviour
 {
     [Header("Properties")]
@@ -14,6 +14,7 @@ public class Unit : MonoBehaviour
     public Stance currentStance;
     public int level;
     public Status status;
+    private float stanceModifier = 1.5f;
 
     [Header("Base Stats")]
     public int strength;
@@ -24,9 +25,11 @@ public class Unit : MonoBehaviour
     [Header("Stats")]
     [SerializeField]
     private int maxHp;
+    [SerializeField]
     private int currentHp;
     [SerializeField]
     private int attack;
+    public int effectiveAttack;
     [SerializeField]
     private int defense;
     [SerializeField]
@@ -51,15 +54,23 @@ public class Unit : MonoBehaviour
     private Button runButton;
     [SerializeField]
     private Button[] abilityButtons;
+    [SerializeField]
+    private Slider healthBar;
+    [SerializeField]
+    private GameObject nameText;
 
     private bool additionalTurn = false;
     public bool skipTurn = false;
+
+    public bool waitingForDestroy = false;
 
     private void Awake()
     {
         InitializeStats();
 
-        actionCamera.LookAt = GameObject.Find("ENEMYSIDE").transform;
+        if (nameText) nameText.GetComponent<TextMeshProUGUI>().text = name;
+
+        if (actionCamera) actionCamera.LookAt = GameObject.Find("ENEMYSIDE").transform;
 
         selectionCamera = CameraManager.instance.selectCamera;
     }
@@ -69,6 +80,8 @@ public class Unit : MonoBehaviour
         attack = (int)(strength / 5f * level + 1);
         defense = (int)(constitution / 5f * level + 1);
         speed = (int)(dexterity / 5f * level + 1);
+
+        currentHp = maxHp;
     }
     public bool ActivateCamera()
     {
@@ -123,12 +136,15 @@ public class Unit : MonoBehaviour
         for (int i = 0; i < knownAbilities.Length; i++)
         {
             abilityButtons[i].gameObject.SetActive(true);
+            abilityButtons[i].interactable = true;
             abilityButtons[i].GetComponentInChildren<TMP_Text>().text = knownAbilities[i].name;
             int index = i;
 
             abilityButtons[index].onClick.AddListener(delegate { TBBS.instance.SelectAbility(knownAbilities[index]); });
 
             if (knownAbilities[i].abilityType == AbilityType.PASSIVE) abilityButtons[i].interactable = false;
+
+            if (knownAbilities[i].mustUseStance && currentStance != knownAbilities[i].stance) abilityButtons[i].interactable = false;
         }
     }
 
@@ -185,22 +201,77 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void Heal(float healAmount)
+    public void Heal(int healAmount)
     {
-        currentHp = (int)(currentHp + healAmount);
-    }
-    public int GetAttackStat()
-    {
-        return attack;
+        if(currentHp + healAmount >= maxHp) currentHp = maxHp;
+        else currentHp = currentHp + healAmount;
+
+        StartCoroutine(UpdateHealthBar());
     }
 
-    public int GetDefenseStat()
+    public void TakeDamage(int dmgAmount)
     {
-        return defense;
+        if (currentHp - dmgAmount <= 0) 
+        {
+            currentHp = 0;
+            waitingForDestroy = true;
+        } 
+        else currentHp = currentHp - dmgAmount;
+
+        StartCoroutine(UpdateHealthBar());
     }
-    public int GetSpeedStat()
+
+    IEnumerator UpdateHealthBar()
     {
-        return speed;
+        if (!healthBar) 
+        {
+            if (currentHp == 0) TBBS.instance.Death(this);
+            yield break;
+        }
+
+        healthBar.gameObject.SetActive(true);
+        float t = 0;
+        float startValue = healthBar.value;
+
+        while (t < 1) 
+        {
+            healthBar.value = Mathf.Lerp(startValue, (float)currentHp/maxHp, t);
+            t += Time.deltaTime;
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(.3f);
+
+        //healthBar.gameObject.SetActive(false);
+
+        if (currentHp == 0) TBBS.instance.Death(this);
+    }
+
+    public int GetStat(Stats stat)
+    {
+        switch (stat)
+        {
+            case Stats.ATK:
+                int atk = attack;
+                if(status == Status.BURNED)
+                {
+                    atk = HasPassive("Piromaniac") ? attack : Mathf.FloorToInt(attack * .5f);
+                }
+                effectiveAttack = currentStance == Stance.AGRESSIVE ? Mathf.FloorToInt(atk * stanceModifier) : atk;
+                if (currentStance == Stance.AGRESSIVE) return Mathf.FloorToInt(atk * stanceModifier);
+                else return atk;
+            case Stats.DEF:
+                if (currentStance == Stance.DEFENSIVE) return Mathf.FloorToInt(defense * stanceModifier);
+                else return defense;
+            case Stats.SPEED:
+                int spd = status == Status.PARALYZED ? Mathf.FloorToInt(speed * .5f) : speed;
+                if (currentStance == Stance.AGILE) return Mathf.FloorToInt(spd * stanceModifier);
+                else return spd;
+            case Stats.LUCK:
+                return luck;
+            default:
+                return 0;
+        }
     }
 
     public void OnBattleStart()
@@ -220,10 +291,12 @@ public class Unit : MonoBehaviour
             case Status.NONE:
                 break;
             case Status.BURNED:
-                Debug.Log(name + " lost " + (Mathf.FloorToInt(currentHp * .1f) + 1) + " hp due to his burns");
+                TakeDamage((Mathf.FloorToInt(maxHp * .1f) + 1));
+                Debug.Log(name + " lost " + (Mathf.FloorToInt(maxHp * .1f) + 1) + " hp due to his burns");
                 break;
             case Status.POISONED:
-                Debug.Log(name + " lost " + (Mathf.FloorToInt(currentHp * .1f) + 1) + " hp due to poison");
+                TakeDamage((Mathf.FloorToInt(maxHp * .2f) + 1));
+                Debug.Log(name + " lost " + (Mathf.FloorToInt(maxHp * .2f) + 1) + " hp due to poison");
                 break;
             default:
                 break;
@@ -232,13 +305,11 @@ public class Unit : MonoBehaviour
         ResolvePassiveEffect(PassiveExecutionTime.TURNEND);
     }
 
-    public void ResolvePassiveEffect(PassiveExecutionTime battleStage)
+    public void ResolvePassiveEffect(PassiveExecutionTime battleStage, Unit lastHitUnit = null)
     {
-        
-
         foreach (var item in knownAbilities)
         {
-            if(item.abilityType == AbilityType.PASSIVE && item.passiveExecutionTime == battleStage)
+            if(item.abilityType == AbilityType.PASSIVE && item.passiveExecutionTime == battleStage && item.passiveEffectChance >= Random.Range(1, 100))
             {
                 List<Unit> target = new List<Unit>();
 
@@ -248,10 +319,12 @@ public class Unit : MonoBehaviour
                         target.Add(this);
                         break;
                     case AbilityTarget.ONEALLY:
-                        target.Add(TBBS.instance.allUnits[Random.Range(0, TBBS.instance.allUnits.Count - 1)]);
+                        if(lastHitUnit) target.Add(lastHitUnit);
+                        else target.Add(TBBS.instance.playerUnits[Random.Range(0, TBBS.instance.playerUnits.Count)]);
                         break;
                     case AbilityTarget.ONEENEMY:
-                        target.Add(TBBS.instance.allUnits[Random.Range(0, TBBS.instance.allUnits.Count - 1)]);
+                        if (lastHitUnit) target.Add(lastHitUnit);
+                        else target.Add(TBBS.instance.enemyUnits[Random.Range(0, TBBS.instance.enemyUnits.Count)]);
                         break;
                     case AbilityTarget.ALLALLIES:
                         target.AddRange(TBBS.instance.playerUnits);
@@ -268,6 +341,14 @@ public class Unit : MonoBehaviour
                     case PassiveEffects.UPATK:
                         foreach (var unit in target)
                         {
+                            Debug.Log(unit.name + " attack raises!");
+                            unit.ApplyStatModifier(Stats.ATK, 1.5f);
+                        }
+                        break;
+                    case PassiveEffects.UPATKIFBURN:
+                        foreach (var unit in target)
+                        {
+                            if(unit.status != Status.BURNED) continue;
                             Debug.Log(unit.name + " attack raises!");
                             unit.ApplyStatModifier(Stats.ATK, 1.5f);
                         }
@@ -311,12 +392,20 @@ public class Unit : MonoBehaviour
                         ApplyStatModifier(Stats.ATK, .5f);
                         break;
                     case PassiveEffects.SKIPTURN:
-                        if (33 >= Random.Range(1, 100))
-                        {
-                            Debug.Log(name + " is slacking.");
-                            skipTurn = true;
+                        Debug.Log(name + " is slacking.");
+                        skipTurn = true;
+                        break;
+                    case PassiveEffects.APPLYBURN:
+                        foreach (var unit in target)
+                        { 
+                            unit.ApplyStatus(Status.BURNED);
                         }
-                        else skipTurn = false;
+                        break;
+                    case PassiveEffects.APPLYPARA:
+                        foreach (var unit in target)
+                        {
+                            unit.ApplyStatus(Status.PARALYZED);
+                        }
                         break;
                     default:
                         break;
@@ -331,42 +420,16 @@ public class Unit : MonoBehaviour
         
         status = statusToApply;
 
-        switch (statusToApply)
-        {
-            case Status.NONE:
-                break;
-            case Status.BURNED:
-                ApplyStatModifier(Stats.ATK, .5f);
-                break;
-            case Status.POISONED:
-                break;
-            case Status.PARALYZED:
-                ApplyStatModifier(Stats.SPEED, .5f);
-                break;
-            case Status.FROZEN:
-                break;
-            case Status.ASLEEP:
-                break;
-            default:
-                break;
-        }
+        ResolvePassiveEffect(PassiveExecutionTime.ONSTATUSCHANGE);
     }
 
     public void CureStatus()
     {
-        switch (status)
-        {
-            case Status.BURNED:
-                RemoveStatModifier(Stats.ATK);
-                break;
-            case Status.PARALYZED:
-                RemoveStatModifier(Stats.SPEED);
-                break;
-            default:
-                break;
-        }
+        if (status == Status.NONE) return;
 
         status = Status.NONE;
+
+        ResolvePassiveEffect(PassiveExecutionTime.ONSTATUSCHANGE);
     }
 
     public bool HasAdditionalTurn()
@@ -383,6 +446,18 @@ public class Unit : MonoBehaviour
 
         Debug.Log("No add turn ability");
         additionalTurn = false;
+        return false;
+    }
+
+    public bool HasPassive(string passiveName)
+    {
+        foreach (var item in knownAbilities)
+        {
+            if (item.abilityType == AbilityType.ACTIVE) continue;
+
+            if (item.name == passiveName) return true;
+        }
+
         return false;
     }
 }

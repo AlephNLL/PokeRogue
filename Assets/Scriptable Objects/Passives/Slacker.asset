@@ -22,8 +22,12 @@ MonoBehaviour:
   mustUseStance: 0
   passiveEffects: 7
   passiveExecutionTime: 1
+  passiveEffectChance: 50
   effect1: 0
   effect1Chance: 0
   effect2: 0
   effect2Chance: 0
   affectSelf: 0
+  stanceToChangeTo: 0
+  vfxPrefab: {fileID: 0}
+  spawnVfxOnSelf: 0

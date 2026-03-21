@@ -16,6 +16,7 @@ public class Abilities : ScriptableObject
     [Header("PassiveData")]
     public PassiveEffects passiveEffects;
     public PassiveExecutionTime passiveExecutionTime;
+    public int passiveEffectChance;
 
     [Header("Ability Effect")]
     public AbilityEffect effect1;
@@ -23,6 +24,7 @@ public class Abilities : ScriptableObject
     public AbilityEffect effect2;
     public float effect2Chance;
     public bool affectSelf;
+    public Stance stanceToChangeTo;
 
     [Header("Ability Effect")]
     public GameObject vfxPrefab;

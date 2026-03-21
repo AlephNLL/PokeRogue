@@ -10,20 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
-  m_Name: Slash
+  m_Name: Rapid Strike
   m_EditorClassIdentifier: 
-  name: Slash
-  description: Slashes enemies with its claws.
-  power: 60
+  name: Rapid Strike
+  description: A very quick hit that prepares the user for and agile stance
+  power: 30
   accuracy: 100
   abilityType: 0
   target: 1
   stance: 0
-  mustUseStance: 0
-  passiveEffects: 3
-  passiveExecutionTime: 2
-  effect1: 11
+  mustUseStance: 1
+  passiveEffects: 0
+  passiveExecutionTime: 1
+  passiveEffectChance: 0
+  effect1: 8
   effect1Chance: 100
-  effect2: 5
-  effect2Chance: 100
-  affectSelf: 0
+  effect2: 0
+  effect2Chance: 0
+  affectSelf: 1
+  stanceToChangeTo: 2
+  vfxPrefab: {fileID: 0}
+  spawnVfxOnSelf: 0

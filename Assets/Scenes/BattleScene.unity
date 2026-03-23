@@ -825,13 +825,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefabs:
-  - {fileID: 1717970170875167366, guid: 7fc43efa93915ad489ea21f95928cd2c, type: 3}
-  - {fileID: 1717970170875167366, guid: 7fc43efa93915ad489ea21f95928cd2c, type: 3}
-  - {fileID: 1717970170875167366, guid: 7fc43efa93915ad489ea21f95928cd2c, type: 3}
-  - {fileID: 1717970170875167366, guid: 7fc43efa93915ad489ea21f95928cd2c, type: 3}
+  - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
+  - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
+  - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
+  - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
   enemyPrefabs:
-  - {fileID: 2950656723951348137, guid: 38b314b855b8ffa41a38a676cc35f2bc, type: 3}
-  - {fileID: 2950656723951348137, guid: 38b314b855b8ffa41a38a676cc35f2bc, type: 3}
+  - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
+  - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
   playerSide: {fileID: 108010993}
   enemySide: {fileID: 1216503018}
   playerUnits: []

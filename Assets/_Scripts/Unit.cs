@@ -7,35 +7,32 @@ using System.Collections.Generic;
 using System.Collections;
 public class Unit : MonoBehaviour
 {
-    [Header("Properties")]
     new public string name;
     public string description;
-    public Stance[] stances;
     public Stance currentStance;
     public int level;
     public Status status;
     private float stanceModifier = 1.5f;
 
-    [Header("Base Stats")]
+
     public int strength;
     public int constitution;
     public int dexterity;
     public int luck;
 
-    [Header("Stats")]
+
     [SerializeField]
     private int maxHp;
     [SerializeField]
     private int currentHp;
     [SerializeField]
     private int attack;
-    public int effectiveAttack;
     [SerializeField]
     private int defense;
     [SerializeField]
     private int speed;
 
-    [Header("Abilities")]
+
     public Abilities[] knownAbilities;
     public Abilities[] abilityPool;
 
@@ -49,6 +46,8 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private Canvas abilityMenu;
     [SerializeField]
+    private Canvas statusMenu;
+    [SerializeField]
     private Button attackButton;
     [SerializeField]
     private Button runButton;
@@ -59,20 +58,51 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private GameObject nameText;
 
-    private bool additionalTurn = false;
+    public bool isPlayerControlled = false;
+
+    public bool additionalTurn = false;
     public bool skipTurn = false;
 
     public bool waitingForDestroy = false;
 
     private void Awake()
     {
-        InitializeStats();
+        InitializeStats();  
+    }
+    private void Start()
+    {
+        InitializeVariables();
+    }
 
-        if (nameText) nameText.GetComponent<TextMeshProUGUI>().text = name;
-
-        if (actionCamera) actionCamera.LookAt = GameObject.Find("ENEMYSIDE").transform;
-
+    void InitializeVariables()
+    {
         selectionCamera = CameraManager.instance.selectCamera;
+        statusMenu = transform.Find("Status").gameObject.GetComponent<Canvas>();
+
+        healthBar = statusMenu.transform.Find("Health Bar").gameObject.GetComponentInChildren<Slider>();
+
+        if (isPlayerControlled)
+        {
+            actionCamera = transform.Find("ActionCamera").gameObject.GetComponent<CinemachineVirtualCamera>();
+            actionCamera.LookAt = GameObject.Find("ENEMYSIDE").transform;
+
+            
+            battleMenu = transform.Find("MainSelection").gameObject.GetComponent<Canvas>();
+            abilityMenu = transform.Find("Abilities").gameObject.GetComponent<Canvas>();
+
+            attackButton = battleMenu.GetComponentsInChildren<Button>(true)[0];
+            runButton = battleMenu.GetComponentsInChildren<Button>(true)[2];
+            abilityButtons = abilityMenu.GetComponentsInChildren<Button>(true);
+        }
+        else
+        {
+            nameText = statusMenu.transform.Find("Panel").gameObject;
+            nameText.gameObject.SetActive(true);
+            nameText.GetComponentInChildren<TextMeshProUGUI>(true).text = name;
+            nameText.GetComponentInChildren<TextMeshProUGUI>(true).gameObject.SetActive(true);
+
+
+        }
     }
     private void InitializeStats()
     {
@@ -253,11 +283,11 @@ public class Unit : MonoBehaviour
         {
             case Stats.ATK:
                 int atk = attack;
+                if (HasPassive("Double Trouble")) atk = Mathf.FloorToInt(atk * .5f);
                 if(status == Status.BURNED)
                 {
                     atk = HasPassive("Piromaniac") ? attack : Mathf.FloorToInt(attack * .5f);
                 }
-                effectiveAttack = currentStance == Stance.AGRESSIVE ? Mathf.FloorToInt(atk * stanceModifier) : atk;
                 if (currentStance == Stance.AGRESSIVE) return Mathf.FloorToInt(atk * stanceModifier);
                 else return atk;
             case Stats.DEF:
@@ -345,10 +375,10 @@ public class Unit : MonoBehaviour
                             unit.ApplyStatModifier(Stats.ATK, 1.5f);
                         }
                         break;
-                    case PassiveEffects.UPATKIFBURN:
+                    case PassiveEffects.UPATKONSTATUS:
                         foreach (var unit in target)
                         {
-                            if(unit.status != Status.BURNED) continue;
+                            if(unit.status != item.status) continue;
                             Debug.Log(unit.name + " attack raises!");
                             unit.ApplyStatModifier(Stats.ATK, 1.5f);
                         }
@@ -389,22 +419,16 @@ public class Unit : MonoBehaviour
                         }
                         break;
                     case PassiveEffects.ADDTURN:
-                        ApplyStatModifier(Stats.ATK, .5f);
+                        additionalTurn = true;
                         break;
                     case PassiveEffects.SKIPTURN:
                         Debug.Log(name + " is slacking.");
                         skipTurn = true;
                         break;
-                    case PassiveEffects.APPLYBURN:
+                    case PassiveEffects.APPLYSTATUS:
                         foreach (var unit in target)
                         { 
-                            unit.ApplyStatus(Status.BURNED);
-                        }
-                        break;
-                    case PassiveEffects.APPLYPARA:
-                        foreach (var unit in target)
-                        {
-                            unit.ApplyStatus(Status.PARALYZED);
+                            unit.ApplyStatus(item.status);
                         }
                         break;
                     default:
@@ -434,19 +458,11 @@ public class Unit : MonoBehaviour
 
     public bool HasAdditionalTurn()
     {
-        foreach (var item in knownAbilities)
-        {
-            if (item.abilityType == AbilityType.PASSIVE && item.passiveEffects == PassiveEffects.ADDTURN && !additionalTurn)
-            {
-                Debug.Log(name + " gains an extra turn!");
-                additionalTurn = true;
-                return true;
-            }
-        }
+        if (!additionalTurn) return false;
 
-        Debug.Log("No add turn ability");
         additionalTurn = false;
-        return false;
+
+        return true;
     }
 
     public bool HasPassive(string passiveName)

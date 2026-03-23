@@ -23,6 +23,7 @@ MonoBehaviour:
   passiveEffects: 1
   passiveExecutionTime: 9
   passiveEffectChance: 100
+  status: 1
   effect1: 0
   effect1Chance: 0
   effect2: 0

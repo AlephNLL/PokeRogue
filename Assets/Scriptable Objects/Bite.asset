@@ -10,24 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
-  m_Name: Block
+  m_Name: Bite
   m_EditorClassIdentifier: 
-  name: Block
-  description: Changes user stance to defensive.
-  power: 0
+  name: Bite
+  description: Bites a foe.
+  power: 40
   accuracy: 100
   abilityType: 0
-  target: 0
-  stance: 1
+  target: 1
+  stance: 0
   mustUseStance: 0
   passiveEffects: 0
   passiveExecutionTime: 1
   passiveEffectChance: 0
-  effect1: 8
+  status: 0
+  effect1: 0
   effect1Chance: 100
   effect2: 0
   effect2Chance: 0
   affectSelf: 0
-  stanceToChangeTo: 1
+  stanceToChangeTo: 2
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

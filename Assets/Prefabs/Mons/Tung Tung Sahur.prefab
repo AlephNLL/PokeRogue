@@ -511,7 +511,7 @@ GameObject:
   - component: {fileID: 1880888419145442071}
   - component: {fileID: 7571199883488435960}
   m_Layer: 0
-  m_Name: Tung Tung Shur
+  m_Name: Tung Tung Sahur
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -565,7 +565,7 @@ MonoBehaviour:
   speed: 0
   knownAbilities:
   - {fileID: 11400000, guid: 1184a0b44bd99454485759e2e787e946, type: 2}
-  - {fileID: 11400000, guid: 7bbe08ee4d1a3df43a608a2873cb3b7a, type: 2}
+  - {fileID: 11400000, guid: 921b154be990f4f4e80d51def1f09d7a, type: 2}
   - {fileID: 11400000, guid: ee107580067682943890aaa7b1ebf88d, type: 2}
   - {fileID: 11400000, guid: 98d7157f267621a4f86a3adbc4943c91, type: 2}
   abilityPool: []
@@ -584,6 +584,7 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   nameText: {fileID: 0}
   isPlayerControlled: 0
+  additionalTurn: 0
   skipTurn: 0
   waitingForDestroy: 0
 --- !u!1 &1760726793352929564

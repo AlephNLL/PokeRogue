@@ -508,13 +508,17 @@ public class TBBS : MonoBehaviour
             {
                 Vector3 dir = visualTarget.position - attackerStartPos;
                 GameObject vfx = Instantiate(ability.vfxPrefab, attackerStartPos + .1f * dir, Quaternion.LookRotation(dir));
-                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration);
+                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration/2);
+                Damage(ability, attacker, targets);
+                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
                 Destroy(vfx);
             }
             else
             {
                 GameObject vfx = Instantiate(ability.vfxPrefab, visualTarget);
-                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration);
+                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
+                Damage(ability, attacker, targets);
+                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
                 Destroy(vfx);
             }
         }
@@ -530,7 +534,7 @@ public class TBBS : MonoBehaviour
             }
 
             Vector3 attackerEndPos = attacker.transform.position;
-
+            Damage(ability, attacker, targets);
             t = 0;
             yield return new WaitForSeconds(0.1f); // Pequeña pausa en el impacto
 
@@ -546,27 +550,8 @@ public class TBBS : MonoBehaviour
             attacker.transform.position = attackerStartPos;
         }
 
-            
-        //Check if attack hit
-        if (!CheckHit(ability))
-        {
-            Debug.Log(attacker.name + "missed");
-        }
-        else
-        {
-            for (int i = 0; i < targets.Length; i++)
-            {
-                if(ability.power != 0)
-                {
-                    Debug.Log(attacker.name + " attacks " + visualTarget.name + " dealing: " + CalculateAttackDamage(attacker, targets[i], ability) + " damage.");
-                    targets[i].TakeDamage(CalculateAttackDamage(attacker, targets[i], ability));
-                    attacker.ResolvePassiveEffect(PassiveExecutionTime.ONHIT, targets[i]);
-                }
-                
-                ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
-                ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
-            }
-        }     
+
+        
 
         CameraManager.instance.SetBlendTime(1);
 
@@ -599,6 +584,9 @@ public class TBBS : MonoBehaviour
         float t = 0;
         float elapsedTime = 0;
 
+        Unit[] targets = new Unit[1];
+        targets[0] = target;
+
         yield return new WaitForSeconds(.2f);
 
         if (ability.vfxPrefab)
@@ -607,13 +595,17 @@ public class TBBS : MonoBehaviour
             {
                 Vector3 dir = target.transform.position - attackerStartPos;
                 GameObject vfx = Instantiate(ability.vfxPrefab, attackerStartPos + .1f * dir, Quaternion.LookRotation(dir));
-                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration);
+                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
+                Damage(ability, attacker, targets);
+                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
                 Destroy(vfx);
             }
             else
             {
                 GameObject vfx = Instantiate(ability.vfxPrefab, target.transform);
-                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration);
+                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
+                Damage(ability, attacker, targets);
+                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
                 Destroy(vfx);
             }
         }
@@ -629,6 +621,7 @@ public class TBBS : MonoBehaviour
             }
 
             Vector3 attackerEndPos = attacker.transform.position;
+            Damage(ability, attacker, targets);
 
             t = 0;
             yield return new WaitForSeconds(0.1f); // Pequeña pausa en el impacto
@@ -644,25 +637,9 @@ public class TBBS : MonoBehaviour
             // Asegurar que regresó a su posición exacta
             attacker.transform.position = attackerStartPos;
         }
+
         
-        //Check if attack hit
-        if (!CheckHit(ability))
-        {
-            Debug.Log(attacker.name + "missed");
-        }
-        else
-        {
-            if (ability.power != 0)
-            {
-                Debug.Log(attacker.name + " attacks " + target.name + " dealing: " + CalculateAttackDamage(attacker, target, ability) + " damage.");
-                target.TakeDamage(CalculateAttackDamage(attacker, target, ability));
-                attacker.ResolvePassiveEffect(PassiveExecutionTime.ONHIT, target);
-            }
-            
-            ResolveAbilityEffect(attacker, target, ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
-            ResolveAbilityEffect(attacker, target, ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
-        }
-        
+
 
         CameraManager.instance.SetBlendTime(1);
 
@@ -682,6 +659,30 @@ public class TBBS : MonoBehaviour
             // Avanzar al siguiente turno
             StartNextTurn();
             yield break;
+        }
+    }
+
+    void Damage(Abilities ability, Unit attacker, Unit[] targets)
+    {
+        //Check if attack hit
+        if (!CheckHit(ability))
+        {
+            Debug.Log(attacker.name + "missed");
+        }
+        else
+        {
+            for (int i = 0; i < targets.Length; i++)
+            {
+                if (ability.power != 0)
+                {
+                    Debug.Log(attacker.name + " attacks " + targets[i].name + " dealing: " + CalculateAttackDamage(attacker, targets[i], ability) + " damage.");
+                    targets[i].TakeDamage(CalculateAttackDamage(attacker, targets[i], ability));
+                    attacker.ResolvePassiveEffect(PassiveExecutionTime.ONHIT, targets[i]);
+                }
+
+                ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
+                ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
+            }
         }
     }
     void ResolveAbilityEffect(Unit attacker, Unit target, Abilities ability, AbilityEffect effect, float effectChance, bool affectSelf)

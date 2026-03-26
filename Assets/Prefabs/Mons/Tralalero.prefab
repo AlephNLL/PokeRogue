@@ -583,6 +583,7 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   nameText: {fileID: 0}
   isPlayerControlled: 0
+  additionalTurn: 0
   skipTurn: 0
   waitingForDestroy: 0
 --- !u!1 &1760726793352929564

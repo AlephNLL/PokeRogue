@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
-  m_Name: Piromaniac
+  m_Name: Pyromaniac
   m_EditorClassIdentifier: 
-  name: Piromaniac
+  name: Pyromaniac
   description: Ups attack when burned.
   power: 0
   accuracy: 0

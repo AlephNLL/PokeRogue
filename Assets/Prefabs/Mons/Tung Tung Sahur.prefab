@@ -564,7 +564,7 @@ MonoBehaviour:
   defense: 0
   speed: 0
   knownAbilities:
-  - {fileID: 11400000, guid: bc32a2fe51070b244b1f1a3a5f3282b4, type: 2}
+  - {fileID: 11400000, guid: 37b116ffb03a7ba449ee1d2d55c6776b, type: 2}
   - {fileID: 11400000, guid: 921b154be990f4f4e80d51def1f09d7a, type: 2}
   - {fileID: 11400000, guid: ee107580067682943890aaa7b1ebf88d, type: 2}
   - {fileID: 11400000, guid: 98d7157f267621a4f86a3adbc4943c91, type: 2}

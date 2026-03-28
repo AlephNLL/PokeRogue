@@ -554,10 +554,10 @@ MonoBehaviour:
   currentStance: 2
   level: 5
   status: 0
-  strength: 6
-  constitution: 6
-  dexterity: 12
-  luck: 1
+  strength: 20
+  constitution: 12
+  dexterity: 20
+  luck: 8
   maxHp: 0
   currentHp: 0
   attack: 0
@@ -565,8 +565,8 @@ MonoBehaviour:
   speed: 0
   knownAbilities:
   - {fileID: 11400000, guid: 98d7157f267621a4f86a3adbc4943c91, type: 2}
-  - {fileID: 11400000, guid: 0812aa30627436b4c8a3243b9f8bd64a, type: 2}
-  - {fileID: 11400000, guid: ee107580067682943890aaa7b1ebf88d, type: 2}
+  - {fileID: 11400000, guid: 37b116ffb03a7ba449ee1d2d55c6776b, type: 2}
+  - {fileID: 11400000, guid: 6f28517c74c3ce84b8e2453d4463fa23, type: 2}
   abilityPool: []
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
@@ -2408,6 +2408,7 @@ GameObject:
   - component: {fileID: 8972191043252859100}
   - component: {fileID: 4779042329103905548}
   - component: {fileID: 7613537732648166403}
+  - component: {fileID: 5614427052725957920}
   m_Layer: 5
   m_Name: Status
   m_TagString: Untagged
@@ -2499,6 +2500,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &5614427052725957920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7962503471530684698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b36d8dcc0d7aa343a02cf6b148b6563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Billboard
 --- !u!1 &8209428991161656363
 GameObject:
   m_ObjectHideFlags: 0

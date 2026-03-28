@@ -192,23 +192,26 @@ public class Unit : MonoBehaviour
 
     public void ApplyStatModifier(Stats stat, float mod)
     {
+        if(mod > 1) VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, gameObject.transform.position);
+        else VFXManager.instance.SpawnGlobalEffect(VFX.NERF, gameObject.transform.position);
+
         switch (stat)
-        {
-            case Stats.ATK:
-                attack = Mathf.FloorToInt(attack*mod);
-                break;
-            case Stats.DEF:
-                defense = Mathf.FloorToInt(defense * mod);
-                break;
-            case Stats.SPEED:
-                speed = Mathf.FloorToInt(speed * mod);
-                break;
-            case Stats.LUCK:
-                luck = Mathf.FloorToInt(luck * mod);
-                break;
-            default:
-                break;
-        }
+            {
+                case Stats.ATK:
+                    attack = Mathf.FloorToInt(attack * mod);
+                    break;
+                case Stats.DEF:
+                    defense = Mathf.FloorToInt(defense * mod);
+                    break;
+                case Stats.SPEED:
+                    speed = Mathf.FloorToInt(speed * mod);
+                    break;
+                case Stats.LUCK:
+                    luck = Mathf.FloorToInt(luck * mod);
+                    break;
+                default:
+                    break;
+            }
     }
 
     public void RemoveStatModifier(Stats stat)
@@ -286,7 +289,7 @@ public class Unit : MonoBehaviour
                 if (HasPassive("Double Trouble")) atk = Mathf.FloorToInt(atk * .5f);
                 if(status == Status.BURNED)
                 {
-                    atk = HasPassive("Piromaniac") ? attack : Mathf.FloorToInt(attack * .5f);
+                    atk = HasPassive("Piromaniac") ? atk : Mathf.FloorToInt(atk * .5f);
                 }
                 if (currentStance == Stance.AGRESSIVE) return Mathf.FloorToInt(atk * stanceModifier);
                 else return atk;
@@ -473,7 +476,6 @@ public class Unit : MonoBehaviour
 
             if (item.name == passiveName) return true;
         }
-
         return false;
     }
 }

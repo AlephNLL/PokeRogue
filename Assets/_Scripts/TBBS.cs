@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using System;
 using GameData;
+using UnityEngine.SceneManagement;
 
 
 //Turn Based Battle System
@@ -38,6 +39,8 @@ public class TBBS : MonoBehaviour
     private void Start()
     {
         battleState = BattleState.START;
+        playerPrefabs = PlayerData.playerTeam;
+        enemyPrefabs = BattleData.enemyTeam;
         StartCoroutine(SetupBattleField());
     }
 
@@ -103,12 +106,25 @@ public class TBBS : MonoBehaviour
             {
                 Debug.Log("Win");
                 battleState = BattleState.WIN;
+                //test de captura
+                if(PlayerData.playerTeam.Length < 4)
+                {
+                    GameObject capturedUnit = enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Length)];
+                    List<GameObject> newPlayerTeam = new List<GameObject>();
+                    newPlayerTeam.AddRange(playerPrefabs);
+                    newPlayerTeam.Add(capturedUnit);
+
+                    PlayerData.playerTeam = newPlayerTeam.ToArray();
+                }
+                
+                SceneManager.LoadSceneAsync("BattleEnterTest");
                 return;
             }
             else
             {
                 Debug.Log("Game over");
                 battleState = BattleState.LOSS;
+                SceneManager.LoadSceneAsync("BattleEnterTest");
                 return;
             }
         }
@@ -196,7 +212,18 @@ public class TBBS : MonoBehaviour
 
         for (int i = 0; i < currentUnit.knownAbilities.Length; i++)
         {
-            if (currentUnit.knownAbilities[i].abilityType == AbilityType.ACTIVE) usableAbilities.Add(currentUnit.knownAbilities[i]);
+            if (currentUnit.knownAbilities[i].abilityType == AbilityType.ACTIVE)
+            {
+                if(currentUnit.knownAbilities[i].mustUseStance && 
+                    currentUnit.currentStance == currentUnit.knownAbilities[i].stance)
+                {
+                    usableAbilities.Add(currentUnit.knownAbilities[i]);
+                }
+                else if (!currentUnit.knownAbilities[i].mustUseStance)
+                {
+                    usableAbilities.Add(currentUnit.knownAbilities[i]);
+                }
+            }
         }
 
         Abilities chosenAbility = usableAbilities[UnityEngine.Random.Range(0, usableAbilities.Count)];
@@ -264,22 +291,12 @@ public class TBBS : MonoBehaviour
 
             case GameData.AbilityTarget.ONEENEMY:
                 yield return Run<int>(SelectTarget(), (output) => selection = output);
-                if (selection == -1)
-                {
-                    AbilityMenu(currentUnit);
-                    yield break;
-                }
-                else StartCoroutine(AttackSequence(currentUnit, enemyUnits[selection], ability));
+                if(selection >= 0) StartCoroutine(AttackSequence(currentUnit, enemyUnits[selection], ability));
                 yield break;
 
             case GameData.AbilityTarget.ONEALLY:
                 yield return Run<int>(SelectTarget(false), (output) => selection = output);
-                if (selection == -1)
-                {
-                    AbilityMenu(currentUnit);
-                    yield break;
-                }
-                else StartCoroutine(AttackSequence(currentUnit, playerUnits[selection], ability));
+                if (selection >= 0) StartCoroutine(AttackSequence(currentUnit, playerUnits[selection], ability));
                 yield break;
 
             case GameData.AbilityTarget.ALLENEMIES:
@@ -319,8 +336,6 @@ public class TBBS : MonoBehaviour
             default:
                 yield break;
         }
-
-        yield break;
     }
 
     IEnumerator WaitForConfirm()
@@ -394,7 +409,8 @@ public class TBBS : MonoBehaviour
                 if(Input.GetKeyDown(KeyCode.Escape))
                 {
                     AbilityMenu(attacker);
-                    yield return -1;
+                    selection = -1;
+                    yield return selection;
                     yield break;
                 }
 
@@ -444,7 +460,8 @@ public class TBBS : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
                     AbilityMenu(attacker);
-                    yield return -1;
+                    selection = -1;
+                    yield return selection;
                     yield break;
                 }
 
@@ -675,7 +692,6 @@ public class TBBS : MonoBehaviour
             {
                 if (ability.power != 0)
                 {
-                    Debug.Log(attacker.name + " attacks " + targets[i].name + " dealing: " + CalculateAttackDamage(attacker, targets[i], ability) + " damage.");
                     targets[i].TakeDamage(CalculateAttackDamage(attacker, targets[i], ability));
                     attacker.ResolvePassiveEffect(PassiveExecutionTime.ONHIT, targets[i]);
                 }
@@ -751,10 +767,13 @@ public class TBBS : MonoBehaviour
         bool isCritical = UnityEngine.Random.Range(0, 16) == 0;
         float critMod = isCritical ? 1.5f : 1f;
 
+        int damage = Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * ability.power * attackStat / (5 * defenseStat)) + 2) * efficacy * stanceBonus * roll * critMod);
+
+        Debug.Log(attacker.name + " attacks " + target.name + " dealing: " + damage + " damage.");
         if (efficacy == 2) Debug.Log("It's super effective!");
         if (isCritical) Debug.Log("Critical Hit!");
 
-        return Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * ability.power * attackStat / (5*defenseStat)) + 2) * efficacy * stanceBonus * roll * critMod);
+        return damage;
     }
 
     private void CalculateTurnOrder(List<Unit> allUnits)

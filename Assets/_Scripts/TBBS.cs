@@ -34,6 +34,9 @@ public class TBBS : MonoBehaviour
     private void Awake()
     {
         instance = this;
+
+        playerPrefabs = PlayerData.playerTeam.ToArray();
+        enemyPrefabs = BattleData.enemyTeam;
     }
 
     private void Start()
@@ -50,9 +53,6 @@ public class TBBS : MonoBehaviour
         playerUnits = new List<Unit>();
         enemyUnits = new List<Unit>();
         allUnits = new List<Unit>();
-
-        playerPrefabs = PlayerData.Instance.playerTeam.ToArray();
-        enemyPrefabs = BattleData.enemyTeam;
 
         //Instanciar unidades
         for (int i = 0; i < playerPrefabs.Length; i++)

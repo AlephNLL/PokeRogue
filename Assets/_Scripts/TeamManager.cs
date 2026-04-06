@@ -6,6 +6,7 @@ public class TeamManager : MonoBehaviour
 {
     public static TeamManager instance;
     public List<UnitData> teamData;
+    public List<GameObject> playerUnits;
 
     private void Start()
     {
@@ -14,11 +15,12 @@ public class TeamManager : MonoBehaviour
     }
     void InitializeTeamData()
     {
+        PlayerData.playerTeam = playerUnits;
         PlayerData.teamData = new List<UnitData>();
 
-        for (int i = 0; i < PlayerData.Instance.playerTeam.Count; i++)
+        for (int i = 0; i < PlayerData.playerTeam.Count; i++)
         {
-            Unit unit = PlayerData.Instance.playerTeam[i].GetComponent<Unit>();
+            Unit unit = PlayerData.playerTeam[i].GetComponent<Unit>();
             UnitData unitData = ScriptableObject.CreateInstance<UnitData>();
             unitData.id = i;
             unitData.currentHp = unit.constitution * unit.level + 1;
@@ -43,12 +45,12 @@ public class TeamManager : MonoBehaviour
                 if (foundData) 
                 {
                     newTeamData.Add(foundData);
-                    newTeam.Add(PlayerData.Instance.playerTeam[i]);
+                    newTeam.Add(PlayerData.playerTeam[i]);
                 } 
             }
 
             PlayerData.teamData = newTeamData;
-            PlayerData.Instance.playerTeam = newTeam;
+            PlayerData.playerTeam = newTeam;
         }
 
         //Set variables
@@ -60,5 +62,6 @@ public class TeamManager : MonoBehaviour
         }
 
         teamData = PlayerData.teamData;
+        playerUnits = PlayerData.playerTeam;
     }
 }

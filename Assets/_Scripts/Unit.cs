@@ -109,7 +109,18 @@ public class Unit : MonoBehaviour
         attack = (int)(strength / 5f * level + 1);
         defense = (int)(constitution / 5f * level + 1);
         speed = (int)(dexterity / 5f * level + 1);
-        currentHp = PlayerData.teamData.Find(item => item.id == id).currentHp;
+
+        if(isPlayerControlled) currentHp = PlayerData.teamData.Find(item => item.id == id).currentHp;
+        else currentHp = maxHp;
+
+        if(currentHp < maxHp)
+        {
+            if (healthBar)
+            {
+                healthBar.gameObject.SetActive(true);
+                healthBar.value = (float)currentHp/maxHp;
+            }
+        }
     }
     public bool ActivateCamera()
     {

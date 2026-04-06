@@ -510,6 +510,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1880888419145442071}
   - component: {fileID: 7571199883488435960}
+  - component: {fileID: -2192880497229260127}
   m_Layer: 0
   m_Name: Tralalero
   m_TagString: Untagged
@@ -568,6 +569,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 98d7157f267621a4f86a3adbc4943c91, type: 2}
   - {fileID: 11400000, guid: 37b116ffb03a7ba449ee1d2d55c6776b, type: 2}
   - {fileID: 11400000, guid: ee107580067682943890aaa7b1ebf88d, type: 2}
+  - {fileID: 11400000, guid: bc32a2fe51070b244b1f1a3a5f3282b4, type: 2}
   abilityPool: []
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
@@ -587,6 +589,23 @@ MonoBehaviour:
   additionalTurn: 0
   skipTurn: 0
   waitingForDestroy: 0
+--- !u!114 &-2192880497229260127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1717970170875167366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 579f1054bbfad0e4caec53b049800816, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JumpFloodOutlineRenderer
+  outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  outlinePixelWidth: 8
+  renderers:
+  - {fileID: 8599844367327159352}
+  outlineShader: {fileID: 4800000, guid: 18eb5fbcb445b5d4eb08e8e5ac7e8903, type: 3}
 --- !u!1 &1760726793352929564
 GameObject:
   m_ObjectHideFlags: 0
@@ -623,7 +642,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 104.3}
+  m_AnchoredPosition: {x: 0, y: 130}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3800116418536502965
@@ -1829,7 +1848,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 19}
   m_SizeDelta: {x: 0, y: 30}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &1184637691191305293
@@ -1898,7 +1917,7 @@ Transform:
   m_GameObject: {fileID: 5948337592899812123}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.898, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2138,7 +2157,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2880442141009778746
 RectTransform:
   m_ObjectHideFlags: 0

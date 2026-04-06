@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Quasar Beam
   description: A high energy beam desintegrates foes.
   power: 120
-  accuracy: 100
+  accuracy: 90
   abilityType: 0
   target: 1
   stance: 0
@@ -23,6 +23,7 @@ MonoBehaviour:
   passiveEffects: 6
   passiveExecutionTime: 0
   passiveEffectChance: 0
+  status: 1
   effect1: 9
   effect1Chance: 100
   effect2: 0

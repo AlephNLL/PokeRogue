@@ -72,6 +72,7 @@ public class MapView : MonoBehaviour
                 case RoomType.Enemy:
                     GameObject enemyNode = Instantiate(enemyPrefab, node.position, Quaternion.identity);
                     enemyNode.name = node.roomType + "-" + node.id;
+                    enemyNode.GetComponent<Node>().sceneName = "BattleScene";
                     PassNodeData(enemyNode, node);
                     MapManager.instance.createdRooms.Add(enemyNode);
                     break;
@@ -122,7 +123,7 @@ public class MapView : MonoBehaviour
         nodeData.position = node.position;
         nodeData.gridPosition = node.gridPosition;
         nodeData.roomType = node.roomType;
-        nodeData.sceneName = "TestScene"; // Escena de testeo de momento
+        //nodeData.sceneName = "TestScene"; // Escena de testeo de momento
         nodeData.id = node.id;
         nodeData.floorLevel = node.floorLevel;
 
@@ -148,7 +149,7 @@ public class MapView : MonoBehaviour
                     if (targetInstance != null)
                     {
                         mapNode.connectedNodes.Add(targetInstance);
-                        Debug.Log($"Nodo conectado con {targetInstance.name}");
+                        //Debug.Log($"Nodo conectado con {targetInstance.name}");
                     }
                 }
             }

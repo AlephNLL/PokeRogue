@@ -177,7 +177,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da2c3d2615873e848bfe5385e0a219b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::test
-  battleDifficulty: 0
+  battleDifficulty: 2
+  playerTeam:
+  - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
+  - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
 --- !u!114 &509429002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,9 +411,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 076033569317ffb4c8346b2d141a1e78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleGenerator
-  playerTeam:
-  - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
-  - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
   easyEnemyPool:
   - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
   normalEnemyPool:

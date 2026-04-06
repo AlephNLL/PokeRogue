@@ -39,16 +39,20 @@ public class TBBS : MonoBehaviour
     private void Start()
     {
         battleState = BattleState.START;
-        playerPrefabs = PlayerData.playerTeam;
-        enemyPrefabs = BattleData.enemyTeam;
+        
         StartCoroutine(SetupBattleField());
     }
 
     IEnumerator SetupBattleField()
     {
+        yield return null;
+
         playerUnits = new List<Unit>();
         enemyUnits = new List<Unit>();
         allUnits = new List<Unit>();
+
+        playerPrefabs = PlayerData.Instance.playerTeam.ToArray();
+        enemyPrefabs = BattleData.enemyTeam;
 
         //Instanciar unidades
         for (int i = 0; i < playerPrefabs.Length; i++)
@@ -58,6 +62,7 @@ public class TBBS : MonoBehaviour
             playerUnits.Add(Instantiate(playerPrefabs[i], playerSide.position + offset, Quaternion.LookRotation(enemySide.position - playerSide.position - offset)).GetComponent<Unit>());
             allUnits.Add(playerUnits[i]);
             playerUnits[i].isPlayerControlled = true;
+            playerUnits[i].id = i;
         }
 
         for (int i = 0; i < enemyPrefabs.Length; i++)
@@ -67,8 +72,6 @@ public class TBBS : MonoBehaviour
             enemyUnits.Add(Instantiate(enemyPrefabs[i], enemySide.position + offset, enemySide.rotation).GetComponent<Unit>());
             allUnits.Add(enemyUnits[i]);
         }
-
-        yield return new WaitForNextFrameUnit();
 
         yield return new WaitForSeconds(2);
 
@@ -106,25 +109,16 @@ public class TBBS : MonoBehaviour
             {
                 Debug.Log("Win");
                 battleState = BattleState.WIN;
-                //test de captura
-                if(PlayerData.playerTeam.Length < 4)
-                {
-                    GameObject capturedUnit = enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Length)];
-                    List<GameObject> newPlayerTeam = new List<GameObject>();
-                    newPlayerTeam.AddRange(playerPrefabs);
-                    newPlayerTeam.Add(capturedUnit);
-
-                    PlayerData.playerTeam = newPlayerTeam.ToArray();
-                }
-                
-                SceneManager.LoadSceneAsync("BattleEnterTest");
+                Debug.Log(playerUnits.Count);
+                TeamManager.instance.SaveTeamData(playerUnits);
+                StartCoroutine(EndBattle());
                 return;
             }
             else
             {
                 Debug.Log("Game over");
                 battleState = BattleState.LOSS;
-                SceneManager.LoadSceneAsync("BattleEnterTest");
+                StartCoroutine(EndBattle());
                 return;
             }
         }
@@ -159,6 +153,12 @@ public class TBBS : MonoBehaviour
             // Empezar nueva ronda
             StartNextTurn();
         }
+    }
+
+    IEnumerator EndBattle()
+    {
+        yield return new WaitForSeconds(2f);
+        MapManager.instance.LoadMapScene();
     }
 
     bool CheckUnitsWaitingForDestroy()

@@ -549,6 +549,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82c0dcb3fbdb35f40bf6f64fede1a51d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   name: Tralalero
   description: 
   currentStance: 2
@@ -566,7 +567,7 @@ MonoBehaviour:
   knownAbilities:
   - {fileID: 11400000, guid: 98d7157f267621a4f86a3adbc4943c91, type: 2}
   - {fileID: 11400000, guid: 37b116ffb03a7ba449ee1d2d55c6776b, type: 2}
-  - {fileID: 11400000, guid: 6f28517c74c3ce84b8e2453d4463fa23, type: 2}
+  - {fileID: 11400000, guid: ee107580067682943890aaa7b1ebf88d, type: 2}
   abilityPool: []
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
@@ -1936,7 +1937,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 9e21d8b99ac0f53409ba4786f23a1c72, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -5,8 +5,10 @@ using GameData;
 using TMPro;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 public class Unit : MonoBehaviour
 {
+    public int id;
     new public string name;
     public string description;
     public Stance currentStance;
@@ -24,7 +26,7 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private int maxHp;
     [SerializeField]
-    private int currentHp;
+    public int currentHp;
     [SerializeField]
     private int attack;
     [SerializeField]
@@ -65,13 +67,10 @@ public class Unit : MonoBehaviour
 
     public bool waitingForDestroy = false;
 
-    private void Awake()
-    {
-        InitializeStats();  
-    }
     private void Start()
     {
         InitializeVariables();
+        InitializeStats();
     }
 
     void InitializeVariables()
@@ -110,8 +109,7 @@ public class Unit : MonoBehaviour
         attack = (int)(strength / 5f * level + 1);
         defense = (int)(constitution / 5f * level + 1);
         speed = (int)(dexterity / 5f * level + 1);
-
-        currentHp = maxHp;
+        currentHp = PlayerData.teamData.Find(item => item.id == id).currentHp;
     }
     public bool ActivateCamera()
     {

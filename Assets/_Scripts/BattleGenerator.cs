@@ -4,7 +4,6 @@ using UnityEngine;
 public class BattleGenerator : MonoBehaviour
 {
     public static BattleGenerator Instance;
-    public GameObject[] playerTeam;
 
     [Header("Enemy Pools")]
     public GameObject[] easyEnemyPool;
@@ -17,19 +16,7 @@ public class BattleGenerator : MonoBehaviour
     {
         Instance = this;
     }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            SetPlayerTeam();
-        }
-    }
-
-    void SetPlayerTeam()
-    {
-        PlayerData.playerTeam = playerTeam;
-    }
+    
     public void GenerateTeam(Difficulty difficulty)
     {
 

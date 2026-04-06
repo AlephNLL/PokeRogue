@@ -549,6 +549,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82c0dcb3fbdb35f40bf6f64fede1a51d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   name: Tung Tung Tung Sahur
   description: 
   currentStance: 0
@@ -564,7 +565,6 @@ MonoBehaviour:
   defense: 0
   speed: 0
   knownAbilities:
-  - {fileID: 11400000, guid: 1184a0b44bd99454485759e2e787e946, type: 2}
   - {fileID: 11400000, guid: 921b154be990f4f4e80d51def1f09d7a, type: 2}
   - {fileID: 11400000, guid: ee107580067682943890aaa7b1ebf88d, type: 2}
   - {fileID: 11400000, guid: 98d7157f267621a4f86a3adbc4943c91, type: 2}
@@ -1937,7 +1937,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: c200b4ef092eeb64a95fbf3770d67188, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

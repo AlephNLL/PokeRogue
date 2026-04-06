@@ -96,6 +96,7 @@ public class MapManager : MonoBehaviour
     {
         if (loadRooms && canLoadRooms)
         {
+            BattleGenerator.Instance.GenerateTeam(BattleData.Difficulty);
             SceneManager.LoadSceneAsync(sceneName);
         }
     }

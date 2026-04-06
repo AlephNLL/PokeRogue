@@ -137,6 +137,104 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &1661897503764095301
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5445502054714912863}
+  - component: {fileID: 8971218897398941522}
+  - component: {fileID: 7245667063205552328}
+  - component: {fileID: 8791268885502988988}
+  - component: {fileID: 3413889519824911466}
+  m_Layer: 0
+  m_Name: Battle Generator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5445502054714912863
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661897503764095301}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 39.869247, y: -74.18156, z: 47.930622}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 936192196252588791}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8971218897398941522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661897503764095301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 076033569317ffb4c8346b2d141a1e78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BattleGenerator
+  easyEnemyPool:
+  - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
+  normalEnemyPool:
+  - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
+  hardEnemyPool:
+  - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
+--- !u!114 &7245667063205552328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661897503764095301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da2c3d2615873e848bfe5385e0a219b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::test
+  battleDifficulty: 0
+  playerTeam:
+  - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
+  - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
+--- !u!114 &8791268885502988988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661897503764095301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b7e21654bc1a5b4f8a6d8e4586e95a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BattleData
+--- !u!114 &3413889519824911466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661897503764095301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6140a455603f4f4a98a7c97a966f259, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerData
+  gold: 0
+  playerTeam:
+  - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
+  - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
+  teamData: []
 --- !u!1 &2930400147355290962
 GameObject:
   m_ObjectHideFlags: 0
@@ -403,6 +501,8 @@ Transform:
   - {fileID: 8410083945829583007}
   - {fileID: 4003822587202483313}
   - {fileID: 6188851159677883737}
+  - {fileID: 5445502054714912863}
+  - {fileID: 8523954881676784741}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &407657665994588858
@@ -420,9 +520,13 @@ MonoBehaviour:
   createdRooms: []
   selectedRooms: []
   nodes: []
+  currentRoom: {fileID: 0}
+  currentNode: {fileID: 0}
   mapView: {fileID: 2052074662127099001}
   mapGenerator: {fileID: 4813112271845761888}
-  loadRooms: 1
+  loadRooms: 0
+  canLoadRooms: 1
+  mapCreated: 0
 --- !u!1 &6176396069285822843
 GameObject:
   m_ObjectHideFlags: 0
@@ -710,6 +814,50 @@ MonoBehaviour:
   healPrefab: {fileID: 5162666568920561364, guid: 106bcf60de3f49644badf155d1c5768b, type: 3}
   shopPrefab: {fileID: 5162666568920561364, guid: 5a0095d15954ec346bcb7d32447cf431, type: 3}
   lineMaterial: {fileID: 2100000, guid: 36ccf668458b1194181950ef872475fd, type: 2}
+--- !u!1 &8276860623216019032
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8523954881676784741}
+  - component: {fileID: 796922449868520641}
+  m_Layer: 0
+  m_Name: TeamManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8523954881676784741
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8276860623216019032}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 936192196252588791}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &796922449868520641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8276860623216019032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9096a1c57955aba4d814ea754dcc4cc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TeamManager
 --- !u!1 &9003350880553928108
 GameObject:
   m_ObjectHideFlags: 0

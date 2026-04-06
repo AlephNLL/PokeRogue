@@ -20,9 +20,10 @@ MonoBehaviour:
   target: 1
   stance: 0
   mustUseStance: 0
-  passiveEffects: 8
+  passiveEffects: 9
   passiveExecutionTime: 3
   passiveEffectChance: 10
+  status: 1
   effect1: 0
   effect1Chance: 0
   effect2: 0

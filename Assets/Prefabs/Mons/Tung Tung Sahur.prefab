@@ -510,7 +510,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1880888419145442071}
   - component: {fileID: 7571199883488435960}
-  - component: {fileID: 5026218420001910531}
   m_Layer: 0
   m_Name: Tung Tung Sahur
   m_TagString: Untagged
@@ -588,23 +587,6 @@ MonoBehaviour:
   additionalTurn: 0
   skipTurn: 0
   waitingForDestroy: 0
---- !u!114 &5026218420001910531
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1717970170875167366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 579f1054bbfad0e4caec53b049800816, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::JumpFloodOutlineRenderer
-  outlineColor: {r: 0, g: 0, b: 0, a: 1}
-  outlinePixelWidth: 8
-  renderers:
-  - {fileID: 8599844367327159352}
-  outlineShader: {fileID: 4800000, guid: 18eb5fbcb445b5d4eb08e8e5ac7e8903, type: 3}
 --- !u!1 &1760726793352929564
 GameObject:
   m_ObjectHideFlags: 0

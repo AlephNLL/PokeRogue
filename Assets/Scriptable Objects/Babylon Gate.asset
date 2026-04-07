@@ -16,7 +16,7 @@ MonoBehaviour:
   description: Open a cluster of portals that rain swords upon foes.
   power: 100
   accuracy: 100
-  abilityType: 1
+  abilityType: 0
   target: 3
   stance: 0
   mustUseStance: 1

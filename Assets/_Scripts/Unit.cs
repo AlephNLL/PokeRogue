@@ -67,6 +67,14 @@ public class Unit : MonoBehaviour
 
     public bool waitingForDestroy = false;
 
+    private MaterialPropertyBlock mpb;
+    private GameObject monster;
+    MeshRenderer monsterRenderer;
+
+    private void Awake()
+    {
+        
+    }
     private void Start()
     {
         InitializeVariables();
@@ -75,6 +83,12 @@ public class Unit : MonoBehaviour
 
     void InitializeVariables()
     {
+        mpb = new MaterialPropertyBlock();
+        monster = GameObject.Find("Capsule");
+        monsterRenderer = monster.GetComponent<MeshRenderer>();
+        mpb.SetFloat("_ApplyFresnel", 1f);
+        monsterRenderer.SetPropertyBlock(mpb);
+
         selectionCamera = CameraManager.instance.selectCamera;
         statusMenu = transform.Find("Status").gameObject.GetComponent<Canvas>();
 
@@ -85,7 +99,7 @@ public class Unit : MonoBehaviour
             actionCamera = transform.Find("ActionCamera").gameObject.GetComponent<CinemachineVirtualCamera>();
             actionCamera.LookAt = GameObject.Find("ENEMYSIDE").transform;
 
-            
+
             battleMenu = transform.Find("MainSelection").gameObject.GetComponent<Canvas>();
             abilityMenu = transform.Find("Abilities").gameObject.GetComponent<Canvas>();
 
@@ -110,15 +124,15 @@ public class Unit : MonoBehaviour
         defense = (int)(constitution / 5f * level + 1);
         speed = (int)(dexterity / 5f * level + 1);
 
-        if(isPlayerControlled) currentHp = PlayerData.teamData.Find(item => item.id == id).currentHp;
+        if (isPlayerControlled) currentHp = PlayerData.teamData.Find(item => item.id == id).currentHp;
         else currentHp = maxHp;
 
-        if(currentHp < maxHp)
+        if (currentHp < maxHp)
         {
             if (healthBar)
             {
                 healthBar.gameObject.SetActive(true);
-                healthBar.value = (float)currentHp/maxHp;
+                healthBar.value = (float)currentHp / maxHp;
             }
         }
     }
@@ -151,7 +165,7 @@ public class Unit : MonoBehaviour
     }
     public void OpenBattleMenu()
     {
-        if(battleMenu == null) return;
+        if (battleMenu == null) return;
         battleMenu.gameObject.SetActive(true);
 
         attackButton.onClick.AddListener(delegate { TBBS.instance.AbilityMenu(this); });
@@ -169,7 +183,7 @@ public class Unit : MonoBehaviour
     public void OpenAbilityMenu()
     {
         if (abilityMenu == null) return;
-        
+
         abilityMenu.gameObject.SetActive(true);
 
         for (int i = 0; i < knownAbilities.Length; i++)
@@ -201,26 +215,26 @@ public class Unit : MonoBehaviour
 
     public void ApplyStatModifier(Stats stat, float mod)
     {
-        if(mod > 1) VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, gameObject.transform.position);
+        if (mod > 1) VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, gameObject.transform.position);
         else VFXManager.instance.SpawnGlobalEffect(VFX.NERF, gameObject.transform.position);
 
         switch (stat)
-            {
-                case Stats.ATK:
-                    attack = Mathf.FloorToInt(attack * mod);
-                    break;
-                case Stats.DEF:
-                    defense = Mathf.FloorToInt(defense * mod);
-                    break;
-                case Stats.SPEED:
-                    speed = Mathf.FloorToInt(speed * mod);
-                    break;
-                case Stats.LUCK:
-                    luck = Mathf.FloorToInt(luck * mod);
-                    break;
-                default:
-                    break;
-            }
+        {
+            case Stats.ATK:
+                attack = Mathf.FloorToInt(attack * mod);
+                break;
+            case Stats.DEF:
+                defense = Mathf.FloorToInt(defense * mod);
+                break;
+            case Stats.SPEED:
+                speed = Mathf.FloorToInt(speed * mod);
+                break;
+            case Stats.LUCK:
+                luck = Mathf.FloorToInt(luck * mod);
+                break;
+            default:
+                break;
+        }
     }
 
     public void RemoveStatModifier(Stats stat)
@@ -245,7 +259,7 @@ public class Unit : MonoBehaviour
 
     public void Heal(int healAmount)
     {
-        if(currentHp + healAmount >= maxHp) currentHp = maxHp;
+        if (currentHp + healAmount >= maxHp) currentHp = maxHp;
         else currentHp = currentHp + healAmount;
 
         StartCoroutine(UpdateHealthBar());
@@ -253,19 +267,26 @@ public class Unit : MonoBehaviour
 
     public void TakeDamage(int dmgAmount)
     {
-        if (currentHp - dmgAmount <= 0) 
+        if (currentHp - dmgAmount <= 0)
         {
             currentHp = 0;
+         //   mpb.SetFloat(ApplyFresnelID, 1f);
+            monsterRenderer.SetPropertyBlock(mpb);
             waitingForDestroy = true;
-        } 
-        else currentHp = currentHp - dmgAmount;
+        }
+        else
+        {
+            currentHp = currentHp - dmgAmount;
+       //     mpb.SetFloat(ApplyFresnelID, 1f);
+            monsterRenderer.SetPropertyBlock(mpb);
+        }
 
         StartCoroutine(UpdateHealthBar());
     }
 
     IEnumerator UpdateHealthBar()
     {
-        if (!healthBar) 
+        if (!healthBar)
         {
             if (currentHp == 0) TBBS.instance.Death(this);
             yield break;
@@ -275,9 +296,11 @@ public class Unit : MonoBehaviour
         float t = 0;
         float startValue = healthBar.value;
 
-        while (t < 1) 
+        while (t < 1)
         {
-            healthBar.value = Mathf.Lerp(startValue, (float)currentHp/maxHp, t);
+            healthBar.value = Mathf.Lerp(startValue, (float)currentHp / maxHp, t);
+      //      mpb.SetFloat(ApplyFresnelID, 0f);
+            monsterRenderer.SetPropertyBlock(mpb);
             t += Time.deltaTime;
             yield return null;
         }
@@ -296,7 +319,7 @@ public class Unit : MonoBehaviour
             case Stats.ATK:
                 int atk = attack;
                 if (HasPassive("Double Trouble")) atk = Mathf.FloorToInt(atk * .5f);
-                if(status == Status.BURNED)
+                if (status == Status.BURNED)
                 {
                     atk = HasPassive("Piromaniac") ? atk : Mathf.FloorToInt(atk * .5f);
                 }
@@ -351,7 +374,7 @@ public class Unit : MonoBehaviour
     {
         foreach (var item in knownAbilities)
         {
-            if(item.abilityType == AbilityType.PASSIVE && item.passiveExecutionTime == battleStage && item.passiveEffectChance >= Random.Range(1, 100))
+            if (item.abilityType == AbilityType.PASSIVE && item.passiveExecutionTime == battleStage && item.passiveEffectChance >= Random.Range(1, 100))
             {
                 List<Unit> target = new List<Unit>();
 
@@ -361,7 +384,7 @@ public class Unit : MonoBehaviour
                         target.Add(this);
                         break;
                     case AbilityTarget.ONEALLY:
-                        if(lastHitUnit) target.Add(lastHitUnit);
+                        if (lastHitUnit) target.Add(lastHitUnit);
                         else target.Add(TBBS.instance.playerUnits[Random.Range(0, TBBS.instance.playerUnits.Count)]);
                         break;
                     case AbilityTarget.ONEENEMY:
@@ -390,7 +413,7 @@ public class Unit : MonoBehaviour
                     case PassiveEffects.UPATKONSTATUS:
                         foreach (var unit in target)
                         {
-                            if(unit.status != item.status) continue;
+                            if (unit.status != item.status) continue;
                             Debug.Log(unit.name + " attack raises!");
                             unit.ApplyStatModifier(Stats.ATK, 1.5f);
                         }
@@ -439,7 +462,7 @@ public class Unit : MonoBehaviour
                         break;
                     case PassiveEffects.APPLYSTATUS:
                         foreach (var unit in target)
-                        { 
+                        {
                             unit.ApplyStatus(item.status);
                         }
                         break;
@@ -453,7 +476,7 @@ public class Unit : MonoBehaviour
     public void ApplyStatus(Status statusToApply)
     {
         if (status != Status.NONE) return;
-        
+
         status = statusToApply;
 
         ResolvePassiveEffect(PassiveExecutionTime.ONSTATUSCHANGE);

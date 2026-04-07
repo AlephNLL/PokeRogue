@@ -24,7 +24,7 @@ public class Unit : MonoBehaviour
 
 
     [SerializeField]
-    private int maxHp;
+    public int maxHp;
     [SerializeField]
     public int currentHp;
     [SerializeField]

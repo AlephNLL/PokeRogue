@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using static Cinemachine.DocumentationSortingAttribute;
 
 public class TeamManager : MonoBehaviour
 {
@@ -57,11 +59,21 @@ public class TeamManager : MonoBehaviour
         for (int i = 0; i < PlayerData.teamData.Count; i++)
         {
             PlayerData.teamData[i].currentHp = playerTeam[i].currentHp;
-            PlayerData.teamData[i].id = playerTeam[i].id;
+            PlayerData.teamData[i].id = i;
             PlayerData.teamData[i].level = playerTeam[i].level;
         }
 
         teamData = PlayerData.teamData;
         playerUnits = PlayerData.playerTeam;
+    }
+
+    public void HealTeam(float healingPercent)
+    {
+        for (int i = 0; i < teamData.Count; i++)
+        {
+            teamData[i].currentHp = (int)(teamData[i].currentHp + teamData[i].currentHp * healingPercent);
+            int maxHp = playerUnits[i].GetComponent<Unit>().constitution * teamData[i].level + 1;
+            if (teamData[i].currentHp > maxHp) teamData[i].currentHp = maxHp;
+        }
     }
 }

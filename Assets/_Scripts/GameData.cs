@@ -17,4 +17,8 @@ namespace GameData
     public enum VFX { BUFF, NERF, HIT}
 
     public enum Difficulty { EASY, NORMAL, HARD}
+
+    public enum RoomType {NOT_ASSIGNED, Enemy, Shop, HardEnemy, Treasure, Boss, Heal}
+
+    public enum NodeEvents { NONE, GOLD, HEAL, TRANSITION, SPECIAL}
 }

@@ -4,6 +4,7 @@ using System;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.MemoryProfiler;
 using System.Linq;
+using GameData;
 
 public class MapView : MonoBehaviour
 {

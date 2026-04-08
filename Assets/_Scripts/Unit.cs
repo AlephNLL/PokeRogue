@@ -66,15 +66,6 @@ public class Unit : MonoBehaviour
     public bool skipTurn = false;
 
     public bool waitingForDestroy = false;
-
-    private MaterialPropertyBlock mpb;
-    private GameObject monster;
-    MeshRenderer monsterRenderer;
-
-    private void Awake()
-    {
-        
-    }
     private void Start()
     {
         InitializeVariables();
@@ -83,12 +74,7 @@ public class Unit : MonoBehaviour
 
     void InitializeVariables()
     {
-        mpb = new MaterialPropertyBlock();
-        monster = GameObject.Find("Capsule");
-        monsterRenderer = monster.GetComponent<MeshRenderer>();
-        mpb.SetFloat("_ApplyFresnel", 1f);
-        monsterRenderer.SetPropertyBlock(mpb);
-
+        FresnelApplier.applyFresnel(gameObject, Color.red);
         selectionCamera = CameraManager.instance.selectCamera;
         statusMenu = transform.Find("Status").gameObject.GetComponent<Canvas>();
 
@@ -270,15 +256,11 @@ public class Unit : MonoBehaviour
         if (currentHp - dmgAmount <= 0)
         {
             currentHp = 0;
-         //   mpb.SetFloat(ApplyFresnelID, 1f);
-            monsterRenderer.SetPropertyBlock(mpb);
             waitingForDestroy = true;
         }
         else
         {
             currentHp = currentHp - dmgAmount;
-       //     mpb.SetFloat(ApplyFresnelID, 1f);
-            monsterRenderer.SetPropertyBlock(mpb);
         }
 
         StartCoroutine(UpdateHealthBar());
@@ -299,8 +281,6 @@ public class Unit : MonoBehaviour
         while (t < 1)
         {
             healthBar.value = Mathf.Lerp(startValue, (float)currentHp / maxHp, t);
-      //      mpb.SetFloat(ApplyFresnelID, 0f);
-            monsterRenderer.SetPropertyBlock(mpb);
             t += Time.deltaTime;
             yield return null;
         }

@@ -63,6 +63,7 @@ public class TBBS : MonoBehaviour
             allUnits.Add(playerUnits[i]);
             playerUnits[i].isPlayerControlled = true;
             playerUnits[i].id = i;
+            
         }
 
         for (int i = 0; i < enemyPrefabs.Length; i++)

@@ -436,13 +436,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraNodeFollower
   mapView: {fileID: 2034614706}
-  followOffsetY: 6
+  followOffsetY: 7
   followOffsetX: 5
   smoothSpeed: 3
   nodeLayerMask:
     serializedVersion: 2
     m_Bits: 8
-  reachedTarget: 0
   enableFollowMode: 1
 --- !u!114 &1380664025
 MonoBehaviour:

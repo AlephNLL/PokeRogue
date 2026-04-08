@@ -1,16 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-
-public enum RoomType
-{
-    NOT_ASSIGNED,
-    Enemy,
-    Shop,
-    HardEnemy,
-    Treasure,
-    Boss,
-    Heal,
-}
+using GameData;
 
 [System.Serializable]
 public class MapNode : ScriptableObject

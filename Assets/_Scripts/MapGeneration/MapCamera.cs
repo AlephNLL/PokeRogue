@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using GameData;
 public class CameraNodeFollower : MonoBehaviour
 {
     public MapView mapView;
@@ -51,7 +51,24 @@ public class CameraNodeFollower : MonoBehaviour
 
         if (reachedTarget)
         {
-            MapManager.instance.LoadScene(MapManager.instance.currentRoom.GetComponent<Node>().sceneName);
+            switch (MapManager.instance.currentRoom.GetComponent<Node>().nodeEvent)
+            {
+                case GameData.NodeEvents.NONE:
+                    break;
+                case GameData.NodeEvents.GOLD:
+                    break;
+                case GameData.NodeEvents.HEAL:
+                    TeamManager.instance.HealTeam(.5f);
+                    VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, MapManager.instance.currentRoom.transform.position);
+                    break;
+                case GameData.NodeEvents.TRANSITION:
+                    MapManager.instance.LoadScene(MapManager.instance.currentRoom.GetComponent<Node>().sceneName);
+                    break;
+                case GameData.NodeEvents.SPECIAL:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 42841635b31248445949d5eda13b5ed4
+guid: 00191177e5fd5c4468ad546ce87ef329
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -13,5 +13,5 @@ AssetOrigin:
   productId: 315467
   packageName: Triple-A Sci-fi effects
   packageVersion: 
-  assetPath: Assets/Hovl Studio/HSFiles/Shaders/Shader Graph/HS_ChannelCut.shadergraph
+  assetPath: Assets/Hovl Studio/HSFiles/Shaders/Shader Graph/HS_Blend_CG.shadergraph
   uploadId: 0

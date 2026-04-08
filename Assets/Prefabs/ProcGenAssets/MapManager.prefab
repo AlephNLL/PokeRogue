@@ -137,6 +137,52 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &1346797310458066085
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8409925110874921297}
+  - component: {fileID: 3583277705041772120}
+  m_Layer: 0
+  m_Name: VFXManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8409925110874921297
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1346797310458066085}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 936192196252588791}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3583277705041772120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1346797310458066085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91b75c449ff0ce746a42a89bc6c9d91b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VFXManager
+  buffVFXPrefab: {fileID: 1415702235763318915, guid: 8b0c9ef2388f937448a6254f253d0f30, type: 3}
+  nerfVFXPrefab: {fileID: 1415702235763318915, guid: 6ebd16979f190894cb09c40bd554a898, type: 3}
 --- !u!1 &1661897503764095301
 GameObject:
   m_ObjectHideFlags: 0
@@ -202,10 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da2c3d2615873e848bfe5385e0a219b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::test
-  battleDifficulty: 0
-  playerTeam:
-  - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
-  - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
+  battleDifficulty: 2
 --- !u!114 &8791268885502988988
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,10 +274,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerData
   gold: 0
-  playerTeam:
-  - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
-  - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
-  teamData: []
 --- !u!1 &2930400147355290962
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,6 +542,7 @@ Transform:
   - {fileID: 6188851159677883737}
   - {fileID: 5445502054714912863}
   - {fileID: 8523954881676784741}
+  - {fileID: 8409925110874921297}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &407657665994588858
@@ -858,6 +898,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9096a1c57955aba4d814ea754dcc4cc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TeamManager
+  teamData: []
+  playerUnits:
+  - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
+  - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
+  - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
 --- !u!1 &9003350880553928108
 GameObject:
   m_ObjectHideFlags: 0

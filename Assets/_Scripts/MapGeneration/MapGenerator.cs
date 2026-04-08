@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using GameData;
 public class MapGenerator : MonoBehaviour
 {
     [SerializeField] private int gridWidth = 10;

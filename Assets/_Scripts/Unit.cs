@@ -6,6 +6,8 @@ using TMPro;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using System.Drawing;
+using Unity.VisualScripting;
 public class Unit : MonoBehaviour
 {
     public int id;
@@ -66,6 +68,7 @@ public class Unit : MonoBehaviour
     public bool skipTurn = false;
 
     public bool waitingForDestroy = false;
+    public bool takingDamage = false;
     private void Start()
     {
         InitializeVariables();
@@ -74,7 +77,6 @@ public class Unit : MonoBehaviour
 
     void InitializeVariables()
     {
-        FresnelApplier.applyFresnel(gameObject, Color.red);
         selectionCamera = CameraManager.instance.selectCamera;
         statusMenu = transform.Find("Status").gameObject.GetComponent<Canvas>();
 
@@ -201,8 +203,8 @@ public class Unit : MonoBehaviour
 
     public void ApplyStatModifier(Stats stat, float mod)
     {
-        if (mod > 1) VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, gameObject.transform.position);
-        else VFXManager.instance.SpawnGlobalEffect(VFX.NERF, gameObject.transform.position);
+        if (mod > 1) VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, gameObject);
+        else VFXManager.instance.SpawnGlobalEffect(VFX.NERF, gameObject);
 
         switch (stat)
         {
@@ -262,12 +264,16 @@ public class Unit : MonoBehaviour
         {
             currentHp = currentHp - dmgAmount;
         }
-
         StartCoroutine(UpdateHealthBar());
     }
 
     IEnumerator UpdateHealthBar()
     {
+        takingDamage = true;
+        UnityEngine.Color previousColor = FresnelApplier.getFresnelColor(gameObject);
+
+        FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.red);
+
         if (!healthBar)
         {
             if (currentHp == 0) TBBS.instance.Death(this);
@@ -288,6 +294,11 @@ public class Unit : MonoBehaviour
         yield return new WaitForSeconds(.3f);
 
         //healthBar.gameObject.SetActive(false);
+
+        if (status != Status.NONE) FresnelApplier.applyFresnel(gameObject, previousColor);
+        else FresnelApplier.clearFresnel(gameObject);
+
+        takingDamage = false;
 
         if (currentHp == 0) TBBS.instance.Death(this);
     }
@@ -457,9 +468,22 @@ public class Unit : MonoBehaviour
     {
         if (status != Status.NONE) return;
 
+        if (!takingDamage) VFXManager.instance.SpawnStatusVFX(statusToApply, gameObject);
+        else
+        {
+            StartCoroutine(WaitToApplyStatus(statusToApply));
+            return;
+        }
+
         status = statusToApply;
 
         ResolvePassiveEffect(PassiveExecutionTime.ONSTATUSCHANGE);
+    }
+    IEnumerator WaitToApplyStatus(Status statusToApply)
+    {
+        yield return new WaitForSeconds(.1f);
+        ApplyStatus(statusToApply);
+        yield break;
     }
 
     public void CureStatus()
@@ -467,6 +491,7 @@ public class Unit : MonoBehaviour
         if (status == Status.NONE) return;
 
         status = Status.NONE;
+        FresnelApplier.clearFresnel(gameObject);
 
         ResolvePassiveEffect(PassiveExecutionTime.ONSTATUSCHANGE);
     }

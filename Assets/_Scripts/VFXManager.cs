@@ -14,17 +14,40 @@ public class VFXManager : MonoBehaviour
         instance = this;
     }
 
-    public void SpawnGlobalEffect(VFX vfx, Vector3 pos)
+    public void SpawnGlobalEffect(VFX vfx, GameObject unit)
     {
         switch (vfx)
         {
             case VFX.BUFF:
-                StartCoroutine(SpawnVFX(buffVFXPrefab, pos));
+                StartCoroutine(SpawnVFX(buffVFXPrefab, unit.transform.position));
                 break;
             case VFX.NERF:
-                StartCoroutine(SpawnVFX(nerfVFXPrefab, pos));
+                StartCoroutine(SpawnVFX(nerfVFXPrefab, unit.transform.position));
                 break;
             case VFX.HIT:
+                break;
+        }
+    }
+
+    public void SpawnStatusVFX(Status statusToApply, GameObject unit)
+    {
+        switch (statusToApply)
+        {
+            case Status.NONE:
+                break;
+            case Status.BURNED:
+                FresnelApplier.applyFresnel(unit, Color.orange);
+                break;
+            case Status.POISONED:
+                FresnelApplier.applyFresnel(unit, Color.purple);
+                break;
+            case Status.PARALYZED:
+                FresnelApplier.applyFresnel(unit, Color.yellow);
+                break;
+            case Status.FROZEN:
+                FresnelApplier.applyFresnel(unit, Color.lightBlue);
+                break;
+            case Status.ASLEEP:
                 break;
             default:
                 break;

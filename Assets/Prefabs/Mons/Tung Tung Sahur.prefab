@@ -556,7 +556,7 @@ MonoBehaviour:
   level: 5
   status: 0
   strength: 12
-  constitution: 8
+  constitution: 200
   dexterity: 4
   luck: 2
   maxHp: 0
@@ -587,6 +587,7 @@ MonoBehaviour:
   additionalTurn: 0
   skipTurn: 0
   waitingForDestroy: 0
+  takingDamage: 0
 --- !u!1 &1760726793352929564
 GameObject:
   m_ObjectHideFlags: 0

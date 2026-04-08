@@ -59,7 +59,7 @@ public class CameraNodeFollower : MonoBehaviour
                     break;
                 case GameData.NodeEvents.HEAL:
                     TeamManager.instance.HealTeam(.5f);
-                    VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, MapManager.instance.currentRoom.transform.position);
+                    VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, MapManager.instance.currentRoom);
                     break;
                 case GameData.NodeEvents.TRANSITION:
                     MapManager.instance.LoadScene(MapManager.instance.currentRoom.GetComponent<Node>().sceneName);

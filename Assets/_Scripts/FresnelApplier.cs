@@ -11,8 +11,6 @@ public class FresnelApplier : MonoBehaviour
         mpb.SetFloat("_ApplyFresnel", 1f);
         mpb.SetColor("_FresnelColor", color);
         capsule.SetPropertyBlock(mpb);
-        lastColor = mpb.GetColor("_FresnelColor");
-        //print(fresnelColor+"hola");
     }
     public static void clearFresnel(GameObject unit)
     {
@@ -21,14 +19,4 @@ public class FresnelApplier : MonoBehaviour
         mpb.SetFloat("_ApplyFresnel", 0f);
         capsule.SetPropertyBlock(mpb);
     }
-
-    public static Color getFresnelColor(GameObject unit)
-    {
-        //MeshRenderer capsule = unit.GetComponentInChildren<MeshRenderer>();
-        //Color fresnelColor = capsule.material.GetColor("_FresnelColor");
-        //print(fresnelColor+"ho1la1");
-        //GetColor
-        return lastColor;
-    }
-
 }

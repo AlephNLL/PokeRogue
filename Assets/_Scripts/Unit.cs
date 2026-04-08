@@ -250,7 +250,7 @@ public class Unit : MonoBehaviour
         if (currentHp + healAmount >= maxHp) currentHp = maxHp;
         else currentHp = currentHp + healAmount;
 
-        StartCoroutine(UpdateHealthBar());
+        StartCoroutine(UpdateHealthBar(true));
     }
 
     public void TakeDamage(int dmgAmount)
@@ -264,15 +264,15 @@ public class Unit : MonoBehaviour
         {
             currentHp = currentHp - dmgAmount;
         }
-        StartCoroutine(UpdateHealthBar());
+        StartCoroutine(UpdateHealthBar(false));
     }
 
-    IEnumerator UpdateHealthBar()
+    IEnumerator UpdateHealthBar(bool isHealing)
     {
         takingDamage = true;
-        UnityEngine.Color previousColor = FresnelApplier.getFresnelColor(gameObject);
-
-        FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.red);
+        
+        if (isHealing) FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.lightGreen);
+        else FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.red);
 
         if (!healthBar)
         {
@@ -295,7 +295,7 @@ public class Unit : MonoBehaviour
 
         //healthBar.gameObject.SetActive(false);
 
-        if (status != Status.NONE) FresnelApplier.applyFresnel(gameObject, previousColor);
+        if (status != Status.NONE) VFXManager.instance.SpawnStatusVFX(status, gameObject);
         else FresnelApplier.clearFresnel(gameObject);
 
         takingDamage = false;

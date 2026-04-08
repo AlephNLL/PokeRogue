@@ -556,7 +556,7 @@ MonoBehaviour:
   level: 5
   status: 0
   strength: 12
-  constitution: 200
+  constitution: 8
   dexterity: 4
   luck: 2
   maxHp: 0

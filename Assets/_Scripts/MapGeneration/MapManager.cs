@@ -94,7 +94,7 @@ public class MapManager : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
-        if (loadRooms && canLoadRooms)
+        if (loadRooms && canLoadRooms && sceneName != "TestScene")
         {
             BattleGenerator.Instance.GenerateTeam(BattleData.Difficulty);
             SceneManager.LoadSceneAsync(sceneName);

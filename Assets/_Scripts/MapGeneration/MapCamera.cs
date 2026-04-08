@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using GameData;
-public class CameraNodeFollower : MonoBehaviour
+public class MapCamera : MonoBehaviour
 {
     public MapView mapView;
 
@@ -12,7 +12,7 @@ public class CameraNodeFollower : MonoBehaviour
     public float followOffsetX = 2.0f;
     public float smoothSpeed = 15.0f;
     public LayerMask nodeLayerMask;
-    public bool reachedTarget = false;
+    public static bool reachedTarget = false;
 
     [Header("Opciones de Interacción")]
     public bool enableFollowMode = true;
@@ -113,7 +113,7 @@ public class CameraNodeFollower : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * smoothSpeed);
     }
 
-    private void SetSelectedObject(GameObject obj)
+    public static void SetSelectedObject(GameObject obj)
     {
         Debug.Log("Objeto actual seleccionado: " + obj.name);
         reachedTarget = false;
@@ -131,7 +131,7 @@ public class CameraNodeFollower : MonoBehaviour
         }
     }
 
-    private void UpdateLayers(GameObject obj)
+    private static void UpdateLayers(GameObject obj)
     {
         foreach (GameObject conection in obj.GetComponent<Node>().connectedNodes)
         {

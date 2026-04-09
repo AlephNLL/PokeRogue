@@ -25,7 +25,7 @@ MonoBehaviour:
   passiveEffectChance: 0
   status: 4
   effect1: 9
-  effect1Chance: 100
+  effect1Chance: 10
   effect2: 0
   effect2Chance: 0
   affectSelf: 0

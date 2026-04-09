@@ -250,7 +250,7 @@ public class Unit : MonoBehaviour
         if (currentHp + healAmount >= maxHp) currentHp = maxHp;
         else currentHp = currentHp + healAmount;
 
-        StartCoroutine(UpdateHealthBar(true));
+        StartCoroutine(UpdateHealthBar());
     }
 
     public void TakeDamage(int dmgAmount)
@@ -264,15 +264,12 @@ public class Unit : MonoBehaviour
         {
             currentHp = currentHp - dmgAmount;
         }
-        StartCoroutine(UpdateHealthBar(false));
+        StartCoroutine(UpdateHealthBar());
     }
 
-    IEnumerator UpdateHealthBar(bool isHealing)
+    IEnumerator UpdateHealthBar()
     {
         takingDamage = true;
-        
-        if (isHealing) FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.lightGreen);
-        else FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.red);
 
         if (!healthBar)
         {
@@ -283,10 +280,14 @@ public class Unit : MonoBehaviour
         healthBar.gameObject.SetActive(true);
         float t = 0;
         float startValue = healthBar.value;
+        float endValue = currentHp / maxHp;
+
+        if (endValue > startValue) FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.lightGreen);
+        else FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.red);
 
         while (t < 1)
         {
-            healthBar.value = Mathf.Lerp(startValue, (float)currentHp / maxHp, t);
+            healthBar.value = Mathf.Lerp(startValue, endValue, t);
             t += Time.deltaTime;
             yield return null;
         }

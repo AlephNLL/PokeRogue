@@ -24,10 +24,13 @@ public class MapGenerator : MonoBehaviour
         currentGrid = InitializeGrid();
         path = GeneratePaths(currentGrid, startingPaths);
         GenerateBossRoom();
+        GenerateStartRoom();
 
         roomAssigner.AssignRoomTypes(path);
 
         mapView.DrawMap(path);
+        GameObject start = MapManager.instance.currentRoom = GameObject.Find("Spawn-0");
+        MapCamera.SetSelectedObject(start);
     }
 
     private MapNode[,] InitializeGrid()
@@ -180,5 +183,22 @@ public class MapGenerator : MonoBehaviour
             }
         }
         path.Add(bossRoom);
+    }
+
+    private void GenerateStartRoom()
+    {
+        MapNode start = new MapNode();
+        start.roomType = RoomType.Spawn;
+        start.position = new Vector3(-3, 0, (gridWidth * 3) / 2);
+        start.floorLevel = -1;
+
+        foreach (MapNode room in path)
+        {
+            if (room.floorLevel == 0)
+            {
+                start.AddConnection(room);
+            }
+        }
+        path.Add(start);
     }
 }

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6712761741596646350}
   - component: {fileID: -6597933657715611056}
   m_Layer: 3
-  m_Name: BossNode
+  m_Name: StartNode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0}
-  m_LocalScale: {x: 0.3, y: 1, z: 0.3}
+  m_LocalScale: {x: 0.2, y: 1, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -131,6 +131,6 @@ MonoBehaviour:
   gridPosition: {x: 0, y: 0}
   connectedNodes: []
   roomType: 5
-  nodeEvent: 3
+  nodeEvent: 0
   sceneName: 
   floorLevel: 0

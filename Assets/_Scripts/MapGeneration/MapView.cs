@@ -15,6 +15,7 @@ public class MapView : MonoBehaviour
     [SerializeField] private GameObject bossPrefab;
     [SerializeField] private GameObject healPrefab;
     [SerializeField] private GameObject shopPrefab;
+    [SerializeField] private GameObject startPrefab;
 
     [SerializeField] private Material lineMaterial;
 
@@ -57,6 +58,12 @@ public class MapView : MonoBehaviour
                     mapNode.name = node.roomType + "-" + node.id;
                     PassNodeData(mapNode, node);
                     MapManager.instance.createdRooms.Add(mapNode);
+                    break;
+                case RoomType.Spawn:
+                    GameObject startNode = Instantiate(startPrefab, node.position, Quaternion.identity);
+                    startNode.name = node.roomType + "-" + node.id;
+                    PassNodeData(startNode, node);
+                    MapManager.instance.createdRooms.Add(startNode);
                     break;
                 case RoomType.Boss:
                     GameObject bossNode = Instantiate(bossPrefab, node.position, Quaternion.identity);

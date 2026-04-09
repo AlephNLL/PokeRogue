@@ -18,7 +18,7 @@ namespace GameData
 
     public enum Difficulty { EASY, NORMAL, HARD}
 
-    public enum RoomType {NOT_ASSIGNED, Enemy, Shop, HardEnemy, Treasure, Boss, Heal}
+    public enum RoomType {NOT_ASSIGNED, Enemy, Shop, HardEnemy, Treasure, Boss, Heal, Spawn}
 
     public enum NodeEvents { NONE, GOLD, HEAL, TRANSITION, SPECIAL}
 }

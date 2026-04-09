@@ -618,9 +618,37 @@ PrefabInstance:
       propertyPath: startPrefab
       value: 
       objectReference: {fileID: 5162666568920561364, guid: 18de11c10aa950c42b8e844ef28cd81e, type: 3}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: hitVFX
+      value: 
+      objectReference: {fileID: 5797870068611623674, guid: 4d0ea5beaa1b8e24398a6549709ba29e, type: 3}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: buffVFX
+      value: 
+      objectReference: {fileID: 1415702235763318915, guid: 8b0c9ef2388f937448a6254f253d0f30, type: 3}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: healVFX
+      value: 
+      objectReference: {fileID: 5797870068611623674, guid: 438aabcdf0c606744a0729a318422f6f, type: 3}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: nerfVFX
+      value: 
+      objectReference: {fileID: 1415702235763318915, guid: 6ebd16979f190894cb09c40bd554a898, type: 3}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: hitVFXPrefab
+      value: 
+      objectReference: {fileID: 5797870068611623674, guid: 4d0ea5beaa1b8e24398a6549709ba29e, type: 3}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: healVFXPrefab
+      value: 
+      objectReference: {fileID: 5797870068611623674, guid: 438aabcdf0c606744a0729a318422f6f, type: 3}
     - target: {fileID: 4772832938886564935, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: m_Name
       value: MapManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 7245667063205552328, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: battleDifficulty
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

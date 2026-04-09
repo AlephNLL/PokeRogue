@@ -277,10 +277,10 @@ public class Unit : MonoBehaviour
             yield break;
         }
 
-        healthBar.gameObject.SetActive(true);
+        healthBar.gameObject.SetActive(true);   
         float t = 0;
         float startValue = healthBar.value;
-        float endValue = currentHp / maxHp;
+        float endValue = (float)currentHp / maxHp;
 
         if (endValue >= startValue) { FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.lightGreen); VFXManager.instance.SpawnGlobalEffect(VFX.HEAL, gameObject); }
         else { FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.red); VFXManager.instance.SpawnGlobalEffect(VFX.HIT, gameObject); }

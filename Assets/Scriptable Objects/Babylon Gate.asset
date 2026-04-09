@@ -19,7 +19,7 @@ MonoBehaviour:
   abilityType: 0
   target: 3
   stance: 0
-  mustUseStance: 1
+  mustUseStance: 0
   passiveEffects: 6
   passiveExecutionTime: 0
   passiveEffectChance: 0

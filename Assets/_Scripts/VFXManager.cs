@@ -6,14 +6,34 @@ public class VFXManager : MonoBehaviour
 {
     public static VFXManager instance;
     [Header("Global Effects")]
-    [SerializeField] GameObject buffVFXPrefab;
-    [SerializeField] GameObject nerfVFXPrefab;
-    [SerializeField] GameObject hitVFXPrefab;
-    [SerializeField] GameObject healVFXPrefab;
+    [SerializeField] GameObject buffVFX;
+    [SerializeField] GameObject nerfVFX;
+    [SerializeField] GameObject hitVFX;
+    [SerializeField] GameObject healVFX;
+    [SerializeField] static GameObject buffVFXPrefab;
+    [SerializeField] static GameObject nerfVFXPrefab;
+    [SerializeField] static GameObject hitVFXPrefab;
+    [SerializeField] static GameObject healVFXPrefab;
 
     private void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(instance.gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        buffVFXPrefab = buffVFX;
+        nerfVFXPrefab = nerfVFX;
+        hitVFXPrefab = hitVFX;
+        healVFXPrefab = healVFX;
     }
 
     public void SpawnGlobalEffect(VFX vfx, GameObject unit)

@@ -282,8 +282,8 @@ public class Unit : MonoBehaviour
         float startValue = healthBar.value;
         float endValue = currentHp / maxHp;
 
-        if (endValue > startValue) FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.lightGreen);
-        else FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.red);
+        if (endValue >= startValue) { FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.lightGreen); VFXManager.instance.SpawnGlobalEffect(VFX.HEAL, gameObject); }
+        else { FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.red); VFXManager.instance.SpawnGlobalEffect(VFX.HIT, gameObject); }
 
         while (t < 1)
         {

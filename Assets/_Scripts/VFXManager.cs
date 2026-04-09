@@ -8,6 +8,8 @@ public class VFXManager : MonoBehaviour
     [Header("Global Effects")]
     [SerializeField] GameObject buffVFXPrefab;
     [SerializeField] GameObject nerfVFXPrefab;
+    [SerializeField] GameObject hitVFXPrefab;
+    [SerializeField] GameObject healVFXPrefab;
 
     private void Awake()
     {
@@ -25,6 +27,10 @@ public class VFXManager : MonoBehaviour
                 StartCoroutine(SpawnVFX(nerfVFXPrefab, unit.transform.position));
                 break;
             case VFX.HIT:
+                StartCoroutine(SpawnVFX(hitVFXPrefab, unit.transform.position));
+                break;
+            case VFX.HEAL:
+                StartCoroutine(SpawnVFX(healVFXPrefab, unit.transform.position));
                 break;
         }
     }
@@ -56,7 +62,7 @@ public class VFXManager : MonoBehaviour
 
     IEnumerator SpawnVFX(GameObject vfxPrefab, Vector3 pos)
     {
-        GameObject vfx = Instantiate(vfxPrefab, pos, buffVFXPrefab.transform.rotation);
+        GameObject vfx = Instantiate(vfxPrefab, pos, vfxPrefab.transform.rotation);
 
         yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration);
 

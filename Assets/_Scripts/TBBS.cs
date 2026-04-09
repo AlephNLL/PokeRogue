@@ -712,7 +712,10 @@ public class TBBS : MonoBehaviour
                     break;
                 case GameData.AbilityEffect.HEAL:
                     /*to do*/
-                    break;
+                    //test
+                    if (affectSelf) attacker.Heal(50);
+                    else target.Heal(50);
+                        break;
                 case GameData.AbilityEffect.UPATK:
                     if(affectSelf) attacker.ApplyStatModifier(Stats.ATK, 1.5f);
                     else target.ApplyStatModifier(Stats.ATK, 1.5f);

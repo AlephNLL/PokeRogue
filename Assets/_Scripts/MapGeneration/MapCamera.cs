@@ -107,6 +107,7 @@ public class MapCamera : MonoBehaviour
         {
             reachedTarget = true;
             transform.position = desiredPosition;
+            UpdateLayers(MapManager.instance.currentRoom);
         } else
         {
             reachedTarget = false;
@@ -128,8 +129,6 @@ public class MapCamera : MonoBehaviour
             Node node = obj.GetComponent<Node>();
             MapNode mapNode = MapManager.instance.NodeToMapNode(node);
             MapManager.instance.currentNode = mapNode;
-
-            UpdateLayers(obj);
         }
     }
 

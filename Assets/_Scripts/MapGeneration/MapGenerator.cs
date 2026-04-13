@@ -15,6 +15,8 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private MapView mapView;
     [SerializeField] private RoomAssigner roomAssigner;
 
+    [SerializeField] private float randomRange = 0.5f;
+
     private MapNode[,] currentGrid;
     List<MapNode> path;
 
@@ -45,9 +47,12 @@ public class MapGenerator : MonoBehaviour
             {
                 currentGrid[floor, room] = new MapNode();
                 currentGrid[floor, room].id = nextId++;
-                currentGrid[floor, room].position = new Vector3(floor * 3, 0, room * 3);
                 currentGrid[floor, room].gridPosition = new Vector2Int(floor, room);
                 currentGrid[floor, room].floorLevel = floor;
+
+                float floorPosRandomized = Random.Range(floor * 3 - randomRange, floor * 3 + randomRange);
+                float roomPosRandomized = Random.Range(room * 3 - randomRange, room * 3 + randomRange);
+                currentGrid[floor, room].position = new Vector3(floorPosRandomized, 0, roomPosRandomized);
             }
         }
         return currentGrid;

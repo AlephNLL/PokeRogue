@@ -646,6 +646,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4813112271845761888, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: randomRange
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 7245667063205552328, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: battleDifficulty
       value: 0

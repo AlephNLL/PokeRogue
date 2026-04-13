@@ -654,6 +654,18 @@ PrefabInstance:
       propertyPath: battleDifficulty
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8344179702439157708, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: healProb
+      value: 0.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 8344179702439157708, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: enemyProb
+      value: 0.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 8344179702439157708, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: treasureProb
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

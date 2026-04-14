@@ -618,6 +618,10 @@ PrefabInstance:
       propertyPath: startPrefab
       value: 
       objectReference: {fileID: 5162666568920561364, guid: 18de11c10aa950c42b8e844ef28cd81e, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: lineThickness
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: hitVFX
       value: 

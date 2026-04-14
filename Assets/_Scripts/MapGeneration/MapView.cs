@@ -19,6 +19,8 @@ public class MapView : MonoBehaviour
 
     [SerializeField] private Material lineMaterial;
 
+    [SerializeField] private float lineThickness = 0.1f;
+
     private GameObject map;
     private GameObject connections;
     private GameObject nodes;
@@ -109,12 +111,29 @@ public class MapView : MonoBehaviour
                 GameObject connectionGO = new("Connection", typeof(LineRenderer));
                 LineRenderer lr = connectionGO.GetComponent<LineRenderer>();
                 lr.material = lineMaterial;
-                lr.startWidth = 0.1f;
-                lr.endWidth = 0.1f;
+                lr.startWidth = lineThickness;
+                lr.endWidth = lineThickness;
                 lr.positionCount = 2;
-                lr.SetPosition(0, node.position);
-                lr.SetPosition(1, connection.position);
+                Vector3 offset = new Vector3(0, 0.01f, 0);
+                lr.SetPosition(0, node.position - offset);
+                lr.SetPosition(1, connection.position - offset);
+                lr.alignment = LineAlignment.TransformZ;
                 connectionGO.transform.parent = connections.transform;
+                connectionGO.transform.Rotate(new Vector3(90, 0, 0));
+
+                Mesh lineMesh = new();
+                lr.BakeMesh(lineMesh);
+
+                connectionGO.AddComponent<MeshFilter>();
+                connectionGO.AddComponent<MeshCollider>();
+                MeshCollider collider = connectionGO.GetComponent<MeshCollider>();
+                MeshFilter filter = connectionGO.GetComponent<MeshFilter>();
+
+                filter.mesh = lineMesh;
+
+                collider.sharedMesh = filter.mesh;
+
+                Debug.Log(lineMesh.vertexCount);
             }
         }
     }

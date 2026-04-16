@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 using GameData;
 public class MapGenerator : MonoBehaviour
 {
-    [SerializeField] private int gridWidth = 10;
+    [SerializeField] public int gridWidth = 10;
     [SerializeField] public int gridHeight = 10;
     [SerializeField] private int startingPaths = 2;
     [SerializeField] private int iterations = 2;

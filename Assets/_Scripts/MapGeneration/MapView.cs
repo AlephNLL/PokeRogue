@@ -5,6 +5,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEditor.MemoryProfiler;
 using System.Linq;
 using GameData;
+using Unity.VisualScripting;
 
 public class MapView : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class MapView : MonoBehaviour
     [SerializeField] private GameObject healPrefab;
     [SerializeField] private GameObject shopPrefab;
     [SerializeField] private GameObject startPrefab;
+    [SerializeField] private GameObject decorationPrefab;
 
     [SerializeField] private Material lineMaterial;
 
@@ -25,7 +27,6 @@ public class MapView : MonoBehaviour
     private GameObject connections;
     private GameObject nodes;
 
-
     public void DrawMap(List<MapNode> path)
     {
         ClearMap();
@@ -33,6 +34,7 @@ public class MapView : MonoBehaviour
         DrawNodes(path);
         DrawConnections(path);
         PassConnectedRooms(path);
+        DrawDecorations();
         if (!MapManager.instance.mapCreated)
         {
             MapManager.instance.UnlockStartingPaths();
@@ -108,7 +110,10 @@ public class MapView : MonoBehaviour
         {
             foreach (MapNode connection in node.connectedNodes)
             {
+                //GameObject childGO = new("Collider");
                 GameObject connectionGO = new("Connection", typeof(LineRenderer));
+                //childGO.transform.parent = connectionGO.transform;
+
                 LineRenderer lr = connectionGO.GetComponent<LineRenderer>();
                 lr.material = lineMaterial;
                 lr.startWidth = lineThickness;
@@ -118,22 +123,105 @@ public class MapView : MonoBehaviour
                 lr.SetPosition(0, node.position - offset);
                 lr.SetPosition(1, connection.position - offset);
                 lr.alignment = LineAlignment.TransformZ;
+                lr.textureMode = LineTextureMode.Tile;
                 connectionGO.transform.parent = connections.transform;
                 connectionGO.transform.Rotate(new Vector3(90, 0, 0));
 
-                Mesh lineMesh = new();
-                lr.BakeMesh(lineMesh);
+                AddColliderToLine(lr, node.position - offset, connection.position - offset);
+                //Mesh lineMesh = new();
+                //lr.BakeMesh(lineMesh, true);
 
-                connectionGO.AddComponent<MeshFilter>();
-                connectionGO.AddComponent<MeshCollider>();
-                MeshCollider collider = connectionGO.GetComponent<MeshCollider>();
-                MeshFilter filter = connectionGO.GetComponent<MeshFilter>();
+                //childGO.AddComponent<MeshFilter>();
+                //childGO.AddComponent<MeshCollider>();
+                //MeshFilter filter = childGO.GetComponent<MeshFilter>();
+                //MeshCollider collider = childGO.GetComponent<MeshCollider>();
 
-                filter.mesh = lineMesh;
+                //filter.mesh = lineMesh;
+                //collider.sharedMesh = lineMesh;
+                //childGO.transform.Rotate(new Vector3(-90, 0, 0));
 
-                collider.sharedMesh = filter.mesh;
+                //childGO.layer = LayerMask.NameToLayer("Path");
+            }
+        }
+    }
 
-                Debug.Log(lineMesh.vertexCount);
+    private void AddColliderToLine(LineRenderer line, Vector3 startPoint, Vector3 endPoint)
+    {
+        //create the collider for the line
+        BoxCollider lineCollider = new GameObject("Collider").AddComponent<BoxCollider>();
+        //set the collider as a child of your line
+        lineCollider.transform.parent = line.transform;
+        // get width of collider from line 
+        float lineWidth = line.endWidth;
+        // get the length of the line using the Distance method
+        float lineLength = Vector3.Distance(startPoint, endPoint);
+        // size of collider is set where X is length of line, Y is width of line
+        //z will be how far the collider reaches to the sky
+        lineCollider.size = new Vector3(lineLength, lineWidth, 1f);
+        // get the midPoint
+        Vector3 midPoint = (startPoint + endPoint) / 2;
+        // move the created collider to the midPoint
+        lineCollider.transform.position = midPoint;
+
+
+        //heres the beef of the function, Mathf.Atan2 wants the slope, be careful however because it wants it in a weird form
+        //it will divide for you so just plug in your (y2-y1),(x2,x1)
+        float angle = Mathf.Atan2((endPoint.z - startPoint.z), (endPoint.x - startPoint.x));
+
+        // angle now holds our answer but it's in radians, we want degrees
+        // Mathf.Rad2Deg is just a constant equal to 57.2958 that we multiply by to change radians to degrees
+        angle *= Mathf.Rad2Deg;
+
+        //were interested in the inverse so multiply by -1
+        angle *= -1;
+        // now apply the rotation to the collider's transform, carful where you put the angle variable
+        // in 3d space you don't wan't to rotate on your y axis
+        lineCollider.transform.Rotate(0, angle, 0);
+        lineCollider.gameObject.layer = LayerMask.NameToLayer("Path");
+    }
+
+    public void DrawDecorations()
+    {
+        // Get map size
+        Vector2 mapSize = new(MapManager.instance.mapGenerator.gridHeight * 3, MapManager.instance.mapGenerator.gridWidth * 3);
+
+        // Cast points across to find outside area
+        float density = 10f;
+        float stepX = mapSize.x / density;
+        float stepY = mapSize.y / density;
+
+        LayerMask mask = LayerMask.GetMask("Path", "Node");
+
+        for (float height = 0; height < mapSize.x; height = height + stepX)
+        {
+            // Cast
+
+            for (float width = 0; width < mapSize.y; width = width + stepY)
+            {
+                //Vector3 castPosition = new Vector3(height, 5, width);
+
+                //RaycastHit hit;
+
+                //if (Physics.Raycast(castPosition, transform.TransformDirection(Vector3.down), out hit, 10, mask))
+                //{
+                //    Debug.Log("Did Hit");
+                //    Debug.Log(hit.collider);
+                //    Debug.Log(hit.point);
+
+                //    if (hit.collider.gameObject.name == "Collider")
+                //    {
+                //        Debug.DrawRay(castPosition, transform.TransformDirection(Vector3.down) * hit.distance, Color.red, 10f);
+                //    }
+                //    else
+                //    {
+                //        Debug.DrawRay(castPosition, transform.TransformDirection(Vector3.down) * hit.distance, Color.purple, 10f);
+                //    }
+                //}
+                //else
+                //{
+                //    Debug.DrawRay(castPosition, transform.TransformDirection(Vector3.down) * 20, Color.green, 10f);
+                //    Debug.Log("Did Not Hit");
+                //}
             }
         }
     }

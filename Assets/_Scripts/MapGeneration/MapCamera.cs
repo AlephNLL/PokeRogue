@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-public class CameraNodeFollower : MonoBehaviour
+using GameData;
+public class MapCamera : MonoBehaviour
 {
     public MapView mapView;
 
@@ -12,7 +12,7 @@ public class CameraNodeFollower : MonoBehaviour
     public float followOffsetX = 2.0f;
     public float smoothSpeed = 15.0f;
     public LayerMask nodeLayerMask;
-    public bool reachedTarget = false;
+    public static bool reachedTarget = false;
 
     [Header("Opciones de Interacción")]
     public bool enableFollowMode = true;
@@ -51,7 +51,26 @@ public class CameraNodeFollower : MonoBehaviour
 
         if (reachedTarget)
         {
-            MapManager.instance.LoadScene(MapManager.instance.currentRoom.GetComponent<Node>().sceneName);
+            switch (MapManager.instance.currentRoom.GetComponent<Node>().nodeEvent)
+            {
+                case GameData.NodeEvents.NONE:
+                    break;
+                case GameData.NodeEvents.GOLD:
+                    break;
+                case GameData.NodeEvents.HEAL:
+                    TeamManager.instance.HealTeam(.5f);
+                    VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, MapManager.instance.currentRoom);
+                    break;
+                case GameData.NodeEvents.TRANSITION:
+                    MapManager.instance.LoadScene(MapManager.instance.currentRoom.GetComponent<Node>().sceneName);
+                    break;
+                case GameData.NodeEvents.SPECIAL:
+                    break;
+                default:
+                    break;
+            }
+
+            reachedTarget = false;
         }
     }
 
@@ -88,6 +107,7 @@ public class CameraNodeFollower : MonoBehaviour
         {
             reachedTarget = true;
             transform.position = desiredPosition;
+            UpdateLayers(MapManager.instance.currentRoom);
         } else
         {
             reachedTarget = false;
@@ -96,7 +116,7 @@ public class CameraNodeFollower : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * smoothSpeed);
     }
 
-    private void SetSelectedObject(GameObject obj)
+    public static void SetSelectedObject(GameObject obj)
     {
         Debug.Log("Objeto actual seleccionado: " + obj.name);
         reachedTarget = false;
@@ -109,12 +129,10 @@ public class CameraNodeFollower : MonoBehaviour
             Node node = obj.GetComponent<Node>();
             MapNode mapNode = MapManager.instance.NodeToMapNode(node);
             MapManager.instance.currentNode = mapNode;
-
-            UpdateLayers(obj);
         }
     }
 
-    private void UpdateLayers(GameObject obj)
+    private static void UpdateLayers(GameObject obj)
     {
         foreach (GameObject conection in obj.GetComponent<Node>().connectedNodes)
         {

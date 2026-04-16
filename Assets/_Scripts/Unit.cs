@@ -6,6 +6,8 @@ using TMPro;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using System.Drawing;
+using Unity.VisualScripting;
 public class Unit : MonoBehaviour
 {
     public int id;
@@ -24,7 +26,7 @@ public class Unit : MonoBehaviour
 
 
     [SerializeField]
-    private int maxHp;
+    public int maxHp;
     [SerializeField]
     public int currentHp;
     [SerializeField]
@@ -66,7 +68,7 @@ public class Unit : MonoBehaviour
     public bool skipTurn = false;
 
     public bool waitingForDestroy = false;
-
+    public bool takingDamage = false;
     private void Start()
     {
         InitializeVariables();
@@ -85,7 +87,7 @@ public class Unit : MonoBehaviour
             actionCamera = transform.Find("ActionCamera").gameObject.GetComponent<CinemachineVirtualCamera>();
             actionCamera.LookAt = GameObject.Find("ENEMYSIDE").transform;
 
-            
+
             battleMenu = transform.Find("MainSelection").gameObject.GetComponent<Canvas>();
             abilityMenu = transform.Find("Abilities").gameObject.GetComponent<Canvas>();
 
@@ -110,15 +112,15 @@ public class Unit : MonoBehaviour
         defense = (int)(constitution / 5f * level + 1);
         speed = (int)(dexterity / 5f * level + 1);
 
-        if(isPlayerControlled) currentHp = PlayerData.teamData.Find(item => item.id == id).currentHp;
+        if (isPlayerControlled) currentHp = PlayerData.teamData.Find(item => item.id == id).currentHp;
         else currentHp = maxHp;
 
-        if(currentHp < maxHp)
+        if (currentHp < maxHp)
         {
             if (healthBar)
             {
                 healthBar.gameObject.SetActive(true);
-                healthBar.value = (float)currentHp/maxHp;
+                healthBar.value = (float)currentHp / maxHp;
             }
         }
     }
@@ -151,7 +153,7 @@ public class Unit : MonoBehaviour
     }
     public void OpenBattleMenu()
     {
-        if(battleMenu == null) return;
+        if (battleMenu == null) return;
         battleMenu.gameObject.SetActive(true);
 
         attackButton.onClick.AddListener(delegate { TBBS.instance.AbilityMenu(this); });
@@ -169,7 +171,7 @@ public class Unit : MonoBehaviour
     public void OpenAbilityMenu()
     {
         if (abilityMenu == null) return;
-        
+
         abilityMenu.gameObject.SetActive(true);
 
         for (int i = 0; i < knownAbilities.Length; i++)
@@ -201,26 +203,26 @@ public class Unit : MonoBehaviour
 
     public void ApplyStatModifier(Stats stat, float mod)
     {
-        if(mod > 1) VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, gameObject.transform.position);
-        else VFXManager.instance.SpawnGlobalEffect(VFX.NERF, gameObject.transform.position);
+        if (mod > 1) VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, gameObject);
+        else VFXManager.instance.SpawnGlobalEffect(VFX.NERF, gameObject);
 
         switch (stat)
-            {
-                case Stats.ATK:
-                    attack = Mathf.FloorToInt(attack * mod);
-                    break;
-                case Stats.DEF:
-                    defense = Mathf.FloorToInt(defense * mod);
-                    break;
-                case Stats.SPEED:
-                    speed = Mathf.FloorToInt(speed * mod);
-                    break;
-                case Stats.LUCK:
-                    luck = Mathf.FloorToInt(luck * mod);
-                    break;
-                default:
-                    break;
-            }
+        {
+            case Stats.ATK:
+                attack = Mathf.FloorToInt(attack * mod);
+                break;
+            case Stats.DEF:
+                defense = Mathf.FloorToInt(defense * mod);
+                break;
+            case Stats.SPEED:
+                speed = Mathf.FloorToInt(speed * mod);
+                break;
+            case Stats.LUCK:
+                luck = Mathf.FloorToInt(luck * mod);
+                break;
+            default:
+                break;
+        }
     }
 
     public void RemoveStatModifier(Stats stat)
@@ -245,7 +247,7 @@ public class Unit : MonoBehaviour
 
     public void Heal(int healAmount)
     {
-        if(currentHp + healAmount >= maxHp) currentHp = maxHp;
+        if (currentHp + healAmount >= maxHp) currentHp = maxHp;
         else currentHp = currentHp + healAmount;
 
         StartCoroutine(UpdateHealthBar());
@@ -253,31 +255,39 @@ public class Unit : MonoBehaviour
 
     public void TakeDamage(int dmgAmount)
     {
-        if (currentHp - dmgAmount <= 0) 
+        if (currentHp - dmgAmount <= 0)
         {
             currentHp = 0;
             waitingForDestroy = true;
-        } 
-        else currentHp = currentHp - dmgAmount;
-
+        }
+        else
+        {
+            currentHp = currentHp - dmgAmount;
+        }
         StartCoroutine(UpdateHealthBar());
     }
 
     IEnumerator UpdateHealthBar()
     {
-        if (!healthBar) 
+        takingDamage = true;
+
+        if (!healthBar)
         {
             if (currentHp == 0) TBBS.instance.Death(this);
             yield break;
         }
 
-        healthBar.gameObject.SetActive(true);
+        healthBar.gameObject.SetActive(true);   
         float t = 0;
         float startValue = healthBar.value;
+        float endValue = (float)currentHp / maxHp;
 
-        while (t < 1) 
+        if (endValue >= startValue) { FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.lightGreen); VFXManager.instance.SpawnGlobalEffect(VFX.HEAL, gameObject); }
+        else { FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.red); VFXManager.instance.SpawnGlobalEffect(VFX.HIT, gameObject); }
+
+        while (t < 1)
         {
-            healthBar.value = Mathf.Lerp(startValue, (float)currentHp/maxHp, t);
+            healthBar.value = Mathf.Lerp(startValue, endValue, t);
             t += Time.deltaTime;
             yield return null;
         }
@@ -285,6 +295,11 @@ public class Unit : MonoBehaviour
         yield return new WaitForSeconds(.3f);
 
         //healthBar.gameObject.SetActive(false);
+
+        if (status != Status.NONE) VFXManager.instance.SpawnStatusVFX(status, gameObject);
+        else FresnelApplier.clearFresnel(gameObject);
+
+        takingDamage = false;
 
         if (currentHp == 0) TBBS.instance.Death(this);
     }
@@ -296,7 +311,7 @@ public class Unit : MonoBehaviour
             case Stats.ATK:
                 int atk = attack;
                 if (HasPassive("Double Trouble")) atk = Mathf.FloorToInt(atk * .5f);
-                if(status == Status.BURNED)
+                if (status == Status.BURNED)
                 {
                     atk = HasPassive("Piromaniac") ? atk : Mathf.FloorToInt(atk * .5f);
                 }
@@ -351,7 +366,7 @@ public class Unit : MonoBehaviour
     {
         foreach (var item in knownAbilities)
         {
-            if(item.abilityType == AbilityType.PASSIVE && item.passiveExecutionTime == battleStage && item.passiveEffectChance >= Random.Range(1, 100))
+            if (item.abilityType == AbilityType.PASSIVE && item.passiveExecutionTime == battleStage && item.passiveEffectChance >= Random.Range(1, 100))
             {
                 List<Unit> target = new List<Unit>();
 
@@ -361,7 +376,7 @@ public class Unit : MonoBehaviour
                         target.Add(this);
                         break;
                     case AbilityTarget.ONEALLY:
-                        if(lastHitUnit) target.Add(lastHitUnit);
+                        if (lastHitUnit) target.Add(lastHitUnit);
                         else target.Add(TBBS.instance.playerUnits[Random.Range(0, TBBS.instance.playerUnits.Count)]);
                         break;
                     case AbilityTarget.ONEENEMY:
@@ -390,7 +405,7 @@ public class Unit : MonoBehaviour
                     case PassiveEffects.UPATKONSTATUS:
                         foreach (var unit in target)
                         {
-                            if(unit.status != item.status) continue;
+                            if (unit.status != item.status) continue;
                             Debug.Log(unit.name + " attack raises!");
                             unit.ApplyStatModifier(Stats.ATK, 1.5f);
                         }
@@ -439,7 +454,7 @@ public class Unit : MonoBehaviour
                         break;
                     case PassiveEffects.APPLYSTATUS:
                         foreach (var unit in target)
-                        { 
+                        {
                             unit.ApplyStatus(item.status);
                         }
                         break;
@@ -453,10 +468,23 @@ public class Unit : MonoBehaviour
     public void ApplyStatus(Status statusToApply)
     {
         if (status != Status.NONE) return;
-        
+
+        if (!takingDamage) VFXManager.instance.SpawnStatusVFX(statusToApply, gameObject);
+        else
+        {
+            StartCoroutine(WaitToApplyStatus(statusToApply));
+            return;
+        }
+
         status = statusToApply;
 
         ResolvePassiveEffect(PassiveExecutionTime.ONSTATUSCHANGE);
+    }
+    IEnumerator WaitToApplyStatus(Status statusToApply)
+    {
+        yield return new WaitForSeconds(.1f);
+        ApplyStatus(statusToApply);
+        yield break;
     }
 
     public void CureStatus()
@@ -464,6 +492,7 @@ public class Unit : MonoBehaviour
         if (status == Status.NONE) return;
 
         status = Status.NONE;
+        FresnelApplier.clearFresnel(gameObject);
 
         ResolvePassiveEffect(PassiveExecutionTime.ONSTATUSCHANGE);
     }

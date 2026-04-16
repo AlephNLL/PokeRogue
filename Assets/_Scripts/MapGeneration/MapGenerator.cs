@@ -4,15 +4,18 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using GameData;
 public class MapGenerator : MonoBehaviour
 {
-    [SerializeField] private int gridWidth = 10;
+    [SerializeField] public int gridWidth = 10;
     [SerializeField] public int gridHeight = 10;
     [SerializeField] private int startingPaths = 2;
     [SerializeField] private int iterations = 2;
 
     [SerializeField] private MapView mapView;
     [SerializeField] private RoomAssigner roomAssigner;
+
+    [SerializeField] private float randomRange = 0.5f;
 
     private MapNode[,] currentGrid;
     List<MapNode> path;
@@ -23,10 +26,13 @@ public class MapGenerator : MonoBehaviour
         currentGrid = InitializeGrid();
         path = GeneratePaths(currentGrid, startingPaths);
         GenerateBossRoom();
+        GenerateStartRoom();
 
         roomAssigner.AssignRoomTypes(path);
 
         mapView.DrawMap(path);
+        GameObject start = MapManager.instance.currentRoom = GameObject.Find("Spawn-0");
+        MapCamera.SetSelectedObject(start);
     }
 
     private MapNode[,] InitializeGrid()
@@ -41,9 +47,12 @@ public class MapGenerator : MonoBehaviour
             {
                 currentGrid[floor, room] = new MapNode();
                 currentGrid[floor, room].id = nextId++;
-                currentGrid[floor, room].position = new Vector3(floor * 3, 0, room * 3);
                 currentGrid[floor, room].gridPosition = new Vector2Int(floor, room);
                 currentGrid[floor, room].floorLevel = floor;
+
+                float floorPosRandomized = Random.Range(floor * 3 - randomRange, floor * 3 + randomRange);
+                float roomPosRandomized = Random.Range(room * 3 - randomRange, room * 3 + randomRange);
+                currentGrid[floor, room].position = new Vector3(floorPosRandomized, 0, roomPosRandomized);
             }
         }
         return currentGrid;
@@ -179,5 +188,22 @@ public class MapGenerator : MonoBehaviour
             }
         }
         path.Add(bossRoom);
+    }
+
+    private void GenerateStartRoom()
+    {
+        MapNode start = new MapNode();
+        start.roomType = RoomType.Spawn;
+        start.position = new Vector3(-3, 0, (gridWidth * 3) / 2);
+        start.floorLevel = -1;
+
+        foreach (MapNode room in path)
+        {
+            if (room.floorLevel == 0)
+            {
+                start.AddConnection(room);
+            }
+        }
+        path.Add(start);
     }
 }

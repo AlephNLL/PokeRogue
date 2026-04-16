@@ -14,7 +14,11 @@ namespace GameData
 
     public enum PassiveExecutionTime { BATTLESTART, TURNSTART, TURNEND, ONHIT, ONHURT, OUTSIDEBATTLE, ONDEATH, ONKILL, ONSTANCECHANGE, ONSTATUSCHANGE }
 
-    public enum VFX { BUFF, NERF, HIT}
+    public enum VFX { BUFF, NERF, HIT, HEAL}
 
     public enum Difficulty { EASY, NORMAL, HARD}
+
+    public enum RoomType {NOT_ASSIGNED, Enemy, Shop, HardEnemy, Treasure, Boss, Heal, Spawn}
+
+    public enum NodeEvents { NONE, GOLD, HEAL, TRANSITION, SPECIAL}
 }

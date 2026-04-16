@@ -1,2 +1,15 @@
 fileFormatVersion: 2
 guid: 91b75c449ff0ce746a42a89bc6c9d91b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - buffVFXPrefab: {fileID: 1415702235763318915, guid: 8b0c9ef2388f937448a6254f253d0f30, type: 3}
+  - nerfVFXPrefab: {fileID: 1415702235763318915, guid: 6ebd16979f190894cb09c40bd554a898, type: 3}
+  - hitVFXPrefab: {fileID: 5797870068611623674, guid: 4d0ea5beaa1b8e24398a6549709ba29e, type: 3}
+  - healVFXPrefab: {fileID: 5797870068611623674, guid: 438aabcdf0c606744a0729a318422f6f, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

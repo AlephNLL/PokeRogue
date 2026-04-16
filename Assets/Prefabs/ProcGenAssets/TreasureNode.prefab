@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8639331305207403}
   - component: {fileID: 6712761741596646350}
   - component: {fileID: -6597933657715611056}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TreasureNode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -130,6 +130,7 @@ MonoBehaviour:
   position: {x: 0, y: 0, z: 0}
   gridPosition: {x: 0, y: 0}
   connectedNodes: []
-  roomType: 0
-  roomPrefab: {fileID: 0}
+  roomType: 4
+  nodeEvent: 3
+  sceneName: 
   floorLevel: 0

@@ -341,6 +341,7 @@ GameObject:
   - component: {fileID: 1380664024}
   - component: {fileID: 1380664022}
   - component: {fileID: 1380664021}
+  - component: {fileID: 1380664025}
   m_Layer: 0
   m_Name: MapCamera
   m_TagString: MainCamera
@@ -415,13 +416,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1380664020}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.22846627, y: 0.669181, z: -0.22846627, w: 0.669181}
+  m_LocalRotation: {x: 0.27171218, y: 0.6528189, z: -0.27171218, w: 0.6528189}
   m_LocalPosition: {x: -26.539999, y: 18.1, z: 14.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 37.701, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 45.196, y: 90, z: 0}
 --- !u!114 &1380664024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -435,14 +436,57 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraNodeFollower
   mapView: {fileID: 2034614706}
-  followOffsetY: 3
-  followOffsetX: 3
+  followOffsetY: 7
+  followOffsetX: 5
   smoothSpeed: 3
   nodeLayerMask:
     serializedVersion: 2
     m_Bits: 8
-  reachedTarget: 0
   enableFollowMode: 1
+--- !u!114 &1380664025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1380664020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1 &2017229619
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,22 +574,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
-      propertyPath: playerUnits.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
-      propertyPath: 'playerUnits.Array.data[0]'
-      value: 
-      objectReference: {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
-    - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
-      propertyPath: 'playerUnits.Array.data[1]'
-      value: 
-      objectReference: {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
-    - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
-      propertyPath: 'playerUnits.Array.data[2]'
-      value: 
-      objectReference: {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
     - target: {fileID: 936192196252588791, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10.93487
@@ -586,21 +614,81 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3413889519824911466, guid: 241a7317966b2634e8957412fa87c146, type: 3}
-      propertyPath: playerTeam.Array.size
-      value: 3
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: density
+      value: 10
       objectReference: {fileID: 0}
-    - target: {fileID: 3413889519824911466, guid: 241a7317966b2634e8957412fa87c146, type: 3}
-      propertyPath: 'playerTeam.Array.data[2]'
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: rayDuration
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: startPrefab
       value: 
-      objectReference: {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
+      objectReference: {fileID: 5162666568920561364, guid: 18de11c10aa950c42b8e844ef28cd81e, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: lineThickness
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: enableDebugRays
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: decorationPrefab
+      value: 
+      objectReference: {fileID: 6456536959312256807, guid: 74d9213f1c0f27d41b0a7be6f1f7c308, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: orthographicCamera
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: hitVFX
+      value: 
+      objectReference: {fileID: 5797870068611623674, guid: 4d0ea5beaa1b8e24398a6549709ba29e, type: 3}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: buffVFX
+      value: 
+      objectReference: {fileID: 1415702235763318915, guid: 8b0c9ef2388f937448a6254f253d0f30, type: 3}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: healVFX
+      value: 
+      objectReference: {fileID: 5797870068611623674, guid: 438aabcdf0c606744a0729a318422f6f, type: 3}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: nerfVFX
+      value: 
+      objectReference: {fileID: 1415702235763318915, guid: 6ebd16979f190894cb09c40bd554a898, type: 3}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: hitVFXPrefab
+      value: 
+      objectReference: {fileID: 5797870068611623674, guid: 4d0ea5beaa1b8e24398a6549709ba29e, type: 3}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: healVFXPrefab
+      value: 
+      objectReference: {fileID: 5797870068611623674, guid: 438aabcdf0c606744a0729a318422f6f, type: 3}
     - target: {fileID: 4772832938886564935, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: m_Name
       value: MapManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4813112271845761888, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: randomRange
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 7245667063205552328, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: battleDifficulty
-      value: 2
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8344179702439157708, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: healProb
+      value: 0.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 8344179702439157708, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: enemyProb
+      value: 0.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 8344179702439157708, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: treasureProb
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

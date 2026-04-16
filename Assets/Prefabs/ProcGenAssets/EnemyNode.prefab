@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6712761741596646350}
   - component: {fileID: -6597933657715611056}
   - component: {fileID: 7863430570976942255}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: EnemyNode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,8 +131,9 @@ MonoBehaviour:
   position: {x: 0, y: 0, z: 0}
   gridPosition: {x: 0, y: 0}
   connectedNodes: []
-  roomType: 0
-  roomPrefab: {fileID: 0}
+  roomType: 1
+  nodeEvent: 3
+  sceneName: BattleScene
   floorLevel: 0
 --- !u!65 &7863430570976942255
 BoxCollider:

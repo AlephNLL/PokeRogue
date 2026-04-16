@@ -22,6 +22,7 @@ public class TBBS : MonoBehaviour
 
     public List<Unit> playerUnits;
     public List<Unit> enemyUnits;
+    public List<GameObject> capturableUnits;
 
     private BattleState battleState;
     private int currentTurnIndex = 0;
@@ -52,6 +53,7 @@ public class TBBS : MonoBehaviour
 
         playerUnits = new List<Unit>();
         enemyUnits = new List<Unit>();
+        capturableUnits = new List<GameObject>();
         allUnits = new List<Unit>();
 
         //Instanciar unidades
@@ -63,6 +65,7 @@ public class TBBS : MonoBehaviour
             allUnits.Add(playerUnits[i]);
             playerUnits[i].isPlayerControlled = true;
             playerUnits[i].id = i;
+            
         }
 
         for (int i = 0; i < enemyPrefabs.Length; i++)
@@ -70,6 +73,7 @@ public class TBBS : MonoBehaviour
             //Calculo del offset en relacion a la cantidad de unidades
             Vector3 offset = new Vector3(4 * (i - (enemyPrefabs.Length - 1) / 2f), 0, 0);
             enemyUnits.Add(Instantiate(enemyPrefabs[i], enemySide.position + offset, enemySide.rotation).GetComponent<Unit>());
+            capturableUnits.Add(enemyPrefabs[i]);
             allUnits.Add(enemyUnits[i]);
         }
 
@@ -111,7 +115,8 @@ public class TBBS : MonoBehaviour
                 battleState = BattleState.WIN;
                 Debug.Log(playerUnits.Count);
                 TeamManager.instance.SaveTeamData(playerUnits);
-                StartCoroutine(EndBattle());
+                EndScreenManager.instance.ShowVictoryScreen(capturableUnits.ToArray(), 100, 100);
+                //StartCoroutine(EndBattle());
                 return;
             }
             else
@@ -711,7 +716,10 @@ public class TBBS : MonoBehaviour
                     break;
                 case GameData.AbilityEffect.HEAL:
                     /*to do*/
-                    break;
+                    //test
+                    if (affectSelf) attacker.Heal(50);
+                    else target.Heal(50);
+                        break;
                 case GameData.AbilityEffect.UPATK:
                     if(affectSelf) attacker.ApplyStatModifier(Stats.ATK, 1.5f);
                     else target.ApplyStatModifier(Stats.ATK, 1.5f);

@@ -6,6 +6,7 @@ using UnityEditor.MemoryProfiler;
 using System.Linq;
 using GameData;
 using Unity.VisualScripting;
+using System.Collections;
 
 public class MapView : MonoBehaviour
 {
@@ -23,9 +24,17 @@ public class MapView : MonoBehaviour
 
     [SerializeField] private float lineThickness = 0.1f;
 
+    [SerializeField] private bool enableDebugRays = false;
+    [SerializeField] private float density = 10f;
+    [SerializeField] private float rayDuration = 10f;
+
     private GameObject map;
     private GameObject connections;
     private GameObject nodes;
+
+    private void FixedUpdate()
+    {
+    }
 
     public void DrawMap(List<MapNode> path)
     {
@@ -34,7 +43,9 @@ public class MapView : MonoBehaviour
         DrawNodes(path);
         DrawConnections(path);
         PassConnectedRooms(path);
-        DrawDecorations();
+
+        StartCoroutine(DrawDecorations());
+
         if (!MapManager.instance.mapCreated)
         {
             MapManager.instance.UnlockStartingPaths();
@@ -180,13 +191,13 @@ public class MapView : MonoBehaviour
         lineCollider.gameObject.layer = LayerMask.NameToLayer("Path");
     }
 
-    public void DrawDecorations()
+    private IEnumerator DrawDecorations()
     {
+        yield return new WaitForSeconds(0.2f);
         // Get map size
         Vector2 mapSize = new(MapManager.instance.mapGenerator.gridHeight * 3, MapManager.instance.mapGenerator.gridWidth * 3);
 
         // Cast points across to find outside area
-        float density = 10f;
         float stepX = mapSize.x / density;
         float stepY = mapSize.y / density;
 
@@ -198,30 +209,32 @@ public class MapView : MonoBehaviour
 
             for (float width = 0; width < mapSize.y; width = width + stepY)
             {
-                //Vector3 castPosition = new Vector3(height, 5, width);
+                Vector3 castPosition = new Vector3(height, 2, width);
 
-                //RaycastHit hit;
+                RaycastHit hit;
 
-                //if (Physics.Raycast(castPosition, transform.TransformDirection(Vector3.down), out hit, 10, mask))
-                //{
-                //    Debug.Log("Did Hit");
-                //    Debug.Log(hit.collider);
-                //    Debug.Log(hit.point);
+                if (!enableDebugRays) { continue; }
 
-                //    if (hit.collider.gameObject.name == "Collider")
-                //    {
-                //        Debug.DrawRay(castPosition, transform.TransformDirection(Vector3.down) * hit.distance, Color.red, 10f);
-                //    }
-                //    else
-                //    {
-                //        Debug.DrawRay(castPosition, transform.TransformDirection(Vector3.down) * hit.distance, Color.purple, 10f);
-                //    }
-                //}
-                //else
-                //{
-                //    Debug.DrawRay(castPosition, transform.TransformDirection(Vector3.down) * 20, Color.green, 10f);
-                //    Debug.Log("Did Not Hit");
-                //}
+                if (Physics.Raycast(castPosition, transform.TransformDirection(Vector3.down), out hit, 3, mask))
+                {
+                    Debug.Log("Did Hit");
+                    Debug.Log(hit.collider);
+                    Debug.Log(hit.point);
+
+                    if (hit.collider.gameObject.name == "Collider")
+                    {
+                        Debug.DrawRay(castPosition, transform.TransformDirection(Vector3.down) * hit.distance, Color.red, rayDuration);
+                    }
+                    else
+                    {
+                        Debug.DrawRay(castPosition, transform.TransformDirection(Vector3.down) * hit.distance, Color.purple, rayDuration);
+                    }
+                }
+                else
+                {
+                    Debug.DrawRay(castPosition, transform.TransformDirection(Vector3.down) * 3, Color.green, rayDuration);
+                    Debug.Log("Did Not Hit");
+                }
             }
         }
     }

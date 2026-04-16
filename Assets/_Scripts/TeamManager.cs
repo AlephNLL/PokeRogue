@@ -76,4 +76,29 @@ public class TeamManager : MonoBehaviour
             if (teamData[i].currentHp > maxHp) teamData[i].currentHp = maxHp;
         }
     }
+
+    public void AddNewTeamMember(GameObject mon)
+    {
+        EndScreenManager.monSelected = true;
+        Unit unit = mon.GetComponent<Unit>();
+        UnitData unitData = ScriptableObject.CreateInstance<UnitData>();
+        unitData.currentHp = unit.constitution * unit.level + 1;
+        unitData.id = PlayerData.teamData.Count;
+        unitData.level = unit.level;
+        unitData.name = unit.name;
+
+        if (PlayerData.teamData.Count < 4)
+        {
+            PlayerData.teamData.Add(unitData);
+            PlayerData.playerTeam.Add(mon);
+            EndScreenManager.instance.EndMonSelection(unit);
+        }
+        else
+        {
+            Debug.Log("Team already full, sending to daycare...");
+            EndScreenManager.instance.EndMonSelection(unit, true);
+        }
+    }
+
+    
 }

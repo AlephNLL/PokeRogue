@@ -615,9 +615,33 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: density
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: rayDuration
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: startPrefab
       value: 
       objectReference: {fileID: 5162666568920561364, guid: 18de11c10aa950c42b8e844ef28cd81e, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: lineThickness
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: enableDebugRays
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: decorationPrefab
+      value: 
+      objectReference: {fileID: 6456536959312256807, guid: 74d9213f1c0f27d41b0a7be6f1f7c308, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: orthographicCamera
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: hitVFX
       value: 
@@ -646,9 +670,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4813112271845761888, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: randomRange
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 7245667063205552328, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: battleDifficulty
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8344179702439157708, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: healProb
+      value: 0.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 8344179702439157708, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: enemyProb
+      value: 0.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 8344179702439157708, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: treasureProb
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

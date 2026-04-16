@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8639331305207403}
   - component: {fileID: 6712761741596646350}
   - component: {fileID: -6597933657715611056}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MapNode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,5 +131,6 @@ MonoBehaviour:
   gridPosition: {x: 0, y: 0}
   connectedNodes: []
   roomType: 0
+  nodeEvent: 0
   sceneName: 
   floorLevel: 0

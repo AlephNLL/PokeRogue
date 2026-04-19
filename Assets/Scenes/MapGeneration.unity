@@ -242,6 +242,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1173107842}
   - component: {fileID: 1173107841}
+  - component: {fileID: 1173107843}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -329,6 +330,35 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &1173107843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1173107840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1 &1380664020
 GameObject:
   m_ObjectHideFlags: 0
@@ -616,7 +646,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: density
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: rayDuration
@@ -626,6 +656,10 @@ PrefabInstance:
       propertyPath: startPrefab
       value: 
       objectReference: {fileID: 5162666568920561364, guid: 18de11c10aa950c42b8e844ef28cd81e, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: lineMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 36ccf668458b1194181950ef872475fd, type: 2}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: lineThickness
       value: 1
@@ -637,11 +671,23 @@ PrefabInstance:
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: decorationPrefab
       value: 
-      objectReference: {fileID: 6456536959312256807, guid: 74d9213f1c0f27d41b0a7be6f1f7c308, type: 3}
+      objectReference: {fileID: 8648017369631506551, guid: 8918a56ab01687a478c2a02c7eace7c3, type: 3}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: orthographicCamera
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: decorationPrefabs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'decorationPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8648017369631506551, guid: 8918a56ab01687a478c2a02c7eace7c3, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'decorationPrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2373034889375519765, guid: a03b778113a66e442a0bdb713e43bf6e, type: 3}
     - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: hitVFX
       value: 

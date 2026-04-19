@@ -7,6 +7,8 @@ using System.Linq;
 using GameData;
 using Unity.VisualScripting;
 using System.Collections;
+using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 
 public class MapView : MonoBehaviour
 {
@@ -18,7 +20,7 @@ public class MapView : MonoBehaviour
     [SerializeField] private GameObject healPrefab;
     [SerializeField] private GameObject shopPrefab;
     [SerializeField] private GameObject startPrefab;
-    [SerializeField] private GameObject decorationPrefab;
+    [SerializeField] private GameObject[] decorationPrefabs;
 
     [SerializeField] private Material lineMaterial;
 
@@ -31,10 +33,6 @@ public class MapView : MonoBehaviour
     private GameObject map;
     private GameObject connections;
     private GameObject nodes;
-
-    private void FixedUpdate()
-    {
-    }
 
     public void DrawMap(List<MapNode> path)
     {
@@ -137,6 +135,7 @@ public class MapView : MonoBehaviour
                 lr.textureMode = LineTextureMode.Tile;
                 connectionGO.transform.parent = connections.transform;
                 connectionGO.transform.Rotate(new Vector3(90, 0, 0));
+                lr.generateLightingData = true;
 
                 AddColliderToLine(lr, node.position - offset, connection.position - offset);
                 //Mesh lineMesh = new();
@@ -168,7 +167,7 @@ public class MapView : MonoBehaviour
         float lineLength = Vector3.Distance(startPoint, endPoint);
         // size of collider is set where X is length of line, Y is width of line
         //z will be how far the collider reaches to the sky
-        lineCollider.size = new Vector3(lineLength, lineWidth, 1f);
+        lineCollider.size = new Vector3(lineLength + 1, lineWidth, 1.5f);
         // get the midPoint
         Vector3 midPoint = (startPoint + endPoint) / 2;
         // move the created collider to the midPoint
@@ -193,49 +192,97 @@ public class MapView : MonoBehaviour
 
     private IEnumerator DrawDecorations()
     {
+
         yield return new WaitForSeconds(0.2f);
         // Get map size
         Vector2 mapSize = new(MapManager.instance.mapGenerator.gridHeight * 3, MapManager.instance.mapGenerator.gridWidth * 3);
 
         // Cast points across to find outside area
         float stepX = mapSize.x / density;
-        float stepY = mapSize.y / density;
+        float stepZ = mapSize.y / density;
 
         LayerMask mask = LayerMask.GetMask("Path", "Node");
 
-        for (float height = 0; height < mapSize.x; height = height + stepX)
+        List<Vector3> decorationPositions = new List<Vector3>();
+
+        for (float height = -6; height < mapSize.x + 8; height = height + stepX)
         {
             // Cast
 
-            for (float width = 0; width < mapSize.y; width = width + stepY)
+            for (float width = -3; width < mapSize.y + 2; width = width + stepZ)
             {
                 Vector3 castPosition = new Vector3(height, 2, width);
 
+                // Randomize Position
+                float offsetX = stepX / 4;
+                float offsetZ = stepZ / 4;
+
+                float randomX = UnityEngine.Random.Range(castPosition.x - offsetX, castPosition.x + offsetX);
+                float randomZ = UnityEngine.Random.Range(castPosition.z - offsetZ, castPosition.z + offsetZ);
+
+                Vector3 randomizedPosition = new(randomX, 2, randomZ);
+
                 RaycastHit hit;
 
-                if (!enableDebugRays) { continue; }
-
-                if (Physics.Raycast(castPosition, transform.TransformDirection(Vector3.down), out hit, 3, mask))
+                if (Physics.Raycast(randomizedPosition, transform.TransformDirection(Vector3.down), out hit, 3, mask))
                 {
                     Debug.Log("Did Hit");
                     Debug.Log(hit.collider);
                     Debug.Log(hit.point);
 
-                    if (hit.collider.gameObject.name == "Collider")
+                    if (hit.collider.gameObject.name == "Collider" && enableDebugRays)
                     {
-                        Debug.DrawRay(castPosition, transform.TransformDirection(Vector3.down) * hit.distance, Color.red, rayDuration);
+                        Debug.DrawRay(randomizedPosition, transform.TransformDirection(Vector3.down) * hit.distance, Color.red, rayDuration);
                     }
-                    else
+                    else if (enableDebugRays)
                     {
-                        Debug.DrawRay(castPosition, transform.TransformDirection(Vector3.down) * hit.distance, Color.purple, rayDuration);
+                        Debug.DrawRay(randomizedPosition, transform.TransformDirection(Vector3.down) * hit.distance, Color.purple, rayDuration);
                     }
+                    continue;
                 }
                 else
                 {
-                    Debug.DrawRay(castPosition, transform.TransformDirection(Vector3.down) * 3, Color.green, rayDuration);
+                    if (enableDebugRays)
+                    {
+                        Debug.DrawRay(randomizedPosition, transform.TransformDirection(Vector3.down) * 3, Color.green, rayDuration);
+                    }
+
                     Debug.Log("Did Not Hit");
+
+                    // Save positions if not hit with path
+
+                    decorationPositions.Add(new Vector3(randomizedPosition.x, 0, randomizedPosition.z));
                 }
             }
+        }
+        InstantiateDecorations(decorationPositions, stepX, stepZ);
+    }
+
+    private void InstantiateDecorations(List<Vector3> decorationPositions, float stepX, float stepZ)
+    {
+        GameObject decorationsGO = GameObject.Find("Decorations");
+
+        if (decorationsGO != null)
+        {
+            Destroy(decorationsGO);
+        }
+
+        GameObject decorations = new("Decorations");
+        decorations.transform.parent = map.transform;
+
+        foreach (Vector3 position in decorationPositions)
+        {
+            int randomPrefab = UnityEngine.Random.Range(0, decorationPrefabs.Length);
+
+            GameObject decorationGO = Instantiate(decorationPrefabs[randomPrefab], position, Quaternion.identity, decorations.transform);
+
+            float randomScale = UnityEngine.Random.Range(-3, 3);
+            decorationGO.transform.localScale = new Vector3 (
+                decorationGO.transform.localScale.x + randomScale, 
+                decorationGO.transform.localScale.y + randomScale, 
+                decorationGO.transform.localScale.z + randomScale
+                );
+            decorationGO.transform.Rotate(new Vector3(-90, 0, 0));
         }
     }
 

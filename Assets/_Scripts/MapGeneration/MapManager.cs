@@ -7,15 +7,18 @@ public class MapManager : MonoBehaviour
 {
     public static MapManager instance;
 
+    [Header("Datos de salas")]
     public List<GameObject> createdRooms = new List<GameObject>();
     public List<GameObject> selectedRooms = new List<GameObject>();
     public List<MapNode> nodes = new List<MapNode>();
     public GameObject currentRoom;
     public MapNode currentNode;
 
+    [Header("Referencias")]
     public MapView mapView;
     public MapGenerator mapGenerator;
 
+    [Header("Debug")]
     public bool loadRooms = false;
     public bool canLoadRooms = false;
     public bool mapCreated = false;

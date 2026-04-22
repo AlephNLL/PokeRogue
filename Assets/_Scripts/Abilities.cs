@@ -1,6 +1,6 @@
 using UnityEngine;
 using GameData;
-[CreateAssetMenu(fileName = "AbilityData", menuName = "ScriptableObjects/Ability", order = 1)]
+[CreateAssetMenu(fileName = "AbilityData", menuName = "Scriptable Objects/Ability", order = 1)]
 public class Abilities : ScriptableObject
 {
     new public string name;
@@ -13,7 +13,7 @@ public class Abilities : ScriptableObject
     public bool mustUseStance;
 
     public PassiveEffects passiveEffects;
-    public PassiveExecutionTime passiveExecutionTime;
+    public ExecutionTime passiveExecutionTime;
     public int passiveEffectChance;
     public Status status;
 

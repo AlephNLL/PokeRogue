@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16309091af3cd76408deaa6074da1205, type: 3}
+  m_Name: Healing Flask
+  m_EditorClassIdentifier: Assembly-CSharp::Item
+  name: Healing Flask
+  description: Heals 20 HP.
+  icon: {fileID: 0}
+  isConsumible: 1
+  effect: 5
+  effectChance: 10
+  statusToChangeTo: 0
+  executionTime: 3
+  affectSelf: 0

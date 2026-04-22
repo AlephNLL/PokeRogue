@@ -22,13 +22,17 @@ public class MapView : MonoBehaviour
     [SerializeField] private GameObject startPrefab;
     [SerializeField] private GameObject[] decorationPrefabs;
 
+    [Header("Configuracion del path")]
     [SerializeField] private Material lineMaterial;
-
     [SerializeField] private float lineThickness = 0.1f;
 
+    [Header("Debug")]
     [SerializeField] private bool enableDebugRays = false;
     [SerializeField] private float density = 10f;
     [SerializeField] private float rayDuration = 10f;
+
+    [Header("Referencias")]
+    [SerializeField] private TeamManager teamManager;
 
     private GameObject map;
     private GameObject connections;
@@ -41,6 +45,7 @@ public class MapView : MonoBehaviour
         DrawNodes(path);
         DrawConnections(path);
         PassConnectedRooms(path);
+        // DrawTeam();
 
         StartCoroutine(DrawDecorations());
 
@@ -329,5 +334,38 @@ public class MapView : MonoBehaviour
                 }
             }
         }
+    }
+    private void DrawTeam()
+    {
+        GameObject teamGO = new("Team");
+        teamGO.transform.parent = map.transform;
+
+        List<GameObject> team = new List<GameObject>();
+
+        // Get mesh from prefab and instantiate
+        foreach (GameObject unit in teamManager.playerUnits)
+        {
+            GameObject unitGO = new GameObject(unit.name);
+            unitGO.AddComponent<MeshFilter>();
+            unitGO.AddComponent<MeshRenderer>();
+
+            MeshFilter meshFilter = unit.GetComponentInChildren<MeshFilter>();
+            MeshRenderer meshRenderer = unit.GetComponentInChildren<MeshRenderer>();
+
+            unitGO.GetComponent<MeshFilter>().mesh = meshFilter.sharedMesh;
+            unitGO.GetComponent<MeshRenderer>().material = meshRenderer.sharedMaterial;
+
+            unitGO.transform.parent = teamGO.transform;
+            team.Add(unitGO);
+        }
+
+        OrganizeTeam(team);
+    }
+
+    private void OrganizeTeam(List<GameObject> team)
+    {
+        int count = team.Count;
+
+        // dividirlos segun cantidad en el equipo o hacer que vayan en fila
     }
 }

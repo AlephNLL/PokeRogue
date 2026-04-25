@@ -34,6 +34,10 @@ public class MapView : MonoBehaviour
     [Header("Referencias")]
     [SerializeField] private TeamManager teamManager;
 
+    [SerializeField] private List<GameObject> team;
+    public float moveSpeed = 1f;
+    public float moveDelay = 0.2f;
+
     private GameObject map;
     private GameObject connections;
     private GameObject nodes;
@@ -346,7 +350,7 @@ public class MapView : MonoBehaviour
         GameObject teamGO = new("Team");
         teamGO.transform.parent = map.transform;
 
-        List<GameObject> team = new List<GameObject>();
+        team = new List<GameObject>();
 
         // Get mesh from prefab and instantiate
         foreach (GameObject unit in teamManager.playerUnits)
@@ -408,5 +412,61 @@ public class MapView : MonoBehaviour
                 team[3].transform.position = position - offset;
                 break;
         }
+    }
+
+    public void MoveTeam(Vector3 targetPosition)
+    {
+        int i = 0;
+        foreach (GameObject unit in team)
+        {
+            StartCoroutine(MoveTo(i, unit, targetPosition, moveDelay));
+            i++;
+        }
+    }
+
+    private IEnumerator MoveTo(int i, GameObject obj, Vector3 targetPosition, float delay)
+    {
+        Debug.Log("Move Corroutine");
+        switch (i)
+        {
+            case 0:
+                Debug.Log("Case0");
+                Debug.Log(Vector3.Distance(obj.transform.position, targetPosition));
+
+                while (Vector3.Distance(obj.transform.position, targetPosition) > 0.01f)
+                {
+                    Debug.Log("Loop");
+                    obj.transform.position = Vector3.Lerp(obj.transform.position, targetPosition, Time.deltaTime * moveSpeed);
+                    yield return null;
+                }
+                break;
+            case 1:
+                Debug.Log("Case1");
+
+                yield return new WaitForSeconds(delay);
+                while (Vector3.Distance(obj.transform.position, targetPosition) > 0.01f)
+                {
+                    obj.transform.position = Vector3.Lerp(obj.transform.position, targetPosition, Time.deltaTime * moveSpeed);
+                    yield return null;
+                }
+                break;
+            case 2:
+                yield return new WaitForSeconds(delay * 2);
+                while (Vector3.Distance(obj.transform.position, targetPosition) > 0.01f)
+                {
+                    obj.transform.position = Vector3.Lerp(obj.transform.position, targetPosition, Time.deltaTime * moveSpeed);
+                    yield return null;
+                }
+                break;
+            case 3:
+                yield return new WaitForSeconds(delay * 3);
+                while (Vector3.Distance(obj.transform.position, targetPosition) > 0.01f)
+                {
+                    obj.transform.position = Vector3.Lerp(obj.transform.position, targetPosition, Time.deltaTime * moveSpeed);
+                    yield return null;
+                }
+                break;
+        }
+        yield return null;
     }
 }

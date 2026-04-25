@@ -89,6 +89,8 @@ public class MapCamera : MonoBehaviour
             MapManager.instance.BlockOtherPaths(obj);
             SetSelectedObject(obj);
             MapManager.instance.selectedRooms.Add(obj);
+            MapManager.instance.mapView.MoveTeam(obj.transform.position);
+
         }
     }
 
@@ -130,6 +132,7 @@ public class MapCamera : MonoBehaviour
             MapNode mapNode = MapManager.instance.NodeToMapNode(node);
             MapManager.instance.currentNode = mapNode;
         }
+
     }
 
     private static void UpdateLayers(GameObject obj)

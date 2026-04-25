@@ -45,7 +45,7 @@ public class MapView : MonoBehaviour
         DrawNodes(path);
         DrawConnections(path);
         PassConnectedRooms(path);
-        // DrawTeam();
+        DrawTeam();
 
         StartCoroutine(DrawDecorations());
 
@@ -335,8 +335,14 @@ public class MapView : MonoBehaviour
             }
         }
     }
-    private void DrawTeam()
+    public void DrawTeam()
     {
+        if (GameObject.Find("Team"))
+        {
+            Destroy(GameObject.Find("Team"));
+        }
+
+        Vector3 position = Vector3.zero;
         GameObject teamGO = new("Team");
         teamGO.transform.parent = map.transform;
 
@@ -356,16 +362,51 @@ public class MapView : MonoBehaviour
             unitGO.GetComponent<MeshRenderer>().material = meshRenderer.sharedMaterial;
 
             unitGO.transform.parent = teamGO.transform;
+            unitGO.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
             team.Add(unitGO);
         }
+        if (MapManager.instance.currentNode != null)
+        {
+            position = MapManager.instance.currentNode.position;
+        }
+        else
+        {
+            position = GameObject.Find("Spawn-0").transform.position;
+        }
 
-        OrganizeTeam(team);
+        UpdateTeamPositions(team, position);
     }
 
-    private void OrganizeTeam(List<GameObject> team)
+    private void UpdateTeamPositions(List<GameObject> team, Vector3 position)
     {
         int count = team.Count;
+        Vector3 offset = Vector3.zero;
 
-        // dividirlos segun cantidad en el equipo o hacer que vayan en fila
+        switch (count)
+        {
+            case 0:
+                break;
+            case 1:
+                team[0].transform.position = position;
+                break;
+            case 2:
+                offset = new(0, 0, 0.25f);
+                team[0].transform.position = position + offset;
+                team[1].transform.position = position - offset;
+                break;
+            case 3:
+                offset = new(0, 0, 0.35f);
+                team[0].transform.position = position + offset;
+                team[1].transform.position = position;
+                team[2].transform.position = position - offset;
+                break;
+            case 4:
+                offset = new(0, 0, 0.15f);
+                team[0].transform.position = position + (offset * 3);
+                team[1].transform.position = position + offset;
+                team[2].transform.position = position - (offset * 3);
+                team[3].transform.position = position - offset;
+                break;
+        }
     }
 }

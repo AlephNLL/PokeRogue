@@ -802,14 +802,17 @@ MonoBehaviour:
   selectionCamera: {fileID: 0}
   battleMenu: {fileID: 0}
   abilityMenu: {fileID: 0}
+  itemMenu: {fileID: 0}
   statusMenu: {fileID: 0}
   attackButton: {fileID: 0}
+  itemButton: {fileID: 0}
   runButton: {fileID: 0}
   abilityButtons:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  itemButtons: []
   healthBar: {fileID: 0}
   nameText: {fileID: 0}
   isPlayerControlled: 0

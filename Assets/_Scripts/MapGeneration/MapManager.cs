@@ -37,7 +37,7 @@ public class MapManager : MonoBehaviour
 
    private void Start()
     {
-        if (createdRooms.Count() == 0 && nodes.Count() == 0)
+        if (createdRooms.Count() == 0 && nodes.Count() == 0 && mapCreated == false)
         {
             nodes.Clear();
             createdRooms.Clear();
@@ -61,8 +61,11 @@ public class MapManager : MonoBehaviour
         if (scene.name == "MapGeneration")
         {
             Debug.Log("Mapa Generado en escena de mapa");
-            mapView.DrawMap(nodes);
-            
+            if (mapCreated == true)
+            {
+                mapView.DrawMap(nodes);
+            }
+
             if (mapCreated)
             {
                 FindCurrentRoom(currentNode);

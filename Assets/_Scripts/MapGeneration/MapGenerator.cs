@@ -7,15 +7,16 @@ using Random = UnityEngine.Random;
 using GameData;
 public class MapGenerator : MonoBehaviour
 {
+    [Header("Ajustes del grid")]
     [SerializeField] public int gridWidth = 10;
     [SerializeField] public int gridHeight = 10;
     [SerializeField] private int startingPaths = 2;
     [SerializeField] private int iterations = 2;
+    [SerializeField] private float randomRange = 0.5f;
 
+    [Header("Referencias")]
     [SerializeField] private MapView mapView;
     [SerializeField] private RoomAssigner roomAssigner;
-
-    [SerializeField] private float randomRange = 0.5f;
 
     private MapNode[,] currentGrid;
     List<MapNode> path;

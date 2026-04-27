@@ -28,6 +28,7 @@ public class TeamManager : MonoBehaviour
             unitData.currentHp = unit.constitution * unit.level + 1;
             unitData.level = unit.level;
             unitData.name = unit.name;
+            unitData.knownAbilities = unit.knownAbilities;
             PlayerData.teamData.Add(unitData);
         }
 

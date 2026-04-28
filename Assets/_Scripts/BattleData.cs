@@ -6,4 +6,5 @@ public class BattleData : MonoBehaviour
 {
     public static Difficulty Difficulty;
     public static GameObject[] enemyTeam;
+    public static int enemyLevel;
 }

@@ -1261,6 +1261,18 @@ PrefabInstance:
       propertyPath: teamManager
       value: 
       objectReference: {fileID: 1861837860}
+    - target: {fileID: 3413889519824911466, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: p_items.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3413889519824911466, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'p_items.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: ffeadc88ed3fbc84bbea59fb0ee0cc16, type: 2}
+    - target: {fileID: 3413889519824911466, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'p_items.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 3bf009a713319d74189d8b6c1caed682, type: 2}
     - target: {fileID: 4772832938886564935, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: m_Name
       value: MapManager

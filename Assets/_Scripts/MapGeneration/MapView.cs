@@ -250,9 +250,9 @@ public class MapView : MonoBehaviour
 
                 if (Physics.Raycast(randomizedPosition, transform.TransformDirection(Vector3.down), out hit, 3, mask))
                 {
-                    Debug.Log("Did Hit");
-                    Debug.Log(hit.collider);
-                    Debug.Log(hit.point);
+                    //Debug.Log("Did Hit");
+                    //Debug.Log(hit.collider);
+                    //Debug.Log(hit.point);
 
                     if (hit.collider.gameObject.name == "Collider" && enableDebugRays)
                     {
@@ -271,7 +271,7 @@ public class MapView : MonoBehaviour
                         Debug.DrawRay(randomizedPosition, transform.TransformDirection(Vector3.down) * 3, Color.green, rayDuration);
                     }
 
-                    Debug.Log("Did Not Hit");
+                    //Debug.Log("Did Not Hit");
 
                     // Save positions if not hit with path
 
@@ -368,7 +368,7 @@ public class MapView : MonoBehaviour
         team = new List<GameObject>();
 
         // Get mesh from prefab and instantiate
-        foreach (GameObject unit in teamManager.playerUnits)
+        foreach (GameObject unit in PlayerData.Instance.GetTeamPrefabs())
         {
             GameObject unitGO = new GameObject(unit.name);
             unitGO.AddComponent<MeshFilter>();

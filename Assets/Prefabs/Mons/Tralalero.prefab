@@ -780,7 +780,7 @@ MonoBehaviour:
   name: Tralalero
   description: 
   currentStance: 3
-  level: 5
+  level: 1
   status: 0
   strength: 20
   constitution: 12
@@ -791,12 +791,12 @@ MonoBehaviour:
   attack: 0
   defense: 0
   speed: 0
-  knownAbilities:
-  - {fileID: 11400000, guid: fc18a66dd5513e64a9a4b22fa6ddfcd7, type: 2}
-  - {fileID: 11400000, guid: 37b116ffb03a7ba449ee1d2d55c6776b, type: 2}
-  - {fileID: 11400000, guid: 921b154be990f4f4e80d51def1f09d7a, type: 2}
-  - {fileID: 11400000, guid: bc32a2fe51070b244b1f1a3a5f3282b4, type: 2}
-  abilityPool: []
+  knownAbilities: []
+  abilityPool:
+  - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
+  - {fileID: 11400000, guid: 0b8036aed22fd6648acfcf5dbfb9cd6b, type: 2}
+  - {fileID: 11400000, guid: e664bd8dc9d242645a35b522860ed38b, type: 2}
+  - {fileID: 11400000, guid: 7c519b83ede18284a8c92606d4d5ea92, type: 2}
   heldItem: {fileID: 11400000, guid: bac0691f52b866b4fbfea9ac56a3d840, type: 2}
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}

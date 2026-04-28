@@ -31,6 +31,8 @@ public class CustomUnitEditor : Editor
     SerializedProperty knownAbilities;
     SerializedProperty abilityPool;
 
+    SerializedProperty heldItem;
+
     SerializedProperty actionCamera;
     SerializedProperty selectionCamera;
     SerializedProperty battleMenu;
@@ -46,6 +48,7 @@ public class CustomUnitEditor : Editor
     bool unitDataGroup;
     bool statsGroup;
     bool abilitiesGroup;
+    bool itemsGroup;
     bool miscGroup;
     #endregion
 
@@ -73,6 +76,8 @@ public class CustomUnitEditor : Editor
 
         knownAbilities = serializedObject.FindProperty("knownAbilities");
         abilityPool = serializedObject.FindProperty("abilityPool");
+
+        heldItem = serializedObject.FindProperty("heldItem");
 
         actionCamera = serializedObject.FindProperty("actionCamera");
         selectionCamera = serializedObject.FindProperty("selectionCamera");
@@ -122,6 +127,12 @@ public class CustomUnitEditor : Editor
         {
             EditorGUILayout.PropertyField(knownAbilities);
             EditorGUILayout.PropertyField(abilityPool);
+        }
+
+        itemsGroup = EditorGUILayout.Foldout(itemsGroup, "Item");
+        if (itemsGroup)
+        {
+            EditorGUILayout.PropertyField(heldItem);
         }
 
         miscGroup = EditorGUILayout.Foldout(miscGroup, "Misc");

@@ -12,7 +12,10 @@ public class Billboard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        LookAtCam();
+        if (cam)
+        {
+            LookAtCam();
+        }
     }
 
     void LookAtCam()

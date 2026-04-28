@@ -8,6 +8,7 @@ using System.Collections;
 using System.Linq;
 using System.Drawing;
 using Unity.VisualScripting;
+using static UnityEngine.UI.CanvasScaler;
 public class Unit : MonoBehaviour
 {
     public int id;
@@ -40,6 +41,8 @@ public class Unit : MonoBehaviour
     public Abilities[] knownAbilities;
     public Abilities[] abilityPool;
 
+    public Item heldItem;
+
     [Header("Misc")]
     [SerializeField]
     private CinemachineVirtualCamera actionCamera;
@@ -50,13 +53,19 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private Canvas abilityMenu;
     [SerializeField]
+    private Canvas itemMenu;
+    [SerializeField]
     private Canvas statusMenu;
     [SerializeField]
     private Button attackButton;
     [SerializeField]
+    private Button itemButton;
+    [SerializeField]
     private Button runButton;
     [SerializeField]
     private Button[] abilityButtons;
+    [SerializeField]
+    private Button[] itemButtons;
     [SerializeField]
     private Slider healthBar;
     [SerializeField]
@@ -90,10 +99,13 @@ public class Unit : MonoBehaviour
 
             battleMenu = transform.Find("MainSelection").gameObject.GetComponent<Canvas>();
             abilityMenu = transform.Find("Abilities").gameObject.GetComponent<Canvas>();
+            itemMenu = transform.Find("Items").gameObject.GetComponent<Canvas>();
 
             attackButton = battleMenu.GetComponentsInChildren<Button>(true)[0];
+            itemButton = battleMenu.GetComponentsInChildren<Button>(true)[1];
             runButton = battleMenu.GetComponentsInChildren<Button>(true)[2];
             abilityButtons = abilityMenu.GetComponentsInChildren<Button>(true);
+            itemButtons = itemMenu.GetComponentsInChildren<Button>(true);
         }
         else
         {
@@ -157,6 +169,7 @@ public class Unit : MonoBehaviour
         battleMenu.gameObject.SetActive(true);
 
         attackButton.onClick.AddListener(delegate { TBBS.instance.AbilityMenu(this); });
+        itemButton.onClick.AddListener(delegate { TBBS.instance.ItemMenu(this); });
         runButton.onClick.AddListener(delegate { TBBS.instance.Run(this); });
     }
     public void CloseBattleMenu()
@@ -198,6 +211,35 @@ public class Unit : MonoBehaviour
         {
             int index = i;
             abilityButtons[index].onClick.RemoveAllListeners();
+        }
+    }
+
+    public void OpenItemMenu()
+    {
+        if (itemMenu == null) return;
+        itemMenu.gameObject.SetActive(true);
+
+        for (int i = 0; i < PlayerData.items.Count; i++)
+        {
+            itemButtons[i].gameObject.SetActive(true);
+            itemButtons[i].interactable=true;
+            itemButtons[i].GetComponentInChildren<TMP_Text>().text = PlayerData.items[i].name;
+
+            int index = i;
+
+            itemButtons[index].onClick.AddListener(delegate { TBBS.instance.SelectItem(PlayerData.items[index]); });
+        }
+    }
+
+    public void CloseItemMenu()
+    {
+        if (itemMenu == null) return;
+        itemMenu.gameObject.SetActive(false);
+
+        for (int i = 0; i < knownAbilities.Length; i++)
+        {
+            int index = i;
+            itemButtons[index].onClick.RemoveAllListeners();
         }
     }
 
@@ -333,12 +375,14 @@ public class Unit : MonoBehaviour
 
     public void OnBattleStart()
     {
-        ResolvePassiveEffect(PassiveExecutionTime.BATTLESTART);
+        ResolvePassiveEffect(ExecutionTime.BATTLESTART);
+        ResolveItemEffect(ExecutionTime.BATTLESTART);
     }
 
     public void OnTurnStart()
     {
-        ResolvePassiveEffect(PassiveExecutionTime.TURNSTART);
+        ResolvePassiveEffect(ExecutionTime.TURNSTART);
+        ResolveItemEffect(ExecutionTime.TURNSTART);
     }
 
     public void OnTurnEnd()
@@ -359,18 +403,19 @@ public class Unit : MonoBehaviour
                 break;
         }
 
-        ResolvePassiveEffect(PassiveExecutionTime.TURNEND);
+        ResolvePassiveEffect(ExecutionTime.TURNEND);
+        ResolveItemEffect(ExecutionTime.TURNEND);
     }
 
-    public void ResolvePassiveEffect(PassiveExecutionTime battleStage, Unit lastHitUnit = null)
+    public void ResolvePassiveEffect(ExecutionTime battleStage, Unit lastHitUnit = null)
     {
-        foreach (var item in knownAbilities)
+        foreach (var ability in knownAbilities)
         {
-            if (item.abilityType == AbilityType.PASSIVE && item.passiveExecutionTime == battleStage && item.passiveEffectChance >= Random.Range(1, 100))
+            if (ability.abilityType == AbilityType.PASSIVE && ability.passiveExecutionTime == battleStage && ability.passiveEffectChance >= Random.Range(1, 100))
             {
                 List<Unit> target = new List<Unit>();
 
-                switch (item.target)
+                switch (ability.target)
                 {
                     case AbilityTarget.SELF:
                         target.Add(this);
@@ -393,7 +438,7 @@ public class Unit : MonoBehaviour
                         target.AddRange(TBBS.instance.allUnits);
                         break;
                 }
-                switch (item.passiveEffects)
+                switch (ability.passiveEffects)
                 {
                     case PassiveEffects.UPATK:
                         foreach (var unit in target)
@@ -405,7 +450,7 @@ public class Unit : MonoBehaviour
                     case PassiveEffects.UPATKONSTATUS:
                         foreach (var unit in target)
                         {
-                            if (unit.status != item.status) continue;
+                            if (unit.status != ability.status) continue;
                             Debug.Log(unit.name + " attack raises!");
                             unit.ApplyStatModifier(Stats.ATK, 1.5f);
                         }
@@ -455,12 +500,43 @@ public class Unit : MonoBehaviour
                     case PassiveEffects.APPLYSTATUS:
                         foreach (var unit in target)
                         {
-                            unit.ApplyStatus(item.status);
+                            unit.ApplyStatus(ability.status);
                         }
                         break;
                     default:
                         break;
                 }
+            }
+        }
+    }
+
+    public void ResolveItemEffect(ExecutionTime battleStage, Unit lastHitUnit = null)
+    {
+        if (!heldItem) return;
+
+        Unit target = heldItem.affectSelf ? this : lastHitUnit;
+
+        if(heldItem.executionTime == battleStage && heldItem.effectChance >= Random.Range(1, 100))
+        {
+            switch (heldItem.effect)
+            {
+                case ItemEffects.UPATK:
+                    target.ApplyStatModifier(Stats.ATK, 1.5f);
+                    break;
+                case ItemEffects.UPDEF:
+                    target.ApplyStatModifier(Stats.DEF, 1.5f);
+                    break;
+                case ItemEffects.UPSPEED:
+                    target.ApplyStatModifier(Stats.SPEED, 1.5f);
+                    break;
+                case ItemEffects.ADDTURN:
+                    target.additionalTurn = true;
+                    break;
+                case ItemEffects.APPLYSTATUS:
+                    target.ApplyStatus(Status.POISONED);
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -478,7 +554,8 @@ public class Unit : MonoBehaviour
 
         status = statusToApply;
 
-        ResolvePassiveEffect(PassiveExecutionTime.ONSTATUSCHANGE);
+        ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
+        ResolveItemEffect(ExecutionTime.ONSTATUSCHANGE);
     }
     IEnumerator WaitToApplyStatus(Status statusToApply)
     {
@@ -494,7 +571,8 @@ public class Unit : MonoBehaviour
         status = Status.NONE;
         FresnelApplier.clearFresnel(gameObject);
 
-        ResolvePassiveEffect(PassiveExecutionTime.ONSTATUSCHANGE);
+        ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
+        ResolveItemEffect(ExecutionTime.ONSTATUSCHANGE);
     }
 
     public bool HasAdditionalTurn()

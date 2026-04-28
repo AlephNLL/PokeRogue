@@ -18,7 +18,10 @@ public class MapCamera : MonoBehaviour
     [Header("Opciones de Interacción")]
     public bool enableFollowMode = true;
 
-    public CinemachineVirtualCamera virtualCamera;
+    public CinemachineVirtualCamera mapCamera;
+    public CinemachineVirtualCamera statsCamera;
+
+    private int lookAtIndex = 0;
 
     public bool ReachedTarget { get => reachedTarget; set => reachedTarget = value; }
 
@@ -44,13 +47,72 @@ public class MapCamera : MonoBehaviour
         //    transform.position = desiredPosition;
         }
 
+        if (MapManager.instance.mapLoaded == true)
+        {
+            mapCamera = GameObject.Find("MapCam").GetComponent<CinemachineVirtualCamera>();
+            statsCamera = GameObject.Find("StatsCam").GetComponent <CinemachineVirtualCamera>();
+            statsCamera.gameObject.SetActive(false);
+            statsCamera.Priority = 2;
+        }
+
     }
 
     void Update()
     {
-        if (virtualCamera.Follow == null)
+        if (mapCamera.Follow == null)
         {
-            virtualCamera.Follow = MapView.instance.team[0].transform;
+            mapCamera.Follow = MapView.instance.team[0].transform;
+        }
+
+        if (statsCamera.Follow == null || statsCamera.LookAt == null)
+        {
+            statsCamera.Follow = MapView.instance.team[0].transform;
+            statsCamera.LookAt = MapView.instance.team[0].transform;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (statsCamera == null) { return; }
+
+            if (statsCamera.gameObject.activeInHierarchy == false)
+            {
+                statsCamera.gameObject.SetActive(true);
+            }
+            else
+            {
+                statsCamera.gameObject.SetActive(false);
+            }
+        }
+
+        if (statsCamera.gameObject.activeInHierarchy)
+        {
+            
+
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                lookAtIndex++;
+
+                if (lookAtIndex >= MapView.instance.team.Count)
+                {
+                    lookAtIndex = 0;
+                }
+
+                statsCamera.Follow = MapView.instance.team[lookAtIndex].transform;
+                statsCamera.LookAt = MapView.instance.team[lookAtIndex].transform;
+
+            }
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                lookAtIndex--;
+
+                if (lookAtIndex < 0)
+                {
+                    lookAtIndex = MapView.instance.team.Count - 1;
+                }
+
+                statsCamera.Follow = MapView.instance.team[lookAtIndex].transform;
+                statsCamera.LookAt = MapView.instance.team[lookAtIndex].transform;
+            }
         }
 
         if (!enableFollowMode) return;

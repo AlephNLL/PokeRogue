@@ -22,6 +22,7 @@ public class MapManager : MonoBehaviour
     public bool loadRooms = false;
     public bool canLoadRooms = false;
     public bool mapCreated = false;
+    public bool mapLoaded = false;
 
     private void Awake()
     {
@@ -60,6 +61,7 @@ public class MapManager : MonoBehaviour
 
         if (scene.name == "MapGeneration")
         {
+            mapLoaded = true;
             Debug.Log("Mapa Generado en escena de mapa");
             if (mapCreated == true)
             {
@@ -71,6 +73,9 @@ public class MapManager : MonoBehaviour
                 FindCurrentRoom(currentNode);
             }
 
+        } else
+        {
+            mapLoaded = false;
         }
     }
 

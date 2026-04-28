@@ -423,8 +423,8 @@ public class MapView : MonoBehaviour
                 offset = new(0, 0, 0.15f);
                 team[0].transform.position = position + (offset * 3);
                 team[1].transform.position = position + offset;
-                team[2].transform.position = position - (offset * 3);
-                team[3].transform.position = position - offset;
+                team[2].transform.position = position - offset;
+                team[3].transform.position = position - (offset * 3);
                 break;
         }
     }

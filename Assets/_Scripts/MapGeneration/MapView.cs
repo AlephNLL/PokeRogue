@@ -12,6 +12,8 @@ using UnityEngine.UIElements;
 
 public class MapView : MonoBehaviour
 {
+    public static MapView instance;
+
     [Header("Prefabs Tipos de sala")]
     [SerializeField] private GameObject notAssignedPrefab;
     [SerializeField] private GameObject enemyPrefab;
@@ -34,13 +36,26 @@ public class MapView : MonoBehaviour
     [Header("Referencias")]
     [SerializeField] private TeamManager teamManager;
 
-    [SerializeField] private List<GameObject> team;
+    [SerializeField] public List<GameObject> team;
     public float moveSpeed = 1f;
     public float moveDelay = 0.2f;
 
     private GameObject map;
     private GameObject connections;
     private GameObject nodes;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(instance.gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     public void DrawMap(List<MapNode> path)
     {
@@ -416,57 +431,74 @@ public class MapView : MonoBehaviour
 
     public void MoveTeam(Vector3 targetPosition)
     {
-        int i = 0;
-        foreach (GameObject unit in team)
+        int count = team.Count;
+        Vector3 offset = Vector3.zero;
+        Vector3 offsetTarget = targetPosition;
+
+
+        switch (count)
         {
-            StartCoroutine(MoveTo(i, unit, targetPosition, moveDelay));
-            i++;
+            case 1:
+                StartCoroutine(MoveTo(team[0], targetPosition, 0, true));
+                break; 
+            case 2:
+                offset = new(0, 0, 0.25f);
+                offsetTarget = targetPosition + offset;
+                StartCoroutine(MoveTo(team[0], offsetTarget, 0));
+
+                offsetTarget = targetPosition - offset;
+                StartCoroutine(MoveTo(team[1], offsetTarget, moveDelay, true));
+
+                break;
+            case 3:
+                offset = new(0, 0, 0.35f);
+                offsetTarget = targetPosition + offset;
+                StartCoroutine(MoveTo(team[0], offsetTarget, 0));
+
+                offsetTarget = targetPosition;
+                StartCoroutine(MoveTo(team[1], offsetTarget, moveDelay));
+
+                offsetTarget = targetPosition - offset;
+                StartCoroutine(MoveTo(team[2], offsetTarget, moveDelay * 2, true));
+
+                break;
+            case 4:
+                offset = new(0, 0, 0.15f);
+                offsetTarget = targetPosition + (offset * 3);
+                StartCoroutine(MoveTo(team[0], offsetTarget, 0));
+
+                offsetTarget = targetPosition + offset;
+                StartCoroutine(MoveTo(team[1], offsetTarget, moveDelay));
+
+                offsetTarget = targetPosition - offset;
+                StartCoroutine(MoveTo(team[2], offsetTarget, moveDelay * 2));
+
+                offsetTarget = targetPosition - (offset * 3);
+                StartCoroutine(MoveTo(team[3], offsetTarget, moveDelay * 3, true));
+                
+                break;
         }
     }
 
-    private IEnumerator MoveTo(int i, GameObject obj, Vector3 targetPosition, float delay)
+    private IEnumerator MoveTo(GameObject obj, Vector3 targetPosition, float delay, bool last = false)
     {
-        Debug.Log("Move Corroutine");
-        switch (i)
+        Debug.Log("moving");
+
+        yield return new WaitForSeconds(delay);
+
+
+        while (Vector3.Distance(obj.transform.position, targetPosition) > 0.01f)
         {
-            case 0:
-                Debug.Log("Case0");
-                Debug.Log(Vector3.Distance(obj.transform.position, targetPosition));
-
-                while (Vector3.Distance(obj.transform.position, targetPosition) > 0.01f)
-                {
-                    Debug.Log("Loop");
-                    obj.transform.position = Vector3.Lerp(obj.transform.position, targetPosition, Time.deltaTime * moveSpeed);
-                    yield return null;
-                }
-                break;
-            case 1:
-                Debug.Log("Case1");
-
-                yield return new WaitForSeconds(delay);
-                while (Vector3.Distance(obj.transform.position, targetPosition) > 0.01f)
-                {
-                    obj.transform.position = Vector3.Lerp(obj.transform.position, targetPosition, Time.deltaTime * moveSpeed);
-                    yield return null;
-                }
-                break;
-            case 2:
-                yield return new WaitForSeconds(delay * 2);
-                while (Vector3.Distance(obj.transform.position, targetPosition) > 0.01f)
-                {
-                    obj.transform.position = Vector3.Lerp(obj.transform.position, targetPosition, Time.deltaTime * moveSpeed);
-                    yield return null;
-                }
-                break;
-            case 3:
-                yield return new WaitForSeconds(delay * 3);
-                while (Vector3.Distance(obj.transform.position, targetPosition) > 0.01f)
-                {
-                    obj.transform.position = Vector3.Lerp(obj.transform.position, targetPosition, Time.deltaTime * moveSpeed);
-                    yield return null;
-                }
-                break;
+            obj.transform.position = Vector3.Lerp(obj.transform.position, targetPosition, moveSpeed * Time.deltaTime);
+            yield return null;
         }
+
+        if (last)
+        {
+            Debug.Log("Reached Target");
+            MapCamera.instance.ReachedTarget = true;
+        }
+
         yield return null;
     }
 }

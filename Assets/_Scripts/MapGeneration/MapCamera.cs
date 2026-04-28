@@ -3,19 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using GameData;
+using Cinemachine;
 public class MapCamera : MonoBehaviour
 {
-    public MapView mapView;
+    public static MapCamera instance;
 
     [Header("Ajustes del Seguimiento")]
     public float followOffsetY = 3.0f;
     public float followOffsetX = 2.0f;
     public float smoothSpeed = 15.0f;
     public LayerMask nodeLayerMask;
-    public static bool reachedTarget = false;
+    private static bool reachedTarget = false;
 
     [Header("Opciones de Interacción")]
     public bool enableFollowMode = true;
+
+    public CinemachineVirtualCamera virtualCamera;
+
+    public bool ReachedTarget { get => reachedTarget; set => reachedTarget = value; }
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     void Start()
     {
@@ -33,10 +43,16 @@ public class MapCamera : MonoBehaviour
 
             transform.position = desiredPosition;
         }
+
     }
 
     void Update()
     {
+        if (virtualCamera.Follow == null)
+        {
+            virtualCamera.Follow = MapView.instance.team[0].transform;
+        }
+
         if (!enableFollowMode) return;
 
         if (Input.GetMouseButton(0))
@@ -44,10 +60,10 @@ public class MapCamera : MonoBehaviour
             CheckRaycast();
         }
 
-        if (MapManager.instance.currentRoom != null && MapManager.instance.currentRoom.gameObject.activeInHierarchy)
-        {
-            if (!reachedTarget) { FollowTarget(); }
-        }
+        //if (MapManager.instance.currentRoom != null && MapManager.instance.currentRoom.gameObject.activeInHierarchy)
+        //{
+        //    if (!reachedTarget) { FollowTarget(); }
+        //}
 
         if (reachedTarget)
         {

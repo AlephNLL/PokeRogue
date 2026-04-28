@@ -70,6 +70,7 @@ public class MapManager : MonoBehaviour
             {
                 FindCurrentRoom(currentNode);
             }
+
         }
     }
 

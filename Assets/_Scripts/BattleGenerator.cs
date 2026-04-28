@@ -56,6 +56,6 @@ public class BattleGenerator : MonoBehaviour
         
 
         BattleData.enemyTeam = enemyPrefabs;
-        BattleData.enemyLevel = ((int)difficulty) + 1;
+        BattleData.enemyLevel = ((int)difficulty) + 1 + MapManager.instance.currentNode.floorLevel/2;
     }
 }

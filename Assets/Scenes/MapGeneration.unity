@@ -615,6 +615,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: teamData.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'teamData.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 86a7d95dde3aab04086db209e33f9886, type: 2}
+    - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'teamData.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 925d57a2d96d39c4999a373ea3ddba4e, type: 2}
     - target: {fileID: 936192196252588791, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10.93487
@@ -659,6 +671,18 @@ PrefabInstance:
       propertyPath: teamManager
       value: 
       objectReference: {fileID: 1861837860}
+    - target: {fileID: 3413889519824911466, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: p_items.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3413889519824911466, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'p_items.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: ffeadc88ed3fbc84bbea59fb0ee0cc16, type: 2}
+    - target: {fileID: 3413889519824911466, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'p_items.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 3bf009a713319d74189d8b6c1caed682, type: 2}
     - target: {fileID: 4772832938886564935, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: m_Name
       value: MapManager

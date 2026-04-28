@@ -1,19 +1,26 @@
 
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DaycareManager : MonoBehaviour
 {
-    public List<UnitData> units;
+    public List<UnitData> startingUnits;
+    public static List<UnitData> units;
+    List<GameObject> unitPrefabs;
     [SerializeField]
     GameObject spawnPoint;
     [SerializeField]
     int maxUnitsPerShelf = 5;
     [SerializeField]
+    float unitSpacing = 2;
+    [SerializeField]
     Vector3 shelfOffset;
 
     private void Start()
     {
+        units = startingUnits;
+        unitPrefabs = new List<GameObject>();
         SpawnUnits();
     }
 
@@ -21,8 +28,10 @@ public class DaycareManager : MonoBehaviour
     {
         for (int i = 0; i < units.Count; i++)
         {
-            Vector3 offset = i / maxUnitsPerShelf * shelfOffset + Vector3.right * 2 * (i % maxUnitsPerShelf);
-            Instantiate(units[i].prefab.gameObject, spawnPoint.transform.position + offset, Quaternion.identity);
+            Vector3 offset = i / maxUnitsPerShelf * shelfOffset + Vector3.right * unitSpacing * (i % maxUnitsPerShelf);
+            GameObject unitPrefab = Instantiate(units[i].prefab.gameObject, spawnPoint.transform.position + offset, Quaternion.identity);
+            unitPrefab.GetComponent<Unit>().enabled = false;
+            unitPrefabs.Add(unitPrefab);
         }
     }
     void DeleteUnits()
@@ -33,6 +42,8 @@ public class DaycareManager : MonoBehaviour
         {
             Destroy(unit.gameObject);
         }
+
+        unitPrefabs.Clear();
     }
     private void Update()
     {
@@ -46,18 +57,23 @@ public class DaycareManager : MonoBehaviour
 
     UnitData GenerateNewUnit(UnitData unit1, UnitData unit2)
     {
-        //Select a unit to be progenitor
-        UnitData parent = Random.Range(0, 2) == 0 ? unit1 : unit2;
-        UnitData unit = new UnitData();
+        //Select a unit to inherit species and ability
+        UnitData speciesParent = Random.Range(0, 2) == 0 ? unit1 : unit2;
+        UnitData abilityParent = Random.Range(0, 2) == 0 ? unit1 : unit2;
 
-        //Choose a random ability to inherit - CAMBIAR PARA QUE NO SEA SOLO HABIULIDADES DEL PROGENITOR
-        Abilities childAbility = parent.knownAbilities[Random.Range(0, parent.knownAbilities.Length)];
+        //Choose a random ability to inherit
+        Abilities childAbility = abilityParent.knownAbilities[Random.Range(0, abilityParent.knownAbilities.Length)];
 
-        unit.name = parent.name;
-        unit.prefab = parent.prefab;
+        UnitData unit = ScriptableObject.CreateInstance<UnitData>();
+        unit.name = speciesParent.name;
+        unit.prefab = speciesParent.prefab;
         unit.level = 1;
+        unit.currentHp = speciesParent.prefab.GetComponent<Unit>().constitution + 1;
         unit.knownAbilities = new Abilities[1];
         unit.knownAbilities[0] = childAbility;
+
+        units.Remove(unit1);
+        units.Remove(unit2);
 
         return unit;
     }

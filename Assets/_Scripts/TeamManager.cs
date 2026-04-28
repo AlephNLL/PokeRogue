@@ -8,31 +8,15 @@ public class TeamManager : MonoBehaviour
 {
     public static TeamManager instance;
     public List<UnitData> teamData;
-    public List<GameObject> playerUnits;
 
+    private void Awake()
+    {
+        Debug.LogWarning("Team Manager Awake");
+        PlayerData.teamData = teamData;
+    }
     private void Start()
     {
         instance = this;
-        InitializeTeamData();
-    }
-    void InitializeTeamData()
-    {
-        PlayerData.playerTeam = playerUnits;
-        PlayerData.teamData = new List<UnitData>();
-
-        for (int i = 0; i < PlayerData.playerTeam.Count; i++)
-        {
-            Unit unit = PlayerData.playerTeam[i].GetComponent<Unit>();
-            UnitData unitData = ScriptableObject.CreateInstance<UnitData>();
-            unitData.id = i;
-            unitData.currentHp = unit.constitution * unit.level + 1;
-            unitData.level = unit.level;
-            unitData.name = unit.name;
-            unitData.knownAbilities = unit.knownAbilities;
-            PlayerData.teamData.Add(unitData);
-        }
-
-        teamData = PlayerData.teamData;
     }
     public void SaveTeamData(List<Unit> playerTeam)
     {
@@ -48,12 +32,10 @@ public class TeamManager : MonoBehaviour
                 if (foundData) 
                 {
                     newTeamData.Add(foundData);
-                    newTeam.Add(PlayerData.playerTeam[i]);
                 } 
             }
 
             PlayerData.teamData = newTeamData;
-            PlayerData.playerTeam = newTeam;
         }
 
         //Set variables
@@ -65,7 +47,6 @@ public class TeamManager : MonoBehaviour
         }
 
         teamData = PlayerData.teamData;
-        playerUnits = PlayerData.playerTeam;
     }
 
     public void HealTeam(float healingPercent)
@@ -73,7 +54,7 @@ public class TeamManager : MonoBehaviour
         for (int i = 0; i < teamData.Count; i++)
         {
             teamData[i].currentHp = (int)(teamData[i].currentHp + teamData[i].currentHp * healingPercent);
-            int maxHp = playerUnits[i].GetComponent<Unit>().constitution * teamData[i].level + 1;
+            int maxHp = teamData[i].prefab.GetComponent<Unit>().constitution * teamData[i].level + 1;
             if (teamData[i].currentHp > maxHp) teamData[i].currentHp = maxHp;
         }
     }
@@ -82,21 +63,24 @@ public class TeamManager : MonoBehaviour
     {
         EndScreenManager.monSelected = true;
         Unit unit = mon.GetComponent<Unit>();
+
         UnitData unitData = ScriptableObject.CreateInstance<UnitData>();
         unitData.currentHp = unit.constitution * unit.level + 1;
         unitData.id = PlayerData.teamData.Count;
         unitData.level = unit.level;
         unitData.name = unit.name;
+        unitData.prefab = mon;
+        unitData.knownAbilities = unit.GetUnitKnownAbilities();
 
         if (PlayerData.teamData.Count < 4)
         {
             PlayerData.teamData.Add(unitData);
-            PlayerData.playerTeam.Add(mon);
             EndScreenManager.instance.EndMonSelection(unit);
         }
         else
         {
-            Debug.Log("Team already full, sending to daycare...");
+            unitData.id = 0;
+            DaycareManager.units.Add(unitData);
             EndScreenManager.instance.EndMonSelection(unit, true);
         }
     }

@@ -119,13 +119,29 @@ public class Unit : MonoBehaviour
     }
     private void InitializeStats()
     {
-        maxHp = constitution * level + 1;
-        attack = (int)(strength / 5f * level + 1);
-        defense = (int)(constitution / 5f * level + 1);
-        speed = (int)(dexterity / 5f * level + 1);
+        if (isPlayerControlled)
+        {
+            currentHp = PlayerData.teamData.Find(item => item.id == id).currentHp;
+            level = PlayerData.teamData.Find(item => item.id == id).level;
 
-        if (isPlayerControlled) currentHp = PlayerData.teamData.Find(item => item.id == id).currentHp;
-        else currentHp = maxHp;
+            maxHp = constitution * level + 1;
+            attack = (int)(strength / 5f * level + 1);
+            defense = (int)(constitution / 5f * level + 1);
+            speed = (int)(dexterity / 5f * level + 1);
+        }
+        else 
+        {
+            level = BattleData.enemyLevel;
+
+            maxHp = constitution * level + 1;
+            attack = (int)(strength / 5f * level + 1);
+            defense = (int)(constitution / 5f * level + 1);
+            speed = (int)(dexterity / 5f * level + 1);
+
+            currentHp = maxHp;
+        }
+
+        knownAbilities = GetUnitKnownAbilities();
 
         if (currentHp < maxHp)
         {
@@ -593,5 +609,25 @@ public class Unit : MonoBehaviour
             if (item.name == passiveName) return true;
         }
         return false;
+    }
+
+    public Abilities[] GetUnitKnownAbilities()
+    {
+        List<Abilities> abilityList = new List<Abilities>();
+
+        for (int i = 0; i < level; i++)
+        {
+            if (i < abilityPool.Length)
+            {
+                abilityList.Add(abilityPool[i]);
+
+                if (i > 3)
+                {
+                    abilityList.RemoveAt(0);
+                }
+            }
+        }
+
+        return abilityList.ToArray();
     }
 }

@@ -15,8 +15,7 @@ MonoBehaviour:
   id: 0
   name: Tung Tung
   prefab: {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
-  level: 1
-  currentHp: 0
-  knownAbilities:
-  - {fileID: 11400000, guid: 0f310c87da1a71d43bf46b40a61f9538, type: 2}
+  level: 5
+  currentHp: 36
+  knownAbilities: []
   isVeteran: 0

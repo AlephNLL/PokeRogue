@@ -7,6 +7,7 @@ public class UnitData : ScriptableObject
     new public string name;
     public GameObject prefab;
     public int level;
+    public Item heldItem;
     public int currentHp;
     public Abilities[] knownAbilities;
     public bool isVeteran;

@@ -49,15 +49,11 @@ public class MapManager : MonoBehaviour
 
     void OnEnable()
     {
-        Debug.Log("OnEnable called");
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("OnSceneLoaded: " + scene.name);
-        Debug.Log(mode);
-
         if (scene.name == "MapGeneration")
         {
             Debug.Log("Mapa Generado en escena de mapa");

@@ -36,9 +36,6 @@ public class TBBS : MonoBehaviour
     private void Awake()
     {
         instance = this;
-
-        playerPrefabs = PlayerData.playerTeam.ToArray();
-        enemyPrefabs = BattleData.enemyTeam;
     }
 
     private void Start()
@@ -50,6 +47,9 @@ public class TBBS : MonoBehaviour
 
     IEnumerator SetupBattleField()
     {
+        playerPrefabs = PlayerData.Instance.GetTeamPrefabs();
+        enemyPrefabs = BattleData.enemyTeam;
+
         yield return null;
 
         playerUnits = new List<Unit>();

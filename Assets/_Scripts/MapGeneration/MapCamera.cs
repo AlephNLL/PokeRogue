@@ -34,14 +34,14 @@ public class MapCamera : MonoBehaviour
         {
             UpdateLayers(MapManager.instance.currentRoom);
 
-            Vector3 currentPos = MapManager.instance.currentRoom.transform.position;
-            Vector3 desiredPosition = new Vector3(
-            currentPos.x - followOffsetX,
-            currentPos.y + followOffsetY,
-            currentPos.z
-            );
+        //    Vector3 currentPos = MapManager.instance.currentRoom.transform.position;
+        //    Vector3 desiredPosition = new Vector3(
+        //    currentPos.x - followOffsetX,
+        //    currentPos.y + followOffsetY,
+        //    currentPos.z
+        //    );
 
-            transform.position = desiredPosition;
+        //    transform.position = desiredPosition;
         }
 
     }

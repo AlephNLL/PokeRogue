@@ -823,7 +823,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Cinemachine::Cinemachine.CinemachineTransposer
   m_BindingMode: 1
-  m_FollowOffset: {x: -2, y: 3, z: 0}
+  m_FollowOffset: {x: -1.5, y: 2, z: 0}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -2131,7 +2131,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: teamData.Array.size
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: playerUnits.Array.size

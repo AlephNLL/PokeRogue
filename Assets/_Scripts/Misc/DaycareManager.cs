@@ -107,6 +107,15 @@ public class DaycareManager : MonoBehaviour
         return unit;
     }
 
+    public void StartBattleSelection()
+    {
+        DaycareUIManager.instance.ShowTooltipText("Select your team");
+        DaycareUIManager.instance.DisableAllButtons();
+        DaycareCamera.instance.EnableFusionCamera();
+        DaycareCamera.instance.SetCameraTarget(unitPrefabs[0].transform);
+
+        StartCoroutine(MonBattleSelection());
+    }
     public void StartMonFusionSelection()
     {
         DaycareUIManager.instance.ShowTooltipText("Select 2 mons");
@@ -114,14 +123,22 @@ public class DaycareManager : MonoBehaviour
         DaycareCamera.instance.EnableFusionCamera();
         DaycareCamera.instance.SetCameraTarget(unitPrefabs[0].transform);
 
-        StartCoroutine(WaitForSelection());
+        StartCoroutine(MonFusionSelection());
     }
-
-    IEnumerator WaitForSelection()
+    IEnumerator MonFusionSelection()
+    {
+        yield return WaitForSelection(2);
+        yield return FusionConfirmation();
+    }
+    IEnumerator MonBattleSelection()
+    {
+        yield return WaitForSelection(4);
+    }
+    IEnumerator WaitForSelection(int unitsToSelect)
     {
         int selection = 0;
 
-        while (selectedUnits.Count < 2)
+        while (selectedUnits.Count < unitsToSelect)
         {
             yield return Run<int>(SelectMon(), (output) => selection = output);
 
@@ -138,9 +155,11 @@ public class DaycareManager : MonoBehaviour
                 selectedPrefabs.Remove(unitPrefabs[selection]);
             }
 
-            DaycareUIManager.instance.ShowTooltipText($"Select {2 - selectedUnits.Count} mons");
+            DaycareUIManager.instance.ShowTooltipText($"Select {unitsToSelect - selectedUnits.Count} mons");
         }
-
+    }
+    IEnumerator FusionConfirmation()
+    {
         DaycareUIManager.instance.HideTooltipText();
 
         DaycareCamera.instance.DisableFusionCamera();
@@ -262,6 +281,7 @@ public class DaycareManager : MonoBehaviour
         GameObject newUnit = Instantiate(unitPrefabs[^1], fusionPoints[2].transform.position, Quaternion.identity);
         newUnit.GetComponent<Unit>().enabled = false;
         DaycareUIManager.instance.ShowTooltipText($"Wow! A {newUnit.GetComponent<Unit>().name}");
+        FresnelApplier.applyFresnel(unitPrefabs[^1], Color.white);
 
         selectedPrefabs.Clear();
         selectedUnits.Clear();
@@ -273,6 +293,10 @@ public class DaycareManager : MonoBehaviour
         DaycareUIManager.instance.ShowMainButtons();
 
         startingUnits = units;
+
+        yield return new WaitForSeconds(2f);
+
+        FresnelApplier.clearFresnel(unitPrefabs[^1]);
     }
     public IEnumerator Run<T>(IEnumerator target, Action<T> output)
     {

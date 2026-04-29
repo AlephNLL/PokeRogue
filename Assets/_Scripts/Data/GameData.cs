@@ -8,7 +8,7 @@ namespace GameData
 
     public enum Status { NONE, BURNED, POISONED, PARALYZED, FROZEN, ASLEEP }
 
-    public enum Stats { ATK, DEF, SPEED, LUCK }
+    public enum Stats { HP, ATK, DEF, SPEED, LUCK }
 
     public enum PassiveEffects { UPATK, UPATKONSTATUS, UPDEF, UPSPEED, DOWNATK, DOWNDEF, DOWNSPEED, ADDTURN, SKIPTURN, APPLYSTATUS }
 

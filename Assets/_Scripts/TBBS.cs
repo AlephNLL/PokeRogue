@@ -7,6 +7,7 @@ using UnityEngine;
 using System;
 using GameData;
 using UnityEngine.SceneManagement;
+using static UnityEditor.Rendering.InspectorCurveEditor;
 
 
 //Turn Based Battle System
@@ -35,9 +36,6 @@ public class TBBS : MonoBehaviour
     private void Awake()
     {
         instance = this;
-
-        playerPrefabs = PlayerData.playerTeam.ToArray();
-        enemyPrefabs = BattleData.enemyTeam;
     }
 
     private void Start()
@@ -49,6 +47,9 @@ public class TBBS : MonoBehaviour
 
     IEnumerator SetupBattleField()
     {
+        playerPrefabs = PlayerData.Instance.GetTeamPrefabs();
+        enemyPrefabs = BattleData.enemyTeam;
+
         yield return null;
 
         playerUnits = new List<Unit>();
@@ -265,9 +266,75 @@ public class TBBS : MonoBehaviour
         attacker.OpenAbilityMenu();
     }
 
+    public void ItemMenu(Unit attacker) //Se llama desde la interfaz del jugador, los botones se suscriben al activarse
+    {
+        attacker.ActivateCamera();
+        attacker.CloseBattleMenu();
+        attacker.OpenItemMenu();
+    }
+
     public void SelectAbility(Abilities ability)
     {
         StartCoroutine(ActivateAbility(ability));
+    }
+
+    public void SelectItem(Item item)
+    {
+        StartCoroutine(ActivateItem(item));
+    }
+
+    public IEnumerator ActivateItem(Item item)
+    {
+        Unit currentUnit = allUnits[currentTurnIndex];
+        CameraManager.instance.SetBlendTime(2f);
+        currentUnit.CloseItemMenu();
+        currentUnit.DeactivateCamera();
+
+        int selection = 0;
+
+        yield return Run<int>(SelectTarget(false), (output) => selection = output);
+        if (selection >= 0) StartCoroutine(UseItem(item, playerUnits[selection]));
+        yield break;
+    }
+
+    public IEnumerator UseItem(Item item, Unit target)
+    {
+        Unit currentUnit = allUnits[currentTurnIndex];
+
+        switch (item.effect)
+        {
+            case ItemEffects.UPATK:
+                break;
+            case ItemEffects.UPDEF:
+                break;
+            case ItemEffects.UPSPEED:
+                break;
+            case ItemEffects.ADDTURN:
+                break;
+            case ItemEffects.APPLYSTATUS:
+                break;
+            case ItemEffects.HEAL:
+                target.Heal(item.healingAmount);
+                break;
+            default:
+                break;
+        }
+
+        yield return new WaitForSeconds(0.3f);
+
+        if (currentUnit.HasAdditionalTurn())
+        {
+            StartNextTurn(false);
+            yield break;
+        }
+        else
+        {
+            currentUnit.OnTurnEnd();
+            currentTurnIndex++;
+            // Avanzar al siguiente turno
+            StartNextTurn();
+            yield break;
+        }
     }
     public IEnumerator ActivateAbility(Abilities ability)
     {
@@ -660,8 +727,6 @@ public class TBBS : MonoBehaviour
             attacker.transform.position = attackerStartPos;
         }
 
-        
-
 
         CameraManager.instance.SetBlendTime(1);
 
@@ -695,14 +760,15 @@ public class TBBS : MonoBehaviour
         {
             for (int i = 0; i < targets.Length; i++)
             {
+                ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
+                ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
+
                 if (ability.power != 0)
                 {
                     targets[i].TakeDamage(CalculateAttackDamage(attacker, targets[i], ability));
-                    attacker.ResolvePassiveEffect(PassiveExecutionTime.ONHIT, targets[i]);
+                    attacker.ResolvePassiveEffect(ExecutionTime.ONHIT, targets[i]);
+                    attacker.ResolveItemEffect(ExecutionTime.ONHIT, targets[i]);
                 }
-
-                ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
-                ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
             }
         }
     }

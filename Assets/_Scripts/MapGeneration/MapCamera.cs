@@ -3,19 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using GameData;
+using Cinemachine;
 public class MapCamera : MonoBehaviour
 {
-    public MapView mapView;
+    public static MapCamera instance;
 
     [Header("Ajustes del Seguimiento")]
     public float followOffsetY = 3.0f;
     public float followOffsetX = 2.0f;
     public float smoothSpeed = 15.0f;
     public LayerMask nodeLayerMask;
-    public static bool reachedTarget = false;
+    private static bool reachedTarget = false;
 
     [Header("Opciones de Interacción")]
     public bool enableFollowMode = true;
+
+    public CinemachineVirtualCamera mapCamera;
+    public CinemachineVirtualCamera statsCamera;
+
+    private int lookAtIndex = 0;
+
+    public bool ReachedTarget { get => reachedTarget; set => reachedTarget = value; }
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     void Start()
     {
@@ -24,19 +37,84 @@ public class MapCamera : MonoBehaviour
         {
             UpdateLayers(MapManager.instance.currentRoom);
 
-            Vector3 currentPos = MapManager.instance.currentRoom.transform.position;
-            Vector3 desiredPosition = new Vector3(
-            currentPos.x - followOffsetX,
-            currentPos.y + followOffsetY,
-            currentPos.z
-            );
+        //    Vector3 currentPos = MapManager.instance.currentRoom.transform.position;
+        //    Vector3 desiredPosition = new Vector3(
+        //    currentPos.x - followOffsetX,
+        //    currentPos.y + followOffsetY,
+        //    currentPos.z
+        //    );
 
-            transform.position = desiredPosition;
+        //    transform.position = desiredPosition;
         }
+
+        if (MapManager.instance.mapLoaded == true)
+        {
+            mapCamera = GameObject.Find("MapCam").GetComponent<CinemachineVirtualCamera>();
+            statsCamera = GameObject.Find("StatsCam").GetComponent <CinemachineVirtualCamera>();
+            statsCamera.gameObject.SetActive(false);
+            statsCamera.Priority = 2;
+        }
+
     }
 
     void Update()
     {
+        if (mapCamera.Follow == null)
+        {
+            mapCamera.Follow = MapView.instance.team[0].transform;
+        }
+
+        if (statsCamera.Follow == null || statsCamera.LookAt == null)
+        {
+            statsCamera.Follow = MapView.instance.team[0].transform;
+            statsCamera.LookAt = MapView.instance.team[0].transform;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (statsCamera == null) { return; }
+
+            if (statsCamera.gameObject.activeInHierarchy == false)
+            {
+                statsCamera.gameObject.SetActive(true);
+            }
+            else
+            {
+                statsCamera.gameObject.SetActive(false);
+            }
+        }
+
+        if (statsCamera.gameObject.activeInHierarchy)
+        {
+            
+
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                lookAtIndex++;
+
+                if (lookAtIndex >= MapView.instance.team.Count)
+                {
+                    lookAtIndex = 0;
+                }
+
+                statsCamera.Follow = MapView.instance.team[lookAtIndex].transform;
+                statsCamera.LookAt = MapView.instance.team[lookAtIndex].transform;
+
+            }
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                lookAtIndex--;
+
+                if (lookAtIndex < 0)
+                {
+                    lookAtIndex = MapView.instance.team.Count - 1;
+                }
+
+                statsCamera.Follow = MapView.instance.team[lookAtIndex].transform;
+                statsCamera.LookAt = MapView.instance.team[lookAtIndex].transform;
+            }
+        }
+
         if (!enableFollowMode) return;
 
         if (Input.GetMouseButton(0))
@@ -44,10 +122,10 @@ public class MapCamera : MonoBehaviour
             CheckRaycast();
         }
 
-        if (MapManager.instance.currentRoom != null && MapManager.instance.currentRoom.gameObject.activeInHierarchy)
-        {
-            if (!reachedTarget) { FollowTarget(); }
-        }
+        //if (MapManager.instance.currentRoom != null && MapManager.instance.currentRoom.gameObject.activeInHierarchy)
+        //{
+        //    if (!reachedTarget) { FollowTarget(); }
+        //}
 
         if (reachedTarget)
         {
@@ -89,6 +167,8 @@ public class MapCamera : MonoBehaviour
             MapManager.instance.BlockOtherPaths(obj);
             SetSelectedObject(obj);
             MapManager.instance.selectedRooms.Add(obj);
+            MapManager.instance.mapView.MoveTeam(obj.transform.position);
+
         }
     }
 
@@ -130,6 +210,7 @@ public class MapCamera : MonoBehaviour
             MapNode mapNode = MapManager.instance.NodeToMapNode(node);
             MapManager.instance.currentNode = mapNode;
         }
+
     }
 
     private static void UpdateLayers(GameObject obj)

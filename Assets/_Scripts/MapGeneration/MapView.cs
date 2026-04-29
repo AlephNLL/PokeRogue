@@ -7,9 +7,13 @@ using System.Linq;
 using GameData;
 using Unity.VisualScripting;
 using System.Collections;
+using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 
 public class MapView : MonoBehaviour
 {
+    public static MapView instance;
+
     [Header("Prefabs Tipos de sala")]
     [SerializeField] private GameObject notAssignedPrefab;
     [SerializeField] private GameObject enemyPrefab;
@@ -18,22 +22,39 @@ public class MapView : MonoBehaviour
     [SerializeField] private GameObject healPrefab;
     [SerializeField] private GameObject shopPrefab;
     [SerializeField] private GameObject startPrefab;
-    [SerializeField] private GameObject decorationPrefab;
+    [SerializeField] private GameObject[] decorationPrefabs;
 
+    [Header("Configuracion del path")]
     [SerializeField] private Material lineMaterial;
-
     [SerializeField] private float lineThickness = 0.1f;
 
+    [Header("Debug")]
     [SerializeField] private bool enableDebugRays = false;
     [SerializeField] private float density = 10f;
     [SerializeField] private float rayDuration = 10f;
+
+    [Header("Referencias")]
+    [SerializeField] private TeamManager teamManager;
+
+    [SerializeField] public List<GameObject> team;
+    public float moveSpeed = 1f;
+    public float moveDelay = 0.2f;
 
     private GameObject map;
     private GameObject connections;
     private GameObject nodes;
 
-    private void FixedUpdate()
+    private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(instance.gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void DrawMap(List<MapNode> path)
@@ -43,6 +64,7 @@ public class MapView : MonoBehaviour
         DrawNodes(path);
         DrawConnections(path);
         PassConnectedRooms(path);
+        DrawTeam();
 
         StartCoroutine(DrawDecorations());
 
@@ -137,6 +159,7 @@ public class MapView : MonoBehaviour
                 lr.textureMode = LineTextureMode.Tile;
                 connectionGO.transform.parent = connections.transform;
                 connectionGO.transform.Rotate(new Vector3(90, 0, 0));
+                lr.generateLightingData = true;
 
                 AddColliderToLine(lr, node.position - offset, connection.position - offset);
                 //Mesh lineMesh = new();
@@ -168,7 +191,7 @@ public class MapView : MonoBehaviour
         float lineLength = Vector3.Distance(startPoint, endPoint);
         // size of collider is set where X is length of line, Y is width of line
         //z will be how far the collider reaches to the sky
-        lineCollider.size = new Vector3(lineLength, lineWidth, 1f);
+        lineCollider.size = new Vector3(lineLength + 1, lineWidth, 1.5f);
         // get the midPoint
         Vector3 midPoint = (startPoint + endPoint) / 2;
         // move the created collider to the midPoint
@@ -193,49 +216,97 @@ public class MapView : MonoBehaviour
 
     private IEnumerator DrawDecorations()
     {
+
         yield return new WaitForSeconds(0.2f);
         // Get map size
         Vector2 mapSize = new(MapManager.instance.mapGenerator.gridHeight * 3, MapManager.instance.mapGenerator.gridWidth * 3);
 
         // Cast points across to find outside area
         float stepX = mapSize.x / density;
-        float stepY = mapSize.y / density;
+        float stepZ = mapSize.y / density;
 
         LayerMask mask = LayerMask.GetMask("Path", "Node");
 
-        for (float height = 0; height < mapSize.x; height = height + stepX)
+        List<Vector3> decorationPositions = new List<Vector3>();
+
+        for (float height = -6; height < mapSize.x + 8; height = height + stepX)
         {
             // Cast
 
-            for (float width = 0; width < mapSize.y; width = width + stepY)
+            for (float width = -3; width < mapSize.y + 2; width = width + stepZ)
             {
                 Vector3 castPosition = new Vector3(height, 2, width);
 
+                // Randomize Position
+                float offsetX = stepX / 4;
+                float offsetZ = stepZ / 4;
+
+                float randomX = UnityEngine.Random.Range(castPosition.x - offsetX, castPosition.x + offsetX);
+                float randomZ = UnityEngine.Random.Range(castPosition.z - offsetZ, castPosition.z + offsetZ);
+
+                Vector3 randomizedPosition = new(randomX, 2, randomZ);
+
                 RaycastHit hit;
 
-                if (!enableDebugRays) { continue; }
-
-                if (Physics.Raycast(castPosition, transform.TransformDirection(Vector3.down), out hit, 3, mask))
+                if (Physics.Raycast(randomizedPosition, transform.TransformDirection(Vector3.down), out hit, 3, mask))
                 {
-                    Debug.Log("Did Hit");
-                    Debug.Log(hit.collider);
-                    Debug.Log(hit.point);
+                    //Debug.Log("Did Hit");
+                    //Debug.Log(hit.collider);
+                    //Debug.Log(hit.point);
 
-                    if (hit.collider.gameObject.name == "Collider")
+                    if (hit.collider.gameObject.name == "Collider" && enableDebugRays)
                     {
-                        Debug.DrawRay(castPosition, transform.TransformDirection(Vector3.down) * hit.distance, Color.red, rayDuration);
+                        Debug.DrawRay(randomizedPosition, transform.TransformDirection(Vector3.down) * hit.distance, Color.red, rayDuration);
                     }
-                    else
+                    else if (enableDebugRays)
                     {
-                        Debug.DrawRay(castPosition, transform.TransformDirection(Vector3.down) * hit.distance, Color.purple, rayDuration);
+                        Debug.DrawRay(randomizedPosition, transform.TransformDirection(Vector3.down) * hit.distance, Color.purple, rayDuration);
                     }
+                    continue;
                 }
                 else
                 {
-                    Debug.DrawRay(castPosition, transform.TransformDirection(Vector3.down) * 3, Color.green, rayDuration);
-                    Debug.Log("Did Not Hit");
+                    if (enableDebugRays)
+                    {
+                        Debug.DrawRay(randomizedPosition, transform.TransformDirection(Vector3.down) * 3, Color.green, rayDuration);
+                    }
+
+                    //Debug.Log("Did Not Hit");
+
+                    // Save positions if not hit with path
+
+                    decorationPositions.Add(new Vector3(randomizedPosition.x, 0, randomizedPosition.z));
                 }
             }
+        }
+        InstantiateDecorations(decorationPositions, stepX, stepZ);
+    }
+
+    private void InstantiateDecorations(List<Vector3> decorationPositions, float stepX, float stepZ)
+    {
+        GameObject decorationsGO = GameObject.Find("Decorations");
+
+        if (decorationsGO != null)
+        {
+            Destroy(decorationsGO);
+        }
+
+        GameObject decorations = new("Decorations");
+        decorations.transform.parent = map.transform;
+
+        foreach (Vector3 position in decorationPositions)
+        {
+            int randomPrefab = UnityEngine.Random.Range(0, decorationPrefabs.Length);
+
+            GameObject decorationGO = Instantiate(decorationPrefabs[randomPrefab], position, Quaternion.identity, decorations.transform);
+
+            float randomScale = UnityEngine.Random.Range(-3, 3);
+            decorationGO.transform.localScale = new Vector3 (
+                decorationGO.transform.localScale.x + randomScale, 
+                decorationGO.transform.localScale.y + randomScale, 
+                decorationGO.transform.localScale.z + randomScale
+                );
+            decorationGO.transform.Rotate(new Vector3(-90, 0, 0));
         }
     }
 
@@ -282,5 +353,153 @@ public class MapView : MonoBehaviour
                 }
             }
         }
+    }
+    public void DrawTeam()
+    {
+        if (GameObject.Find("Team"))
+        {
+            Destroy(GameObject.Find("Team"));
+        }
+
+        Vector3 position = Vector3.zero;
+        GameObject teamGO = new("Team");
+        teamGO.transform.parent = map.transform;
+
+        team = new List<GameObject>();
+
+        Debug.LogWarning($"Hay {PlayerData.Instance.GetTeamPrefabs().Length} unidades en el equipo");
+        // Get mesh from prefab and instantiate
+        foreach (GameObject unit in PlayerData.Instance.GetTeamPrefabs())
+        {
+            GameObject unitGO = new GameObject(unit.name);
+            unitGO.AddComponent<MeshFilter>();
+            unitGO.AddComponent<MeshRenderer>();
+
+            MeshFilter meshFilter = unit.GetComponentInChildren<MeshFilter>();
+            MeshRenderer meshRenderer = unit.GetComponentInChildren<MeshRenderer>();
+
+            unitGO.GetComponent<MeshFilter>().mesh = meshFilter.sharedMesh;
+            unitGO.GetComponent<MeshRenderer>().material = meshRenderer.sharedMaterial;
+
+            unitGO.transform.parent = teamGO.transform;
+            unitGO.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
+            team.Add(unitGO);
+        }
+        if (MapManager.instance.currentNode != null)
+        {
+            position = MapManager.instance.currentNode.position;
+        }
+        else
+        {
+            position = GameObject.Find("Spawn-0").transform.position;
+        }
+
+        UpdateTeamPositions(team, position);
+    }
+
+    private void UpdateTeamPositions(List<GameObject> team, Vector3 position)
+    {
+        int count = team.Count;
+        Vector3 offset = Vector3.zero;
+
+        switch (count)
+        {
+            case 0:
+                break;
+            case 1:
+                team[0].transform.position = position;
+                break;
+            case 2:
+                offset = new(0, 0, 0.25f);
+                team[0].transform.position = position + offset;
+                team[1].transform.position = position - offset;
+                break;
+            case 3:
+                offset = new(0, 0, 0.35f);
+                team[0].transform.position = position + offset;
+                team[1].transform.position = position;
+                team[2].transform.position = position - offset;
+                break;
+            case 4:
+                offset = new(0, 0, 0.15f);
+                team[0].transform.position = position + (offset * 3);
+                team[1].transform.position = position + offset;
+                team[2].transform.position = position - offset;
+                team[3].transform.position = position - (offset * 3);
+                break;
+        }
+    }
+
+    public void MoveTeam(Vector3 targetPosition)
+    {
+        int count = team.Count;
+        Vector3 offset = Vector3.zero;
+        Vector3 offsetTarget = targetPosition;
+
+
+        switch (count)
+        {
+            case 1:
+                StartCoroutine(MoveTo(team[0], targetPosition, 0, true));
+                break; 
+            case 2:
+                offset = new(0, 0, 0.25f);
+                offsetTarget = targetPosition + offset;
+                StartCoroutine(MoveTo(team[0], offsetTarget, 0));
+
+                offsetTarget = targetPosition - offset;
+                StartCoroutine(MoveTo(team[1], offsetTarget, moveDelay, true));
+
+                break;
+            case 3:
+                offset = new(0, 0, 0.35f);
+                offsetTarget = targetPosition + offset;
+                StartCoroutine(MoveTo(team[0], offsetTarget, 0));
+
+                offsetTarget = targetPosition;
+                StartCoroutine(MoveTo(team[1], offsetTarget, moveDelay));
+
+                offsetTarget = targetPosition - offset;
+                StartCoroutine(MoveTo(team[2], offsetTarget, moveDelay * 2, true));
+
+                break;
+            case 4:
+                offset = new(0, 0, 0.15f);
+                offsetTarget = targetPosition + (offset * 3);
+                StartCoroutine(MoveTo(team[0], offsetTarget, 0));
+
+                offsetTarget = targetPosition + offset;
+                StartCoroutine(MoveTo(team[1], offsetTarget, moveDelay));
+
+                offsetTarget = targetPosition - offset;
+                StartCoroutine(MoveTo(team[2], offsetTarget, moveDelay * 2));
+
+                offsetTarget = targetPosition - (offset * 3);
+                StartCoroutine(MoveTo(team[3], offsetTarget, moveDelay * 3, true));
+                
+                break;
+        }
+    }
+
+    private IEnumerator MoveTo(GameObject obj, Vector3 targetPosition, float delay, bool last = false)
+    {
+        Debug.Log("moving");
+
+        yield return new WaitForSeconds(delay);
+
+
+        while (Vector3.Distance(obj.transform.position, targetPosition) > 0.01f)
+        {
+            obj.transform.position = Vector3.Lerp(obj.transform.position, targetPosition, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        if (last)
+        {
+            Debug.Log("Reached Target");
+            MapCamera.instance.ReachedTarget = true;
+        }
+
+        yield return null;
     }
 }

@@ -22,6 +22,7 @@ public class MapManager : MonoBehaviour
     public bool loadRooms = false;
     public bool canLoadRooms = false;
     public bool mapCreated = false;
+    public bool mapLoaded = false;
 
     private void Awake()
     {
@@ -49,17 +50,14 @@ public class MapManager : MonoBehaviour
 
     void OnEnable()
     {
-        Debug.Log("OnEnable called");
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("OnSceneLoaded: " + scene.name);
-        Debug.Log(mode);
-
         if (scene.name == "MapGeneration")
         {
+            mapLoaded = true;
             Debug.Log("Mapa Generado en escena de mapa");
             if (mapCreated == true)
             {
@@ -70,6 +68,10 @@ public class MapManager : MonoBehaviour
             {
                 FindCurrentRoom(currentNode);
             }
+
+        } else
+        {
+            mapLoaded = false;
         }
     }
 

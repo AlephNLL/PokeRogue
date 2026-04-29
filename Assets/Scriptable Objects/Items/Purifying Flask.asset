@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Purifying Flask
   description: Cures any status effect.
-  icon: {fileID: 0}
+  icon: {fileID: 1176257147109685943, guid: 8d168d0528cf249479c3cf0987ad20b0, type: 3}
   isConsumible: 1
   effect: 5
   effectChance: 10
   statusToChangeTo: 0
+  healingAmount: 0
   executionTime: 3
   affectSelf: 0

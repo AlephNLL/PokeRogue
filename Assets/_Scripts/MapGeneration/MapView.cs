@@ -367,6 +367,7 @@ public class MapView : MonoBehaviour
 
         team = new List<GameObject>();
 
+        Debug.LogWarning($"Hay {PlayerData.Instance.GetTeamPrefabs().Length} unidades en el equipo");
         // Get mesh from prefab and instantiate
         foreach (GameObject unit in PlayerData.Instance.GetTeamPrefabs())
         {

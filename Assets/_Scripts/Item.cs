@@ -6,7 +6,7 @@ public class Item : ScriptableObject
 {
     new public string name;
     public string description;
-    public Image icon;
+    public GameObject icon;
     public bool isConsumible;
 
     public ItemEffects effect;

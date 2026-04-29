@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Healing Flask
   description: Heals 20 HP.
-  icon: {fileID: 0}
+  icon: {fileID: 1176257147109685943, guid: 4a7db4334ae05ee4780d8b100f41de08, type: 3}
   isConsumible: 1
   effect: 5
   effectChance: 10
   statusToChangeTo: 0
+  healingAmount: 0
   executionTime: 3
   affectSelf: 0

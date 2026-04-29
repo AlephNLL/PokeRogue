@@ -400,31 +400,32 @@ public class MapView : MonoBehaviour
     {
         int count = team.Count;
         Vector3 offset = Vector3.zero;
+        Vector3 offsetY = new(0, 0.25f, 0);
 
         switch (count)
         {
             case 0:
                 break;
             case 1:
-                team[0].transform.position = position;
+                team[0].transform.position = position + offsetY;
                 break;
             case 2:
                 offset = new(0, 0, 0.25f);
-                team[0].transform.position = position + offset;
-                team[1].transform.position = position - offset;
+                team[0].transform.position = position + offset + offsetY;
+                team[1].transform.position = position - offset + offsetY;
                 break;
             case 3:
                 offset = new(0, 0, 0.35f);
-                team[0].transform.position = position + offset;
-                team[1].transform.position = position;
-                team[2].transform.position = position - offset;
+                team[0].transform.position = position + offset + offsetY;
+                team[1].transform.position = position + offsetY;
+                team[2].transform.position = position - offset + offsetY;
                 break;
             case 4:
                 offset = new(0, 0, 0.15f);
-                team[0].transform.position = position + (offset * 3);
-                team[1].transform.position = position + offset;
-                team[2].transform.position = position - offset;
-                team[3].transform.position = position - (offset * 3);
+                team[0].transform.position = position + (offset * 3) + offsetY;
+                team[1].transform.position = position + offset + offsetY;
+                team[2].transform.position = position - offset + offsetY;
+                team[3].transform.position = position - (offset * 3) + offsetY;
                 break;
         }
     }

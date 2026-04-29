@@ -77,10 +77,13 @@ public class MapCamera : MonoBehaviour
             if (statsCamera.gameObject.activeInHierarchy == false)
             {
                 statsCamera.gameObject.SetActive(true);
+                UIManager.Instance.ShowCanvas(true);
             }
             else
             {
                 statsCamera.gameObject.SetActive(false);
+                UIManager.Instance.ShowCanvas(false);
+
             }
         }
 

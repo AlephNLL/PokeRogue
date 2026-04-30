@@ -2337,7 +2337,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerData
   gold: 0
-  p_items: []
+  p_items:
+  - {fileID: 11400000, guid: ffeadc88ed3fbc84bbea59fb0ee0cc16, type: 2}
+  - {fileID: 11400000, guid: 3bf009a713319d74189d8b6c1caed682, type: 2}
+  - {fileID: 11400000, guid: bac0691f52b866b4fbfea9ac56a3d840, type: 2}
 --- !u!4 &1519444666
 Transform:
   m_ObjectHideFlags: 0

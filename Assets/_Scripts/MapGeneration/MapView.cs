@@ -453,7 +453,7 @@ public class MapView : MonoBehaviour
     {
         int count = team.Count;
         Vector3 offset = Vector3.zero;
-        Vector3 offsetY = new(0, 0.25f, 0);
+        Vector3 offsetY = new(0, 0, 0);
         Vector3 offsetTarget = targetPosition + offsetY;
 
 

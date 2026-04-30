@@ -24,8 +24,12 @@ public class DaycareCamera : MonoBehaviour
     }
     public void SetCameraTarget(Transform target)
     {
-        fusionCamera.LookAt = target;
-        fusionCamera.Follow = target;
+        Transform transform = new GameObject().transform;
+        transform.position = target.position;
+        transform.rotation = Quaternion.identity;
+
+        fusionCamera.LookAt = transform;
+        fusionCamera.Follow = transform;
     }
 
     

@@ -60,7 +60,6 @@ GameObject:
   - component: {fileID: 8971218897398941522}
   - component: {fileID: 7245667063205552328}
   - component: {fileID: 8791268885502988988}
-  - component: {fileID: 3413889519824911466}
   m_Layer: 0
   m_Name: Battle Generator
   m_TagString: Untagged
@@ -126,19 +125,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b7e21654bc1a5b4f8a6d8e4586e95a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleData
---- !u!114 &3413889519824911466
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1661897503764095301}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6140a455603f4f4a98a7c97a966f259, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerData
-  gold: 0
 --- !u!1 &2930400147355290962
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,6 +284,7 @@ MonoBehaviour:
   loadRooms: 0
   canLoadRooms: 1
   mapCreated: 0
+  mapLoaded: 0
 --- !u!1 &7441689563388695802
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,6 +344,10 @@ MonoBehaviour:
   enableDebugRays: 1
   density: 20
   rayDuration: 10
+  teamManager: {fileID: 796922449868520641}
+  team: []
+  moveSpeed: 0.2
+  moveDelay: 0.5
 --- !u!1 &8276860623216019032
 GameObject:
   m_ObjectHideFlags: 0
@@ -401,8 +392,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9096a1c57955aba4d814ea754dcc4cc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TeamManager
-  teamData: []
-  playerUnits:
-  - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
-  - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
-  - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
+  teamData:
+  - {fileID: 11400000, guid: 925d57a2d96d39c4999a373ea3ddba4e, type: 2}
+  - {fileID: 11400000, guid: 86a7d95dde3aab04086db209e33f9886, type: 2}

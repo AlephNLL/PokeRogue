@@ -12,8 +12,17 @@ public class PlayerData : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(Instance.gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         items = p_items;
+        teamData = new List<UnitData>();
     }
 
     public GameObject[] GetTeamPrefabs()

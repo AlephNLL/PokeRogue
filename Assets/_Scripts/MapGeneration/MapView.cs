@@ -371,19 +371,37 @@ public class MapView : MonoBehaviour
         // Get mesh from prefab and instantiate
         foreach (GameObject unit in PlayerData.Instance.GetTeamPrefabs())
         {
+            GameObject unitName = new GameObject(unit.name);
+            unitName.transform.parent = teamGO.transform;
+
+            GameObject unitBase = new GameObject("Base");
+            unitBase.AddComponent<MeshFilter>(); unitBase.AddComponent<MeshRenderer>();
+
+            MeshFilter baseMeshFilter = unit.transform.Find("Capsule").Find("Base").GetComponentInChildren<MeshFilter>();
+            MeshRenderer baseMeshRenderer = unit.transform.Find("Capsule").Find("Base").GetComponentInChildren<MeshRenderer>();
+
+            unitBase.GetComponent<MeshFilter>().mesh = baseMeshFilter.sharedMesh;
+            unitBase.GetComponent<MeshRenderer>().material = baseMeshRenderer.sharedMaterial;
+
+            unitBase.transform.parent = unitName.transform;
+
             GameObject unitGO = new GameObject(unit.name);
             unitGO.AddComponent<MeshFilter>();
             unitGO.AddComponent<MeshRenderer>();
 
-            MeshFilter meshFilter = unit.GetComponentInChildren<MeshFilter>();
-            MeshRenderer meshRenderer = unit.GetComponentInChildren<MeshRenderer>();
+            //MeshFilter meshFilter = unit.GetComponentInChildren<MeshFilter>();
+            //MeshRenderer meshRenderer = unit.GetComponentInChildren<MeshRenderer>();
+            MeshFilter meshFilter = unit.transform.Find("Capsule").Find("Mons").GetComponentInChildren<MeshFilter>();
+            MeshRenderer meshRenderer = unit.transform.Find("Capsule").Find("Mons").GetComponentInChildren<MeshRenderer>();
 
             unitGO.GetComponent<MeshFilter>().mesh = meshFilter.sharedMesh;
             unitGO.GetComponent<MeshRenderer>().material = meshRenderer.sharedMaterial;
 
-            unitGO.transform.parent = teamGO.transform;
-            unitGO.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
-            team.Add(unitGO);
+            unitGO.transform.parent = unitName.transform;
+            unitName.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
+            unitGO.transform.rotation = Quaternion.Euler(0, 90, 0);
+
+            team.Add(unitName);
         }
         if (MapManager.instance.currentNode != null)
         {
@@ -401,31 +419,32 @@ public class MapView : MonoBehaviour
     {
         int count = team.Count;
         Vector3 offset = Vector3.zero;
+        Vector3 offsetY = new(0, 0f, 0);
 
         switch (count)
         {
             case 0:
                 break;
             case 1:
-                team[0].transform.position = position;
+                team[0].transform.position = position + offsetY;
                 break;
             case 2:
                 offset = new(0, 0, 0.25f);
-                team[0].transform.position = position + offset;
-                team[1].transform.position = position - offset;
+                team[0].transform.position = position + offset + offsetY;
+                team[1].transform.position = position - offset + offsetY;
                 break;
             case 3:
                 offset = new(0, 0, 0.35f);
-                team[0].transform.position = position + offset;
-                team[1].transform.position = position;
-                team[2].transform.position = position - offset;
+                team[0].transform.position = position + offset + offsetY;
+                team[1].transform.position = position + offsetY;
+                team[2].transform.position = position - offset + offsetY;
                 break;
             case 4:
                 offset = new(0, 0, 0.15f);
-                team[0].transform.position = position + (offset * 3);
-                team[1].transform.position = position + offset;
-                team[2].transform.position = position - offset;
-                team[3].transform.position = position - (offset * 3);
+                team[0].transform.position = position + (offset * 3) + offsetY;
+                team[1].transform.position = position + offset + offsetY;
+                team[2].transform.position = position - offset + offsetY;
+                team[3].transform.position = position - (offset * 3) + offsetY;
                 break;
         }
     }

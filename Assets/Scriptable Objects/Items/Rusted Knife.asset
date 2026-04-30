@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Rusted Knife
   description: A rusty knife that may posion hit foes
-  icon: {fileID: 0}
+  icon: {fileID: 1176257147109685943, guid: 04b7626b596b1d740a7401110ccd81d8, type: 3}
   isConsumible: 0
   effect: 4
   effectChance: 10
   statusToChangeTo: 2
+  healingAmount: 0
   executionTime: 3
   affectSelf: 0

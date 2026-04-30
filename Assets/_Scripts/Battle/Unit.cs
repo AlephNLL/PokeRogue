@@ -117,18 +117,18 @@ public class Unit : MonoBehaviour
 
         }
     }
-    public int GetRawStat(Stats stat)
+    public int GetRawStat(Stats stat, int monLevel)
     {
         switch (stat)
         {
             case Stats.HP:
-                return constitution * level + 1;
+                return constitution * monLevel + 1;
             case Stats.ATK:
-                return (int)(strength / 5f * level + 1);
+                return (int)(strength / 5f * monLevel + 1);
             case Stats.DEF:
-                return (int)(constitution / 5f * level + 1);
+                return (int)(constitution / 5f * monLevel + 1);
             case Stats.SPEED:
-                return (int)(dexterity / 5f * level + 1);
+                return (int)(dexterity / 5f * monLevel + 1);
             default:
                 return 0;
         }

@@ -79,12 +79,12 @@ public class UIManager : MonoBehaviour
 
     public void UpdateStats(int index)
     {
-        string health = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.HP).ToString();
-        string defense = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.DEF).ToString();
-        string attack = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.ATK).ToString();
-        string speed = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.SPEED).ToString();
+        string health = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.HP, PlayerData.teamData[index].level).ToString();
+        string defense = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.DEF, PlayerData.teamData[index].level).ToString();
+        string attack = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.ATK, PlayerData.teamData[index].level).ToString();
+        string speed = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.SPEED, PlayerData.teamData[index].level).ToString();
         string name = PlayerData.teamData[index].name;
-        string level = PlayerData.teamData[index].prefab.GetComponent<Unit>().level.ToString();
+        string level = PlayerData.teamData[index].level.ToString();
 
         nameText.text = name;
         levelText.text = "Lvl: " + level;

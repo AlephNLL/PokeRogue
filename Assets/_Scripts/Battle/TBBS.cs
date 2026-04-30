@@ -73,7 +73,7 @@ public class TBBS : MonoBehaviour
         {
             //Calculo del offset en relacion a la cantidad de unidades
             Vector3 offset = new Vector3(4 * (i - (enemyPrefabs.Length - 1) / 2f), 0, 0);
-            enemyUnits.Add(Instantiate(enemyPrefabs[i], enemySide.position + offset, enemySide.rotation).GetComponent<Unit>());
+            enemyUnits.Add(Instantiate(enemyPrefabs[i], enemySide.position + offset, Quaternion.LookRotation(playerSide.position - enemySide.position - offset)).GetComponent<Unit>());
             capturableUnits.Add(enemyPrefabs[i]);
             allUnits.Add(enemyUnits[i]);
         }
@@ -766,6 +766,11 @@ public class TBBS : MonoBehaviour
         {
             for (int i = 0; i < targets.Length; i++)
             {
+                if (ability.power == 0 && targets[i].currentStance == Stance.CAUTIOUS)
+                {
+                    TooltipUI.instance.ShowTooltipText("It doesn't affect " + targets[i].name);
+                    return;
+                }
                 ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
                 ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
 
@@ -780,7 +785,7 @@ public class TBBS : MonoBehaviour
     }
     void ResolveAbilityEffect(Unit attacker, Unit target, Abilities ability, AbilityEffect effect, float effectChance, bool affectSelf)
     {
-        if (effectChance >= UnityEngine.Random.Range(1, 101))
+        if (effectChance + attacker.effectChanceModifier >= UnityEngine.Random.Range(1, 101))
         {
             switch (effect)
             {

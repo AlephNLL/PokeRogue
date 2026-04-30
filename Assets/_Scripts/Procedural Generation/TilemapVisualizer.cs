@@ -9,9 +9,9 @@ public class TilemapVisualizer : MonoBehaviour
     private int tileSize = 1;
 
     [SerializeField]
-    private GameObject floorTile;
+    private GameObject[] floorTile;
     [SerializeField]
-    private GameObject wallTile;
+    private GameObject[] wallTile;
 
 
 
@@ -23,7 +23,8 @@ public class TilemapVisualizer : MonoBehaviour
         {
             cellPosition = new Vector3Int(position.x * tileSize, 0, position.y * tileSize);
 
-            GameObject cell = Instantiate(floorTile, cellPosition, Quaternion.identity);
+            int selectedFloorTile = UnityEngine.Random.Range(0, floorTile.Length);
+            GameObject cell = Instantiate(floorTile[selectedFloorTile], cellPosition, Quaternion.identity);
             cell.transform.parent = floor.transform;
         }
     }
@@ -58,9 +59,10 @@ public class TilemapVisualizer : MonoBehaviour
             var neighbourPosition = wallPosition + direction;
             if (floorPositions.Contains(neighbourPosition) == true)
             {
+                int selectedWallTile = UnityEngine.Random.Range(0, wallTile.Length);
                 wallDirection3D = new(direction.x, 0, direction.y);
                 wallPosition3D = new(wallPosition.x + (direction.x * 0.5f), 0.5f, wallPosition.y + (direction.y * 0.5f));
-                GameObject wall = Instantiate(wallTile, wallPosition3D, Quaternion.LookRotation(wallDirection3D));
+                GameObject wall = Instantiate(wallTile[selectedWallTile], wallPosition3D, Quaternion.LookRotation(wallDirection3D));
                 wall.transform.parent = walls.transform;
             }
         }

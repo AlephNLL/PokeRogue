@@ -458,7 +458,7 @@ public class MapView : MonoBehaviour
                 offsetTarget = targetPosition + offset + offsetY;
                 StartCoroutine(MoveTo(team[0], offsetTarget, 0));
 
-                offsetTarget = targetPosition;
+                offsetTarget = targetPosition + offsetY;
                 StartCoroutine(MoveTo(team[1], offsetTarget, moveDelay));
 
                 offsetTarget = targetPosition - offset + offsetY;

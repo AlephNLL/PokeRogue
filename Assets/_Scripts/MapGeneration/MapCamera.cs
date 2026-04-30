@@ -157,9 +157,18 @@ public class MapCamera : MonoBehaviour
                 case GameData.NodeEvents.HEAL:
                     TeamManager.instance.HealTeam(.5f);
                     VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, MapManager.instance.currentRoom);
+                    UpdateLayers(MapManager.instance.currentRoom);
                     break;
                 case GameData.NodeEvents.TRANSITION:
-                    MapManager.instance.LoadScene(MapManager.instance.currentRoom.GetComponent<Node>().sceneName);
+                    if (MapManager.instance.currentNode.roomType == RoomType.Treasure || MapManager.instance.currentNode.roomType == RoomType.Shop)
+                    {
+                        // No hacee nada de momento
+                        UpdateLayers(MapManager.instance.currentRoom);
+
+                    } else if (MapManager.instance.currentNode.roomType == RoomType.Enemy)
+                    {
+                        MapManager.instance.LoadScene(MapManager.instance.currentRoom.GetComponent<Node>().sceneName);
+                    }
                     break;
                 case GameData.NodeEvents.SPECIAL:
                     break;
@@ -232,7 +241,7 @@ public class MapCamera : MonoBehaviour
 
     }
 
-    private static void UpdateLayers(GameObject obj)
+    public static void UpdateLayers(GameObject obj)
     {
         foreach (GameObject conection in obj.GetComponent<Node>().connectedNodes)
         {

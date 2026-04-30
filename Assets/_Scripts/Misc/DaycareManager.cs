@@ -1,25 +1,23 @@
 
-using NUnit.Framework.Constraints;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
+using GameData;
 
 public class DaycareManager : MonoBehaviour
 {
     public List<UnitData> startingUnits;
-    public static List<UnitData> units = new List<UnitData>();
+    public static List<UnitData> units;
     public List<GameObject> unitPrefabs;
     public int maxUnits = 20;
     [SerializeField]
     GameObject spawnPoint;
     [SerializeField]
-    GameObject[] fusionPoints;
+    GameObject cameraCenterPoint;
     [SerializeField]
     int maxUnitsPerShelf = 5;
     [SerializeField]
@@ -34,21 +32,29 @@ public class DaycareManager : MonoBehaviour
     bool isBattle;
     private void Start()
     {
-        for (int i = 0; i < startingUnits.Count; i++)
+        if (units == null)
         {
-            UnitData unit = ScriptableObject.CreateInstance<UnitData>();
-            unit.name = startingUnits[i].name;
-            unit.prefab = startingUnits[i].prefab;
-            unit.level = startingUnits[i].level;
-            unit.currentHp = startingUnits[i].prefab.GetComponent<Unit>().constitution + 1;
-            unit.knownAbilities = startingUnits[i].knownAbilities;
+            units = new List<UnitData>();
+            unitPrefabs = new List<GameObject>();
 
-            units.Add(unit);
+            for (int i = 0; i < startingUnits.Count; i++)
+            {
+                UnitData unit = ScriptableObject.CreateInstance<UnitData>();
+                unit.name = startingUnits[i].name;
+                unit.prefab = startingUnits[i].prefab;
+                unit.level = startingUnits[i].level;
+                unit.currentHp = startingUnits[i].prefab.GetComponent<Unit>().constitution + 1;
+                unit.knownAbilities = startingUnits[i].knownAbilities;
+
+                units.Add(unit);
+            }
+            startingUnits = units;  
         }
-        startingUnits = units;
-        //units = PlayerData.daycareTeamData;
-        //startingUnits = units;
-        unitPrefabs = new List<GameObject>();
+        if (PlayerData.daycareTeamData != null)
+        {
+            units.AddRange(PlayerData.daycareTeamData);
+            PlayerData.daycareTeamData.Clear();
+        }
         SpawnUnits();
         HealAll();
     }
@@ -56,7 +62,8 @@ public class DaycareManager : MonoBehaviour
     {
         for (int i = 0; i < units.Count; i++)
         {
-            units[i].currentHp = units[i].prefab.GetComponent<Unit>().GetRawStat(GameData.Stats.HP, units[i].level);
+            units[i].currentHp = units[i].prefab.GetComponent<Unit>().GetRawStat(Stats.HP, units[i].level);
+            units[i].status = Status.NONE;
         }
     }
     void SpawnUnits()
@@ -120,7 +127,7 @@ public class DaycareManager : MonoBehaviour
 
     public void StartBattleSelection()
     {
-        DaycareUIManager.instance.ShowTooltipText("Select your team");
+        TooltipUI.instance.ShowTooltipText("Select your team");
         DaycareUIManager.instance.DisableAllButtons();
         DaycareCamera.instance.EnableFusionCamera();
         DaycareCamera.instance.SetCameraTarget(unitPrefabs[0].transform);
@@ -129,7 +136,7 @@ public class DaycareManager : MonoBehaviour
     }
     public void StartMonFusionSelection()
     {
-        DaycareUIManager.instance.ShowTooltipText("Select 2 mons");
+        TooltipUI.instance.ShowTooltipText("Select 2 mons");
         DaycareUIManager.instance.DisableAllButtons();
         DaycareCamera.instance.EnableFusionCamera();
         DaycareCamera.instance.SetCameraTarget(unitPrefabs[0].transform);
@@ -145,6 +152,7 @@ public class DaycareManager : MonoBehaviour
     {
         DaycareUIManager.instance.HideMainButtons();
         DaycareUIManager.instance.ShowBattleConfirm();
+        DaycareUIManager.instance.DisableBattleConfirm();
 
         yield return WaitForSelection(4);
     }
@@ -169,7 +177,9 @@ public class DaycareManager : MonoBehaviour
                 selectedPrefabs.Remove(unitPrefabs[selection]);
             }
 
-            DaycareUIManager.instance.ShowTooltipText($"Select {unitsToSelect - selectedUnits.Count} mons");
+            TooltipUI.instance.ShowTooltipText($"Select {unitsToSelect - selectedUnits.Count} mons");
+            if (selectedUnits.Count > 0) DaycareUIManager.instance.EnableBattleConfirm();
+            else DaycareUIManager.instance.DisableBattleConfirm();
         }
     }
     public void EndSelection()
@@ -182,9 +192,7 @@ public class DaycareManager : MonoBehaviour
     {
         if (isBattle)
         {
-            DaycareUIManager.instance.HideBattleConfirm();
-            PlayerData.teamData.AddRange(selectedUnits);
-            SceneManager.LoadSceneAsync("MapGeneration");
+            StartBattle();
         }
         else
         {
@@ -195,21 +203,36 @@ public class DaycareManager : MonoBehaviour
     {
         isBattle = true;
 
-        DaycareUIManager.instance.HideTooltipText();
+        TooltipUI.instance.HideTooltipText();
 
         DaycareCamera.instance.DisableFusionCamera();
 
         yield return new WaitForSeconds(2);
 
-        DaycareUIManager.instance.ShowTooltipText("Is this your team?");
+        TooltipUI.instance.ShowTooltipText("Is this your team?");
+
+        StartCoroutine(MoveMonsToFront());
 
         DaycareUIManager.instance.ShowConfirmScreen();
+    }
+    void StartBattle()
+    {
+        DaycareUIManager.instance.HideBattleConfirm();
+        TooltipUI.instance.HideTooltipText();
+        PlayerData.teamData.AddRange(selectedUnits);
+        for (int i = 0; i < selectedUnits.Count; i++)
+        {
+            units.Remove(selectedUnits[i]);
+        }
+        selectedUnits.Clear();
+        selectedPrefabs.Clear();
+        SceneManager.LoadSceneAsync("MapGeneration");
     }
     IEnumerator FusionConfirmation()
     {
         isBattle = false;
 
-        DaycareUIManager.instance.HideTooltipText();
+        TooltipUI.instance.HideTooltipText();
 
         DaycareUIManager.instance.HideMainButtons();
 
@@ -217,9 +240,9 @@ public class DaycareManager : MonoBehaviour
 
         yield return new WaitForSeconds(2);
 
-        DaycareUIManager.instance.ShowTooltipText("Do you want to fuse these mons?");
+        TooltipUI.instance.ShowTooltipText("Do you want to fuse these mons?");
 
-        StartCoroutine(MoveMonsToFusionPoint());
+        StartCoroutine(MoveMonsToFront());
 
         DaycareUIManager.instance.ShowConfirmScreen();
     }
@@ -260,7 +283,7 @@ public class DaycareManager : MonoBehaviour
         }
     }
 
-    IEnumerator MoveMonsToFusionPoint()
+    IEnumerator MoveMonsToFront()
     {
         for (int i = 0; i < selectedPrefabs.Count; i++)
         {
@@ -268,16 +291,16 @@ public class DaycareManager : MonoBehaviour
             Vector3 unitStartPos = unit.transform.position;
             float t = 0;
             float elapsedTime = 0;
-
+            Vector3 offset = new Vector3(2 * (i - (selectedPrefabs.Count - 1) / 2f), 0, 0);
             while (t < 1)
             {
                 elapsedTime += Time.deltaTime;
                 t += elapsedTime * elapsedTime / 10;
-                unit.transform.position = Vector3.Lerp(unitStartPos, fusionPoints[i].transform.position, t);
+                unit.transform.position = Vector3.Lerp(unitStartPos, cameraCenterPoint.transform.position + offset, t);
                 yield return null;
             }
 
-            unit.transform.position = fusionPoints[i].transform.position;
+            unit.transform.position = cameraCenterPoint.transform.position + offset;
         }
         
     }
@@ -285,7 +308,7 @@ public class DaycareManager : MonoBehaviour
     IEnumerator FuseMons()
     {
         DaycareUIManager.instance.HideConfirmScreen();
-        DaycareUIManager.instance.HideTooltipText();
+        TooltipUI.instance.HideTooltipText();
 
         GameObject leftUnit = selectedPrefabs[0];
         GameObject rightUnit = selectedPrefabs[1];
@@ -298,8 +321,8 @@ public class DaycareManager : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
             t += elapsedTime * elapsedTime / 10;
-            leftUnit.transform.position = Vector3.Lerp(unitLeftStartPos, fusionPoints[2].transform.position - 3 * Vector3.right, t);
-            rightUnit.transform.position = Vector3.Lerp(unitRightStartPos, fusionPoints[2].transform.position + 3 * Vector3.right, t);
+            leftUnit.transform.position = Vector3.Lerp(unitLeftStartPos, cameraCenterPoint.transform.position - 3 * Vector3.right, t);
+            rightUnit.transform.position = Vector3.Lerp(unitRightStartPos, cameraCenterPoint.transform.position + 3 * Vector3.right, t);
             yield return null;
         }
 
@@ -311,22 +334,22 @@ public class DaycareManager : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
             t += elapsedTime * elapsedTime / 10;
-            leftUnit.transform.position = Vector3.Lerp(unitLeftStartPos, fusionPoints[2].transform.position, t);
-            rightUnit.transform.position = Vector3.Lerp(unitRightStartPos, fusionPoints[2].transform.position, t);
+            leftUnit.transform.position = Vector3.Lerp(unitLeftStartPos, cameraCenterPoint.transform.position, t);
+            rightUnit.transform.position = Vector3.Lerp(unitRightStartPos, cameraCenterPoint.transform.position, t);
             yield return null;
         }
 
-        leftUnit.transform.position = fusionPoints[2].transform.position;
-        rightUnit.transform.position = fusionPoints[2].transform.position;
+        leftUnit.transform.position = cameraCenterPoint.transform.position;
+        rightUnit.transform.position = cameraCenterPoint.transform.position;
 
         units.Add(GenerateNewUnit(selectedUnits[0], selectedUnits[1]));
 
         DeleteUnits();
         SpawnUnits();
 
-        GameObject newUnit = Instantiate(unitPrefabs[^1], fusionPoints[2].transform.position, Quaternion.identity);
+        GameObject newUnit = Instantiate(unitPrefabs[^1], cameraCenterPoint.transform.position, Quaternion.identity);
         newUnit.GetComponent<Unit>().enabled = false;
-        DaycareUIManager.instance.ShowTooltipText($"Wow! A {newUnit.GetComponent<Unit>().name}");
+        TooltipUI.instance.ShowTooltipText($"Wow! A {newUnit.GetComponent<Unit>().name}");
         FresnelApplier.applyFresnel(unitPrefabs[^1], Color.white);
 
         selectedPrefabs.Clear();
@@ -335,7 +358,7 @@ public class DaycareManager : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         Destroy(newUnit);
-        DaycareUIManager.instance.HideTooltipText();
+        TooltipUI.instance.HideTooltipText();
         DaycareUIManager.instance.ShowMainButtons();
 
         startingUnits = units;

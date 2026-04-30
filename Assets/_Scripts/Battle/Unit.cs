@@ -146,6 +146,7 @@ public class Unit : MonoBehaviour
             speed = (int)(dexterity / 5f * level + 1);
 
             knownAbilities = PlayerData.teamData.Find(item => item.id == id).knownAbilities;
+            ApplyStatus(PlayerData.teamData.Find(item => item.id == id).status);
         }
         else 
         {
@@ -578,6 +579,7 @@ public class Unit : MonoBehaviour
 
     public void ApplyStatus(Status statusToApply)
     {
+        if(statusToApply == Status.NONE) return;
         if (status != Status.NONE) return;
 
         if (!takingDamage) VFXManager.instance.SpawnStatusVFX(statusToApply, gameObject);

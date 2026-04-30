@@ -11,23 +11,10 @@ public class DaycareUIManager : MonoBehaviour
 
     public Button battleConmfirmButton;
 
-    public GameObject tooltipBorder;
-    public TMP_Text tooltipText;
-
     public GameObject confirmScreen;
     private void Awake()
     {
         instance = this;
-    }
-    public void ShowTooltipText(string text)
-    {
-        tooltipBorder.SetActive(true);
-        tooltipText.text = text;
-    }
-
-    public void HideTooltipText()
-    {
-        tooltipBorder.SetActive(false);
     }
 
     public void ShowConfirmScreen()
@@ -69,10 +56,10 @@ public class DaycareUIManager : MonoBehaviour
     }
     public void EnableBattleConfirm()
     {
-        battleConmfirmButton.enabled = true;
+        battleConmfirmButton.interactable = true;
     }
     public void DisableBattleConfirm()
     {
-        battleConmfirmButton.enabled = false;
+        battleConmfirmButton.interactable = false;
     }
 }

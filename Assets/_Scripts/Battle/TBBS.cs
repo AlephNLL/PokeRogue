@@ -583,13 +583,13 @@ public class TBBS : MonoBehaviour
         attacker.EndSelect();
         CameraManager.instance.ActivateAttackCamera();
 
-        Debug.Log("Atacando con: " + attacker.name);
+        TooltipUI.instance.ShowTooltipText(attacker.name + " uses " + ability.name);
 
         Vector3 attackerStartPos = attacker.transform.position;
         float t = 0;
         float elapsedTime = 0;
 
-        yield return new WaitForSeconds(.2f);
+        yield return new WaitForSeconds(1f);
 
         if (ability.vfxPrefab)
         {
@@ -648,6 +648,8 @@ public class TBBS : MonoBehaviour
         // Importante: Esperar un frame antes de activar la cámara principal
         yield return new WaitForSeconds(0.3f);
 
+        TooltipUI.instance.HideTooltipText();
+
         if (attacker.HasAdditionalTurn())
         {
             StartNextTurn(false);
@@ -669,6 +671,8 @@ public class TBBS : MonoBehaviour
         attacker.EndSelect();
         CameraManager.instance.ActivateAttackCamera();
 
+        TooltipUI.instance.ShowTooltipText(attacker.name + " uses " + ability.name);
+
         Vector3 attackerStartPos = attacker.transform.position;
         float t = 0;
         float elapsedTime = 0;
@@ -676,7 +680,7 @@ public class TBBS : MonoBehaviour
         Unit[] targets = new Unit[1];
         targets[0] = target;
 
-        yield return new WaitForSeconds(.2f);
+        yield return new WaitForSeconds(1f);
 
         if (ability.vfxPrefab)
         {
@@ -734,6 +738,8 @@ public class TBBS : MonoBehaviour
         // Importante: Esperar un frame antes de activar la cámara principal
         yield return new WaitForSeconds(0.3f);
 
+        TooltipUI.instance.HideTooltipText();
+
         if (attacker.HasAdditionalTurn())
         {
             StartNextTurn(false);
@@ -754,7 +760,7 @@ public class TBBS : MonoBehaviour
         //Check if attack hit
         if (!CheckHit(ability))
         {
-            Debug.Log(attacker.name + "missed");
+            TooltipUI.instance.ShowTooltipText(attacker.name + " missed");
         }
         else
         {
@@ -844,7 +850,7 @@ public class TBBS : MonoBehaviour
         int damage = Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * ability.power * attackStat / (5 * defenseStat)) + 2) * efficacy * stanceBonus * roll * critMod);
 
         Debug.Log(attacker.name + " attacks " + target.name + " dealing: " + damage + " damage.");
-        if (efficacy == 2) Debug.Log("It's super effective!");
+        if (efficacy == 2) TooltipUI.instance.ShowTooltipText("It's super effective!");
         if (isCritical) Debug.Log("Critical Hit!");
 
         return damage;

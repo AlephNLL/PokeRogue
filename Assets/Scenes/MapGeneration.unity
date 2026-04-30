@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 97078665}
   - component: {fileID: 97078664}
   m_Layer: 5
-  m_Name: HP
+  m_Name: Health
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1405,6 +1405,12 @@ MonoBehaviour:
   inventory: {fileID: 1173953110}
   slot: {fileID: 4527626970601199919, guid: 225eada03cf4e374fb209e5abfa91030, type: 3}
   instantiatedItems: []
+  nameText: {fileID: 121266139}
+  levelText: {fileID: 2124655076}
+  healthText: {fileID: 97078664}
+  defenseText: {fileID: 1724257287}
+  attackText: {fileID: 1068857924}
+  speedText: {fileID: 1210669847}
 --- !u!4 &1303858067
 Transform:
   m_ObjectHideFlags: 0

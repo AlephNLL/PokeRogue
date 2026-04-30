@@ -68,6 +68,7 @@ public class MapCamera : MonoBehaviour
         {
             statsCamera.Follow = MapView.instance.team[0].transform;
             statsCamera.LookAt = MapView.instance.team[0].transform;
+
         }
 
         if (Input.GetKeyDown(KeyCode.Tab))
@@ -78,6 +79,7 @@ public class MapCamera : MonoBehaviour
             {
                 statsCamera.gameObject.SetActive(true);
                 UIManager.Instance.ShowCanvas(true);
+                UIManager.Instance.UpdateStats(0);
             }
             else
             {
@@ -103,7 +105,9 @@ public class MapCamera : MonoBehaviour
                 statsCamera.Follow = MapView.instance.team[lookAtIndex].transform;
                 statsCamera.LookAt = MapView.instance.team[lookAtIndex].transform;
 
+                UIManager.Instance.UpdateStats(lookAtIndex);
             }
+
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 lookAtIndex--;
@@ -115,6 +119,8 @@ public class MapCamera : MonoBehaviour
 
                 statsCamera.Follow = MapView.instance.team[lookAtIndex].transform;
                 statsCamera.LookAt = MapView.instance.team[lookAtIndex].transform;
+
+                UIManager.Instance.UpdateStats(lookAtIndex);
             }
         }
 

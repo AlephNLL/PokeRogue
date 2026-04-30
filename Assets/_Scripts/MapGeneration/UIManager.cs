@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using GameData;
 using NUnit.Framework;
+using TMPro;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -8,10 +10,19 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance;
     public Canvas canvas;
 
+    [Header("Inventory")]
     public GameObject inventory;
     public GameObject slot;
 
     public List<GameObject> instantiatedItems;
+
+    [Header("Stats")]
+    public TextMeshProUGUI nameText;
+    public TextMeshProUGUI levelText;
+    public TextMeshProUGUI healthText;
+    public TextMeshProUGUI defenseText;
+    public TextMeshProUGUI attackText;
+    public TextMeshProUGUI speedText;
 
     private void Start()
     {
@@ -64,5 +75,22 @@ public class UIManager : MonoBehaviour
 
             instantiatedItems.Add(newSlot);
         }
+    }
+
+    public void UpdateStats(int index)
+    {
+        string health = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.HP).ToString();
+        string defense = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.DEF).ToString();
+        string attack = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.ATK).ToString();
+        string speed = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.SPEED).ToString();
+        string name = PlayerData.teamData[index].name;
+        string level = PlayerData.teamData[index].prefab.GetComponent<Unit>().level.ToString();
+
+        nameText.text = name;
+        levelText.text = "Lvl: " + level;
+        defenseText.text = "Defense: " + defense;
+        attackText.text = "Attack: " + attack;
+        healthText.text = "Health: " + health;
+        speedText.text = "Speed: " + speed;
     }
 }

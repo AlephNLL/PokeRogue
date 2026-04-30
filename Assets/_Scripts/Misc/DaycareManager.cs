@@ -1,4 +1,5 @@
 
+using NUnit.Framework.Constraints;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class DaycareManager : MonoBehaviour
@@ -28,6 +30,8 @@ public class DaycareManager : MonoBehaviour
     List<UnitData> selectedUnits = new List<UnitData>();
     [SerializeField]
     List<GameObject> selectedPrefabs = new List<GameObject>();
+
+    bool isBattle;
     private void Start()
     {
         for (int i = 0; i < startingUnits.Count; i++)
@@ -46,8 +50,15 @@ public class DaycareManager : MonoBehaviour
         //startingUnits = units;
         unitPrefabs = new List<GameObject>();
         SpawnUnits();
+        HealAll();
     }
-
+    void HealAll()
+    {
+        for (int i = 0; i < units.Count; i++)
+        {
+            units[i].currentHp = units[i].prefab.GetComponent<Unit>().GetRawStat(GameData.Stats.HP, units[i].level);
+        }
+    }
     void SpawnUnits()
     {
         for (int i = 0; i < units.Count; i++)
@@ -132,6 +143,9 @@ public class DaycareManager : MonoBehaviour
     }
     IEnumerator MonBattleSelection()
     {
+        DaycareUIManager.instance.HideMainButtons();
+        DaycareUIManager.instance.ShowBattleConfirm();
+
         yield return WaitForSelection(4);
     }
     IEnumerator WaitForSelection(int unitsToSelect)
@@ -158,9 +172,46 @@ public class DaycareManager : MonoBehaviour
             DaycareUIManager.instance.ShowTooltipText($"Select {unitsToSelect - selectedUnits.Count} mons");
         }
     }
+    public void EndSelection()
+    {
+        StopAllCoroutines();
+
+        StartCoroutine(BattleConfirmation());
+    }
+    public void Confirm()
+    {
+        if (isBattle)
+        {
+            DaycareUIManager.instance.HideBattleConfirm();
+            PlayerData.teamData.AddRange(selectedUnits);
+            SceneManager.LoadSceneAsync("MapGeneration");
+        }
+        else
+        {
+            StartCoroutine(FuseMons());
+        }
+    }
+    IEnumerator BattleConfirmation()
+    {
+        isBattle = true;
+
+        DaycareUIManager.instance.HideTooltipText();
+
+        DaycareCamera.instance.DisableFusionCamera();
+
+        yield return new WaitForSeconds(2);
+
+        DaycareUIManager.instance.ShowTooltipText("Is this your team?");
+
+        DaycareUIManager.instance.ShowConfirmScreen();
+    }
     IEnumerator FusionConfirmation()
     {
+        isBattle = false;
+
         DaycareUIManager.instance.HideTooltipText();
+
+        DaycareUIManager.instance.HideMainButtons();
 
         DaycareCamera.instance.DisableFusionCamera();
 
@@ -229,11 +280,6 @@ public class DaycareManager : MonoBehaviour
             unit.transform.position = fusionPoints[i].transform.position;
         }
         
-    }
-
-    public void StartFusion()
-    {
-        StartCoroutine(FuseMons());
     }
 
     IEnumerator FuseMons()

@@ -91,35 +91,45 @@ public class MapCamera : MonoBehaviour
 
         if (statsCamera.gameObject.activeInHierarchy)
         {
-            
-
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 lookAtIndex++;
+                UIManager.Instance.lookAtIndex = lookAtIndex;
 
                 if (lookAtIndex >= MapView.instance.team.Count)
                 {
                     lookAtIndex = 0;
+                    UIManager.Instance.lookAtIndex = lookAtIndex;
                 }
 
                 statsCamera.Follow = MapView.instance.team[lookAtIndex].transform;
                 statsCamera.LookAt = MapView.instance.team[lookAtIndex].transform;
 
                 UIManager.Instance.UpdateStats(lookAtIndex);
+                if (UIManager.Instance.abilities.activeInHierarchy)
+                {
+                    UIManager.Instance.UpdateAbilities(lookAtIndex);
+                }
             }
 
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 lookAtIndex--;
+                UIManager.Instance.lookAtIndex = lookAtIndex;
 
                 if (lookAtIndex < 0)
                 {
                     lookAtIndex = MapView.instance.team.Count - 1;
+                    UIManager.Instance.lookAtIndex = lookAtIndex;
                 }
 
                 statsCamera.Follow = MapView.instance.team[lookAtIndex].transform;
                 statsCamera.LookAt = MapView.instance.team[lookAtIndex].transform;
 
+                if (UIManager.Instance.abilities.activeInHierarchy)
+                {
+                    UIManager.Instance.UpdateAbilities(lookAtIndex);
+                }
                 UIManager.Instance.UpdateStats(lookAtIndex);
             }
         }

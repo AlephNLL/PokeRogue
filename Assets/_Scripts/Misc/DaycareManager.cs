@@ -54,6 +54,7 @@ public class DaycareManager : MonoBehaviour
         {
             units.AddRange(PlayerData.daycareTeamData);
             PlayerData.daycareTeamData.Clear();
+            startingUnits = units;
         }
         SpawnUnits();
         HealAll();
@@ -198,6 +199,21 @@ public class DaycareManager : MonoBehaviour
         {
             StartCoroutine(FuseMons());
         }
+    }
+    public void Cancel()
+    {
+        DaycareUIManager.instance.HideConfirmScreen();
+        DaycareUIManager.instance.HideBattleConfirm();
+        TooltipUI.instance.HideTooltipText();
+        DaycareUIManager.instance.ShowMainButtons();
+
+        selectedUnits.Clear();
+        selectedPrefabs.Clear();
+
+        StopAllCoroutines();
+
+        DeleteUnits();
+        SpawnUnits();
     }
     IEnumerator BattleConfirmation()
     {

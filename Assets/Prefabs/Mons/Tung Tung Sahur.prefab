@@ -825,8 +825,8 @@ MonoBehaviour:
   speed: 0
   knownAbilities: []
   abilityPool:
-  - {fileID: 11400000, guid: 1c10fb9f488085d4aaf6c6a22e96fd23, type: 2}
   - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}
+  - {fileID: 11400000, guid: 1c10fb9f488085d4aaf6c6a22e96fd23, type: 2}
   - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
   - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
   heldItem: {fileID: 0}

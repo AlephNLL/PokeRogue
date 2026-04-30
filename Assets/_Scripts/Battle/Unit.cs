@@ -117,6 +117,22 @@ public class Unit : MonoBehaviour
 
         }
     }
+    public int GetRawStat(Stats stat, int monLevel)
+    {
+        switch (stat)
+        {
+            case Stats.HP:
+                return constitution * monLevel + 1;
+            case Stats.ATK:
+                return (int)(strength / 5f * monLevel + 1);
+            case Stats.DEF:
+                return (int)(constitution / 5f * monLevel + 1);
+            case Stats.SPEED:
+                return (int)(dexterity / 5f * monLevel + 1);
+            default:
+                return 0;
+        }
+    }
     private void InitializeStats()
     {
         if (isPlayerControlled)
@@ -130,6 +146,7 @@ public class Unit : MonoBehaviour
             speed = (int)(dexterity / 5f * level + 1);
 
             knownAbilities = PlayerData.teamData.Find(item => item.id == id).knownAbilities;
+            ApplyStatus(PlayerData.teamData.Find(item => item.id == id).status);
         }
         else 
         {
@@ -562,6 +579,7 @@ public class Unit : MonoBehaviour
 
     public void ApplyStatus(Status statusToApply)
     {
+        if(statusToApply == Status.NONE) return;
         if (status != Status.NONE) return;
 
         if (!takingDamage) VFXManager.instance.SpawnStatusVFX(statusToApply, gameObject);

@@ -12,7 +12,8 @@ public class TeamManager : MonoBehaviour
     //temnporal hasta que se elija el equipo en la guarderia
     private void Awake()
     {
-        if(PlayerData.teamData == null) PlayerData.teamData = teamData;
+        if (PlayerData.teamData == null) PlayerData.teamData = teamData;
+        else teamData = PlayerData.teamData;
     }
     private void Start()
     {
@@ -44,6 +45,7 @@ public class TeamManager : MonoBehaviour
             PlayerData.teamData[i].currentHp = playerTeam[i].currentHp;
             PlayerData.teamData[i].id = i;
             PlayerData.teamData[i].level = playerTeam[i].level;
+            PlayerData.teamData[i].status = playerTeam[i].status;
         }
 
         teamData = PlayerData.teamData;
@@ -57,6 +59,8 @@ public class TeamManager : MonoBehaviour
             int maxHp = teamData[i].prefab.GetComponent<Unit>().constitution * teamData[i].level + 1;
             if (teamData[i].currentHp > maxHp) teamData[i].currentHp = maxHp;
         }
+
+        PlayerData.teamData = teamData;
     }
 
     public void AddNewTeamMember(GameObject mon)

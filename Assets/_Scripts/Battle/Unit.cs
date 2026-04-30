@@ -78,6 +78,10 @@ public class Unit : MonoBehaviour
 
     public bool waitingForDestroy = false;
     public bool takingDamage = false;
+
+    int trickyStanceEffectChanceModifier = 30;
+    public int effectChanceModifier;
+
     private void Start()
     {
         InitializeVariables();
@@ -146,6 +150,8 @@ public class Unit : MonoBehaviour
             speed = (int)(dexterity / 5f * level + 1);
 
             knownAbilities = PlayerData.teamData.Find(item => item.id == id).knownAbilities;
+            ApplyStatus(PlayerData.teamData.Find(item => item.id == id).status);
+            heldItem = PlayerData.teamData.Find(item => item.id == id).heldItem;
         }
         else 
         {
@@ -321,7 +327,12 @@ public class Unit : MonoBehaviour
                 break;
         }
     }
-
+    public void ChangeStance(Stance stance)
+    {
+        currentStance = stance;
+        if (currentStance == Stance.TRICKY) effectChanceModifier = trickyStanceEffectChanceModifier;
+        else effectChanceModifier = 0;
+    }
     public void Heal(int healAmount)
     {
         if (currentHp + healAmount >= maxHp) currentHp = maxHp;
@@ -446,7 +457,7 @@ public class Unit : MonoBehaviour
     {
         foreach (var ability in knownAbilities)
         {
-            if (ability.abilityType == AbilityType.PASSIVE && ability.passiveExecutionTime == battleStage && ability.passiveEffectChance >= Random.Range(1, 100))
+            if (ability.abilityType == AbilityType.PASSIVE && ability.passiveExecutionTime == battleStage && ability.passiveEffectChance + effectChanceModifier >= Random.Range(1, 100))
             {
                 List<Unit> target = new List<Unit>();
 
@@ -551,7 +562,7 @@ public class Unit : MonoBehaviour
 
         Unit target = heldItem.affectSelf ? this : lastHitUnit;
 
-        if(heldItem.executionTime == battleStage && heldItem.effectChance >= Random.Range(1, 100))
+        if(heldItem.executionTime == battleStage && heldItem.effectChance + effectChanceModifier >= Random.Range(1, 100))
         {
             switch (heldItem.effect)
             {
@@ -578,6 +589,7 @@ public class Unit : MonoBehaviour
 
     public void ApplyStatus(Status statusToApply)
     {
+        if(statusToApply == Status.NONE) return;
         if (status != Status.NONE) return;
 
         if (!takingDamage) VFXManager.instance.SpawnStatusVFX(statusToApply, gameObject);

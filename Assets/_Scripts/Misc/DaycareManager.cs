@@ -164,7 +164,7 @@ public class DaycareManager : MonoBehaviour
 
         while (selectedUnits.Count < unitsToSelect)
         {
-            yield return Run<int>(SelectMon(), (output) => selection = output);
+            yield return Run<int>(SelectMon(selection), (output) => selection = output);
 
             if (!selectedUnits.Any(u => u.id == units[selection].id))
             {
@@ -240,6 +240,7 @@ public class DaycareManager : MonoBehaviour
         for (int i = 0; i < selectedUnits.Count; i++)
         {
             units.Remove(selectedUnits[i]);
+            selectedUnits[i].id = i;
         }
         selectedUnits.Clear();
         selectedPrefabs.Clear();
@@ -263,9 +264,9 @@ public class DaycareManager : MonoBehaviour
 
         DaycareUIManager.instance.ShowConfirmScreen();
     }
-    IEnumerator SelectMon()
+    IEnumerator SelectMon(int monSelection)
     {
-        int selection = 0;
+        int selection = monSelection;
         while (true)
         {
             if (Input.GetKeyDown(KeyCode.RightArrow))

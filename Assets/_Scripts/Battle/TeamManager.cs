@@ -12,7 +12,7 @@ public class TeamManager : MonoBehaviour
     //temnporal hasta que se elija el equipo en la guarderia
     private void Awake()
     {
-        if (PlayerData.teamData == null) PlayerData.teamData = teamData;
+        if (PlayerData.teamData.Count == 0) PlayerData.teamData = teamData;
         else teamData = PlayerData.teamData;
     }
     private void Start()

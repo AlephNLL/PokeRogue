@@ -59,8 +59,14 @@ public class MapCamera : MonoBehaviour
 
     void Update()
     {
+        if (MapView.instance.team.Count == 0)
+        {
+            Debug.Log("El equipo esta vacío");
+            return;
+        }
         if (mapCamera.Follow == null)
         {
+            
             mapCamera.Follow = MapView.instance.team[0].transform;
         }
 
@@ -68,6 +74,7 @@ public class MapCamera : MonoBehaviour
         {
             statsCamera.Follow = MapView.instance.team[0].transform;
             statsCamera.LookAt = MapView.instance.team[0].transform;
+
         }
 
         if (Input.GetKeyDown(KeyCode.Tab))
@@ -78,6 +85,7 @@ public class MapCamera : MonoBehaviour
             {
                 statsCamera.gameObject.SetActive(true);
                 UIManager.Instance.ShowCanvas(true);
+                UIManager.Instance.UpdateStats(0);
             }
             else
             {
@@ -89,32 +97,46 @@ public class MapCamera : MonoBehaviour
 
         if (statsCamera.gameObject.activeInHierarchy)
         {
-            
-
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 lookAtIndex++;
+                UIManager.Instance.lookAtIndex = lookAtIndex;
 
                 if (lookAtIndex >= MapView.instance.team.Count)
                 {
                     lookAtIndex = 0;
+                    UIManager.Instance.lookAtIndex = lookAtIndex;
                 }
 
                 statsCamera.Follow = MapView.instance.team[lookAtIndex].transform;
                 statsCamera.LookAt = MapView.instance.team[lookAtIndex].transform;
 
+                UIManager.Instance.UpdateStats(lookAtIndex);
+                if (UIManager.Instance.abilities.activeInHierarchy)
+                {
+                    UIManager.Instance.UpdateAbilities(lookAtIndex);
+                }
             }
+
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 lookAtIndex--;
+                UIManager.Instance.lookAtIndex = lookAtIndex;
 
                 if (lookAtIndex < 0)
                 {
                     lookAtIndex = MapView.instance.team.Count - 1;
+                    UIManager.Instance.lookAtIndex = lookAtIndex;
                 }
 
                 statsCamera.Follow = MapView.instance.team[lookAtIndex].transform;
                 statsCamera.LookAt = MapView.instance.team[lookAtIndex].transform;
+
+                if (UIManager.Instance.abilities.activeInHierarchy)
+                {
+                    UIManager.Instance.UpdateAbilities(lookAtIndex);
+                }
+                UIManager.Instance.UpdateStats(lookAtIndex);
             }
         }
 
@@ -141,9 +163,18 @@ public class MapCamera : MonoBehaviour
                 case GameData.NodeEvents.HEAL:
                     TeamManager.instance.HealTeam(.5f);
                     VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, MapManager.instance.currentRoom);
+                    UpdateLayers(MapManager.instance.currentRoom);
                     break;
                 case GameData.NodeEvents.TRANSITION:
-                    MapManager.instance.LoadScene(MapManager.instance.currentRoom.GetComponent<Node>().sceneName);
+                    if (MapManager.instance.currentNode.roomType == RoomType.Treasure || MapManager.instance.currentNode.roomType == RoomType.Shop)
+                    {
+                        // No hacee nada de momento
+                        UpdateLayers(MapManager.instance.currentRoom);
+
+                    } else if (MapManager.instance.currentNode.roomType == RoomType.Enemy)
+                    {
+                        MapManager.instance.LoadScene(MapManager.instance.currentRoom.GetComponent<Node>().sceneName);
+                    }
                     break;
                 case GameData.NodeEvents.SPECIAL:
                     break;
@@ -216,7 +247,7 @@ public class MapCamera : MonoBehaviour
 
     }
 
-    private static void UpdateLayers(GameObject obj)
+    public static void UpdateLayers(GameObject obj)
     {
         foreach (GameObject conection in obj.GetComponent<Node>().connectedNodes)
         {

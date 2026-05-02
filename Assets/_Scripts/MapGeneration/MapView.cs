@@ -419,7 +419,7 @@ public class MapView : MonoBehaviour
     {
         int count = team.Count;
         Vector3 offset = Vector3.zero;
-        Vector3 offsetY = new(0, 0.25f, 0);
+        Vector3 offsetY = new(0, 0f, 0);
 
         switch (count)
         {
@@ -453,47 +453,48 @@ public class MapView : MonoBehaviour
     {
         int count = team.Count;
         Vector3 offset = Vector3.zero;
-        Vector3 offsetTarget = targetPosition;
+        Vector3 offsetY = new(0, 0, 0);
+        Vector3 offsetTarget = targetPosition + offsetY;
 
 
         switch (count)
         {
             case 1:
-                StartCoroutine(MoveTo(team[0], targetPosition, 0, true));
+                StartCoroutine(MoveTo(team[0], offsetTarget, 0, true));
                 break; 
             case 2:
                 offset = new(0, 0, 0.25f);
-                offsetTarget = targetPosition + offset;
+                offsetTarget = targetPosition + offset + offsetY;
                 StartCoroutine(MoveTo(team[0], offsetTarget, 0));
 
-                offsetTarget = targetPosition - offset;
+                offsetTarget = targetPosition - offset + offsetY;
                 StartCoroutine(MoveTo(team[1], offsetTarget, moveDelay, true));
 
                 break;
             case 3:
                 offset = new(0, 0, 0.35f);
-                offsetTarget = targetPosition + offset;
+                offsetTarget = targetPosition + offset + offsetY;
                 StartCoroutine(MoveTo(team[0], offsetTarget, 0));
 
-                offsetTarget = targetPosition;
+                offsetTarget = targetPosition + offsetY;
                 StartCoroutine(MoveTo(team[1], offsetTarget, moveDelay));
 
-                offsetTarget = targetPosition - offset;
+                offsetTarget = targetPosition - offset + offsetY;
                 StartCoroutine(MoveTo(team[2], offsetTarget, moveDelay * 2, true));
 
                 break;
             case 4:
                 offset = new(0, 0, 0.15f);
-                offsetTarget = targetPosition + (offset * 3);
+                offsetTarget = targetPosition + (offset * 3) + offsetY;
                 StartCoroutine(MoveTo(team[0], offsetTarget, 0));
 
-                offsetTarget = targetPosition + offset;
+                offsetTarget = targetPosition + offset + offsetY;
                 StartCoroutine(MoveTo(team[1], offsetTarget, moveDelay));
 
-                offsetTarget = targetPosition - offset;
+                offsetTarget = targetPosition - offset + offsetY;
                 StartCoroutine(MoveTo(team[2], offsetTarget, moveDelay * 2));
 
-                offsetTarget = targetPosition - (offset * 3);
+                offsetTarget = targetPosition - (offset * 3) + offsetY;
                 StartCoroutine(MoveTo(team[3], offsetTarget, moveDelay * 3, true));
                 
                 break;

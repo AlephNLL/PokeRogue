@@ -45,6 +45,7 @@ public class DaycareManager : MonoBehaviour
                 unit.level = startingUnits[i].level;
                 unit.currentHp = startingUnits[i].prefab.GetComponent<Unit>().constitution + 1;
                 unit.knownAbilities = startingUnits[i].knownAbilities;
+                unit.heldItem = startingUnits[i].heldItem;
 
                 units.Add(unit);
             }
@@ -72,7 +73,7 @@ public class DaycareManager : MonoBehaviour
         for (int i = 0; i < units.Count; i++)
         {
             Vector3 offset = i / maxUnitsPerShelf * shelfOffset + Vector3.right * unitSpacing * (i % maxUnitsPerShelf);
-            GameObject unitPrefab = Instantiate(units[i].prefab.gameObject, spawnPoint.transform.position + offset, Quaternion.identity);
+            GameObject unitPrefab = Instantiate(units[i].prefab.gameObject, spawnPoint.transform.position + offset, Quaternion.Euler(0, 180, 0));
             unitPrefab.GetComponent<Unit>().enabled = false;
             unitPrefabs.Add(unitPrefab);
 
@@ -163,7 +164,7 @@ public class DaycareManager : MonoBehaviour
 
         while (selectedUnits.Count < unitsToSelect)
         {
-            yield return Run<int>(SelectMon(), (output) => selection = output);
+            yield return Run<int>(SelectMon(selection), (output) => selection = output);
 
             if (!selectedUnits.Any(u => u.id == units[selection].id))
             {
@@ -239,6 +240,7 @@ public class DaycareManager : MonoBehaviour
         for (int i = 0; i < selectedUnits.Count; i++)
         {
             units.Remove(selectedUnits[i]);
+            selectedUnits[i].id = i;
         }
         selectedUnits.Clear();
         selectedPrefabs.Clear();
@@ -262,9 +264,9 @@ public class DaycareManager : MonoBehaviour
 
         DaycareUIManager.instance.ShowConfirmScreen();
     }
-    IEnumerator SelectMon()
+    IEnumerator SelectMon(int monSelection)
     {
-        int selection = 0;
+        int selection = monSelection;
         while (true)
         {
             if (Input.GetKeyDown(KeyCode.RightArrow))
@@ -363,7 +365,7 @@ public class DaycareManager : MonoBehaviour
         DeleteUnits();
         SpawnUnits();
 
-        GameObject newUnit = Instantiate(unitPrefabs[^1], cameraCenterPoint.transform.position, Quaternion.identity);
+        GameObject newUnit = Instantiate(unitPrefabs[^1], cameraCenterPoint.transform.position, Quaternion.Euler(0, 180, 0));
         newUnit.GetComponent<Unit>().enabled = false;
         TooltipUI.instance.ShowTooltipText($"Wow! A {newUnit.GetComponent<Unit>().name}");
         FresnelApplier.applyFresnel(unitPrefabs[^1], Color.white);

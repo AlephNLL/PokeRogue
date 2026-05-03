@@ -6,9 +6,14 @@ public class ShopManager : MonoBehaviour
     [SerializeField] GameObject[] slots;
     [SerializeField] Item[] itemPool;
 
+    Item selectedItem;
     private void Start()
     {
         HandAnimatorHelper.onAnimationEnd += OpenShop;
+    }
+    private void Update()
+    {
+        
     }
     public void OpenShop()
     {

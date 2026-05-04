@@ -59,8 +59,14 @@ public class MapCamera : MonoBehaviour
 
     void Update()
     {
+        if (MapView.instance.team.Count == 0)
+        {
+            Debug.Log("El equipo esta vacío");
+            return;
+        }
         if (mapCamera.Follow == null)
         {
+            
             mapCamera.Follow = MapView.instance.team[0].transform;
         }
 

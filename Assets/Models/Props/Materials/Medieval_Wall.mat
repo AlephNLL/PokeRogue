@@ -7,9 +7,9 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Walls
+  m_Name: Medieval_Wall
   m_Shader: {fileID: -6465566751694194690, guid: 0aabcc2ca9a9c4146b35d369325d2571, type: 3}
-  m_Parent: {fileID: 2100000, guid: dc3234c6ceb89c94c961efccce202bba, type: 2}
+  m_Parent: {fileID: 2100000, guid: abf37f3b825d23d4bb2ec53f4b61a5f4, type: 2}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []

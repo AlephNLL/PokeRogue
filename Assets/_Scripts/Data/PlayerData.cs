@@ -22,7 +22,7 @@ public class PlayerData : MonoBehaviour
             Destroy(gameObject);
         }
         items = p_items;
-        teamData = new List<UnitData>();
+        if (teamData == null) { teamData = new List<UnitData>(); }
     }
 
     public GameObject[] GetTeamPrefabs()

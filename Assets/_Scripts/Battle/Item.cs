@@ -6,6 +6,7 @@ public class Item : ScriptableObject
 {
     new public string name;
     public string description;
+    public int cost;
     public GameObject icon;
     public bool isConsumible;
 

@@ -1,23 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ShopManager : MonoBehaviour
 {
-    [SerializeField] GameObject[] slots;
+    public static ShopManager instance;
+    public GameObject[] slots;
     [SerializeField] Item[] itemPool;
     [SerializeField] List<Item> items;
-
+    
     public Item selectedItem;
 
     int lastIndex = 0;
+    private void Awake()
+    {
+        instance = this;
+    }
     private void Start()
     {
         HandAnimatorHelper.onAnimationEnd += OpenShop;
+        ShopManagerUI.instance.UpdatePlayerGold();
     }
     private void Update()
     {
         UpdateSelectedItem();
+        if (Input.GetMouseButtonDown(0))
+        {
+            BuyItem();
+        }
     }
     public void OpenShop()
     {
@@ -43,8 +54,19 @@ public class ShopManager : MonoBehaviour
             items.Add(item);
         }
     }
-
-    int GetItemSlotIndex(GameObject item)
+    void BuyItem()
+    {
+        if(!selectedItem) return;
+        if(selectedItem.cost < PlayerData.Instance.gold)
+        {
+            GraphicRaycasting.instance.GetObjectUnderMouse().SetActive(false);
+            PlayerData.items.Add(selectedItem);
+            PlayerData.Instance.gold -= selectedItem.cost;
+            if(PlayerData.Instance.gold < 0) PlayerData.Instance.gold = 0;
+            ShopManagerUI.instance.UpdatePlayerGold();
+        }
+    }
+    public int GetItemSlotIndex(GameObject item)
     {
         int index = 0;
 
@@ -76,6 +98,7 @@ public class ShopManager : MonoBehaviour
                 HandAnimatorHelper.instance.MoveToPosition(new Vector3(handXPos, 4, HandAnimatorHelper.instance.transform.position.z));
                 HandAnimatorHelper.instance.SetHandBoolParameter("point", true);
                 lastIndex = itemSlotIndex;
+                ShopManagerUI.instance.ShowItemDescription(selectedItem);
             }
         }
         else
@@ -90,5 +113,8 @@ public class ShopManager : MonoBehaviour
         yield return new WaitForSeconds(.2f);
         HandAnimatorHelper.instance.MoveToDefaultPosition();
         HandAnimatorHelper.instance.SetHandBoolParameter("point", false);
+        ShopManagerUI.instance.HideItemDescription();
     }
+
+    
 }

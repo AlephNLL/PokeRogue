@@ -18,9 +18,10 @@ MonoBehaviour:
   level: 5
   heldItem: {fileID: 0}
   currentHp: 68
+  status: 0
   knownAbilities:
   - {fileID: 11400000, guid: 0b8036aed22fd6648acfcf5dbfb9cd6b, type: 2}
   - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
-  - {fileID: 11400000, guid: e664bd8dc9d242645a35b522860ed38b, type: 2}
+  - {fileID: 11400000, guid: 8534bf41cde3f664ebaa31c5335e6bde, type: 2}
   - {fileID: 11400000, guid: 7c519b83ede18284a8c92606d4d5ea92, type: 2}
   isVeteran: 0

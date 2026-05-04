@@ -212,6 +212,16 @@ public class TBBS : MonoBehaviour
     {
         battleState = BattleState.ENEMYTURN;
         if (activateTurnStartEffect) currentUnit.OnTurnStart();
+        if (currentUnit.skipTurn)
+        {
+            currentUnit.OnTurnEnd();
+            yield return new WaitForSeconds(1);
+            currentUnit.skipTurn = false;
+            currentTurnIndex++;
+            StartNextTurn();
+            yield break;
+        }
+
         yield return new WaitForSeconds(2);
 
         List<Abilities> usableAbilities = new List<Abilities>();
@@ -851,8 +861,9 @@ public class TBBS : MonoBehaviour
         float roll = UnityEngine.Random.Range(.8f, 1f);
         bool isCritical = UnityEngine.Random.Range(0, 16) == 0;
         float critMod = isCritical ? 1.5f : 1f;
+        float freezeMod = target.status == Status.FROZEN ? 1.5f : 1f;
 
-        int damage = Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * ability.power * attackStat / (5 * defenseStat)) + 2) * efficacy * stanceBonus * roll * critMod);
+        int damage = Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * ability.power * attackStat / (5 * defenseStat)) + 2) * efficacy * stanceBonus * roll * critMod * freezeMod);
 
         Debug.Log(attacker.name + " attacks " + target.name + " dealing: " + damage + " damage.");
         if (efficacy == 2) TooltipUI.instance.ShowTooltipText("It's super effective!");

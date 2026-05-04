@@ -82,6 +82,8 @@ public class Unit : MonoBehaviour
     int trickyStanceEffectChanceModifier = 30;
     public int effectChanceModifier;
 
+    int sleepCounter;
+    int sleepMaxTurns = 3;
     private void Start()
     {
         InitializeVariables();
@@ -429,6 +431,8 @@ public class Unit : MonoBehaviour
     {
         ResolvePassiveEffect(ExecutionTime.TURNSTART);
         ResolveItemEffect(ExecutionTime.TURNSTART);
+
+        if (status == Status.ASLEEP) SleepCounter();
     }
 
     public void OnTurnEnd()
@@ -439,11 +443,11 @@ public class Unit : MonoBehaviour
                 break;
             case Status.BURNED:
                 TakeDamage((Mathf.FloorToInt(maxHp * .1f) + 1));
-                Debug.Log(name + " lost " + (Mathf.FloorToInt(maxHp * .1f) + 1) + " hp due to his burns");
+                TooltipUI.instance.ShowTooltipText(name + " lost " + (Mathf.FloorToInt(maxHp * .1f) + 1) + " hp due to his burns");
                 break;
             case Status.POISONED:
                 TakeDamage((Mathf.FloorToInt(maxHp * .2f) + 1));
-                Debug.Log(name + " lost " + (Mathf.FloorToInt(maxHp * .2f) + 1) + " hp due to poison");
+                TooltipUI.instance.ShowTooltipText(name + " lost " + (Mathf.FloorToInt(maxHp * .2f) + 1) + " hp due to poison");
                 break;
             default:
                 break;
@@ -603,6 +607,8 @@ public class Unit : MonoBehaviour
 
         ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
         ResolveItemEffect(ExecutionTime.ONSTATUSCHANGE);
+
+        if(statusToApply == Status.ASLEEP) StartSleepCounter();
     }
     IEnumerator WaitToApplyStatus(Status statusToApply)
     {
@@ -621,7 +627,33 @@ public class Unit : MonoBehaviour
         ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
         ResolveItemEffect(ExecutionTime.ONSTATUSCHANGE);
     }
-
+    void StartSleepCounter()
+    {
+        sleepCounter = 0;
+        skipTurn = true;
+    }
+    void SleepCounter()
+    {
+        if (sleepCounter >= sleepMaxTurns)
+        {
+            WakeUp();
+            return;
+        }
+        if (33 + sleepCounter * 16 > Random.Range(0, 100))
+        {
+            WakeUp();
+            return;
+        }
+        TooltipUI.instance.ShowTooltipText(name + " is fast asleep.");
+        skipTurn = true;
+        sleepCounter++;
+    }
+    void WakeUp()
+    {
+        TooltipUI.instance.ShowTooltipText(name + " woke up!");
+        CureStatus();
+        skipTurn = false;
+    }
     public bool HasAdditionalTurn()
     {
         if (!additionalTurn) return false;

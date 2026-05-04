@@ -86,7 +86,7 @@ public class ShopManager : MonoBehaviour
     {
         GameObject itemUnderMouse = GraphicRaycasting.instance.GetObjectUnderMouse();
 
-        if (itemUnderMouse != null) 
+        if (itemUnderMouse != null && itemUnderMouse.layer != 2) 
         {
             StopAllCoroutines();
             int itemSlotIndex = GetItemSlotIndex(itemUnderMouse);

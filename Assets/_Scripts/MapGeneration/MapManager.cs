@@ -38,7 +38,7 @@ public class MapManager : MonoBehaviour
 
    private void Start()
     {
-        if (createdRooms.Count() == 0 && nodes.Count() == 0 && mapCreated == false)
+        if (createdRooms.Count() == 0 && nodes.Count() == 0 || mapCreated == false)
         {
             nodes.Clear();
             createdRooms.Clear();

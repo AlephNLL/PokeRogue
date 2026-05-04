@@ -17,7 +17,9 @@ public class test : MonoBehaviour
         {
             if (PlayerData.daycareTeamData == null) PlayerData.daycareTeamData = PlayerData.teamData;
             else { PlayerData.daycareTeamData.AddRange(PlayerData.teamData); }
-
+            MapCamera.instance.mapCamera.Follow = null;
+            MapManager.instance.mapCreated = false;
+            MapView.instance.team = null;
             MapManager.instance.LoadScene("Daycare");
         }
     }

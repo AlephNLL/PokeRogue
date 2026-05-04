@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ShopManager : MonoBehaviour
 {
@@ -116,5 +117,15 @@ public class ShopManager : MonoBehaviour
         ShopManagerUI.instance.HideItemDescription();
     }
 
-    
+    public void ExitShop()
+    {
+        if(MapManager.instance != null)
+        {
+            MapManager.instance.LoadMapScene();
+        }
+        else
+        {
+            SceneManager.LoadSceneAsync("MapGeneration");
+        }
+    }
 }

@@ -244,7 +244,15 @@ public class DaycareManager : MonoBehaviour
         }
         selectedUnits.Clear();
         selectedPrefabs.Clear();
-        SceneManager.LoadSceneAsync("MapGeneration");
+
+        if (MapManager.instance)
+        {
+            MapManager.instance.LoadMapSceneFromStart();
+        }
+        else
+        {
+            SceneManager.LoadSceneAsync("MapGeneration");
+        }
     }
     IEnumerator FusionConfirmation()
     {

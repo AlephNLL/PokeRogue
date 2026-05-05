@@ -3742,6 +3742,26 @@ PrefabInstance:
       propertyPath: 'p_items.Array.data[2]'
       value: 
       objectReference: {fileID: 11400000, guid: bac0691f52b866b4fbfea9ac56a3d840, type: 2}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: asleepVFX
+      value: 
+      objectReference: {fileID: 5797870068611623674, guid: b18858282fc50a34291b0dc26ef8e363, type: 3}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: burnedVFX
+      value: 
+      objectReference: {fileID: 5797870068611623674, guid: d6b70fb9b95afae44a3875fbe2a5ed91, type: 3}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: freezeVFX
+      value: 
+      objectReference: {fileID: 5797870068611623674, guid: 10c237f2c960e1441b71d2143a50638d, type: 3}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: poisonedVFX
+      value: 
+      objectReference: {fileID: 5797870068611623674, guid: 488e2f6e974fb7249a414ef258571e1c, type: 3}
+    - target: {fileID: 3583277705041772120, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: paralyzedVFX
+      value: 
+      objectReference: {fileID: 5797870068611623674, guid: d3d3bf7985765ae47ae8456244ac239a, type: 3}
     - target: {fileID: 4772832938886564935, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: m_Name
       value: MapManager

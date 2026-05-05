@@ -616,6 +616,7 @@ public class Unit : MonoBehaviour
         if (status == Status.NONE) return;
 
         status = Status.NONE;
+        VFXManager.instance.ClearStatusVFXPrefab(gameObject);
         FresnelApplier.clearFresnel(gameObject);
 
         ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);

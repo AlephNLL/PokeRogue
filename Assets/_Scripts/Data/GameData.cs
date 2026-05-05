@@ -16,7 +16,7 @@ namespace GameData
 
     public enum ExecutionTime { BATTLESTART, TURNSTART, TURNEND, ONHIT, ONHURT, OUTSIDEBATTLE, ONDEATH, ONKILL, ONSTANCECHANGE, ONSTATUSCHANGE }
 
-    public enum VFX { BUFF, NERF, HIT, HEAL}
+    public enum VFX { BUFF, NERF, HIT, HEAL, FREEZE, BURN, POISON, PARALYZE, SLEEP  }
 
     public enum Difficulty { EASY, NORMAL, HARD}
 

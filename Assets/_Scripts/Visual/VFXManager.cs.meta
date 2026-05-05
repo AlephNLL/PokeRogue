@@ -4,10 +4,15 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - buffVFXPrefab: {fileID: 1415702235763318915, guid: 8b0c9ef2388f937448a6254f253d0f30, type: 3}
-  - nerfVFXPrefab: {fileID: 1415702235763318915, guid: 6ebd16979f190894cb09c40bd554a898, type: 3}
-  - hitVFXPrefab: {fileID: 5797870068611623674, guid: 4d0ea5beaa1b8e24398a6549709ba29e, type: 3}
-  - healVFXPrefab: {fileID: 5797870068611623674, guid: 438aabcdf0c606744a0729a318422f6f, type: 3}
+  - buffVFX: {fileID: 1415702235763318915, guid: 8b0c9ef2388f937448a6254f253d0f30, type: 3}
+  - nerfVFX: {fileID: 1415702235763318915, guid: 6ebd16979f190894cb09c40bd554a898, type: 3}
+  - hitVFX: {fileID: 5797870068611623674, guid: 4d0ea5beaa1b8e24398a6549709ba29e, type: 3}
+  - healVFX: {fileID: 5797870068611623674, guid: 438aabcdf0c606744a0729a318422f6f, type: 3}
+  - freezeVFX: {fileID: 5797870068611623674, guid: 10c237f2c960e1441b71d2143a50638d, type: 3}
+  - burnedVFX: {fileID: 5797870068611623674, guid: d6b70fb9b95afae44a3875fbe2a5ed91, type: 3}
+  - poisonedVFX: {fileID: 5797870068611623674, guid: 488e2f6e974fb7249a414ef258571e1c, type: 3}
+  - paralyzedVFX: {fileID: 5797870068611623674, guid: d3d3bf7985765ae47ae8456244ac239a, type: 3}
+  - asleepVFX: {fileID: 5797870068611623674, guid: b18858282fc50a34291b0dc26ef8e363, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

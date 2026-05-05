@@ -11,6 +11,10 @@ public class Abilities : ScriptableObject
     public AbilityTarget target;
     public Stance stance;
     public bool mustUseStance;
+    public bool multiHit;
+    public bool multiHitRange;
+    public int hits;
+    public int[] hitRange;
 
     public PassiveEffects passiveEffects;
     public ExecutionTime passiveExecutionTime;

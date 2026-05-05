@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Glacial Spikes
   m_EditorClassIdentifier: 
   name: Glacial Spikes
-  description: Summon spikes beneath a foe. 10% chance to freeze
-  power: 70
+  description: Summon spikes beneath a foe. 10% chance to freeze foe
+  power: 50
   accuracy: 100
   abilityType: 0
   target: 1

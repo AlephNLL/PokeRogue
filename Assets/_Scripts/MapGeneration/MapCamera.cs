@@ -59,6 +59,7 @@ public class MapCamera : MonoBehaviour
 
     void Update()
     {
+        if(MapView.instance.team == null) return;
         if (MapView.instance.team.Count == 0)
         {
             Debug.Log("El equipo esta vacío");

@@ -737,7 +737,7 @@ GameObject:
   - component: {fileID: 1880888419145442071}
   - component: {fileID: 7571199883488435960}
   m_Layer: 0
-  m_Name: Tralalero
+  m_Name: Ojofago
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -777,7 +777,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  name: Tralalero
+  name: Ojofago
   description: 
   currentStance: 3
   level: 1
@@ -797,7 +797,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0b8036aed22fd6648acfcf5dbfb9cd6b, type: 2}
   - {fileID: 11400000, guid: e664bd8dc9d242645a35b522860ed38b, type: 2}
   - {fileID: 11400000, guid: 7c519b83ede18284a8c92606d4d5ea92, type: 2}
-  heldItem: {fileID: 11400000, guid: bac0691f52b866b4fbfea9ac56a3d840, type: 2}
+  heldItem: {fileID: 0}
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
   battleMenu: {fileID: 0}
@@ -818,8 +818,8 @@ MonoBehaviour:
   isPlayerControlled: 0
   additionalTurn: 0
   skipTurn: 0
-  waitingForDestroy: 0
   takingDamage: 0
+  effectChanceModifier: 0
 --- !u!1 &1760726793352929564
 GameObject:
   m_ObjectHideFlags: 0

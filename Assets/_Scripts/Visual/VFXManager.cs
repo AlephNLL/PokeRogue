@@ -70,19 +70,19 @@ public class VFXManager : MonoBehaviour
                 StartCoroutine(SpawnVFX(healVFXPrefab, unit.transform.position));
                 break;
             case VFX.FREEZE:
-                SpawnStatusVFXPrefab(freezeVFXPrefab, unit);
+                SpawnStatusVFXPrefab(freezeVFXPrefab, unit, 0);
                 break;
             case VFX.BURN:
-                SpawnStatusVFXPrefab(burnedVFXPrefab, unit);
+                SpawnStatusVFXPrefab(burnedVFXPrefab, unit, 0);
                 break;
             case VFX.POISON:
-                SpawnStatusVFXPrefab(poisonedVFXPrefab, unit);
+                SpawnStatusVFXPrefab(poisonedVFXPrefab, unit, 0);
                 break;
             case VFX.PARALYZE:
-                SpawnStatusVFXPrefab(paralyzedVFXPrefab, unit);
+                SpawnStatusVFXPrefab(paralyzedVFXPrefab, unit, 0);
                 break;
             case VFX.SLEEP:
-                SpawnStatusVFXPrefab(asleepVFXPrefab, unit);
+                SpawnStatusVFXPrefab(asleepVFXPrefab, unit, 1.85f);
                 break;
         }
     }
@@ -126,9 +126,10 @@ public class VFXManager : MonoBehaviour
         Destroy(vfx);
     }
 
-    private void SpawnStatusVFXPrefab(GameObject vfxPrefab, GameObject unit)
+    private void SpawnStatusVFXPrefab(GameObject vfxPrefab, GameObject unit, float offset)
     {
-        Vector3 spawnpoint = unit.transform.position + Vector3.up * 0.5f;
+        if (offset == 0) { offset = 0.5f; };
+        Vector3 spawnpoint = unit.transform.position + Vector3.up * offset;
         GameObject vfx = Instantiate(vfxPrefab, spawnpoint, vfxPrefab.transform.rotation);
         vfx.transform.parent = unit.transform;
     }

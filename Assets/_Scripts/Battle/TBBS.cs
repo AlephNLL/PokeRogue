@@ -885,6 +885,8 @@ public class TBBS : MonoBehaviour
         float critMod = isCritical ? 1.5f : 1f;
         float freezeMod = target.status == Status.FROZEN ? 1.5f : 1f;
 
+        if(isCritical) defenseStat = Mathf.Min(defenseStat, target.GetRawStat(Stats.DEF, target.level));
+
         int damage = Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * ability.power * attackStat / (5 * defenseStat)) + 2) * efficacy * stanceBonus * roll * critMod * freezeMod);
 
         Debug.Log(attacker.name + " attacks " + target.name + " dealing: " + damage + " damage.");

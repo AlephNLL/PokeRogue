@@ -10,25 +10,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
-  m_Name: Hypnotic Glare
+  m_Name: Spin Attack
   m_EditorClassIdentifier: 
-  name: Hypnotic Glare
-  description: Makes the target fall asleep.
-  power: 0
-  accuracy: 45
+  name: Spin Attack
+  description: User spins quicklt hitting 2-5 times
+  power: 20
+  accuracy: 100
   abilityType: 0
   target: 1
-  stance: 4
+  stance: 2
   mustUseStance: 0
+  multiHit: 0
+  multiHitRange: 1
+  hits: 2
+  hitRange: 0100000005000000
   passiveEffects: 0
   passiveExecutionTime: 1
   passiveEffectChance: 0
-  status: 5
-  effect1: 9
+  status: 0
+  effect1: 0
   effect1Chance: 100
   effect2: 0
   effect2Chance: 0
   affectSelf: 0
-  stanceToChangeTo: 3
+  stanceToChangeTo: 2
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

@@ -16,7 +16,10 @@ public class CustomAbilityEditor : Editor
     SerializedProperty abilityTarget;
     SerializedProperty stance;
     SerializedProperty mustUseStance;
-
+    SerializedProperty multiHit;
+    SerializedProperty multiHitRange;
+    SerializedProperty hits;
+    SerializedProperty hitRange;
     SerializedProperty passiveEffects;
     SerializedProperty passiveExecutionTime;
     SerializedProperty passiveEffectChance;
@@ -48,6 +51,10 @@ public class CustomAbilityEditor : Editor
         abilityTarget = serializedObject.FindProperty("target");
         stance = serializedObject.FindProperty("stance");
         mustUseStance = serializedObject.FindProperty("mustUseStance");
+        multiHit = serializedObject.FindProperty("multiHit");
+        multiHitRange = serializedObject.FindProperty("multiHitRange");
+        hits = serializedObject.FindProperty("hits");
+        hitRange = serializedObject.FindProperty("hitRange");
 
         passiveEffects = serializedObject.FindProperty("passiveEffects");
         passiveExecutionTime = serializedObject.FindProperty("passiveExecutionTime");
@@ -83,6 +90,10 @@ public class CustomAbilityEditor : Editor
             EditorGUILayout.PropertyField(abilityTarget);
             EditorGUILayout.PropertyField(stance);
             EditorGUILayout.PropertyField(mustUseStance);
+            EditorGUILayout.PropertyField(multiHit);
+            EditorGUILayout.PropertyField(multiHitRange);
+            if (ability.multiHit) EditorGUILayout.PropertyField(hits);
+            if (ability.multiHitRange) EditorGUILayout.PropertyField(hitRange);
         }
 
         if (ability.abilityType == AbilityType.PASSIVE)

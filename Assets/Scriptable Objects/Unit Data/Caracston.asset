@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6fd34378b8d549f40b2244231e926bc1, type: 3}
-  m_Name: Tralalero
+  m_Name: Caracston
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  id: 0
-  name: Tralalero
-  prefab: {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
+  id: 1
+  name: Caracston
+  prefab: {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
   level: 5
   heldItem: {fileID: 0}
-  currentHp: 68
+  currentHp: 41
   status: 0
   knownAbilities:
-  - {fileID: 11400000, guid: 0b8036aed22fd6648acfcf5dbfb9cd6b, type: 2}
-  - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
-  - {fileID: 11400000, guid: 8534bf41cde3f664ebaa31c5335e6bde, type: 2}
-  - {fileID: 11400000, guid: 7c519b83ede18284a8c92606d4d5ea92, type: 2}
+  - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}
+  - {fileID: 11400000, guid: 1e37c0a4da7d926488fa4a8501363846, type: 2}
+  - {fileID: 11400000, guid: c97c86d762f80514887e32f20052a304, type: 2}
+  - {fileID: 11400000, guid: 81a8ad3b35636334b81ca5040c985f0b, type: 2}
   isVeteran: 0

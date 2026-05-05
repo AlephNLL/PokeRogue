@@ -8,6 +8,7 @@ using System;
 using GameData;
 using UnityEngine.SceneManagement;
 using static UnityEditor.Rendering.InspectorCurveEditor;
+using Random = UnityEngine.Random;
 
 
 //Turn Based Battle System
@@ -95,11 +96,11 @@ public class TBBS : MonoBehaviour
 
     public void StartNextTurn(bool activateTurnStartEffect = true)
     {
-        if (CheckUnitsWaitingForDestroy())
-        {
-            StartCoroutine(DelayedStartTurn(activateTurnStartEffect));
-            return;
-        }
+        //if (CheckUnitsWaitingForDestroy())
+        //{
+        //    StartCoroutine(DelayedStartTurn(activateTurnStartEffect));
+        //    return;
+        //}
         CameraManager.instance.ActivateMainCamera();
 
         CameraManager.instance.SetBlendTime(1);
@@ -132,12 +133,12 @@ public class TBBS : MonoBehaviour
         if (currentTurnIndex < allUnits.Count)
         {
             Unit currentUnit = allUnits[currentTurnIndex];
-            if (currentUnit.waitingForDestroy)
-            {
-                currentTurnIndex++;
-                StartNextTurn();
-                return;
-            }
+            //if (currentUnit.waitingForDestroy)
+            //{
+            //    currentTurnIndex++;
+            //    StartNextTurn();
+            //    return;
+            //}
             Debug.Log("Iniciando turno de: " + currentUnit.name + " (Índice: " + currentTurnIndex + ")");
 
             if (playerUnits.Contains(currentUnit))
@@ -167,18 +168,18 @@ public class TBBS : MonoBehaviour
         MapManager.instance.LoadMapScene();
     }
 
-    bool CheckUnitsWaitingForDestroy()
-    {
-        foreach (Unit unit in allUnits)
-        {
-            if (unit.waitingForDestroy)
-            {
-                return true;
-            }
-        }
+    //bool CheckUnitsWaitingForDestroy()
+    //{
+    //    foreach (Unit unit in allUnits)
+    //    {
+    //        if (unit.waitingForDestroy)
+    //        {
+    //            return true;
+    //        }
+    //    }
 
-        return false;
-    }
+    //    return false;
+    //}
     IEnumerator DelayedStartTurn(bool activateTurnStartEffect = true)
     {
         yield return new WaitForSeconds(.1f);
@@ -551,15 +552,13 @@ public class TBBS : MonoBehaviour
             }
         }
     }
-    public void Death(Unit attacker)
+    public void WaitingForDestroy(Unit attacker)
     {
         if (allUnits.FindIndex(x => x.Equals(attacker)) < currentTurnIndex) currentTurnIndex--;
 
         allUnits.Remove(attacker);
-        if(enemyUnits.Contains(attacker)) enemyUnits.Remove(attacker);
+        if (enemyUnits.Contains(attacker)) enemyUnits.Remove(attacker);
         else playerUnits.Remove(attacker);
-
-        Destroy(attacker.gameObject);
     }
     public void Run(Unit attacker) //Se llama desde la interfaz del jugador, los botones se suscriben al activarse
     {
@@ -601,60 +600,67 @@ public class TBBS : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        if (ability.vfxPrefab)
+        int hits = 1;
+        if(ability.multiHit) hits = ability.hits;
+        else if(ability.multiHitRange)hits = Random.Range(ability.hitRange[0], ability.hitRange[1]);
+
+        for (int i = 0; i < hits; i++)
         {
-            if (ability.spawnVfxOnSelf)
+            if (ability.vfxPrefab)
             {
-                Vector3 dir = visualTarget.position - attackerStartPos;
-                GameObject vfx = Instantiate(ability.vfxPrefab, attackerStartPos + .1f * dir, Quaternion.LookRotation(dir));
-                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration/2);
-                Damage(ability, attacker, targets);
-                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
-                Destroy(vfx);
+                if (ability.spawnVfxOnSelf)
+                {
+                    Vector3 dir = visualTarget.position - attackerStartPos;
+                    GameObject vfx = Instantiate(ability.vfxPrefab, attackerStartPos + .1f * dir, Quaternion.LookRotation(dir));
+                    yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
+                    Damage(ability, attacker, targets);
+                    yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
+                    Destroy(vfx);
+                }
+                else
+                {
+                    GameObject vfx = Instantiate(ability.vfxPrefab, visualTarget);
+                    yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
+                    Damage(ability, attacker, targets);
+                    yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
+                    Destroy(vfx);
+                }
             }
             else
             {
-                GameObject vfx = Instantiate(ability.vfxPrefab, visualTarget);
-                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
+                //Se abalanza el personaje (ida)
+                while (t < .8f)
+                {
+                    elapsedTime += Time.deltaTime;
+                    t += elapsedTime * elapsedTime / 10;
+                    attacker.transform.position = Vector3.Lerp(attackerStartPos, visualTarget.transform.position, t);
+                    yield return null;
+                }
+
+                Vector3 attackerEndPos = attacker.transform.position;
                 Damage(ability, attacker, targets);
-                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
-                Destroy(vfx);
+                t = 0;
+                yield return new WaitForSeconds(0.1f); // Pequeña pausa en el impacto
+
+                // Regreso
+                while (t < 1)
+                {
+                    t += Time.deltaTime;
+                    attacker.transform.position = Vector3.Lerp(attackerEndPos, attackerStartPos, t);
+                    yield return null;
+                }
+
+                // Asegurar que regresó a su posición exacta
+                attacker.transform.position = attackerStartPos;
+
+                t = 0;
+
+                yield return new WaitForSeconds(0.1f);
             }
-        }
-        else
-        {
-            //Se abalanza el personaje (ida)
-            while (t < .8f)
-            {
-                elapsedTime += Time.deltaTime;
-                t += elapsedTime * elapsedTime / 10;
-                attacker.transform.position = Vector3.Lerp(attackerStartPos, visualTarget.transform.position, t);
-                yield return null;
-            }
-
-            Vector3 attackerEndPos = attacker.transform.position;
-            Damage(ability, attacker, targets);
-            t = 0;
-            yield return new WaitForSeconds(0.1f); // Pequeña pausa en el impacto
-
-            // Regreso
-            while (t < 1)
-            {
-                t += Time.deltaTime;
-                attacker.transform.position = Vector3.Lerp(attackerEndPos, attackerStartPos, t);
-                yield return null;
-            }
-
-            // Asegurar que regresó a su posición exacta
-            attacker.transform.position = attackerStartPos;
-        }
-
-
-        
+        }   
 
         CameraManager.instance.SetBlendTime(1);
 
-        
         // Importante: Esperar un frame antes de activar la cámara principal
         yield return new WaitForSeconds(0.3f);
 
@@ -688,62 +694,78 @@ public class TBBS : MonoBehaviour
         float elapsedTime = 0;
 
         Unit[] targets = new Unit[1];
-        targets[0] = target;
 
         yield return new WaitForSeconds(1f);
 
-        if (ability.vfxPrefab)
+        int hits = 1;
+        if (ability.multiHit) hits = ability.hits;
+        else if (ability.multiHitRange) hits = Random.Range(ability.hitRange[0], ability.hitRange[1]);
+
+        for (int i = 0; i < hits; i++)
         {
-            if (ability.spawnVfxOnSelf)
+            if (!allUnits.Contains(target))
             {
-                Vector3 dir = target.transform.position - attackerStartPos;
-                GameObject vfx = Instantiate(ability.vfxPrefab, attackerStartPos + .1f * dir, Quaternion.LookRotation(dir));
-                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
-                Damage(ability, attacker, targets);
-                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
-                Destroy(vfx);
+                if (enemyUnits.Count > 0) target = enemyUnits[Random.Range(0, enemyUnits.Count)];
+                else break;
+            }
+
+            targets[0] = target;
+
+            if (ability.vfxPrefab)
+            {
+                if (ability.spawnVfxOnSelf)
+                {
+                    Vector3 dir = target.transform.position - attackerStartPos;
+                    GameObject vfx = Instantiate(ability.vfxPrefab, attackerStartPos + .1f * dir, Quaternion.LookRotation(dir));
+                    yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
+                    Damage(ability, attacker, targets);
+                    yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
+                    Destroy(vfx);
+                }
+                else
+                {
+                    GameObject vfx = Instantiate(ability.vfxPrefab, target.transform);
+                    yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
+                    Damage(ability, attacker, targets);
+                    yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
+                    Destroy(vfx);
+                }
             }
             else
             {
-                GameObject vfx = Instantiate(ability.vfxPrefab, target.transform);
-                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
+                //Se abalanza el personaje (ida)
+                while (t < .8f)
+                {
+                    elapsedTime += Time.deltaTime;
+                    t += elapsedTime * elapsedTime / 10;
+                    attacker.transform.position = Vector3.Lerp(attackerStartPos, target.transform.position, t);
+                    yield return null;
+                }
+
+                Vector3 attackerEndPos = attacker.transform.position;
                 Damage(ability, attacker, targets);
-                yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
-                Destroy(vfx);
+
+                t = 0;
+                yield return new WaitForSeconds(0.1f); // Pequeña pausa en el impacto
+
+                // Regreso
+                while (t < 1)
+                {
+                    t += Time.deltaTime;
+                    attacker.transform.position = Vector3.Lerp(attackerEndPos, attackerStartPos, t);
+                    yield return null;
+                }
+
+                // Asegurar que regresó a su posición exacta
+                attacker.transform.position = attackerStartPos;
+
+                t = 0;
             }
+
+            yield return new WaitForSeconds(0.1f);
         }
-        else 
-        {
-            //Se abalanza el personaje (ida)
-            while (t < .8f)
-            {
-                elapsedTime += Time.deltaTime;
-                t += elapsedTime * elapsedTime / 10;
-                attacker.transform.position = Vector3.Lerp(attackerStartPos, target.transform.position, t);
-                yield return null;
-            }
-
-            Vector3 attackerEndPos = attacker.transform.position;
-            Damage(ability, attacker, targets);
-
-            t = 0;
-            yield return new WaitForSeconds(0.1f); // Pequeña pausa en el impacto
-
-            // Regreso
-            while (t < 1)
-            {
-                t += Time.deltaTime;
-                attacker.transform.position = Vector3.Lerp(attackerEndPos, attackerStartPos, t);
-                yield return null;
-            }
-
-            // Asegurar que regresó a su posición exacta
-            attacker.transform.position = attackerStartPos;
-        }
-
 
         CameraManager.instance.SetBlendTime(1);
-
         
         // Importante: Esperar un frame antes de activar la cámara principal
         yield return new WaitForSeconds(0.3f);

@@ -76,7 +76,6 @@ public class Unit : MonoBehaviour
     public bool additionalTurn = false;
     public bool skipTurn = false;
 
-    public bool waitingForDestroy = false;
     public bool takingDamage = false;
 
     int trickyStanceEffectChanceModifier = 30;
@@ -348,7 +347,7 @@ public class Unit : MonoBehaviour
         if (currentHp - dmgAmount <= 0)
         {
             currentHp = 0;
-            waitingForDestroy = true;
+            TBBS.instance.WaitingForDestroy(this);
         }
         else
         {
@@ -363,7 +362,7 @@ public class Unit : MonoBehaviour
 
         if (!healthBar)
         {
-            if (currentHp == 0) TBBS.instance.Death(this);
+            if (currentHp == 0) Destroy(gameObject);
             yield break;
         }
 
@@ -391,7 +390,7 @@ public class Unit : MonoBehaviour
 
         takingDamage = false;
 
-        if (currentHp == 0) TBBS.instance.Death(this);
+        if (currentHp == 0) Destroy(gameObject);
     }
 
     public int GetStat(Stats stat)

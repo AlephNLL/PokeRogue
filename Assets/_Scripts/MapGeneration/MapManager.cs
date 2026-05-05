@@ -38,6 +38,7 @@ public class MapManager : MonoBehaviour
 
    private void Start()
     {
+        Debug.Log("Ola soi manageador de mapa");
         if (createdRooms.Count() == 0 && nodes.Count() == 0 && mapCreated == false)
         {
             nodes.Clear();
@@ -112,6 +113,14 @@ public class MapManager : MonoBehaviour
     public void LoadMapScene()
     {
         createdRooms.Clear();
+        loadRooms = false;
+        SceneManager.LoadSceneAsync("MapGeneration");
+    }
+    public void LoadMapSceneFromStart()
+    {
+        createdRooms.Clear();
+        nodes.Clear();
+        mapCreated = false;
         loadRooms = false;
         SceneManager.LoadSceneAsync("MapGeneration");
     }

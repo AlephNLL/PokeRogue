@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Rising Shield
   description: Damages a foe and sets defensive stance.
-  power: 60
+  power: 50
   accuracy: 100
   abilityType: 0
   target: 1

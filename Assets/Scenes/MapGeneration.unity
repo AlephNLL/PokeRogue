@@ -1571,8 +1571,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   enableFollowMode: 1
-  mapCamera: {fileID: 0}
-  statsCamera: {fileID: 0}
+  mapCamera: {fileID: 426288677}
+  statsCamera: {fileID: 1402047899}
 --- !u!114 &426288677
 MonoBehaviour:
   m_ObjectHideFlags: 0

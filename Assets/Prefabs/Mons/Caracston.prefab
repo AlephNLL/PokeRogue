@@ -769,7 +769,7 @@ GameObject:
   - component: {fileID: 1880888419145442071}
   - component: {fileID: 7571199883488435960}
   m_Layer: 0
-  m_Name: Tung Tung Sahur
+  m_Name: Caracston
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -809,9 +809,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  name: Tung Tung Tung Sahur
+  name: Caracston
   description: 
-  currentStance: 0
+  currentStance: 1
   level: 1
   status: 0
   strength: 12
@@ -850,8 +850,8 @@ MonoBehaviour:
   isPlayerControlled: 0
   additionalTurn: 0
   skipTurn: 0
-  waitingForDestroy: 0
   takingDamage: 0
+  effectChanceModifier: 0
 --- !u!1 &1760726793352929564
 GameObject:
   m_ObjectHideFlags: 0

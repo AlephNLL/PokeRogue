@@ -12,7 +12,6 @@ using Random = UnityEngine.Random;
 
 
 //Turn Based Battle System
-public enum BattleState { START, PLAYERTURN, ENEMYTURN, LOSS, WIN }
 public class TBBS : MonoBehaviour
 {
     public static TBBS instance;
@@ -26,7 +25,6 @@ public class TBBS : MonoBehaviour
     public List<Unit> enemyUnits;
     public List<GameObject> capturableUnits;
 
-    private BattleState battleState;
     private int currentTurnIndex = 0;
     private int round = 0;
 
@@ -41,8 +39,6 @@ public class TBBS : MonoBehaviour
 
     private void Start()
     {
-        battleState = BattleState.START;
-        
         StartCoroutine(SetupBattleField());
     }
 
@@ -96,11 +92,6 @@ public class TBBS : MonoBehaviour
 
     public void StartNextTurn(bool activateTurnStartEffect = true)
     {
-        //if (CheckUnitsWaitingForDestroy())
-        //{
-        //    StartCoroutine(DelayedStartTurn(activateTurnStartEffect));
-        //    return;
-        //}
         CameraManager.instance.ActivateMainCamera();
 
         CameraManager.instance.SetBlendTime(1);
@@ -114,7 +105,6 @@ public class TBBS : MonoBehaviour
             if (IsBattleWon())
             {
                 Debug.Log("Win");
-                battleState = BattleState.WIN;
                 Debug.Log(playerUnits.Count);
                 TeamManager.instance.SaveTeamData(playerUnits);
                 EndScreenManager.instance.ShowVictoryScreen(capturableUnits.ToArray(), 100, 100);
@@ -124,7 +114,6 @@ public class TBBS : MonoBehaviour
             else
             {
                 Debug.Log("Game over");
-                battleState = BattleState.LOSS;
                 StartCoroutine(EndBattle());
                 return;
             }
@@ -133,12 +122,6 @@ public class TBBS : MonoBehaviour
         if (currentTurnIndex < allUnits.Count)
         {
             Unit currentUnit = allUnits[currentTurnIndex];
-            //if (currentUnit.waitingForDestroy)
-            //{
-            //    currentTurnIndex++;
-            //    StartNextTurn();
-            //    return;
-            //}
             Debug.Log("Iniciando turno de: " + currentUnit.name + " (Índice: " + currentTurnIndex + ")");
 
             if (playerUnits.Contains(currentUnit))
@@ -164,31 +147,13 @@ public class TBBS : MonoBehaviour
 
     IEnumerator EndBattle()
     {
+        TooltipUI.instance.HideTooltipText();
         yield return new WaitForSeconds(2f);
         MapManager.instance.LoadMapScene();
     }
 
-    //bool CheckUnitsWaitingForDestroy()
-    //{
-    //    foreach (Unit unit in allUnits)
-    //    {
-    //        if (unit.waitingForDestroy)
-    //        {
-    //            return true;
-    //        }
-    //    }
-
-    //    return false;
-    //}
-    IEnumerator DelayedStartTurn(bool activateTurnStartEffect = true)
-    {
-        yield return new WaitForSeconds(.1f);
-        StartNextTurn(activateTurnStartEffect);
-    }
-
     IEnumerator PlayerTurn(Unit currentUnit, bool activateTurnStartEffect = true)
     {
-        battleState = BattleState.PLAYERTURN;
         currentUnit.ActivateCamera();
         if(activateTurnStartEffect) currentUnit.OnTurnStart();
         if (currentUnit.skipTurn)
@@ -211,7 +176,6 @@ public class TBBS : MonoBehaviour
 
     IEnumerator EnemyTurn(Unit currentUnit, bool activateTurnStartEffect = true)
     {
-        battleState = BattleState.ENEMYTURN;
         if (activateTurnStartEffect) currentUnit.OnTurnStart();
         if (currentUnit.skipTurn)
         {
@@ -662,7 +626,7 @@ public class TBBS : MonoBehaviour
         CameraManager.instance.SetBlendTime(1);
 
         // Importante: Esperar un frame antes de activar la cámara principal
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.3f + 3 * TooltipUI.instance.scheduledTexts.Count);
 
         TooltipUI.instance.HideTooltipText();
 
@@ -768,7 +732,7 @@ public class TBBS : MonoBehaviour
         CameraManager.instance.SetBlendTime(1);
         
         // Importante: Esperar un frame antes de activar la cámara principal
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.3f + 3*TooltipUI.instance.scheduledTexts.Count);
 
         TooltipUI.instance.HideTooltipText();
 
@@ -789,29 +753,26 @@ public class TBBS : MonoBehaviour
 
     void Damage(Abilities ability, Unit attacker, Unit[] targets)
     {
-        //Check if attack hit
-        if (!CheckHit(ability))
+        for (int i = 0; i < targets.Length; i++)
         {
-            TooltipUI.instance.ShowTooltipText(attacker.name + " missed");
-        }
-        else
-        {
-            for (int i = 0; i < targets.Length; i++)
+            if (!CheckHit(ability))
             {
-                if (ability.power == 0 && targets[i].currentStance == Stance.CAUTIOUS)
-                {
-                    TooltipUI.instance.ShowTooltipText("It doesn't affect " + targets[i].name);
-                    return;
-                }
-                ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
-                ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
+                TooltipUI.instance.ShowTooltipText(attacker.name + " missed");
+                continue;
+            }
+            if (ability.power == 0 && targets[i].currentStance == Stance.CAUTIOUS)
+            {
+                TooltipUI.instance.ShowTooltipText("It doesn't affect " + targets[i].name);
+                continue;
+            }
+            ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
+            ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
 
-                if (ability.power != 0)
-                {
-                    targets[i].TakeDamage(CalculateAttackDamage(attacker, targets[i], ability));
-                    attacker.ResolvePassiveEffect(ExecutionTime.ONHIT, targets[i]);
-                    attacker.ResolveItemEffect(ExecutionTime.ONHIT, targets[i]);
-                }
+            if (ability.power != 0)
+            {
+                targets[i].TakeDamage(CalculateAttackDamage(attacker, targets[i], ability));
+                attacker.ResolvePassiveEffect(ExecutionTime.ONHIT, targets[i]);
+                attacker.ResolveItemEffect(ExecutionTime.ONHIT, targets[i]);
             }
         }
     }
@@ -854,8 +815,8 @@ public class TBBS : MonoBehaviour
                     else target.ApplyStatModifier(Stats.SPEED, .75f);
                     break;
                 case GameData.AbilityEffect.STANCECHANGE:
-                    if(affectSelf) attacker.currentStance = ability.stanceToChangeTo;
-                    else target.currentStance = ability.stanceToChangeTo;
+                    if(affectSelf) attacker.ChangeStance(ability.stanceToChangeTo);
+                    else target.ChangeStance(ability.stanceToChangeTo);
                     break;
                 case GameData.AbilityEffect.APPLYSTATUS:
                     if (affectSelf) attacker.ApplyStatus(ability.status);
@@ -871,17 +832,19 @@ public class TBBS : MonoBehaviour
     }
     bool CheckHit(Abilities ability)
     {
-        if (ability.accuracy >= UnityEngine.Random.Range(1,100)) return true;
+        if (ability.accuracy >= UnityEngine.Random.Range(1,101)) return true;
         else return false;
     }
     int CalculateAttackDamage(Unit attacker, Unit target, Abilities ability)
     {
+        float baseCritChance = 0.01f;
         int attackStat = attacker.GetStat(Stats.ATK);
         int defenseStat = target.GetStat(Stats.DEF);
         float stanceBonus = attacker.currentStance == ability.stance ? 1.5f : 1;
         float efficacy = GetAbilityEfficacy(ability.stance, target.currentStance);
         float roll = UnityEngine.Random.Range(.8f, 1f);
-        bool isCritical = UnityEngine.Random.Range(0, 16) == 0;
+        float chanceToCrit = 1f - Mathf.Pow(1 - baseCritChance, attacker.GetStat(Stats.LUCK));
+        bool isCritical = UnityEngine.Random.Range(1, 101) <= chanceToCrit*100;
         float critMod = isCritical ? 1.5f : 1f;
         float freezeMod = target.status == Status.FROZEN ? 1.5f : 1f;
 
@@ -891,7 +854,7 @@ public class TBBS : MonoBehaviour
 
         Debug.Log(attacker.name + " attacks " + target.name + " dealing: " + damage + " damage.");
         if (efficacy == 2) TooltipUI.instance.ShowTooltipText("It's super effective!");
-        if (isCritical) Debug.Log("Critical Hit!");
+        if (isCritical) TooltipUI.instance.ShowTooltipText("Critical Hit!");
 
         return damage;
     }

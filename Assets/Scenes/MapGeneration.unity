@@ -2051,6 +2051,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TooltipUI
   tooltipBorder: {fileID: 301022665}
   tooltipText: {fileID: 250908560}
+  textMinDuration: 2
+  scheduledTexts: []
 --- !u!114 &966493981
 MonoBehaviour:
   m_ObjectHideFlags: 0

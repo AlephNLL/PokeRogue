@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Spin Attack
   m_EditorClassIdentifier: 
   name: Spin Attack
-  description: User spins quicklt hitting 2-5 times
+  description: User spins quickly hitting 2-5 times
   power: 20
   accuracy: 100
   abilityType: 0

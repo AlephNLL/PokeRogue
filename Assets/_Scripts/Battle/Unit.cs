@@ -290,19 +290,25 @@ public class Unit : MonoBehaviour
         if (mod > 1) VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, gameObject);
         else VFXManager.instance.SpawnGlobalEffect(VFX.NERF, gameObject);
 
+        string modAction = mod > 1 ? "rose" : "fell";
+
         switch (stat)
         {
             case Stats.ATK:
                 attack = Mathf.FloorToInt(attack * mod);
+                TooltipUI.instance.ShowTooltipText($"{name} attack {modAction}");
                 break;
             case Stats.DEF:
                 defense = Mathf.FloorToInt(defense * mod);
+                TooltipUI.instance.ShowTooltipText($"{name} defense {modAction}");
                 break;
             case Stats.SPEED:
                 speed = Mathf.FloorToInt(speed * mod);
+                TooltipUI.instance.ShowTooltipText($"{name} speed {modAction}");
                 break;
             case Stats.LUCK:
                 luck = Mathf.FloorToInt(luck * mod);
+                TooltipUI.instance.ShowTooltipText($"{name} luck {modAction}");
                 break;
             default:
                 break;
@@ -333,6 +339,8 @@ public class Unit : MonoBehaviour
         currentStance = stance;
         if (currentStance == Stance.TRICKY) effectChanceModifier = trickyStanceEffectChanceModifier;
         else effectChanceModifier = 0;
+
+        TooltipUI.instance.ShowTooltipText($"{name} changes to a {stance.ToString().ToLower()} stance");
     }
     public void Heal(int healAmount)
     {
@@ -595,25 +603,14 @@ public class Unit : MonoBehaviour
         if(statusToApply == Status.NONE) return;
         if (status != Status.NONE) return;
 
-        if (!takingDamage) VFXManager.instance.SpawnStatusVFX(statusToApply, gameObject);
-        else
-        {
-            StartCoroutine(WaitToApplyStatus(statusToApply));
-            return;
-        }
-
+        VFXManager.instance.SpawnStatusVFX(statusToApply, gameObject);
+        TooltipUI.instance.ShowTooltipText($"{name} is {statusToApply.ToString().ToLower()}");
         status = statusToApply;
 
         ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
         ResolveItemEffect(ExecutionTime.ONSTATUSCHANGE);
 
         if(statusToApply == Status.ASLEEP) StartSleepCounter();
-    }
-    IEnumerator WaitToApplyStatus(Status statusToApply)
-    {
-        yield return new WaitForSeconds(.1f);
-        ApplyStatus(statusToApply);
-        yield break;
     }
 
     public void CureStatus()

@@ -814,9 +814,9 @@ MonoBehaviour:
   currentStance: 1
   level: 1
   status: 0
-  strength: 12
-  constitution: 8
-  dexterity: 4
+  strength: 16
+  constitution: 26
+  dexterity: 11
   luck: 2
   maxHp: 0
   currentHp: 0

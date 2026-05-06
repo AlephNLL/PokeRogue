@@ -19,10 +19,11 @@ MonoBehaviour:
   abilityType: 0
   target: 3
   stance: 0
+  statToCalcDmgWith: 1
   mustUseStance: 0
-  multiHit: 0
+  multiHit: 1
   multiHitRange: 0
-  hits: 0
+  hits: 5
   hitRange: 
   passiveEffects: 6
   passiveExecutionTime: 0

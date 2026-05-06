@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 0
   name: Ojofago
   prefab: {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
-  level: 5
+  level: 1
   heldItem: {fileID: 0}
   currentHp: 61
   status: 0

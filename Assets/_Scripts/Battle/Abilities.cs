@@ -10,7 +10,7 @@ public class Abilities : ScriptableObject
     public AbilityType abilityType;
     public AbilityTarget target;
     public Stance stance;
-    public Stats statToCalcDmgWith;
+    public Stats statToCalcDmgWith = Stats.ATK;
     public bool mustUseStance;
     public bool multiHit;
     public bool multiHitRange;

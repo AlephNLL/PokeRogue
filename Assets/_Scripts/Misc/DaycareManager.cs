@@ -129,7 +129,7 @@ public class DaycareManager : MonoBehaviour
 
     public void StartBattleSelection()
     {
-        TooltipUI.instance.ShowTooltipText("Select your team");
+        TooltipUI.instance.InstantShowText("Select your team");
         DaycareUIManager.instance.DisableAllButtons();
         DaycareCamera.instance.EnableFusionCamera();
         DaycareCamera.instance.SetCameraTarget(unitPrefabs[0].transform);
@@ -138,7 +138,7 @@ public class DaycareManager : MonoBehaviour
     }
     public void StartMonFusionSelection()
     {
-        TooltipUI.instance.ShowTooltipText("Select 2 mons");
+        TooltipUI.instance.InstantShowText("Select 2 mons");
         DaycareUIManager.instance.DisableAllButtons();
         DaycareCamera.instance.EnableFusionCamera();
         DaycareCamera.instance.SetCameraTarget(unitPrefabs[0].transform);
@@ -179,7 +179,7 @@ public class DaycareManager : MonoBehaviour
                 selectedPrefabs.Remove(unitPrefabs[selection]);
             }
 
-            TooltipUI.instance.ShowTooltipText($"Select {unitsToSelect - selectedUnits.Count} mons");
+            TooltipUI.instance.InstantShowText($"Select {unitsToSelect - selectedUnits.Count} mons");
             if (selectedUnits.Count > 0) DaycareUIManager.instance.EnableBattleConfirm();
             else DaycareUIManager.instance.DisableBattleConfirm();
         }
@@ -226,7 +226,7 @@ public class DaycareManager : MonoBehaviour
 
         yield return new WaitForSeconds(2);
 
-        TooltipUI.instance.ShowTooltipText("Is this your team?");
+        TooltipUI.instance.InstantShowText("Is this your team?");
 
         StartCoroutine(MoveMonsToFront());
 
@@ -266,7 +266,7 @@ public class DaycareManager : MonoBehaviour
 
         yield return new WaitForSeconds(2);
 
-        TooltipUI.instance.ShowTooltipText("Do you want to fuse these mons?");
+        TooltipUI.instance.InstantShowText("Do you want to fuse these mons?");
 
         StartCoroutine(MoveMonsToFront());
 
@@ -375,7 +375,7 @@ public class DaycareManager : MonoBehaviour
 
         GameObject newUnit = Instantiate(unitPrefabs[^1], cameraCenterPoint.transform.position, Quaternion.Euler(0, 180, 0));
         newUnit.GetComponent<Unit>().enabled = false;
-        TooltipUI.instance.ShowTooltipText($"Wow! A {newUnit.GetComponent<Unit>().name}");
+        TooltipUI.instance.InstantShowText($"Wow! A {newUnit.GetComponent<Unit>().name}");
         FresnelApplier.applyFresnel(unitPrefabs[^1], Color.white);
 
         selectedPrefabs.Clear();

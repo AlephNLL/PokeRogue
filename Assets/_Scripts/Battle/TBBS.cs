@@ -570,6 +570,16 @@ public class TBBS : MonoBehaviour
 
         for (int i = 0; i < hits; i++)
         {
+            if(i > 0)
+            {
+                List<Unit> newTargets = new List<Unit>();
+                for (int j = 0; j < targets.Length; j++)
+                {
+                    if (targets[j] != null) newTargets.Add(targets[j]);
+                }
+
+                targets = newTargets.ToArray();
+            }
             if (ability.vfxPrefab)
             {
                 if (ability.spawnVfxOnSelf)
@@ -838,7 +848,7 @@ public class TBBS : MonoBehaviour
     int CalculateAttackDamage(Unit attacker, Unit target, Abilities ability)
     {
         float baseCritChance = 0.01f;
-        int attackStat = attacker.GetStat(Stats.ATK);
+        int attackStat = attacker.GetStat(ability.statToCalcDmgWith);
         int defenseStat = target.GetStat(Stats.DEF);
         float stanceBonus = attacker.currentStance == ability.stance ? 1.5f : 1;
         float efficacy = GetAbilityEfficacy(ability.stance, target.currentStance);

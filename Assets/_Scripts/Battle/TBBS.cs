@@ -12,7 +12,6 @@ using Random = UnityEngine.Random;
 
 
 //Turn Based Battle System
-public enum BattleState { START, PLAYERTURN, ENEMYTURN, LOSS, WIN }
 public class TBBS : MonoBehaviour
 {
     public static TBBS instance;
@@ -26,7 +25,6 @@ public class TBBS : MonoBehaviour
     public List<Unit> enemyUnits;
     public List<GameObject> capturableUnits;
 
-    private BattleState battleState;
     private int currentTurnIndex = 0;
     private int round = 0;
 
@@ -41,8 +39,6 @@ public class TBBS : MonoBehaviour
 
     private void Start()
     {
-        battleState = BattleState.START;
-        
         StartCoroutine(SetupBattleField());
     }
 
@@ -109,7 +105,6 @@ public class TBBS : MonoBehaviour
             if (IsBattleWon())
             {
                 Debug.Log("Win");
-                battleState = BattleState.WIN;
                 Debug.Log(playerUnits.Count);
                 TeamManager.instance.SaveTeamData(playerUnits);
                 EndScreenManager.instance.ShowVictoryScreen(capturableUnits.ToArray(), 100, 100);
@@ -119,7 +114,6 @@ public class TBBS : MonoBehaviour
             else
             {
                 Debug.Log("Game over");
-                battleState = BattleState.LOSS;
                 StartCoroutine(EndBattle());
                 return;
             }
@@ -160,7 +154,6 @@ public class TBBS : MonoBehaviour
 
     IEnumerator PlayerTurn(Unit currentUnit, bool activateTurnStartEffect = true)
     {
-        battleState = BattleState.PLAYERTURN;
         currentUnit.ActivateCamera();
         if(activateTurnStartEffect) currentUnit.OnTurnStart();
         if (currentUnit.skipTurn)
@@ -183,7 +176,6 @@ public class TBBS : MonoBehaviour
 
     IEnumerator EnemyTurn(Unit currentUnit, bool activateTurnStartEffect = true)
     {
-        battleState = BattleState.ENEMYTURN;
         if (activateTurnStartEffect) currentUnit.OnTurnStart();
         if (currentUnit.skipTurn)
         {
@@ -840,7 +832,7 @@ public class TBBS : MonoBehaviour
     }
     bool CheckHit(Abilities ability)
     {
-        if (ability.accuracy >= UnityEngine.Random.Range(1,100)) return true;
+        if (ability.accuracy >= UnityEngine.Random.Range(1,101)) return true;
         else return false;
     }
     int CalculateAttackDamage(Unit attacker, Unit target, Abilities ability)
@@ -852,7 +844,7 @@ public class TBBS : MonoBehaviour
         float efficacy = GetAbilityEfficacy(ability.stance, target.currentStance);
         float roll = UnityEngine.Random.Range(.8f, 1f);
         float chanceToCrit = 1f - Mathf.Pow(1 - baseCritChance, attacker.GetStat(Stats.LUCK));
-        bool isCritical = UnityEngine.Random.Range(0, 100) <= chanceToCrit*100;
+        bool isCritical = UnityEngine.Random.Range(1, 101) <= chanceToCrit*100;
         float critMod = isCritical ? 1.5f : 1f;
         float freezeMod = target.status == Status.FROZEN ? 1.5f : 1f;
 

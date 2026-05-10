@@ -52,6 +52,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RightHand_Rig
       objectReference: {fileID: 0}
+    - target: {fileID: 3029360458300433045, guid: d41593d17640a814d8e0e9a86dc99057, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: be609d598be889d4da45eea2a214a7b3, type: 2}
     - target: {fileID: 5866666021909216657, guid: d41593d17640a814d8e0e9a86dc99057, type: 3}
       propertyPath: m_Avatar
       value: 

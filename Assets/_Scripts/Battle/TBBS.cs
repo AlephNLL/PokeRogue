@@ -391,14 +391,14 @@ public class TBBS : MonoBehaviour
         bool result;
         while (true)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
             {
                 result = true;
                 yield return result;
                 yield break;
             }
 
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1))
             {
                 result = false;
                 yield return result;
@@ -419,7 +419,7 @@ public class TBBS : MonoBehaviour
 
             while (true)
             {
-                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.sqrMagnitude < 0)
                 {
                     if (selection == 0)
                     {
@@ -433,7 +433,7 @@ public class TBBS : MonoBehaviour
                     attacker.SelectTarget(enemyUnits[selection].gameObject);
                 }
 
-                if (Input.GetKeyDown(KeyCode.RightArrow))
+                if (Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.sqrMagnitude > 0)
                 {
                     if (selection == enemyUnits.Count - 1)
                     {
@@ -447,13 +447,13 @@ public class TBBS : MonoBehaviour
                     attacker.SelectTarget(enemyUnits[selection].gameObject);
                 }
 
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
                 {
                     yield return selection;
                     yield break;
                 }
 
-                if(Input.GetKeyDown(KeyCode.Escape))
+                if(Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1))
                 {
                     AbilityMenu(attacker);
                     selection = -1;

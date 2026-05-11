@@ -14,12 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Bite
   description: Bites a foe.
-  power: 40
+  power: 30
   accuracy: 100
   abilityType: 0
   target: 1
   stance: 0
+  statToCalcDmgWith: 1
   mustUseStance: 0
+  multiHit: 0
+  multiHitRange: 0
+  hits: 0
+  hitRange: 
   passiveEffects: 0
   passiveExecutionTime: 1
   passiveEffectChance: 0

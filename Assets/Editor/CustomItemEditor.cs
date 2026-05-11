@@ -10,12 +10,14 @@ public class CustomItemEditor : Editor
     #region SerializedProperties
     new SerializedProperty name;
     SerializedProperty description;
+    SerializedProperty cost;
     SerializedProperty icon;
     SerializedProperty isConsumible;
 
     SerializedProperty effect;
     SerializedProperty effectChance;
     SerializedProperty statusToChangeTo;
+    SerializedProperty healingAmount;
     SerializedProperty executionTime;
     SerializedProperty affectSelf;
 
@@ -27,12 +29,14 @@ public class CustomItemEditor : Editor
     {
         name = serializedObject.FindProperty("name");
         description = serializedObject.FindProperty("description");
+        cost = serializedObject.FindProperty("cost");
         icon = serializedObject.FindProperty("icon");
         isConsumible = serializedObject.FindProperty("isConsumible");
 
         effect = serializedObject.FindProperty("effect");
         effectChance = serializedObject.FindProperty("effectChance");
         statusToChangeTo = serializedObject.FindProperty("statusToChangeTo");
+        healingAmount = serializedObject.FindProperty("healingAmount");
         executionTime = serializedObject.FindProperty("executionTime");
         affectSelf = serializedObject.FindProperty("affectSelf");
     }
@@ -49,6 +53,7 @@ public class CustomItemEditor : Editor
         {
             EditorGUILayout.PropertyField(name);
             EditorGUILayout.PropertyField(description);
+            EditorGUILayout.PropertyField(cost);
             EditorGUILayout.PropertyField(icon);
             EditorGUILayout.PropertyField(isConsumible);
         }
@@ -60,6 +65,7 @@ public class CustomItemEditor : Editor
             EditorGUILayout.PropertyField(effect);
             if (!item.isConsumible) EditorGUILayout.PropertyField(effectChance);
             if (item.effect == ItemEffects.APPLYSTATUS) EditorGUILayout.PropertyField(statusToChangeTo);
+            if (item.effect == ItemEffects.HEAL) EditorGUILayout.PropertyField(healingAmount);
             if (!item.isConsumible) EditorGUILayout.PropertyField(executionTime);
             EditorGUILayout.PropertyField(affectSelf);
         }

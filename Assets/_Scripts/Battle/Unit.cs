@@ -76,12 +76,13 @@ public class Unit : MonoBehaviour
     public bool additionalTurn = false;
     public bool skipTurn = false;
 
-    public bool waitingForDestroy = false;
     public bool takingDamage = false;
 
     int trickyStanceEffectChanceModifier = 30;
     public int effectChanceModifier;
 
+    int sleepCounter;
+    int sleepMaxTurns = 3;
     private void Start()
     {
         InitializeVariables();
@@ -289,19 +290,25 @@ public class Unit : MonoBehaviour
         if (mod > 1) VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, gameObject);
         else VFXManager.instance.SpawnGlobalEffect(VFX.NERF, gameObject);
 
+        string modAction = mod > 1 ? "rose" : "fell";
+
         switch (stat)
         {
             case Stats.ATK:
                 attack = Mathf.FloorToInt(attack * mod);
+                TooltipUI.instance.ShowTooltipText($"{name} attack {modAction}");
                 break;
             case Stats.DEF:
                 defense = Mathf.FloorToInt(defense * mod);
+                TooltipUI.instance.ShowTooltipText($"{name} defense {modAction}");
                 break;
             case Stats.SPEED:
                 speed = Mathf.FloorToInt(speed * mod);
+                TooltipUI.instance.ShowTooltipText($"{name} speed {modAction}");
                 break;
             case Stats.LUCK:
                 luck = Mathf.FloorToInt(luck * mod);
+                TooltipUI.instance.ShowTooltipText($"{name} luck {modAction}");
                 break;
             default:
                 break;
@@ -332,6 +339,8 @@ public class Unit : MonoBehaviour
         currentStance = stance;
         if (currentStance == Stance.TRICKY) effectChanceModifier = trickyStanceEffectChanceModifier;
         else effectChanceModifier = 0;
+
+        TooltipUI.instance.ShowTooltipText($"{name} changes to a {stance.ToString().ToLower()} stance");
     }
     public void Heal(int healAmount)
     {
@@ -346,7 +355,7 @@ public class Unit : MonoBehaviour
         if (currentHp - dmgAmount <= 0)
         {
             currentHp = 0;
-            waitingForDestroy = true;
+            TBBS.instance.WaitingForDestroy(this);
         }
         else
         {
@@ -361,7 +370,7 @@ public class Unit : MonoBehaviour
 
         if (!healthBar)
         {
-            if (currentHp == 0) TBBS.instance.Death(this);
+            if (currentHp == 0) Destroy(gameObject);
             yield break;
         }
 
@@ -389,7 +398,7 @@ public class Unit : MonoBehaviour
 
         takingDamage = false;
 
-        if (currentHp == 0) TBBS.instance.Death(this);
+        if (currentHp == 0) Destroy(gameObject);
     }
 
     public int GetStat(Stats stat)
@@ -429,6 +438,8 @@ public class Unit : MonoBehaviour
     {
         ResolvePassiveEffect(ExecutionTime.TURNSTART);
         ResolveItemEffect(ExecutionTime.TURNSTART);
+
+        if (status == Status.ASLEEP) SleepCounter();
     }
 
     public void OnTurnEnd()
@@ -439,11 +450,11 @@ public class Unit : MonoBehaviour
                 break;
             case Status.BURNED:
                 TakeDamage((Mathf.FloorToInt(maxHp * .1f) + 1));
-                Debug.Log(name + " lost " + (Mathf.FloorToInt(maxHp * .1f) + 1) + " hp due to his burns");
+                TooltipUI.instance.ShowTooltipText(name + " lost " + (Mathf.FloorToInt(maxHp * .1f) + 1) + " hp due to his burns");
                 break;
             case Status.POISONED:
                 TakeDamage((Mathf.FloorToInt(maxHp * .2f) + 1));
-                Debug.Log(name + " lost " + (Mathf.FloorToInt(maxHp * .2f) + 1) + " hp due to poison");
+                TooltipUI.instance.ShowTooltipText(name + " lost " + (Mathf.FloorToInt(maxHp * .2f) + 1) + " hp due to poison");
                 break;
             default:
                 break;
@@ -592,23 +603,14 @@ public class Unit : MonoBehaviour
         if(statusToApply == Status.NONE) return;
         if (status != Status.NONE) return;
 
-        if (!takingDamage) VFXManager.instance.SpawnStatusVFX(statusToApply, gameObject);
-        else
-        {
-            StartCoroutine(WaitToApplyStatus(statusToApply));
-            return;
-        }
-
+        VFXManager.instance.SpawnStatusVFX(statusToApply, gameObject);
+        TooltipUI.instance.ShowTooltipText($"{name} is {statusToApply.ToString().ToLower()}");
         status = statusToApply;
 
         ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
         ResolveItemEffect(ExecutionTime.ONSTATUSCHANGE);
-    }
-    IEnumerator WaitToApplyStatus(Status statusToApply)
-    {
-        yield return new WaitForSeconds(.1f);
-        ApplyStatus(statusToApply);
-        yield break;
+
+        if(statusToApply == Status.ASLEEP) StartSleepCounter();
     }
 
     public void CureStatus()
@@ -616,12 +618,39 @@ public class Unit : MonoBehaviour
         if (status == Status.NONE) return;
 
         status = Status.NONE;
+        VFXManager.instance.ClearStatusVFXPrefab(gameObject);
         FresnelApplier.clearFresnel(gameObject);
 
         ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
         ResolveItemEffect(ExecutionTime.ONSTATUSCHANGE);
     }
-
+    void StartSleepCounter()
+    {
+        sleepCounter = 0;
+        skipTurn = true;
+    }
+    void SleepCounter()
+    {
+        if (sleepCounter >= sleepMaxTurns)
+        {
+            WakeUp();
+            return;
+        }
+        if (33 + sleepCounter * 16 > Random.Range(0, 100))
+        {
+            WakeUp();
+            return;
+        }
+        TooltipUI.instance.ShowTooltipText(name + " is fast asleep.");
+        skipTurn = true;
+        sleepCounter++;
+    }
+    void WakeUp()
+    {
+        TooltipUI.instance.ShowTooltipText(name + " woke up!");
+        CureStatus();
+        skipTurn = false;
+    }
     public bool HasAdditionalTurn()
     {
         if (!additionalTurn) return false;

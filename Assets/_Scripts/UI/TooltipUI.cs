@@ -24,6 +24,11 @@ public class TooltipUI : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    public void InstantShowText(string text)
+    {
+        tooltipBorder.SetActive(true);
+        tooltipText.text = text;
+    }
     public void ShowTooltipText(string text)
     {
         if (isTextActive)
@@ -31,9 +36,8 @@ public class TooltipUI : MonoBehaviour
             scheduledTexts.Add(text);
             return;
         }
-        
-        tooltipBorder.SetActive(true);
-        tooltipText.text = text;
+
+        InstantShowText(text);
 
         StartCoroutine(TextTimer());
     }

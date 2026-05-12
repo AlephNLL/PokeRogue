@@ -379,7 +379,7 @@ public class Unit : MonoBehaviour
         float startValue = healthBar.value;
         float endValue = (float)currentHp / maxHp;
 
-        if (endValue >= startValue) { FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.lightGreen); VFXManager.instance.SpawnGlobalEffect(VFX.HEAL, gameObject); }
+        if (endValue > startValue) { FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.lightGreen); VFXManager.instance.SpawnGlobalEffect(VFX.HEAL, gameObject); }
         else { FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.red); VFXManager.instance.SpawnGlobalEffect(VFX.HIT, gameObject); }
 
         while (t < 1)
@@ -393,8 +393,9 @@ public class Unit : MonoBehaviour
 
         //healthBar.gameObject.SetActive(false);
 
-        if (status != Status.NONE) VFXManager.instance.SpawnStatusVFX(status, gameObject);
-        else FresnelApplier.clearFresnel(gameObject);
+        FresnelApplier.clearFresnel(gameObject);
+        //if (status != Status.NONE) VFXManager.instance.SpawnStatusVFX(status, gameObject);
+        //else FresnelApplier.clearFresnel(gameObject);
 
         takingDamage = false;
 
@@ -590,7 +591,7 @@ public class Unit : MonoBehaviour
                     target.additionalTurn = true;
                     break;
                 case ItemEffects.APPLYSTATUS:
-                    target.ApplyStatus(Status.POISONED);
+                    target.ApplyStatus(heldItem.statusToChangeTo);
                     break;
                 default:
                     break;

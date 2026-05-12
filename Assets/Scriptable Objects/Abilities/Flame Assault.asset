@@ -21,7 +21,7 @@ MonoBehaviour:
   stance: 0
   statToCalcDmgWith: 1
   mustUseStance: 0
-  multiHit: 1
+  multiHit: 0
   multiHitRange: 0
   hits: 5
   hitRange: 

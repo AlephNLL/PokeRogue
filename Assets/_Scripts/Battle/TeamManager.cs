@@ -58,7 +58,7 @@ public class TeamManager : MonoBehaviour
     {
         for (int i = 0; i < teamData.Count; i++)
         {
-            teamData[i].currentHp = (int)(teamData[i].currentHp + teamData[i].currentHp * healingPercent);
+            teamData[i].currentHp = (int)(teamData[i].currentHp + teamData[i].prefab.GetComponent<Unit>().GetRawStat(Stats.HP, teamData[i].level) * healingPercent);
             int maxHp = teamData[i].prefab.GetComponent<Unit>().constitution * teamData[i].level + 1;
             if (teamData[i].currentHp > maxHp) teamData[i].currentHp = maxHp;
         }
@@ -68,18 +68,10 @@ public class TeamManager : MonoBehaviour
 
     public void DamageTeam(float damagePercent)
     {
-        List<UnitData> newTeamData = new List<UnitData>();
         for (int i = 0; i < teamData.Count; i++)
         {
-            teamData[i].currentHp = (int)(teamData[i].currentHp - teamData[i].currentHp * damagePercent);
-            if (teamData[i].currentHp > 0) newTeamData.Add(teamData[i]);
-        }
-
-        teamData = newTeamData;
-
-        for (int i = 0; i < teamData.Count; i++)
-        {
-            teamData[i].id = i;
+            teamData[i].currentHp = (int)(teamData[i].currentHp - teamData[i].prefab.GetComponent<Unit>().GetRawStat(Stats.HP, teamData[i].level) * damagePercent);
+            if (teamData[i].currentHp <= 0) teamData[i].currentHp = 1;
         }
 
         PlayerData.teamData = teamData;

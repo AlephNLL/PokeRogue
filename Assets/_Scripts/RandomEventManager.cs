@@ -28,7 +28,7 @@ public class RandomEventManager : MonoBehaviour
         eventUI.gameObject.SetActive(true);
         ShowButtons();
         eventText.text = currentEvent.eventText;
-        eventIcon.sprite = currentEvent.icon;
+        eventIcon.sprite = currentEvent.defaultIcon;
     }
 
     public void EndRandomEvent()
@@ -38,36 +38,57 @@ public class RandomEventManager : MonoBehaviour
 
     public void OnConfirmEvent()
     {
-        eventText.text = currentEvent.confirmText;
-        switch (currentEvent.eventConfirmEffect)
+        if(currentEvent.checkGoldToConfirm && PlayerData.Instance.gold - currentEvent.goldToGive < 0)
         {
-            case Events.NONE:
-                eventText.text = $"Nothing happens...";
-                break;
-            case Events.GAINGOLD:
-                PlayerData.Instance.gold += currentEvent.goldToGive;
-                break;
-            case Events.GAINITEM:
-                PlayerData.items.Add(currentEvent.itemToGive);
-                break;
-            case Events.LOSEGOLD:
-                PlayerData.Instance.gold -= currentEvent.goldToGive;
-                break;
-            case Events.LOSEITEM:
-                break;
-            case Events.HEAL:
-                TeamManager.instance.HealTeam(1);
-                break;
-            case Events.LEVELUP:
-                break;
-            case Events.DAMAGE:
-                TeamManager.instance.DamageTeam(.2f);
-                break;
-            case Events.APPLYSTATUS:
-                TeamManager.instance.ApplyTeamStatus(currentEvent.statusToApply);
-                break;
-            default:
-                break;
+            eventText.text = "You don't have enough gold...";
+            HideButtons();
+            StartCoroutine(WaitForClick());
+            return;
+        }
+        eventText.text = currentEvent.confirmText;
+        eventIcon.sprite = currentEvent.confirmIcon ? currentEvent.confirmIcon : currentEvent.defaultIcon;
+
+        for (int i = 0; i < currentEvent.eventConfirmEffect.Length; i++)
+        {
+            switch (currentEvent.eventConfirmEffect[i])
+            {
+                case Events.NONE:
+                    eventText.text = $"Nothing happens...";
+                    break;
+                case Events.GAINGOLD:
+                    PlayerData.Instance.gold += currentEvent.goldToGive;
+                    break;
+                case Events.GAINITEM:
+                    if (currentEvent.giveRandomItem)
+                    {
+                        Item itemToAdd = currentEvent.itemsToGive[Random.Range(0, currentEvent.itemsToGive.Length)];
+                        PlayerData.items.Add(itemToAdd);
+                        eventIcon.sprite = itemToAdd.icon.GetComponent<Image>().sprite;
+                    }
+                    else
+                    {
+                        PlayerData.items.AddRange(currentEvent.itemsToGive);
+                    }
+                    break;
+                case Events.LOSEGOLD:
+                    PlayerData.Instance.gold -= currentEvent.goldToGive;
+                    break;
+                case Events.LOSEITEM:
+                    break;
+                case Events.HEAL:
+                    TeamManager.instance.HealTeam(1);
+                    break;
+                case Events.LEVELUP:
+                    break;
+                case Events.DAMAGE:
+                    TeamManager.instance.DamageTeam(.2f);
+                    break;
+                case Events.APPLYSTATUS:
+                    TeamManager.instance.ApplyTeamStatus(currentEvent.statusToApply);
+                    break;
+                default:
+                    break;
+            }
         }
 
         HideButtons();
@@ -77,37 +98,48 @@ public class RandomEventManager : MonoBehaviour
     public void OnCancelEvent()
     {
         eventText.text = currentEvent.cancelText;
+        eventIcon.sprite = currentEvent.cancelIcon ? currentEvent.cancelIcon : currentEvent.defaultIcon;
 
-        switch (currentEvent.eventCancelEffect)
+        for (int i = 0; i < currentEvent.eventCancelEffect.Length; i++)
         {
-            case Events.NONE:
-                eventText.text = $"Nothing happens...";
-                break;
-            case Events.GAINGOLD:
-                PlayerData.Instance.gold += currentEvent.goldToGive;
-                break;
-            case Events.GAINITEM:
-                PlayerData.items.Add(currentEvent.itemToGive);
-                break;
-            case Events.LOSEGOLD:
-                PlayerData.Instance.gold -= currentEvent.goldToGive;
-                break;
-            case Events.LOSEITEM:
-                break;
-            case Events.HEAL:
-                TeamManager.instance.HealTeam(1);
-                break;
-            case Events.LEVELUP:
-                break;
-            case Events.DAMAGE:
-                TeamManager.instance.DamageTeam(.2f);
-                break;
-            case Events.APPLYSTATUS:
-                TeamManager.instance.ApplyTeamStatus(currentEvent.statusToApply);
-                break;
-            default:
-                break;
-        }
+            switch (currentEvent.eventCancelEffect[i])
+            {
+                case Events.NONE:
+                    eventText.text = $"Nothing happens...";
+                    break;
+                case Events.GAINGOLD:
+                    PlayerData.Instance.gold += currentEvent.goldToGive;
+                    break;
+                case Events.GAINITEM:
+                    if (currentEvent.giveRandomItem)
+                    {
+                        PlayerData.items.Add(currentEvent.itemsToGive[Random.Range(0, currentEvent.itemsToGive.Length)]);
+                    }
+                    else
+                    {
+                        PlayerData.items.AddRange(currentEvent.itemsToGive);
+                    }
+                    break;
+                case Events.LOSEGOLD:
+                    PlayerData.Instance.gold -= currentEvent.goldToGive;
+                    break;
+                case Events.LOSEITEM:
+                    break;
+                case Events.HEAL:
+                    TeamManager.instance.HealTeam(1);
+                    break;
+                case Events.LEVELUP:
+                    break;
+                case Events.DAMAGE:
+                    TeamManager.instance.DamageTeam(.2f);
+                    break;
+                case Events.APPLYSTATUS:
+                    TeamManager.instance.ApplyTeamStatus(currentEvent.statusToApply);
+                    break;
+                default:
+                    break;
+            }
+        } 
 
         HideButtons();
         StartCoroutine(WaitForClick());
@@ -130,7 +162,7 @@ public class RandomEventManager : MonoBehaviour
         while (true)
         {
             yield return null;
-            if (Input.GetMouseButtonDown(0))
+            if (Input.anyKeyDown)
             {
                 EndRandomEvent();
                 yield break;

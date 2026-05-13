@@ -6,13 +6,17 @@ using UnityEngine.UI;
 public class RandomEvent : ScriptableObject
 {
     public string eventText;
-    public Sprite icon;
-    public Events eventConfirmEffect;
+    public Sprite defaultIcon;
+    public Events[] eventConfirmEffect;
     public string confirmText;
-    public Events eventCancelEffect;
+    public Sprite confirmIcon;
+    public Events[] eventCancelEffect;
     public string cancelText;
+    public Sprite cancelIcon;
 
     public int goldToGive;
-    public Item itemToGive;
+    public bool checkGoldToConfirm;
+    public Item[] itemsToGive;
+    public bool giveRandomItem;
     public Status statusToApply;
 }

@@ -15,8 +15,12 @@ public class CustomAbilityEditor : Editor
     SerializedProperty abilityType;
     SerializedProperty abilityTarget;
     SerializedProperty stance;
+    SerializedProperty statToCalcDMGWith;
     SerializedProperty mustUseStance;
-
+    SerializedProperty multiHit;
+    SerializedProperty multiHitRange;
+    SerializedProperty hits;
+    SerializedProperty hitRange;
     SerializedProperty passiveEffects;
     SerializedProperty passiveExecutionTime;
     SerializedProperty passiveEffectChance;
@@ -47,7 +51,12 @@ public class CustomAbilityEditor : Editor
         abilityType = serializedObject.FindProperty("abilityType");
         abilityTarget = serializedObject.FindProperty("target");
         stance = serializedObject.FindProperty("stance");
+        statToCalcDMGWith = serializedObject.FindProperty("statToCalcDmgWith");
         mustUseStance = serializedObject.FindProperty("mustUseStance");
+        multiHit = serializedObject.FindProperty("multiHit");
+        multiHitRange = serializedObject.FindProperty("multiHitRange");
+        hits = serializedObject.FindProperty("hits");
+        hitRange = serializedObject.FindProperty("hitRange");
 
         passiveEffects = serializedObject.FindProperty("passiveEffects");
         passiveExecutionTime = serializedObject.FindProperty("passiveExecutionTime");
@@ -82,7 +91,12 @@ public class CustomAbilityEditor : Editor
             EditorGUILayout.PropertyField(abilityType);
             EditorGUILayout.PropertyField(abilityTarget);
             EditorGUILayout.PropertyField(stance);
+            if (ability.power > 0) EditorGUILayout.PropertyField(statToCalcDMGWith);
             EditorGUILayout.PropertyField(mustUseStance);
+            EditorGUILayout.PropertyField(multiHit);
+            EditorGUILayout.PropertyField(multiHitRange);
+            if (ability.multiHit) EditorGUILayout.PropertyField(hits);
+            if (ability.multiHitRange) EditorGUILayout.PropertyField(hitRange);
         }
 
         if (ability.abilityType == AbilityType.PASSIVE)

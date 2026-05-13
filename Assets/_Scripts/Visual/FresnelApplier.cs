@@ -11,11 +11,8 @@ public class FresnelApplier : MonoBehaviour
         print(capsule.name);
         MaterialPropertyBlock mpb = new MaterialPropertyBlock();
         mpb.SetFloat("_ApplyFresnel", 1);
-        mpb.SetColor("_FresnelColor", color * 8f);
+        mpb.SetColor("_FresnelColor", color * 5f);
         capsule.SetPropertyBlock(mpb);
-        Debug.Log($"Material: {capsule.material.name}");
-        Debug.Log("has fresnel:"+capsule.material.HasProperty("_ApplyFresnel"));
-        Debug.Log("has fresnel color: "+capsule.material.HasProperty("_FresnelColor"));
     }
     public static void clearFresnel(GameObject unit)
     {

@@ -14,12 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Babylon's Gate
   description: Open a cluster of portals that rain swords upon foes.
-  power: 100
-  accuracy: 100
+  power: 80
+  accuracy: 95
   abilityType: 0
   target: 3
   stance: 0
-  mustUseStance: 0
+  statToCalcDmgWith: 1
+  mustUseStance: 1
+  multiHit: 0
+  multiHitRange: 0
+  hits: 0
+  hitRange: 
   passiveEffects: 6
   passiveExecutionTime: 0
   passiveEffectChance: 0

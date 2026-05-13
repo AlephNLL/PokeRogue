@@ -212,7 +212,7 @@ public class Unit : MonoBehaviour
 
         attackButton.onClick.AddListener(delegate { TBBS.instance.AbilityMenu(this); });
         itemButton.onClick.AddListener(delegate { TBBS.instance.ItemMenu(this); });
-        runButton.onClick.AddListener(delegate { TBBS.instance.Run(this); });
+        runButton.onClick.AddListener(delegate { TBBS.instance.Skip(this); });
     }
     public void CloseBattleMenu()
     {

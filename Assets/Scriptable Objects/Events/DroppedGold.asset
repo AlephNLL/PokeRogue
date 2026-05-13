@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7667f52f07e4064aa80e4127ddf40f2, type: 3}
+  m_Name: DroppedGold
+  m_EditorClassIdentifier: Assembly-CSharp::RandomEvent
+  eventText: You find some coins scattered on the ground, do you pick them up?
+  defaultIcon: {fileID: 21300000, guid: 6609141200915334283db6c7337d68bd, type: 3}
+  eventConfirmEffect: 01000000
+  confirmText: You pickup the coins and gain 8g!
+  confirmIcon: {fileID: 0}
+  eventCancelEffect: 00000000
+  cancelText: 
+  cancelIcon: {fileID: 0}
+  goldToGive: 8
+  itemToGive: {fileID: 0}
+  statusToApply: 0

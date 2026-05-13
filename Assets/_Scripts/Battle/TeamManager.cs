@@ -1,8 +1,11 @@
+using GameData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using static Cinemachine.DocumentationSortingAttribute;
+using Random = UnityEngine.Random;
 
 public class TeamManager : MonoBehaviour
 {
@@ -58,6 +61,42 @@ public class TeamManager : MonoBehaviour
             teamData[i].currentHp = (int)(teamData[i].currentHp + teamData[i].currentHp * healingPercent);
             int maxHp = teamData[i].prefab.GetComponent<Unit>().constitution * teamData[i].level + 1;
             if (teamData[i].currentHp > maxHp) teamData[i].currentHp = maxHp;
+        }
+
+        PlayerData.teamData = teamData;
+    }
+
+    public void DamageTeam(float damagePercent)
+    {
+        List<UnitData> newTeamData = new List<UnitData>();
+        for (int i = 0; i < teamData.Count; i++)
+        {
+            teamData[i].currentHp = (int)(teamData[i].currentHp - teamData[i].currentHp * damagePercent);
+            if (teamData[i].currentHp > 0) newTeamData.Add(teamData[i]);
+        }
+
+        teamData = newTeamData;
+
+        for (int i = 0; i < teamData.Count; i++)
+        {
+            teamData[i].id = i;
+        }
+
+        PlayerData.teamData = teamData;
+    }
+
+    public void ApplyTeamStatus(Status statusToApply, bool randomStatus = false)
+    {
+        for (int i = 0; i < teamData.Count; i++)
+        {
+            if (randomStatus)
+            {
+                teamData[i].status = (Status)Random.Range(0, Enum.GetValues(typeof(Status)).Length);
+            }
+            else
+            {
+                teamData[i].status = statusToApply;
+            }
         }
 
         PlayerData.teamData = teamData;

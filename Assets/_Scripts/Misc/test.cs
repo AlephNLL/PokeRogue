@@ -8,6 +8,10 @@ public class test : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            RandomEventManager.instance.CreateRandomEvent();
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             BattleData.Difficulty = battleDifficulty;

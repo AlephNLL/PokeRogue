@@ -17,8 +17,8 @@ MonoBehaviour:
   prefab: {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
   level: 1
   heldItem: {fileID: 0}
-  currentHp: 39
-  status: 0
+  currentHp: 27
+  status: 2
   knownAbilities:
   - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}
   - {fileID: 11400000, guid: 2251ef1496db6b54b877601923aefaaf, type: 2}

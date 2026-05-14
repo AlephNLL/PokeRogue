@@ -522,32 +522,18 @@ public class TBBS : MonoBehaviour
 
         allUnits.Remove(attacker);
         if (enemyUnits.Contains(attacker)) enemyUnits.Remove(attacker);
-        else playerUnits.Remove(attacker);
+        else
+        {
+            PlayerData.teamData.Remove(PlayerData.teamData[playerUnits.FindIndex(x => x.Equals(attacker))]);
+            playerUnits.Remove(attacker);
+        }
     }
-    public void Run(Unit attacker) //Se llama desde la interfaz del jugador, los botones se suscriben al activarse
+    public void Skip(Unit attacker) //Se llama desde la interfaz del jugador, los botones se suscriben al activarse
     {
         attacker.DeactivateCamera();
         attacker.CloseBattleMenu();
-
-        allUnits.Remove(attacker);
-        playerUnits.Remove(attacker);
-
-        StartCoroutine(RunSequence(attacker));
-    }
-
-    IEnumerator RunSequence(Unit attacker)
-    {
-        CameraManager.instance.ActivateAttackCamera();
-
-        yield return new WaitForSeconds(1);
-
-        Destroy(attacker.gameObject);
-
-        yield return new WaitForSeconds(1);
-
-        CameraManager.instance.ActivateMainCamera();
-
-        // Avanzar al siguiente turno
+        attacker.OnTurnEnd();
+        currentTurnIndex++;
         StartNextTurn();
     }
     IEnumerator AttackSequence(Unit attacker, Unit[] targets, Abilities ability)

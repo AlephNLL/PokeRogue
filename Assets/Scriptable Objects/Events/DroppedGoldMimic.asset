@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7667f52f07e4064aa80e4127ddf40f2, type: 3}
+  m_Name: DroppedGoldMimic
+  m_EditorClassIdentifier: Assembly-CSharp::RandomEvent
+  eventText: You find some coins scattered on the ground, do you pick them up?
+  defaultIcon: {fileID: 21300000, guid: 6609141200915334283db6c7337d68bd, type: 3}
+  eventConfirmEffect: 07000000
+  confirmText: The coins were mimics, your team loses 20% hp
+  confirmIcon: {fileID: 21300000, guid: 1269b64232c84394b8dcd8f147458a0a, type: 3}
+  eventCancelEffect: 00000000
+  cancelText: 
+  cancelIcon: {fileID: 0}
+  goldToGive: 0
+  itemToGive: {fileID: 0}
+  statusToApply: 0

@@ -21,8 +21,5 @@ MonoBehaviour:
   cancelText: 
   cancelIcon: {fileID: 0}
   goldToGive: 8
-  checkGoldToConfirm: 0
-  itemsToGive: []
-  giveRandomItem: 0
+  itemToGive: {fileID: 0}
   statusToApply: 0
-  healingPercent: 0

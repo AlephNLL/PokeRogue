@@ -29,15 +29,6 @@ public class RandomEventManager : MonoBehaviour
         ShowButtons();
         eventText.text = currentEvent.eventText;
         eventIcon.sprite = currentEvent.defaultIcon;
-
-        if (currentEvent.checkGoldToConfirm && PlayerData.Instance.gold - currentEvent.goldToGive < 0)
-        {
-            confirmButton.interactable = false;
-        }
-        else
-        {
-            confirmButton.interactable = true;
-        }
     }
 
     public void EndRandomEvent()
@@ -47,6 +38,13 @@ public class RandomEventManager : MonoBehaviour
 
     public void OnConfirmEvent()
     {
+        if(currentEvent.checkGoldToConfirm && PlayerData.Instance.gold - currentEvent.goldToGive < 0)
+        {
+            eventText.text = "You don't have enough gold...";
+            HideButtons();
+            StartCoroutine(WaitForClick());
+            return;
+        }
         eventText.text = currentEvent.confirmText;
         eventIcon.sprite = currentEvent.confirmIcon ? currentEvent.confirmIcon : currentEvent.defaultIcon;
 
@@ -78,12 +76,12 @@ public class RandomEventManager : MonoBehaviour
                 case Events.LOSEITEM:
                     break;
                 case Events.HEAL:
-                    TeamManager.instance.HealTeam(currentEvent.healingPercent);
+                    TeamManager.instance.HealTeam(1);
                     break;
                 case Events.LEVELUP:
                     break;
                 case Events.DAMAGE:
-                    TeamManager.instance.DamageTeam(currentEvent.healingPercent);
+                    TeamManager.instance.DamageTeam(.2f);
                     break;
                 case Events.APPLYSTATUS:
                     TeamManager.instance.ApplyTeamStatus(currentEvent.statusToApply);
@@ -128,12 +126,12 @@ public class RandomEventManager : MonoBehaviour
                 case Events.LOSEITEM:
                     break;
                 case Events.HEAL:
-                    TeamManager.instance.HealTeam(currentEvent.healingPercent);
+                    TeamManager.instance.HealTeam(1);
                     break;
                 case Events.LEVELUP:
                     break;
                 case Events.DAMAGE:
-                    TeamManager.instance.DamageTeam(currentEvent.healingPercent);
+                    TeamManager.instance.DamageTeam(.2f);
                     break;
                 case Events.APPLYSTATUS:
                     TeamManager.instance.ApplyTeamStatus(currentEvent.statusToApply);

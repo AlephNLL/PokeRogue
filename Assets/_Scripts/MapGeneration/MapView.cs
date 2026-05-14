@@ -434,13 +434,13 @@ public class MapView : MonoBehaviour
                 team[1].transform.position = position - offset + offsetY;
                 break;
             case 3:
-                offset = new(0, 0, 0.35f);
+                offset = new(0, 0, 0.45f);
                 team[0].transform.position = position + offset + offsetY;
                 team[1].transform.position = position + offsetY;
                 team[2].transform.position = position - offset + offsetY;
                 break;
             case 4:
-                offset = new(0, 0, 0.15f);
+                offset = new(0, 0, 0.25f);
                 team[0].transform.position = position + (offset * 3) + offsetY;
                 team[1].transform.position = position + offset + offsetY;
                 team[2].transform.position = position - offset + offsetY;
@@ -472,7 +472,7 @@ public class MapView : MonoBehaviour
 
                 break;
             case 3:
-                offset = new(0, 0, 0.35f);
+                offset = new(0, 0, 0.45f);
                 offsetTarget = targetPosition + offset + offsetY;
                 StartCoroutine(MoveTo(team[0], offsetTarget, 0));
 
@@ -484,7 +484,7 @@ public class MapView : MonoBehaviour
 
                 break;
             case 4:
-                offset = new(0, 0, 0.15f);
+                offset = new(0, 0, 0.25f);
                 offsetTarget = targetPosition + (offset * 3) + offsetY;
                 StartCoroutine(MoveTo(team[0], offsetTarget, 0));
 

@@ -23,6 +23,4 @@ namespace GameData
     public enum RoomType {NOT_ASSIGNED, Enemy, Shop, HardEnemy, Treasure, Boss, Heal, Spawn}
 
     public enum NodeEvents { NONE, GOLD, HEAL, TRANSITION, SPECIAL}
-
-    public enum Events { NONE, GAINGOLD, GAINITEM, LOSEGOLD, LOSEITEM, HEAL, LEVELUP, DAMAGE, APPLYSTATUS}
 }

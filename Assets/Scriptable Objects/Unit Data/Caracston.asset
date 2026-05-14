@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   id: 1
   name: Caracston
-  prefab: {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
+  prefab: {fileID: 1717970170875167366, guid: f3e52fa21ac5cc74dae5f132d416ebf1, type: 3}
   level: 1
   heldItem: {fileID: 0}
   currentHp: 27

@@ -22,7 +22,7 @@ public class HandAnimatorHelper : MonoBehaviour
     }
     void ResetRotation()
     {
-        defaultPosition = transform.position + Vector3.up;
+        defaultPosition = transform.position + 2*Vector3.up;
         MoveToDefaultPosition();
         StartCoroutine(LerpRotation(Quaternion.Euler(0, 180, 0)));
     }

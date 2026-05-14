@@ -1,0 +1,541 @@
+fileFormatVersion: 2
+guid: bac6a639de6f5034da579a3a12383db2
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Interfaz1_0
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 2871
+        width: 1404
+        height: 1292
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fd123a1c6b0aac64e9f6b222ce6f72b8
+      internalID: -318933921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_1
+      rect:
+        serializedVersion: 2
+        x: 1735
+        y: 3545
+        width: 482
+        height: 511
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa78852cd9a91814e83acdb17c88701a
+      internalID: -863668130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_2
+      rect:
+        serializedVersion: 2
+        x: 2378
+        y: 3542
+        width: 480
+        height: 508
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3a57f6bb5cb580042884e4ad13913442
+      internalID: 297302409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_3
+      rect:
+        serializedVersion: 2
+        x: 3051
+        y: 3558
+        width: 481
+        height: 511
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88f9cedf0e97cbc4099c9ac4f7a374e9
+      internalID: -1834367001
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_6
+      rect:
+        serializedVersion: 2
+        x: 1748
+        y: 2939
+        width: 482
+        height: 511
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ce4629a477ee96418132de82762f132
+      internalID: -1298200091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_7
+      rect:
+        serializedVersion: 2
+        x: 2406
+        y: 2981
+        width: 446
+        height: 482
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb2b3ebff8b61c44688270c0b9e6018f
+      internalID: -1999975498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_8
+      rect:
+        serializedVersion: 2
+        x: 3057
+        y: 2975
+        width: 446
+        height: 482
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 18e1edb9934e3da44ad086ef8573b819
+      internalID: -1643166632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_11
+      rect:
+        serializedVersion: 2
+        x: 3168
+        y: 2350
+        width: 319
+        height: 504
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 511e0b3089027b4418d186a4066a0e8d
+      internalID: 1294869636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_12
+      rect:
+        serializedVersion: 2
+        x: 3970
+        y: 1086
+        width: 2282
+        height: 2835
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 825a81bc4cac8984f9c4011fc08a13c6
+      internalID: -1428499605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_13
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 1474
+        width: 651
+        height: 1221
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 69552d35c8fbf0246aa7caa723fa9a17
+      internalID: 726025198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_14
+      rect:
+        serializedVersion: 2
+        x: 845
+        y: 1965
+        width: 1017
+        height: 831
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 933c22ce8b84082418491469fbbdab45
+      internalID: -1404330905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_16
+      rect:
+        serializedVersion: 2
+        x: 2796
+        y: 2385
+        width: 215
+        height: 375
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c90cdaf1b3c72d64680f3aa973bdee02
+      internalID: -1520851266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_17
+      rect:
+        serializedVersion: 2
+        x: 2028
+        y: 2402
+        width: 234
+        height: 286
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6f16e3049c08fdf4187bc7b9c4ae73c3
+      internalID: -1116250482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_18
+      rect:
+        serializedVersion: 2
+        x: 2363
+        y: 2398
+        width: 290
+        height: 274
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe2c9fbc832930e41b81138d20815b8a
+      internalID: 762699540
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_19
+      rect:
+        serializedVersion: 2
+        x: 2061
+        y: 1956
+        width: 240
+        height: 263
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 321450a1ae0b6ab40a3a165edebd353f
+      internalID: 1063236280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_20
+      rect:
+        serializedVersion: 2
+        x: 898
+        y: 1443
+        width: 817
+        height: 216
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 693559ce72ebca340a302c9b0c8d47af
+      internalID: -1419981887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Interfaz1_34
+      rect:
+        serializedVersion: 2
+        x: 380
+        y: 344
+        width: 1622
+        height: 599
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 49615bf6d296ae7449558882d13ac2e0
+      internalID: 308986384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 9221de0057ee7dd48933663ddff223d7
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Interfaz1_0: -318933921
+      Interfaz1_1: -863668130
+      Interfaz1_10: 4179542
+      Interfaz1_11: 1294869636
+      Interfaz1_12: -1428499605
+      Interfaz1_13: 726025198
+      Interfaz1_14: -1404330905
+      Interfaz1_15: 385976029
+      Interfaz1_16: -1520851266
+      Interfaz1_17: -1116250482
+      Interfaz1_18: 762699540
+      Interfaz1_19: 1063236280
+      Interfaz1_2: 297302409
+      Interfaz1_20: -1419981887
+      Interfaz1_21: -227252882
+      Interfaz1_22: 1272044830
+      Interfaz1_23: -575257221
+      Interfaz1_24: 1597071237
+      Interfaz1_25: -240356277
+      Interfaz1_26: 592204835
+      Interfaz1_27: -1878187787
+      Interfaz1_28: -1383409473
+      Interfaz1_29: 777160720
+      Interfaz1_3: -1834367001
+      Interfaz1_30: 372551652
+      Interfaz1_31: -1274818367
+      Interfaz1_32: 384336962
+      Interfaz1_33: -1582215304
+      Interfaz1_34: 308986384
+      Interfaz1_4: -653855106
+      Interfaz1_5: 1717027400
+      Interfaz1_6: -1298200091
+      Interfaz1_7: -1999975498
+      Interfaz1_8: -1643166632
+      Interfaz1_9: 1379456518
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -27,7 +27,6 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI defenseText;
     public TextMeshProUGUI attackText;
     public TextMeshProUGUI speedText;
-    public TextMeshProUGUI luckText;
 
     public int lookAtIndex = 0;
 
@@ -169,17 +168,15 @@ public class UIManager : MonoBehaviour
         string defense = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.DEF, PlayerData.teamData[index].level).ToString();
         string attack = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.ATK, PlayerData.teamData[index].level).ToString();
         string speed = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.SPEED, PlayerData.teamData[index].level).ToString();
-        string luck = PlayerData.teamData[index].prefab.GetComponent<Unit>().luck.ToString();
-        string name = PlayerData.teamData[index].name.ToUpper();
+        string name = PlayerData.teamData[index].name;
         string level = PlayerData.teamData[index].level.ToString();
 
         nameText.text = name;
-        levelText.text = "LVL: " + level;
-        defenseText.text = "DEF: " + defense;
-        attackText.text = "ATK: " + attack;
-        healthText.text = "HP: " + health;
-        speedText.text = "SPD: " + speed;
-        luckText.text = "LCK: " + luck;
+        levelText.text = "Lvl: " + level;
+        defenseText.text = "Defense: " + defense;
+        attackText.text = "Attack: " + attack;
+        healthText.text = "Health: " + health;
+        speedText.text = "Speed: " + speed;
     }
 
     public void ShowInventory()

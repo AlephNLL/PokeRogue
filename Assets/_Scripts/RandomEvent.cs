@@ -19,4 +19,5 @@ public class RandomEvent : ScriptableObject
     public Item[] itemsToGive;
     public bool giveRandomItem;
     public Status statusToApply;
+    public float healingPercent;
 }

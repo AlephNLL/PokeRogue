@@ -26,3 +26,4 @@ MonoBehaviour:
   itemsToGive: []
   giveRandomItem: 0
   statusToApply: 0
+  healingPercent: 0.3

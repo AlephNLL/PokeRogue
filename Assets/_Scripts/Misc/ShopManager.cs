@@ -65,6 +65,7 @@ public class ShopManager : MonoBehaviour
             PlayerData.Instance.gold -= selectedItem.cost;
             if(PlayerData.Instance.gold < 0) PlayerData.Instance.gold = 0;
             ShopManagerUI.instance.UpdatePlayerGold();
+            HandAnimatorHelper.instance.SetHandTriggerParameter("Sold");
         }
     }
     public int GetItemSlotIndex(GameObject item)

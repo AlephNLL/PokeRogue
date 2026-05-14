@@ -96,7 +96,7 @@ public class ShopManager : MonoBehaviour
             if (!HandAnimatorHelper.instance.IsHandAtXPos(handXPos))
             {
                 selectedItem = items[itemSlotIndex];
-                HandAnimatorHelper.instance.MoveToPosition(new Vector3(handXPos, 4, HandAnimatorHelper.instance.transform.position.z));
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(handXPos, 4.5f, HandAnimatorHelper.instance.transform.position.z));
                 HandAnimatorHelper.instance.SetHandBoolParameter("point", true);
                 lastIndex = itemSlotIndex;
                 ShopManagerUI.instance.ShowItemDescription(selectedItem);

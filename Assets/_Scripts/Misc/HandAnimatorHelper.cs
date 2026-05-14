@@ -22,7 +22,8 @@ public class HandAnimatorHelper : MonoBehaviour
     }
     void ResetRotation()
     {
-        defaultPosition = transform.position;
+        defaultPosition = transform.position + Vector3.up;
+        MoveToDefaultPosition();
         StartCoroutine(LerpRotation(Quaternion.Euler(0, 180, 0)));
     }
     IEnumerator LerpRotation(Quaternion rotation)
@@ -51,7 +52,7 @@ public class HandAnimatorHelper : MonoBehaviour
         if (!isMoving)
         {
             StartCoroutine(Move(destination));
-            StartCoroutine(LerpRotation(Quaternion.Euler(90, 180, 0)));
+            //StartCoroutine(LerpRotation(Quaternion.Euler(90, 180, 0)));
         }
     }
     public void MoveToDefaultPosition()
@@ -59,7 +60,7 @@ public class HandAnimatorHelper : MonoBehaviour
         if (!isMoving) 
         {
             StartCoroutine(Move(defaultPosition));
-            StartCoroutine(LerpRotation(Quaternion.Euler(0, 180, 0)));
+            //StartCoroutine(LerpRotation(Quaternion.Euler(0, 180, 0)));
         } 
     }
     IEnumerator Move(Vector3 destination)

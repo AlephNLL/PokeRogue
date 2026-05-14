@@ -16,6 +16,7 @@ public class Unit : MonoBehaviour
     public string description;
     public Stance currentStance;
     public int level;
+    public int exp;
     public Status status;
     private float stanceModifier = 1.5f;
 
@@ -624,6 +625,10 @@ public class Unit : MonoBehaviour
 
         ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
         ResolveItemEffect(ExecutionTime.ONSTATUSCHANGE);
+    }
+    public void AddExp(int expToAdd)
+    {
+        exp += expToAdd;
     }
     void StartSleepCounter()
     {

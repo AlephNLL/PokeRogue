@@ -4213,6 +4213,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e546582382dfcac459c51384fa8c52fd, type: 2}
   - {fileID: 11400000, guid: 9c3d90a88fded1346a4a3d1096182e0a, type: 2}
   - {fileID: 11400000, guid: 2bbf891431b412648a01149704717c5b, type: 2}
+  - {fileID: 11400000, guid: 6fbca7c7c03096749add840ee6df22c0, type: 2}
+  - {fileID: 11400000, guid: 7b1c28ffd3dd7964a8cb6ccdc4395568, type: 2}
   eventUI: {fileID: 1111775132}
   eventText: {fileID: 600550431}
   eventIcon: {fileID: 1648623851}

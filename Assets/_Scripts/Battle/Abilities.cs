@@ -32,6 +32,9 @@ public class Abilities : ScriptableObject
     public Stance stanceToChangeTo;
     public Stance stanceCondition;
     public float healPercentage;
+    public Stats[] statToMod;
+    public float[] statMod;
+    public AbilityPowerVariables powerVariables;
 
     public GameObject vfxPrefab;
     public bool spawnVfxOnSelf;

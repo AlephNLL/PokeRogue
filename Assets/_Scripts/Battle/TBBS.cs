@@ -456,7 +456,7 @@ public class TBBS : MonoBehaviour
                     yield break;
                 }
 
-                if(Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1))
+                if(Input.GetMouseButtonDown(1))
                 {
                     AbilityMenu(attacker);
                     selection = -1;
@@ -473,7 +473,7 @@ public class TBBS : MonoBehaviour
 
             while (true)
             {
-                if (Input.GetKeyDown(KeyCode.RightArrow))
+                if (Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.sqrMagnitude > 0)
                 {
                     if (selection == 0)
                     {
@@ -487,7 +487,7 @@ public class TBBS : MonoBehaviour
                     attacker.SelectTarget(playerUnits[selection].gameObject);
                 }
 
-                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.sqrMagnitude < 0)
                 {
                     if (selection == playerUnits.Count - 1)
                     {
@@ -501,13 +501,13 @@ public class TBBS : MonoBehaviour
                     attacker.SelectTarget(playerUnits[selection].gameObject);
                 }
 
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
                 {
                     yield return selection;
                     yield break;
                 }
 
-                if (Input.GetKeyDown(KeyCode.Escape))
+                if (Input.GetMouseButtonDown(1))
                 {
                     AbilityMenu(attacker);
                     selection = -1;
@@ -754,7 +754,7 @@ public class TBBS : MonoBehaviour
     {
         for (int i = 0; i < targets.Length; i++)
         {
-            if (!CheckHit(ability))
+            if (!CheckHit(ability, attacker.precision))
             {
                 TooltipUI.instance.ShowTooltipText(attacker.name + " missed");
                 if(ability.condition1 == AbilityCondition.ATTACKMISSED ||
@@ -818,29 +818,12 @@ public class TBBS : MonoBehaviour
                     if (affectSelf) attacker.HealPercent(ability.healPercentage);
                     else target.HealPercent(ability.healPercentage);
                         break;
-                case GameData.AbilityEffect.UPATK:
-                    if(affectSelf) attacker.ApplyStatModifier(Stats.ATK, 1.5f);
-                    else target.ApplyStatModifier(Stats.ATK, 1.5f);
-                    break;
-                case GameData.AbilityEffect.UPDEF:
-                    if (affectSelf) attacker.ApplyStatModifier(Stats.DEF, 1.5f);
-                    else target.ApplyStatModifier(Stats.DEF, 1.5f);
-                    break;
-                case GameData.AbilityEffect.UPSPEED:
-                    if (affectSelf) attacker.ApplyStatModifier(Stats.SPEED, 1.5f);
-                    else target.ApplyStatModifier(Stats.SPEED, 1.5f);
-                    break;
-                case GameData.AbilityEffect.DOWNATK:
-                    if (affectSelf) attacker.ApplyStatModifier(Stats.ATK, .75f);
-                    else target.ApplyStatModifier(Stats.ATK, .75f);
-                    break;
-                case GameData.AbilityEffect.DOWNDEF:
-                    if (affectSelf) attacker.ApplyStatModifier(Stats.DEF, .75f);
-                    else target.ApplyStatModifier(Stats.DEF, .75f);
-                    break;
-                case GameData.AbilityEffect.DOWNSPEED:
-                    if (affectSelf) attacker.ApplyStatModifier(Stats.SPEED, .75f);
-                    else target.ApplyStatModifier(Stats.SPEED, .75f);
+                case GameData.AbilityEffect.STATMOD:
+                    for (int i = 0; i < ability.statToMod.Length; i++)
+                    {
+                        if (affectSelf) attacker.ApplyStatModifier(ability.statToMod[i], ability.statMod[i]);
+                        else target.ApplyStatModifier(ability.statToMod[i], ability.statMod[i]);
+                    }
                     break;
                 case GameData.AbilityEffect.STANCECHANGE:
                     if(affectSelf) attacker.ChangeStance(ability.stanceToChangeTo);
@@ -861,13 +844,26 @@ public class TBBS : MonoBehaviour
             }
         }
     }
-    bool CheckHit(Abilities ability)
+    bool CheckHit(Abilities ability, float precision)
     {
-        if (ability.accuracy >= UnityEngine.Random.Range(1,101)) return true;
+        if(ability.effect1 == AbilityEffect.CANTMISS || ability.effect2 == AbilityEffect.CANTMISS) return true;
+        if (ability.accuracy * precision >= Random.Range(1,101)) return true;
         else return false;
     }
     int CalculateAttackDamage(Unit attacker, Unit target, Abilities ability)
     {
+        int power = ability.power;
+        switch (ability.powerVariables)
+        {
+            case AbilityPowerVariables.REMAININGHP:
+                power = (int)(power * 5*(1 - (float)attacker.currentHp/attacker.maxHp));
+                break;
+            case AbilityPowerVariables.DUPEONALLYDOWNED:
+                power = (int)(power * Mathf.Pow(2, PlayerData.teamData.Count - playerUnits.Count));
+                break;
+            default:
+                break;
+        }
         float baseCritChance = 0.01f;
         int attackStat = attacker.GetStat(ability.statToCalcDmgWith);
         int defenseStat = target.GetStat(Stats.DEF);
@@ -881,7 +877,10 @@ public class TBBS : MonoBehaviour
 
         if(isCritical) defenseStat = Mathf.Min(defenseStat, target.GetRawStat(Stats.DEF, target.level));
 
-        int damage = Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * ability.power * attackStat / (5 * defenseStat)) + 2) * efficacy * stanceBonus * roll * critMod * freezeMod);
+        int damage = Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * power * attackStat / (5 * defenseStat)) + 2) * efficacy * stanceBonus * roll * critMod * freezeMod);
+
+        if (ability.effect1 == AbilityEffect.LEECH || ability.effect2 == AbilityEffect.LEECH) attacker.Heal((int)(damage * .5f));
+        if (ability.effect1 == AbilityEffect.RECOIL || ability.effect2 == AbilityEffect.RECOIL) attacker.TakeDamage((int)(damage * .5f));
 
         Debug.Log(attacker.name + " attacks " + target.name + " dealing: " + damage + " damage.");
         if (efficacy == 2) TooltipUI.instance.ShowTooltipText("It's super effective!");

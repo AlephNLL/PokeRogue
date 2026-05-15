@@ -10,37 +10,36 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
-  m_Name: Shield Slam
-  m_EditorClassIdentifier: 
-  name: Shield Slam
-  description: Uses defensive stat to calculate damage.
-  power: 60
-  accuracy: 100
+  m_Name: Feint
+  m_EditorClassIdentifier: Assembly-CSharp::Abilities
+  name: Feint
+  description: This attack cant miss.
+  power: 50
+  accuracy: 0
   abilityType: 0
-  target: 3
-  stance: 1
-  statToCalcDmgWith: 2
-  mustUseStance: 1
+  target: 1
+  stance: 4
+  statToCalcDmgWith: 1
+  mustUseStance: 0
   multiHit: 0
   multiHitRange: 0
   hits: 0
   hitRange: 
   passiveEffects: 0
-  passiveExecutionTime: 1
+  passiveExecutionTime: 0
   passiveEffectChance: 0
   status: 0
-  effect1: 0
+  effect1: 9
   condition1: 0
-  effect1Chance: 100
+  effect1Chance: 0
   effect2: 0
   condition2: 0
   effect2Chance: 0
   affectSelf: 0
-  stanceToChangeTo: 2
+  stanceToChangeTo: 0
   stanceCondition: 0
   healPercentage: 0
   statToMod: 
   statMod: []
-  powerVariables: 0
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

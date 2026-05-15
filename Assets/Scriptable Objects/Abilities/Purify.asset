@@ -19,16 +19,27 @@ MonoBehaviour:
   abilityType: 0
   target: 2
   stance: 3
+  statToCalcDmgWith: 1
   mustUseStance: 1
+  multiHit: 0
+  multiHitRange: 0
+  hits: 0
+  hitRange: 
   passiveEffects: 0
   passiveExecutionTime: 1
   passiveEffectChance: 0
   status: 0
-  effect1: 10
+  effect1: 5
+  condition1: 0
   effect1Chance: 100
   effect2: 0
+  condition2: 0
   effect2Chance: 50
   affectSelf: 0
   stanceToChangeTo: 0
+  stanceCondition: 0
+  healPercentage: 0
+  statToMod: 
+  statMod: []
   vfxPrefab: {fileID: 1411769535005688, guid: 4a0bd4851180bcd4984636d1e22f128b, type: 3}
   spawnVfxOnSelf: 0

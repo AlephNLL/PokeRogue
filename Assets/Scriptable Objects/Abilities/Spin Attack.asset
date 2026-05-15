@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Spin Attack
   m_EditorClassIdentifier: 
   name: Spin Attack
-  description: User spins quickly hitting 2-5 times
+  description: User spins quickly hitting 1-5 times
   power: 20
   accuracy: 100
   abilityType: 0
@@ -30,10 +30,16 @@ MonoBehaviour:
   passiveEffectChance: 0
   status: 0
   effect1: 0
+  condition1: 0
   effect1Chance: 100
   effect2: 0
+  condition2: 0
   effect2Chance: 0
   affectSelf: 0
   stanceToChangeTo: 2
+  stanceCondition: 0
+  healPercentage: 0
+  statToMod: 
+  statMod: []
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

@@ -345,8 +345,17 @@ public class Unit : MonoBehaviour
     }
     public void Heal(int healAmount)
     {
-        if (currentHp + healAmount >= maxHp) currentHp = maxHp;
-        else currentHp = currentHp + healAmount;
+        currentHp = currentHp + healAmount;
+
+        if (currentHp > maxHp) currentHp = maxHp;
+
+        StartCoroutine(UpdateHealthBar());
+    }
+    public void HealPercent(float healPercent)
+    {
+        currentHp = (int)(currentHp * (1 + healPercent));
+
+        if (currentHp > maxHp) currentHp = maxHp;
 
         StartCoroutine(UpdateHealthBar());
     }

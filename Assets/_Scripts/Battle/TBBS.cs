@@ -159,6 +159,7 @@ public class TBBS : MonoBehaviour
         if(activateTurnStartEffect) currentUnit.OnTurnStart();
         if (currentUnit.skipTurn)
         {
+            TooltipUI.instance.ShowTooltipText(currentUnit.name + " flinched");
             currentUnit.OnTurnEnd();
             yield return new WaitForSeconds(1);
             currentUnit.DeactivateCamera();
@@ -180,6 +181,7 @@ public class TBBS : MonoBehaviour
         if (activateTurnStartEffect) currentUnit.OnTurnStart();
         if (currentUnit.skipTurn)
         {
+            TooltipUI.instance.ShowTooltipText(currentUnit.name + " flinched");
             currentUnit.OnTurnEnd();
             yield return new WaitForSeconds(1);
             currentUnit.skipTurn = false;
@@ -755,6 +757,12 @@ public class TBBS : MonoBehaviour
             if (!CheckHit(ability))
             {
                 TooltipUI.instance.ShowTooltipText(attacker.name + " missed");
+                if(ability.condition1 == AbilityCondition.ATTACKMISSED ||
+                    ability.condition2 == AbilityCondition.ATTACKMISSED)
+                {
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
+                }
                 continue;
             }
             if (ability.power == 0 && targets[i].currentStance == Stance.CAUTIOUS)
@@ -762,19 +770,44 @@ public class TBBS : MonoBehaviour
                 TooltipUI.instance.ShowTooltipText("It doesn't affect " + targets[i].name);
                 continue;
             }
-            ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
-            ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
+            ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1);
+            ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf, ability.condition2);
 
             if (ability.power != 0)
             {
-                targets[i].TakeDamage(CalculateAttackDamage(attacker, targets[i], ability));
+                if(ability.effect1 == AbilityEffect.HEALATTACK || ability.effect2 == AbilityEffect.HEALATTACK)
+                {
+                    targets[i].Heal(CalculateAttackDamage(attacker, targets[i], ability));
+                }
+                else
+                {
+                    targets[i].TakeDamage(CalculateAttackDamage(attacker, targets[i], ability));
+                }
+
                 attacker.ResolvePassiveEffect(ExecutionTime.ONHIT, targets[i]);
                 attacker.ResolveItemEffect(ExecutionTime.ONHIT, targets[i]);
             }
         }
     }
-    void ResolveAbilityEffect(Unit attacker, Unit target, Abilities ability, AbilityEffect effect, float effectChance, bool affectSelf)
+    void ResolveAbilityEffect(Unit attacker, Unit target, Abilities ability, AbilityEffect effect, float effectChance, bool affectSelf, AbilityCondition condition = AbilityCondition.NONE)
     {
+        switch (condition)
+        {
+            case AbilityCondition.NONE:
+                break;
+            case AbilityCondition.HASSTANCE:
+                if (target.currentStance != ability.stanceCondition) return;
+                break;
+            case AbilityCondition.ISFIRSTROUND:
+                if (round > 0) return;
+                break;
+            case AbilityCondition.HASANYSTATUS:
+                if(attacker.status == Status.NONE) return;
+                break;
+            default:
+                break;
+        }
+
         if (effectChance + attacker.effectChanceModifier >= UnityEngine.Random.Range(1, 101))
         {
             switch (effect)
@@ -782,10 +815,8 @@ public class TBBS : MonoBehaviour
                 case GameData.AbilityEffect.NONE:
                     break;
                 case GameData.AbilityEffect.HEAL:
-                    /*to do*/
-                    //test
-                    if (affectSelf) attacker.Heal(50);
-                    else target.Heal(50);
+                    if (affectSelf) attacker.HealPercent(ability.healPercentage);
+                    else target.HealPercent(ability.healPercentage);
                         break;
                 case GameData.AbilityEffect.UPATK:
                     if(affectSelf) attacker.ApplyStatModifier(Stats.ATK, 1.5f);
@@ -821,6 +852,9 @@ public class TBBS : MonoBehaviour
                     break;
                 case AbilityEffect.CURESTATUS:
                     target.CureStatus();
+                    break;
+                case AbilityEffect.FLINCH:
+                    target.skipTurn = true;
                     break;
                 default:
                     break;

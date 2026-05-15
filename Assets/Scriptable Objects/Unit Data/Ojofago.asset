@@ -20,8 +20,8 @@ MonoBehaviour:
   currentHp: 1
   status: 0
   knownAbilities:
-  - {fileID: 11400000, guid: 0b8036aed22fd6648acfcf5dbfb9cd6b, type: 2}
+  - {fileID: 11400000, guid: 5685ac1d3d90dad45b0434627c96ebdd, type: 2}
   - {fileID: 11400000, guid: dfcb5e44085540445a308e321f15368f, type: 2}
   - {fileID: 11400000, guid: 8534bf41cde3f664ebaa31c5335e6bde, type: 2}
-  - {fileID: 11400000, guid: 7c519b83ede18284a8c92606d4d5ea92, type: 2}
+  - {fileID: 11400000, guid: 723a75a4d1c375948bd4ffb24467d9fa, type: 2}
   isVeteran: 0

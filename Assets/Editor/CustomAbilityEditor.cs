@@ -27,10 +27,14 @@ public class CustomAbilityEditor : Editor
     SerializedProperty status;
 
     SerializedProperty effect1;
+    SerializedProperty condition1;
     SerializedProperty effect1Chance;
     SerializedProperty effect2;
+    SerializedProperty condition2;
     SerializedProperty effect2Chance;
     SerializedProperty stanceToChangeTo;
+    SerializedProperty conditionStance;
+    SerializedProperty healingPercent;
     SerializedProperty affectSelf;
 
     SerializedProperty vfxPrefab;
@@ -64,10 +68,14 @@ public class CustomAbilityEditor : Editor
         status = serializedObject.FindProperty("status");
 
         effect1 = serializedObject.FindProperty("effect1");
+        condition1 = serializedObject.FindProperty("condition1");
         effect1Chance = serializedObject.FindProperty("effect1Chance");
         effect2 = serializedObject.FindProperty("effect2");
+        condition2 = serializedObject.FindProperty("condition2");
         effect2Chance = serializedObject.FindProperty("effect2Chance");
         stanceToChangeTo = serializedObject.FindProperty("stanceToChangeTo");
+        conditionStance = serializedObject.FindProperty("stanceCondition");
+        healingPercent = serializedObject.FindProperty("healPercent");
         affectSelf = serializedObject.FindProperty("affectSelf");
 
         vfxPrefab = serializedObject.FindProperty("vfxPrefab");
@@ -116,11 +124,16 @@ public class CustomAbilityEditor : Editor
             if (abilitiesGroup)
             {
                 EditorGUILayout.PropertyField(effect1);
+                if (ability.effect1 != AbilityEffect.NONE) EditorGUILayout.PropertyField(condition1);
                 if (ability.effect1 != AbilityEffect.NONE) EditorGUILayout.PropertyField(effect1Chance);   
                 EditorGUILayout.PropertyField(effect2);
+                if (ability.effect2 != AbilityEffect.NONE) EditorGUILayout.PropertyField(condition2);
                 if (ability.effect2 != AbilityEffect.NONE) EditorGUILayout.PropertyField(effect2Chance);
                 if (ability.effect1 == AbilityEffect.APPLYSTATUS || ability.effect2 == AbilityEffect.APPLYSTATUS) EditorGUILayout.PropertyField(status);
                 if (ability.effect1 == AbilityEffect.STANCECHANGE || ability.effect2 == AbilityEffect.STANCECHANGE) EditorGUILayout.PropertyField(stanceToChangeTo);
+                if(ability.effect1 == AbilityEffect.STANCECHANGE && ability.condition1 == AbilityCondition.HASSTANCE ||
+                    ability.effect2 == AbilityEffect.STANCECHANGE && ability.condition2 == AbilityCondition.HASSTANCE) EditorGUILayout.PropertyField(conditionStance);
+                if (ability.effect1 == AbilityEffect.HEAL || ability.effect2 == AbilityEffect.HEAL) EditorGUILayout.PropertyField(healingPercent);
                 EditorGUILayout.PropertyField(affectSelf);
             }
         }  

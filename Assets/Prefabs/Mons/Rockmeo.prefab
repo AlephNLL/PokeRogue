@@ -815,9 +815,9 @@ MonoBehaviour:
   level: 1
   exp: 0
   status: 0
-  strength: 16
-  constitution: 26
-  dexterity: 11
+  strength: 18
+  constitution: 30
+  dexterity: 8
   luck: 2
   maxHp: 0
   currentHp: 0

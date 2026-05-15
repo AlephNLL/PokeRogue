@@ -809,27 +809,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  name: Caracston
+  name: Chamanciortega
   description: 
-  currentStance: 1
+  currentStance: 3
   level: 1
   exp: 0
   status: 0
-  strength: 16
-  constitution: 26
-  dexterity: 11
-  luck: 2
+  strength: 8
+  constitution: 10
+  dexterity: 20
+  luck: 18
   maxHp: 0
   currentHp: 0
   attack: 0
   defense: 0
   speed: 0
   knownAbilities: []
-  abilityPool:
-  - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}
-  - {fileID: 11400000, guid: 1c10fb9f488085d4aaf6c6a22e96fd23, type: 2}
-  - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
-  - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
+  abilityPool: []
   heldItem: {fileID: 0}
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}

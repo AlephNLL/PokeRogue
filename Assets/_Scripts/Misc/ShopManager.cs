@@ -65,6 +65,7 @@ public class ShopManager : MonoBehaviour
             PlayerData.Instance.gold -= selectedItem.cost;
             if(PlayerData.Instance.gold < 0) PlayerData.Instance.gold = 0;
             ShopManagerUI.instance.UpdatePlayerGold();
+            HandAnimatorHelper.instance.SetHandTriggerParameter("Sold");
         }
     }
     public int GetItemSlotIndex(GameObject item)
@@ -96,7 +97,7 @@ public class ShopManager : MonoBehaviour
             if (!HandAnimatorHelper.instance.IsHandAtXPos(handXPos))
             {
                 selectedItem = items[itemSlotIndex];
-                HandAnimatorHelper.instance.MoveToPosition(new Vector3(handXPos, 4, HandAnimatorHelper.instance.transform.position.z));
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(handXPos, 4.5f, HandAnimatorHelper.instance.transform.position.z));
                 HandAnimatorHelper.instance.SetHandBoolParameter("point", true);
                 lastIndex = itemSlotIndex;
                 ShopManagerUI.instance.ShowItemDescription(selectedItem);

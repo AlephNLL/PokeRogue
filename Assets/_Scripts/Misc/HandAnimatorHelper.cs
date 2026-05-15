@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class HandAnimatorHelper : MonoBehaviour
 {
@@ -22,7 +23,8 @@ public class HandAnimatorHelper : MonoBehaviour
     }
     void ResetRotation()
     {
-        defaultPosition = transform.position;
+        defaultPosition = transform.position + 1.5f*Vector3.up;
+        MoveToDefaultPosition();
         StartCoroutine(LerpRotation(Quaternion.Euler(0, 180, 0)));
     }
     IEnumerator LerpRotation(Quaternion rotation)
@@ -51,7 +53,7 @@ public class HandAnimatorHelper : MonoBehaviour
         if (!isMoving)
         {
             StartCoroutine(Move(destination));
-            StartCoroutine(LerpRotation(Quaternion.Euler(90, 180, 0)));
+            //StartCoroutine(LerpRotation(Quaternion.Euler(90, 180, 0)));
         }
     }
     public void MoveToDefaultPosition()
@@ -59,7 +61,7 @@ public class HandAnimatorHelper : MonoBehaviour
         if (!isMoving) 
         {
             StartCoroutine(Move(defaultPosition));
-            StartCoroutine(LerpRotation(Quaternion.Euler(0, 180, 0)));
+            //StartCoroutine(LerpRotation(Quaternion.Euler(0, 180, 0)));
         } 
     }
     IEnumerator Move(Vector3 destination)
@@ -91,5 +93,10 @@ public class HandAnimatorHelper : MonoBehaviour
     public void SetHandBoolParameter(string name, bool value)
     {
         gameObject.GetComponent<Animator>().SetBool(name, value);
+    }
+
+    public void SetHandTriggerParameter(string name)
+    {
+        gameObject.GetComponent<Animator>().SetTrigger(name);
     }
 }

@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   id: 0
   name: Ojofago
-  prefab: {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
+  prefab: {fileID: 1717970170875167366, guid: b992b5942d8d7384980f0e7231fcdc9f, type: 3}
   level: 1
   heldItem: {fileID: 0}
   currentHp: 1
   status: 0
   knownAbilities:
-  - {fileID: 11400000, guid: 0b8036aed22fd6648acfcf5dbfb9cd6b, type: 2}
-  - {fileID: 11400000, guid: dfcb5e44085540445a308e321f15368f, type: 2}
-  - {fileID: 11400000, guid: 8534bf41cde3f664ebaa31c5335e6bde, type: 2}
-  - {fileID: 11400000, guid: 7c519b83ede18284a8c92606d4d5ea92, type: 2}
+  - {fileID: 11400000, guid: 5685ac1d3d90dad45b0434627c96ebdd, type: 2}
+  - {fileID: 11400000, guid: b45f215236b52d643a2b21b878d3210a, type: 2}
+  - {fileID: 11400000, guid: 059a4631f8bd5b04e99d4f8d3c921817, type: 2}
+  - {fileID: 11400000, guid: 723a75a4d1c375948bd4ffb24467d9fa, type: 2}
   isVeteran: 0

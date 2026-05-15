@@ -52,10 +52,9 @@ public class BattleGenerator : MonoBehaviour
                 return;
         }
 
-
-        
-
         BattleData.enemyTeam = enemyPrefabs;
         BattleData.enemyLevel = ((int)difficulty) + 1 + MapManager.instance.currentNode.floorLevel/2;
+        BattleData.goldReward = teamSize * 2 * ((int)difficulty + 1);
+        BattleData.expReward = teamSize * 10 * BattleData.enemyLevel;
     }
 }

@@ -23,11 +23,18 @@ public class Abilities : ScriptableObject
     public Status status;
 
     public AbilityEffect effect1;
+    public AbilityCondition condition1;
     public float effect1Chance;
     public AbilityEffect effect2;
+    public AbilityCondition condition2;
     public float effect2Chance;
     public bool affectSelf;
     public Stance stanceToChangeTo;
+    public Stance stanceCondition;
+    public float healPercentage;
+    public Stats[] statToMod;
+    public float[] statMod;
+    public AbilityPowerVariables powerVariables;
 
     public GameObject vfxPrefab;
     public bool spawnVfxOnSelf;

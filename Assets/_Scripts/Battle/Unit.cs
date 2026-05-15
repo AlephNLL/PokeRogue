@@ -16,6 +16,7 @@ public class Unit : MonoBehaviour
     public string description;
     public Stance currentStance;
     public int level;
+    public int exp;
     public Status status;
     private float stanceModifier = 1.5f;
 
@@ -37,6 +38,7 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private int speed;
 
+    public float precision = 1;
 
     public Abilities[] knownAbilities;
     public Abilities[] abilityPool;
@@ -261,15 +263,24 @@ public class Unit : MonoBehaviour
         if (itemMenu == null) return;
         itemMenu.gameObject.SetActive(true);
 
+        List<Item> consumables = new List<Item>();
         for (int i = 0; i < PlayerData.items.Count; i++)
+        {
+            if (PlayerData.items[i].isConsumible)
+            {
+                consumables.Add(PlayerData.items[i]);
+            }
+        }
+
+        for (int i = 0; i < consumables.Count; i++)
         {
             itemButtons[i].gameObject.SetActive(true);
             itemButtons[i].interactable=true;
-            itemButtons[i].GetComponentInChildren<TMP_Text>().text = PlayerData.items[i].name;
+            itemButtons[i].GetComponentInChildren<TMP_Text>().text = consumables[i].name;
 
             int index = i;
 
-            itemButtons[index].onClick.AddListener(delegate { TBBS.instance.SelectItem(PlayerData.items[index]); });
+            itemButtons[index].onClick.AddListener(delegate { TBBS.instance.SelectItem(consumables[index]); });
         }
     }
 
@@ -310,6 +321,10 @@ public class Unit : MonoBehaviour
                 luck = Mathf.FloorToInt(luck * mod);
                 TooltipUI.instance.ShowTooltipText($"{name} luck {modAction}");
                 break;
+            case Stats.PRECISION:
+                precision = precision * mod;
+                TooltipUI.instance.ShowTooltipText($"{name} precision {modAction}");
+                break;
             default:
                 break;
         }
@@ -344,8 +359,19 @@ public class Unit : MonoBehaviour
     }
     public void Heal(int healAmount)
     {
-        if (currentHp + healAmount >= maxHp) currentHp = maxHp;
-        else currentHp = currentHp + healAmount;
+        if (currentHp >= maxHp) return;
+
+        currentHp = currentHp + healAmount;
+
+        if (currentHp > maxHp) currentHp = maxHp;
+
+        StartCoroutine(UpdateHealthBar());
+    }
+    public void HealPercent(float healPercent)
+    {
+        currentHp = (int)(currentHp * (1 + healPercent));
+
+        if (currentHp > maxHp) currentHp = maxHp;
 
         StartCoroutine(UpdateHealthBar());
     }
@@ -408,7 +434,7 @@ public class Unit : MonoBehaviour
         {
             case Stats.ATK:
                 int atk = attack;
-                if (HasPassive("Double Trouble")) atk = Mathf.FloorToInt(atk * .5f);
+                if (HasPassive("Double Trouble")) atk = Mathf.FloorToInt(atk * .6f);
                 if (status == Status.BURNED)
                 {
                     atk = HasPassive("Piromaniac") ? atk : Mathf.FloorToInt(atk * .5f);
@@ -624,6 +650,10 @@ public class Unit : MonoBehaviour
 
         ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
         ResolveItemEffect(ExecutionTime.ONSTATUSCHANGE);
+    }
+    public void AddExp(int expToAdd)
+    {
+        exp += expToAdd;
     }
     void StartSleepCounter()
     {

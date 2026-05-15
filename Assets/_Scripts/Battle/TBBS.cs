@@ -107,7 +107,8 @@ public class TBBS : MonoBehaviour
                 Debug.Log("Win");
                 Debug.Log(playerUnits.Count);
                 TeamManager.instance.SaveTeamData(playerUnits);
-                EndScreenManager.instance.ShowVictoryScreen(capturableUnits.ToArray(), 100, 100);
+                EndScreenManager.instance.ShowVictoryScreen(capturableUnits.ToArray(), BattleData.goldReward, BattleData.expReward);
+                PlayerData.Instance.gold += BattleData.goldReward;
                 //StartCoroutine(EndBattle());
                 return;
             }
@@ -158,6 +159,7 @@ public class TBBS : MonoBehaviour
         if(activateTurnStartEffect) currentUnit.OnTurnStart();
         if (currentUnit.skipTurn)
         {
+            TooltipUI.instance.ShowTooltipText(currentUnit.name + " flinched");
             currentUnit.OnTurnEnd();
             yield return new WaitForSeconds(1);
             currentUnit.DeactivateCamera();
@@ -179,6 +181,7 @@ public class TBBS : MonoBehaviour
         if (activateTurnStartEffect) currentUnit.OnTurnStart();
         if (currentUnit.skipTurn)
         {
+            TooltipUI.instance.ShowTooltipText(currentUnit.name + " flinched");
             currentUnit.OnTurnEnd();
             yield return new WaitForSeconds(1);
             currentUnit.skipTurn = false;
@@ -453,7 +456,7 @@ public class TBBS : MonoBehaviour
                     yield break;
                 }
 
-                if(Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1))
+                if(Input.GetMouseButtonDown(1))
                 {
                     AbilityMenu(attacker);
                     selection = -1;
@@ -470,7 +473,7 @@ public class TBBS : MonoBehaviour
 
             while (true)
             {
-                if (Input.GetKeyDown(KeyCode.RightArrow))
+                if (Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.sqrMagnitude > 0)
                 {
                     if (selection == 0)
                     {
@@ -484,7 +487,7 @@ public class TBBS : MonoBehaviour
                     attacker.SelectTarget(playerUnits[selection].gameObject);
                 }
 
-                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.sqrMagnitude < 0)
                 {
                     if (selection == playerUnits.Count - 1)
                     {
@@ -498,13 +501,13 @@ public class TBBS : MonoBehaviour
                     attacker.SelectTarget(playerUnits[selection].gameObject);
                 }
 
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
                 {
                     yield return selection;
                     yield break;
                 }
 
-                if (Input.GetKeyDown(KeyCode.Escape))
+                if (Input.GetMouseButtonDown(1))
                 {
                     AbilityMenu(attacker);
                     selection = -1;
@@ -751,9 +754,15 @@ public class TBBS : MonoBehaviour
     {
         for (int i = 0; i < targets.Length; i++)
         {
-            if (!CheckHit(ability))
+            if (!CheckHit(ability, attacker.precision))
             {
                 TooltipUI.instance.ShowTooltipText(attacker.name + " missed");
+                if(ability.condition1 == AbilityCondition.ATTACKMISSED ||
+                    ability.condition2 == AbilityCondition.ATTACKMISSED)
+                {
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
+                }
                 continue;
             }
             if (ability.power == 0 && targets[i].currentStance == Stance.CAUTIOUS)
@@ -761,19 +770,44 @@ public class TBBS : MonoBehaviour
                 TooltipUI.instance.ShowTooltipText("It doesn't affect " + targets[i].name);
                 continue;
             }
-            ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
-            ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
+            ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1);
+            ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf, ability.condition2);
 
             if (ability.power != 0)
             {
-                targets[i].TakeDamage(CalculateAttackDamage(attacker, targets[i], ability));
+                if(ability.effect1 == AbilityEffect.HEALATTACK || ability.effect2 == AbilityEffect.HEALATTACK)
+                {
+                    targets[i].Heal(CalculateAttackDamage(attacker, targets[i], ability));
+                }
+                else
+                {
+                    targets[i].TakeDamage(CalculateAttackDamage(attacker, targets[i], ability));
+                }
+
                 attacker.ResolvePassiveEffect(ExecutionTime.ONHIT, targets[i]);
                 attacker.ResolveItemEffect(ExecutionTime.ONHIT, targets[i]);
             }
         }
     }
-    void ResolveAbilityEffect(Unit attacker, Unit target, Abilities ability, AbilityEffect effect, float effectChance, bool affectSelf)
+    void ResolveAbilityEffect(Unit attacker, Unit target, Abilities ability, AbilityEffect effect, float effectChance, bool affectSelf, AbilityCondition condition = AbilityCondition.NONE)
     {
+        switch (condition)
+        {
+            case AbilityCondition.NONE:
+                break;
+            case AbilityCondition.HASSTANCE:
+                if (target.currentStance != ability.stanceCondition) return;
+                break;
+            case AbilityCondition.ISFIRSTROUND:
+                if (round > 0) return;
+                break;
+            case AbilityCondition.HASANYSTATUS:
+                if(attacker.status == Status.NONE) return;
+                break;
+            default:
+                break;
+        }
+
         if (effectChance + attacker.effectChanceModifier >= UnityEngine.Random.Range(1, 101))
         {
             switch (effect)
@@ -781,34 +815,15 @@ public class TBBS : MonoBehaviour
                 case GameData.AbilityEffect.NONE:
                     break;
                 case GameData.AbilityEffect.HEAL:
-                    /*to do*/
-                    //test
-                    if (affectSelf) attacker.Heal(50);
-                    else target.Heal(50);
+                    if (affectSelf) attacker.HealPercent(ability.healPercentage);
+                    else target.HealPercent(ability.healPercentage);
                         break;
-                case GameData.AbilityEffect.UPATK:
-                    if(affectSelf) attacker.ApplyStatModifier(Stats.ATK, 1.5f);
-                    else target.ApplyStatModifier(Stats.ATK, 1.5f);
-                    break;
-                case GameData.AbilityEffect.UPDEF:
-                    if (affectSelf) attacker.ApplyStatModifier(Stats.DEF, 1.5f);
-                    else target.ApplyStatModifier(Stats.DEF, 1.5f);
-                    break;
-                case GameData.AbilityEffect.UPSPEED:
-                    if (affectSelf) attacker.ApplyStatModifier(Stats.SPEED, 1.5f);
-                    else target.ApplyStatModifier(Stats.SPEED, 1.5f);
-                    break;
-                case GameData.AbilityEffect.DOWNATK:
-                    if (affectSelf) attacker.ApplyStatModifier(Stats.ATK, .75f);
-                    else target.ApplyStatModifier(Stats.ATK, .75f);
-                    break;
-                case GameData.AbilityEffect.DOWNDEF:
-                    if (affectSelf) attacker.ApplyStatModifier(Stats.DEF, .75f);
-                    else target.ApplyStatModifier(Stats.DEF, .75f);
-                    break;
-                case GameData.AbilityEffect.DOWNSPEED:
-                    if (affectSelf) attacker.ApplyStatModifier(Stats.SPEED, .75f);
-                    else target.ApplyStatModifier(Stats.SPEED, .75f);
+                case GameData.AbilityEffect.STATMOD:
+                    for (int i = 0; i < ability.statToMod.Length; i++)
+                    {
+                        if (affectSelf) attacker.ApplyStatModifier(ability.statToMod[i], ability.statMod[i]);
+                        else target.ApplyStatModifier(ability.statToMod[i], ability.statMod[i]);
+                    }
                     break;
                 case GameData.AbilityEffect.STANCECHANGE:
                     if(affectSelf) attacker.ChangeStance(ability.stanceToChangeTo);
@@ -821,18 +836,34 @@ public class TBBS : MonoBehaviour
                 case AbilityEffect.CURESTATUS:
                     target.CureStatus();
                     break;
+                case AbilityEffect.FLINCH:
+                    target.skipTurn = true;
+                    break;
                 default:
                     break;
             }
         }
     }
-    bool CheckHit(Abilities ability)
+    bool CheckHit(Abilities ability, float precision)
     {
-        if (ability.accuracy >= UnityEngine.Random.Range(1,101)) return true;
+        if(ability.effect1 == AbilityEffect.CANTMISS || ability.effect2 == AbilityEffect.CANTMISS) return true;
+        if (ability.accuracy * precision >= Random.Range(1,101)) return true;
         else return false;
     }
     int CalculateAttackDamage(Unit attacker, Unit target, Abilities ability)
     {
+        int power = ability.power;
+        switch (ability.powerVariables)
+        {
+            case AbilityPowerVariables.REMAININGHP:
+                power = (int)(power * 5*(1 - (float)attacker.currentHp/attacker.maxHp));
+                break;
+            case AbilityPowerVariables.DUPEONALLYDOWNED:
+                power = (int)(power * Mathf.Pow(2, PlayerData.teamData.Count - playerUnits.Count));
+                break;
+            default:
+                break;
+        }
         float baseCritChance = 0.01f;
         int attackStat = attacker.GetStat(ability.statToCalcDmgWith);
         int defenseStat = target.GetStat(Stats.DEF);
@@ -846,7 +877,10 @@ public class TBBS : MonoBehaviour
 
         if(isCritical) defenseStat = Mathf.Min(defenseStat, target.GetRawStat(Stats.DEF, target.level));
 
-        int damage = Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * ability.power * attackStat / (5 * defenseStat)) + 2) * efficacy * stanceBonus * roll * critMod * freezeMod);
+        int damage = Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * power * attackStat / (5 * defenseStat)) + 2) * efficacy * stanceBonus * roll * critMod * freezeMod);
+
+        if (ability.effect1 == AbilityEffect.LEECH || ability.effect2 == AbilityEffect.LEECH) attacker.Heal((int)(damage * .5f));
+        if (ability.effect1 == AbilityEffect.RECOIL || ability.effect2 == AbilityEffect.RECOIL) attacker.TakeDamage((int)(damage * .5f));
 
         Debug.Log(attacker.name + " attacks " + target.name + " dealing: " + damage + " damage.");
         if (efficacy == 2) TooltipUI.instance.ShowTooltipText("It's super effective!");

@@ -879,6 +879,8 @@ public class TBBS : MonoBehaviour
 
         int damage = Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * power * attackStat / (5 * defenseStat)) + 2) * efficacy * stanceBonus * roll * critMod * freezeMod);
 
+        if(damage <= 0) damage = 1;
+
         if (ability.effect1 == AbilityEffect.LEECH || ability.effect2 == AbilityEffect.LEECH) attacker.Heal((int)(damage * .5f));
         if (ability.effect1 == AbilityEffect.RECOIL || ability.effect2 == AbilityEffect.RECOIL) attacker.TakeDamage((int)(damage * .5f));
 

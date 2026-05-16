@@ -166,7 +166,7 @@ public class Unit : MonoBehaviour
             speed = (int)(dexterity / 5f * level + 1);
 
             currentHp = maxHp;
-            knownAbilities = GetUnitKnownAbilities();
+            knownAbilities = GetUnitKnownAbilities(level);
         }
 
         
@@ -702,11 +702,11 @@ public class Unit : MonoBehaviour
         return false;
     }
 
-    public Abilities[] GetUnitKnownAbilities()
+    public Abilities[] GetUnitKnownAbilities(int monLevel)
     {
         List<Abilities> abilityList = new List<Abilities>();
 
-        for (int i = 0; i < level; i++)
+        for (int i = 0; i < monLevel; i++)
         {
             if (i < abilityPool.Length)
             {

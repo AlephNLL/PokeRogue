@@ -102,10 +102,10 @@ public class TeamManager : MonoBehaviour
         UnitData unitData = ScriptableObject.CreateInstance<UnitData>();
         unitData.currentHp = unit.constitution * unit.level + 1;
         unitData.id = PlayerData.teamData.Count;
-        unitData.level = unit.level;
+        unitData.level = BattleData.enemyLevel;
         unitData.name = unit.name;
         unitData.prefab = mon;
-        unitData.knownAbilities = unit.GetUnitKnownAbilities();
+        unitData.knownAbilities = unit.GetUnitKnownAbilities(unitData.level);
 
         if (PlayerData.teamData.Count < 4)
         {

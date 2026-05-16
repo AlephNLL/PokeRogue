@@ -167,12 +167,11 @@ public class MapCamera : MonoBehaviour
                     UpdateLayers(MapManager.instance.currentRoom);
                     break;
                 case GameData.NodeEvents.TRANSITION:
-                    if (MapManager.instance.currentNode.roomType == RoomType.Treasure || MapManager.instance.currentNode.roomType == RoomType.Shop)
+                    if (MapManager.instance.currentRoom.GetComponent<Node>().sceneName == "BattleScene" && MapManager.instance.skipBattles)
                     {
-                        // No hacee nada de momento
                         UpdateLayers(MapManager.instance.currentRoom);
-
-                    } else if (MapManager.instance.currentNode.roomType == RoomType.Enemy)
+                    }
+                    else
                     {
                         MapManager.instance.LoadScene(MapManager.instance.currentRoom.GetComponent<Node>().sceneName);
                     }

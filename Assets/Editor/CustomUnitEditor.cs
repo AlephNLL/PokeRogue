@@ -9,6 +9,7 @@ public class CustomUnitEditor : Editor
 {
     #region SerializedProperties
     new SerializedProperty name;
+    SerializedProperty icon;
     SerializedProperty id;
     SerializedProperty description;
     SerializedProperty currentStance;
@@ -54,7 +55,9 @@ public class CustomUnitEditor : Editor
 
     private void OnEnable()
     {
+
         name = serializedObject.FindProperty("name");
+        icon = serializedObject.FindProperty("icon");
         id = serializedObject.FindProperty("id");
         description = serializedObject.FindProperty("description");
         currentStance = serializedObject.FindProperty("currentStance");
@@ -100,6 +103,7 @@ public class CustomUnitEditor : Editor
 
         if (unitDataGroup)
         {
+            EditorGUILayout.PropertyField(icon);
             EditorGUILayout.PropertyField(name);
             EditorGUILayout.PropertyField(id);
             EditorGUILayout.PropertyField(description);  

@@ -11,6 +11,7 @@ using Unity.VisualScripting;
 using static UnityEngine.UI.CanvasScaler;
 public class Unit : MonoBehaviour
 {
+    public Sprite icon;
     public int id;
     new public string name;
     public string description;

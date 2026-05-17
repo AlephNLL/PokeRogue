@@ -107,7 +107,7 @@ public class TBBS : MonoBehaviour
                 Debug.Log("Win");
                 Debug.Log(playerUnits.Count);
                 TeamManager.instance.SaveTeamData(playerUnits);
-                EndScreenManager.instance.ShowVictoryScreen(capturableUnits.ToArray(), BattleData.goldReward, BattleData.expReward);
+                EndScreenManager.instance.ShowVictoryScreen(playerUnits.ToArray(), capturableUnits.ToArray(), BattleData.goldReward, BattleData.expReward);
                 PlayerData.Instance.gold += BattleData.goldReward;
                 //StartCoroutine(EndBattle());
                 return;

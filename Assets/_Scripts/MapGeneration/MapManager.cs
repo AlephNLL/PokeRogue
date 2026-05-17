@@ -23,6 +23,7 @@ public class MapManager : MonoBehaviour
     public bool canLoadRooms = false;
     public bool mapCreated = false;
     public bool mapLoaded = false;
+    public bool skipBattles = false;
 
     private void Awake()
     {
@@ -38,7 +39,6 @@ public class MapManager : MonoBehaviour
 
    private void Start()
     {
-        Debug.Log("Ola soi manageador de mapa");
         if (createdRooms.Count() == 0 && nodes.Count() == 0 && mapCreated == false)
         {
             nodes.Clear();

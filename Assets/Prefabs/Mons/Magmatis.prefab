@@ -808,6 +808,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82c0dcb3fbdb35f40bf6f64fede1a51d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  icon: {fileID: 21300000, guid: ddc4e06358b4a3047a577ea090a6acfb, type: 3}
   id: 0
   name: Magmatis
   description: 
@@ -824,6 +825,7 @@ MonoBehaviour:
   attack: 0
   defense: 0
   speed: 0
+  precision: 1
   knownAbilities: []
   abilityPool:
   - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}

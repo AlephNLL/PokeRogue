@@ -11,12 +11,14 @@ using Unity.VisualScripting;
 using static UnityEngine.UI.CanvasScaler;
 public class Unit : MonoBehaviour
 {
+    public Sprite icon;
     public int id;
     new public string name;
     public string description;
     public Stance currentStance;
     public int level;
     public int exp;
+    public ExpCurve expCurve;
     public Status status;
     private float stanceModifier = 1.5f;
 
@@ -152,7 +154,7 @@ public class Unit : MonoBehaviour
             defense = (int)(constitution / 5f * level + 1);
             speed = (int)(dexterity / 5f * level + 1);
 
-            knownAbilities = PlayerData.teamData.Find(item => item.id == id).knownAbilities;
+            knownAbilities = PlayerData.teamData.Find(item => item.id == id).knownAbilities.ToArray();
             ApplyStatus(PlayerData.teamData.Find(item => item.id == id).status);
             heldItem = PlayerData.teamData.Find(item => item.id == id).heldItem;
         }
@@ -166,7 +168,7 @@ public class Unit : MonoBehaviour
             speed = (int)(dexterity / 5f * level + 1);
 
             currentHp = maxHp;
-            knownAbilities = GetUnitKnownAbilities();
+            knownAbilities = GetUnitKnownAbilities(level).ToArray();
         }
 
         
@@ -651,10 +653,6 @@ public class Unit : MonoBehaviour
         ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
         ResolveItemEffect(ExecutionTime.ONSTATUSCHANGE);
     }
-    public void AddExp(int expToAdd)
-    {
-        exp += expToAdd;
-    }
     void StartSleepCounter()
     {
         sleepCounter = 0;
@@ -702,11 +700,11 @@ public class Unit : MonoBehaviour
         return false;
     }
 
-    public Abilities[] GetUnitKnownAbilities()
+    public List<Abilities> GetUnitKnownAbilities(int monLevel)
     {
         List<Abilities> abilityList = new List<Abilities>();
 
-        for (int i = 0; i < level; i++)
+        for (int i = 0; i < monLevel + 1; i++)
         {
             if (i < abilityPool.Length)
             {
@@ -719,6 +717,6 @@ public class Unit : MonoBehaviour
             }
         }
 
-        return abilityList.ToArray();
+        return abilityList;
     }
 }

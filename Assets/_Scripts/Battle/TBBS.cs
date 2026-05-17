@@ -107,7 +107,7 @@ public class TBBS : MonoBehaviour
                 Debug.Log("Win");
                 Debug.Log(playerUnits.Count);
                 TeamManager.instance.SaveTeamData(playerUnits);
-                EndScreenManager.instance.ShowVictoryScreen(capturableUnits.ToArray(), BattleData.goldReward, BattleData.expReward);
+                EndScreenManager.instance.ShowVictoryScreen(playerUnits.ToArray(), capturableUnits.ToArray(), BattleData.goldReward, BattleData.expReward);
                 PlayerData.Instance.gold += BattleData.goldReward;
                 //StartCoroutine(EndBattle());
                 return;
@@ -878,6 +878,8 @@ public class TBBS : MonoBehaviour
         if(isCritical) defenseStat = Mathf.Min(defenseStat, target.GetRawStat(Stats.DEF, target.level));
 
         int damage = Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * power * attackStat / (5 * defenseStat)) + 2) * efficacy * stanceBonus * roll * critMod * freezeMod);
+
+        if(damage <= 0) damage = 1;
 
         if (ability.effect1 == AbilityEffect.LEECH || ability.effect2 == AbilityEffect.LEECH) attacker.Heal((int)(damage * .5f));
         if (ability.effect1 == AbilityEffect.RECOIL || ability.effect2 == AbilityEffect.RECOIL) attacker.TakeDamage((int)(damage * .5f));

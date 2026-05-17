@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fd34378b8d549f40b2244231e926bc1, type: 3}
   m_Name: Caracston
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  id: 1
+  id: 0
   name: Caracston
   prefab: {fileID: 1717970170875167366, guid: f3e52fa21ac5cc74dae5f132d416ebf1, type: 3}
-  level: 1
+  level: 3
+  currentExp: 5
   heldItem: {fileID: 0}
-  currentHp: 27
-  status: 2
+  currentHp: 85
+  status: 0
   knownAbilities:
-  - {fileID: 11400000, guid: 5730ad88989e7984989242cfa508e881, type: 2}
+  - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
   - {fileID: 11400000, guid: 2251ef1496db6b54b877601923aefaaf, type: 2}
   - {fileID: 11400000, guid: c97c86d762f80514887e32f20052a304, type: 2}
   - {fileID: 11400000, guid: 81a8ad3b35636334b81ca5040c985f0b, type: 2}

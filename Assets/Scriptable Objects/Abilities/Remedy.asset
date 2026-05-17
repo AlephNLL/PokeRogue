@@ -20,7 +20,7 @@ MonoBehaviour:
   target: 2
   stance: 3
   statToCalcDmgWith: 1
-  mustUseStance: 1
+  mustUseStance: 0
   multiHit: 0
   multiHitRange: 0
   hits: 0
@@ -41,5 +41,6 @@ MonoBehaviour:
   healPercentage: 0
   statToMod: 
   statMod: []
-  vfxPrefab: {fileID: 0}
+  powerVariables: 0
+  vfxPrefab: {fileID: 339158821923109191, guid: 108ca465382c11742bd2c91fe4fdb13f, type: 3}
   spawnVfxOnSelf: 0

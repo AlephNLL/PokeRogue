@@ -71,6 +71,7 @@ public class MoveLearner : MonoBehaviour
         newAbility.transform.GetChild(2).GetComponent<TMP_Text>().text = abilityToLearn.accuracy.ToString();
         newAbility.transform.GetChild(3).GetComponent<TMP_Text>().text = abilityToLearn.power.ToString();
         newAbility.transform.GetChild(4).GetComponent<TMP_Text>().text = abilityToLearn.name;
+        newAbility.transform.GetChild(5).GetComponent<Image>().enabled = abilityToLearn.mustUseStance;
 
         // Actualizamos los botones de las habilidades EXISTENTES
         for (int i = 0; i < currentPrompt.unitData.knownAbilities.Count; i++)
@@ -83,6 +84,7 @@ public class MoveLearner : MonoBehaviour
             abilityButtons[i].transform.GetChild(2).GetComponent<TMP_Text>().text = knownAbility.accuracy.ToString();
             abilityButtons[i].transform.GetChild(3).GetComponent<TMP_Text>().text = knownAbility.power.ToString();
             abilityButtons[i].transform.GetChild(4).GetComponent<TMP_Text>().text = knownAbility.name;
+            abilityButtons[i].transform.GetChild(5).GetComponent<Image>().enabled = knownAbility.mustUseStance;
         }
     }
 

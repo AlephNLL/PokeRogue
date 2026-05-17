@@ -47,6 +47,10 @@ public class Unit : MonoBehaviour
 
     public Item heldItem;
 
+    public bool evasive = false;
+    public bool provoking = false;
+    public Unit guardedBy = null;
+
     [Header("Misc")]
     [SerializeField]
     private CinemachineVirtualCamera actionCamera;
@@ -492,7 +496,10 @@ public class Unit : MonoBehaviour
         ResolvePassiveEffect(ExecutionTime.TURNEND);
         ResolveItemEffect(ExecutionTime.TURNEND);
     }
-
+    public void OnRoundEnd()
+    {
+        provoking = false;
+    }
     public void ResolvePassiveEffect(ExecutionTime battleStage, Unit lastHitUnit = null)
     {
         foreach (var ability in knownAbilities)

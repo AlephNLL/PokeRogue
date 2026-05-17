@@ -136,7 +136,10 @@ public class TBBS : MonoBehaviour
             Debug.Log("Round " + round + " Ended");
             round++;
             currentTurnIndex = 0;
-
+            for (int i = 0;i < allUnits.Count;i++)
+            {
+                allUnits[i].OnRoundEnd();
+            }
             StopAllCoroutines();
             // Recalcular orden basado en speed
             CalculateTurnOrder(allUnits);
@@ -150,7 +153,7 @@ public class TBBS : MonoBehaviour
     {
         TooltipUI.instance.HideTooltipText();
         yield return new WaitForSeconds(2f);
-        MapManager.instance.LoadMapScene();
+        SceneManager.LoadSceneAsync("Daycare");
     }
 
     IEnumerator PlayerTurn(Unit currentUnit, bool activateTurnStartEffect = true)
@@ -218,7 +221,8 @@ public class TBBS : MonoBehaviour
                 yield return StartCoroutine(AttackSequence(currentUnit, currentUnit, chosenAbility));
                 break;
             case AbilityTarget.ONEENEMY:
-                yield return StartCoroutine(AttackSequence(currentUnit, playerUnits[UnityEngine.Random.Range(0, playerUnits.Count)], chosenAbility));
+                if(playerUnits.Find(unit => unit.provoking)) yield return StartCoroutine(AttackSequence(currentUnit, playerUnits.Find(unit => unit.provoking), chosenAbility));
+                else yield return StartCoroutine(AttackSequence(currentUnit, playerUnits[UnityEngine.Random.Range(0, playerUnits.Count)], chosenAbility));
                 break;
             case AbilityTarget.ONEALLY:
                 yield return StartCoroutine(AttackSequence(currentUnit, enemyUnits[UnityEngine.Random.Range(0, enemyUnits.Count)], chosenAbility));
@@ -761,6 +765,18 @@ public class TBBS : MonoBehaviour
     {
         for (int i = 0; i < targets.Length; i++)
         {
+            if (targets[i].evasive)
+            {
+                TooltipUI.instance.ShowTooltipText(targets[i].name + " evaded the attack!");
+                if (ability.condition1 == AbilityCondition.ATTACKMISSED ||
+                    ability.condition2 == AbilityCondition.ATTACKMISSED)
+                {
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
+                }
+                targets[i].evasive = false;
+                continue;
+            }
             if (!CheckHit(ability, attacker.precision))
             {
                 TooltipUI.instance.ShowTooltipText(attacker.name + " missed");
@@ -795,6 +811,8 @@ public class TBBS : MonoBehaviour
                 attacker.ResolveItemEffect(ExecutionTime.ONHIT, targets[i]);
             }
         }
+
+        if (ability.effect1 == AbilityEffect.INMOLATE) attacker.TakeDamage(int.MaxValue);
     }
     void ResolveAbilityEffect(Unit attacker, Unit target, Abilities ability, AbilityEffect effect, float effectChance, bool affectSelf, AbilityCondition condition = AbilityCondition.NONE)
     {
@@ -846,8 +864,13 @@ public class TBBS : MonoBehaviour
                 case AbilityEffect.FLINCH:
                     target.skipTurn = true;
                     break;
-                case AbilityEffect.INMOLATE:
-                    attacker.TakeDamage(int.MaxValue);
+                case AbilityEffect.SETEVASIVE:
+                    if (affectSelf) attacker.evasive = true;
+                    else target.evasive = true;
+                    break;
+                case AbilityEffect.PROVOKE:
+                    if (affectSelf) attacker.provoking = true;
+                    else target.provoking = true;
                     break;
                 default:
                     break;

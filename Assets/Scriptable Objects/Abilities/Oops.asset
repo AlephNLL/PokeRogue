@@ -34,7 +34,7 @@ MonoBehaviour:
   effect1Chance: 100
   effect2: 0
   condition2: 0
-  effect2Chance: 0
+  effect2Chance: 100
   affectSelf: 0
   stanceToChangeTo: 0
   stanceCondition: 0
@@ -42,5 +42,5 @@ MonoBehaviour:
   statToMod: 
   statMod: []
   powerVariables: 0
-  vfxPrefab: {fileID: 0}
-  spawnVfxOnSelf: 0
+  vfxPrefab: {fileID: 8464950693656172981, guid: 83ad694f134ab954580473212156b35a, type: 3}
+  spawnVfxOnSelf: 1

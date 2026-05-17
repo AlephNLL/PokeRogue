@@ -815,6 +815,7 @@ MonoBehaviour:
   currentStance: 3
   level: 1
   exp: 0
+  expCurve: {fileID: 11400000, guid: 42eec143c7464c24889a7a724a74e69f, type: 2}
   status: 0
   strength: 8
   constitution: 10
@@ -827,7 +828,12 @@ MonoBehaviour:
   speed: 0
   precision: 1
   knownAbilities: []
-  abilityPool: []
+  abilityPool:
+  - {fileID: 11400000, guid: 849a9d9df5518e347b9c07d1b8aecbcd, type: 2}
+  - {fileID: 11400000, guid: afa659248be8f7140b50d621b18ddf54, type: 2}
+  - {fileID: 11400000, guid: 55ba7787e420eb34ba33206315392df9, type: 2}
+  - {fileID: 11400000, guid: 5685ac1d3d90dad45b0434627c96ebdd, type: 2}
+  - {fileID: 11400000, guid: 723a75a4d1c375948bd4ffb24467d9fa, type: 2}
   heldItem: {fileID: 0}
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}

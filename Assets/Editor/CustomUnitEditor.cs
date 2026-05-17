@@ -14,6 +14,7 @@ public class CustomUnitEditor : Editor
     SerializedProperty description;
     SerializedProperty currentStance;
     SerializedProperty level;
+    SerializedProperty expCurve;
     SerializedProperty status;
     SerializedProperty stanceModifier;
 
@@ -62,6 +63,7 @@ public class CustomUnitEditor : Editor
         description = serializedObject.FindProperty("description");
         currentStance = serializedObject.FindProperty("currentStance");
         level = serializedObject.FindProperty("level");
+        expCurve = serializedObject.FindProperty("expCurve");
         status = serializedObject.FindProperty("status");
         stanceModifier = serializedObject.FindProperty("stanceModifier");
 
@@ -108,6 +110,7 @@ public class CustomUnitEditor : Editor
             EditorGUILayout.PropertyField(id);
             EditorGUILayout.PropertyField(description);  
             EditorGUILayout.PropertyField(level);
+            EditorGUILayout.PropertyField(expCurve);
             EditorGUILayout.PropertyField(status);
             EditorGUILayout.PropertyField(currentStance);
         }

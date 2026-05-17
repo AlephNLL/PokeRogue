@@ -15,12 +15,18 @@ public class TeamManager : MonoBehaviour
     //temnporal hasta que se elija el equipo en la guarderia
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(instance.gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         if (PlayerData.teamData.Count == 0) PlayerData.teamData = teamData;
         else teamData = PlayerData.teamData;
-    }
-    private void Start()
-    {
-        instance = this;
     }
     public void SaveTeamData(List<Unit> playerTeam)
     {
@@ -54,6 +60,12 @@ public class TeamManager : MonoBehaviour
         teamData = PlayerData.teamData;
     }
 
+    public void HealMon(UnitData mon, float healingPercent)
+    {
+        mon.currentHp = (int)(mon.currentHp + mon.prefab.GetComponent<Unit>().GetRawStat(Stats.HP, mon.level) * healingPercent);
+        int maxHp = mon.prefab.GetComponent<Unit>().GetRawStat(Stats.HP, mon.level);
+        if (mon.currentHp > maxHp) mon.currentHp = maxHp;
+    }
     public void HealTeam(float healingPercent)
     {
         for (int i = 0; i < teamData.Count; i++)

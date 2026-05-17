@@ -815,6 +815,7 @@ MonoBehaviour:
   currentStance: 1
   level: 1
   exp: 0
+  expCurve: {fileID: 11400000, guid: f01d0285087c64644a6a385494e4dc6f, type: 2}
   status: 0
   strength: 30
   constitution: 28

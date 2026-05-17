@@ -423,11 +423,8 @@ public class Unit : MonoBehaviour
 
         yield return new WaitForSeconds(.3f);
 
-        //healthBar.gameObject.SetActive(false);
-
-        FresnelApplier.clearFresnel(gameObject);
-        //if (status != Status.NONE) VFXManager.instance.SpawnStatusVFX(status, gameObject);
-        //else FresnelApplier.clearFresnel(gameObject);
+        if (status != Status.NONE) VFXManager.instance.SpawnStatusFresnelOnly(status, gameObject);
+        else FresnelApplier.clearFresnel(gameObject);
 
         takingDamage = false;
 
@@ -499,6 +496,7 @@ public class Unit : MonoBehaviour
     public void OnRoundEnd()
     {
         provoking = false;
+        guardedBy = null;
     }
     public void ResolvePassiveEffect(ExecutionTime battleStage, Unit lastHitUnit = null)
     {

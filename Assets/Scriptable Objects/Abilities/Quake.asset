@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
-  m_Name: Shooting Star
+  m_Name: Quake
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
-  name: Shooting Star
-  description: User wishes for good luck raising an ally luck.
-  power: 0
+  name: Quake
+  description: Earth shatter beneath your feet.
+  power: 50
   accuracy: 100
   abilityType: 0
-  target: 2
-  stance: 3
+  target: 5
+  stance: 0
   statToCalcDmgWith: 1
-  mustUseStance: 1
+  mustUseStance: 0
   multiHit: 0
   multiHitRange: 0
   hits: 0
@@ -29,9 +29,9 @@ MonoBehaviour:
   passiveExecutionTime: 0
   passiveEffectChance: 0
   status: 0
-  effect1: 2
+  effect1: 0
   condition1: 0
-  effect1Chance: 100
+  effect1Chance: 0
   effect2: 0
   condition2: 0
   effect2Chance: 0
@@ -39,9 +39,8 @@ MonoBehaviour:
   stanceToChangeTo: 0
   stanceCondition: 0
   healPercentage: 0
-  statToMod: 04000000
-  statMod:
-  - 1.1
+  statToMod: 
+  statMod: []
   powerVariables: 0
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

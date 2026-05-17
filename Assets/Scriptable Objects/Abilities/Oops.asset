@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
-  m_Name: Shooting Star
+  m_Name: Oops
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
-  name: Shooting Star
-  description: User wishes for good luck raising an ally luck.
-  power: 0
-  accuracy: 100
+  name: Oops
+  description: Adios Sr. Tenshinhan... (Scales with defense)
+  power: 250
+  accuracy: 85
   abilityType: 0
-  target: 2
-  stance: 3
-  statToCalcDmgWith: 1
-  mustUseStance: 1
+  target: 5
+  stance: 1
+  statToCalcDmgWith: 2
+  mustUseStance: 0
   multiHit: 0
   multiHitRange: 0
   hits: 0
@@ -29,7 +29,7 @@ MonoBehaviour:
   passiveExecutionTime: 0
   passiveEffectChance: 0
   status: 0
-  effect1: 2
+  effect1: 13
   condition1: 0
   effect1Chance: 100
   effect2: 0
@@ -39,9 +39,8 @@ MonoBehaviour:
   stanceToChangeTo: 0
   stanceCondition: 0
   healPercentage: 0
-  statToMod: 04000000
-  statMod:
-  - 1.1
+  statToMod: 
+  statMod: []
   powerVariables: 0
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

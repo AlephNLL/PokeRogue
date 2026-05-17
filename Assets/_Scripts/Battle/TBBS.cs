@@ -321,6 +321,7 @@ public class TBBS : MonoBehaviour
         currentUnit.CloseAbilityMenu();
         currentUnit.DeactivateCamera();
 
+        List<Unit> targets= new List<Unit>();
         bool confirm = false;
         int selection = 0;
 
@@ -345,8 +346,10 @@ public class TBBS : MonoBehaviour
                 yield break;
 
             case GameData.AbilityTarget.ONEALLY:
+                targets = playerUnits;
+                targets.Remove(currentUnit);
                 yield return Run<int>(SelectTarget(false), (output) => selection = output);
-                if (selection >= 0) StartCoroutine(AttackSequence(currentUnit, playerUnits[selection], ability));
+                if (selection >= 0) StartCoroutine(AttackSequence(currentUnit, targets[selection], ability));
                 yield break;
 
             case GameData.AbilityTarget.ALLENEMIES:
@@ -372,6 +375,8 @@ public class TBBS : MonoBehaviour
                 yield break;
 
             case GameData.AbilityTarget.ALL:
+                targets = allUnits;
+                targets.Remove(currentUnit);
                 CameraManager.instance.SetBlendTime(.75f);
                 CameraManager.instance.ActivateMainCamera();
                 yield return Run<bool>(WaitForConfirm(), (output) => confirm = output);
@@ -380,7 +385,7 @@ public class TBBS : MonoBehaviour
                     AbilityMenu(currentUnit);
                     yield break;
                 }
-                else StartCoroutine(AttackSequence(currentUnit, allUnits.ToArray(), ability));
+                else StartCoroutine(AttackSequence(currentUnit, targets.ToArray(), ability));
                 yield break;
 
             default:
@@ -469,7 +474,9 @@ public class TBBS : MonoBehaviour
         }
         else
         {
-            attacker.SelectTarget(playerUnits[selection].gameObject);
+            List<Unit> targets = playerUnits;
+            targets.Remove(attacker);
+            attacker.SelectTarget(targets[selection].gameObject);
 
             while (true)
             {
@@ -477,19 +484,19 @@ public class TBBS : MonoBehaviour
                 {
                     if (selection == 0)
                     {
-                        selection = playerUnits.Count - 1;
+                        selection = targets.Count - 1;
                     }
                     else
                     {
                         selection--;
                     }
 
-                    attacker.SelectTarget(playerUnits[selection].gameObject);
+                    attacker.SelectTarget(targets[selection].gameObject);
                 }
 
                 if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.sqrMagnitude < 0)
                 {
-                    if (selection == playerUnits.Count - 1)
+                    if (selection == targets.Count - 1)
                     {
                         selection = 0;
                     }
@@ -498,7 +505,7 @@ public class TBBS : MonoBehaviour
                         selection++;
                     }
 
-                    attacker.SelectTarget(playerUnits[selection].gameObject);
+                    attacker.SelectTarget(targets[selection].gameObject);
                 }
 
                 if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
@@ -527,7 +534,7 @@ public class TBBS : MonoBehaviour
         if (enemyUnits.Contains(attacker)) enemyUnits.Remove(attacker);
         else
         {
-            PlayerData.teamData.Remove(PlayerData.teamData[playerUnits.FindIndex(x => x.Equals(attacker))]);
+            if(playerUnits.FindIndex(x => x.Equals(attacker)) >= 0) PlayerData.teamData.Remove(PlayerData.teamData[playerUnits.FindIndex(x => x.Equals(attacker))]);
             playerUnits.Remove(attacker);
         }
     }
@@ -838,6 +845,9 @@ public class TBBS : MonoBehaviour
                     break;
                 case AbilityEffect.FLINCH:
                     target.skipTurn = true;
+                    break;
+                case AbilityEffect.INMOLATE:
+                    attacker.TakeDamage(int.MaxValue);
                     break;
                 default:
                     break;

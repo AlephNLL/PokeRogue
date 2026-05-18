@@ -21,6 +21,7 @@ public class CustomAbilityEditor : Editor
     SerializedProperty multiHitRange;
     SerializedProperty hits;
     SerializedProperty hitRange;
+    SerializedProperty endOnMiss;
     SerializedProperty passiveEffects;
     SerializedProperty passiveExecutionTime;
     SerializedProperty passiveEffectChance;
@@ -64,6 +65,7 @@ public class CustomAbilityEditor : Editor
         multiHitRange = serializedObject.FindProperty("multiHitRange");
         hits = serializedObject.FindProperty("hits");
         hitRange = serializedObject.FindProperty("hitRange");
+        endOnMiss = serializedObject.FindProperty("endOnMiss");
 
         passiveEffects = serializedObject.FindProperty("passiveEffects");
         passiveExecutionTime = serializedObject.FindProperty("passiveExecutionTime");
@@ -111,6 +113,7 @@ public class CustomAbilityEditor : Editor
             EditorGUILayout.PropertyField(multiHitRange);
             if (ability.multiHit) EditorGUILayout.PropertyField(hits);
             if (ability.multiHitRange) EditorGUILayout.PropertyField(hitRange);
+            if (ability.multiHitRange || ability.multiHit) EditorGUILayout.PropertyField(endOnMiss);
         }
 
         if (ability.abilityType == AbilityType.PASSIVE)
@@ -140,7 +143,7 @@ public class CustomAbilityEditor : Editor
                 if(ability.effect1 == AbilityEffect.STANCECHANGE && ability.condition1 == AbilityCondition.HASSTANCE ||
                     ability.effect2 == AbilityEffect.STANCECHANGE && ability.condition2 == AbilityCondition.HASSTANCE) EditorGUILayout.PropertyField(conditionStance);
                 if (ability.effect1 == AbilityEffect.HEAL || ability.effect2 == AbilityEffect.HEAL) EditorGUILayout.PropertyField(healingPercent);
-                if (ability.effect1 == AbilityEffect.STATMOD || ability.effect2 == AbilityEffect.STATMOD) EditorGUILayout.PropertyField(statToMod);
+                if (ability.effect1 == AbilityEffect.STATMOD || ability.effect2 == AbilityEffect.STATMOD || ability.effect1 == AbilityEffect.SWAPSTATS || ability.effect2 == AbilityEffect.SWAPSTATS) EditorGUILayout.PropertyField(statToMod);
                 if (ability.effect1 == AbilityEffect.STATMOD || ability.effect2 == AbilityEffect.STATMOD) EditorGUILayout.PropertyField(statMod);
                 if (ability.effect1 == AbilityEffect.VARIABLEPOWER || ability.effect2 == AbilityEffect.VARIABLEPOWER) EditorGUILayout.PropertyField(powerVariables);
                 EditorGUILayout.PropertyField(affectSelf);

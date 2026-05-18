@@ -16,6 +16,7 @@ public class Abilities : ScriptableObject
     public bool multiHitRange;
     public int hits;
     public int[] hitRange;
+    public bool endOnMiss;
 
     public PassiveEffects passiveEffects;
     public ExecutionTime passiveExecutionTime;

@@ -479,7 +479,13 @@ public class TBBS : MonoBehaviour
         {
             List<Unit> targets = new List<Unit>(playerUnits);
             targets.Remove(attacker);
-            attacker.SelectTarget(targets[selection].gameObject);
+            if(targets.Count > 0) attacker.SelectTarget(targets[selection].gameObject);
+            else
+            {
+                selection = -1;
+                yield return selection;
+                yield break;
+            }
 
             while (true)
             {
@@ -659,6 +665,8 @@ public class TBBS : MonoBehaviour
         if (ability.multiHit) hits = ability.hits;
         else if (ability.multiHitRange) hits = Random.Range(ability.hitRange[0], ability.hitRange[1]);
 
+        bool nextAttack = false;
+
         for (int i = 0; i < hits; i++)
         {
             if (!allUnits.Contains(target))
@@ -676,7 +684,7 @@ public class TBBS : MonoBehaviour
                     Vector3 dir = target.transform.position - attackerStartPos;
                     GameObject vfx = Instantiate(ability.vfxPrefab, attackerStartPos + .1f * dir, Quaternion.LookRotation(dir));
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
-                    Damage(ability, attacker, targets);
+                    nextAttack = Damage(ability, attacker, targets);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
                     Destroy(vfx);
                 }
@@ -684,7 +692,7 @@ public class TBBS : MonoBehaviour
                 {
                     GameObject vfx = Instantiate(ability.vfxPrefab, target.transform);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
-                    Damage(ability, attacker, targets);
+                    nextAttack = Damage(ability, attacker, targets);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
                     Destroy(vfx);
                 }
@@ -701,7 +709,7 @@ public class TBBS : MonoBehaviour
                 }
 
                 Vector3 attackerEndPos = attacker.transform.position;
-                Damage(ability, attacker, targets);
+                nextAttack = Damage(ability, attacker, targets);
 
                 t = 0;
                 yield return new WaitForSeconds(0.1f); // Pequeña pausa en el impacto
@@ -719,7 +727,7 @@ public class TBBS : MonoBehaviour
 
                 t = 0;
             }
-
+            if(!nextAttack) break;
             yield return new WaitForSeconds(0.1f);
         }
 
@@ -745,7 +753,7 @@ public class TBBS : MonoBehaviour
         }
     }
 
-    void Damage(Abilities ability, Unit attacker, Unit[] targets)
+    bool Damage(Abilities ability, Unit attacker, Unit[] targets)
     {
         for (int i = 0; i < targets.Length; i++)
         {
@@ -755,10 +763,11 @@ public class TBBS : MonoBehaviour
                 if (ability.condition1 == AbilityCondition.ATTACKMISSED ||
                     ability.condition2 == AbilityCondition.ATTACKMISSED)
                 {
-                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
-                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1, true);
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf, ability.condition2, true);
                 }
                 targets[i].evasive = false;
+                if (ability.endOnMiss) return false;
                 continue;
             }
             if (!CheckHit(ability, attacker.precision))
@@ -767,14 +776,22 @@ public class TBBS : MonoBehaviour
                 if(ability.condition1 == AbilityCondition.ATTACKMISSED ||
                     ability.condition2 == AbilityCondition.ATTACKMISSED)
                 {
-                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
-                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1, true);
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf, ability.condition2, true);
                 }
+                if (ability.endOnMiss) return false;
                 continue;
             }
             if (ability.power == 0 && targets[i].currentStance == Stance.CAUTIOUS)
             {
                 TooltipUI.instance.ShowTooltipText("It doesn't affect " + targets[i].name);
+                if (ability.condition1 == AbilityCondition.ATTACKMISSED ||
+                    ability.condition2 == AbilityCondition.ATTACKMISSED)
+                {
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1, true);
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf, ability.condition2, true);
+                }
+                if (ability.endOnMiss) return false;
                 continue;
             }
             ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1);
@@ -797,8 +814,10 @@ public class TBBS : MonoBehaviour
         }
 
         if (ability.effect1 == AbilityEffect.INMOLATE) attacker.TakeDamage(int.MaxValue);
+
+        return true;
     }
-    void ResolveAbilityEffect(Unit attacker, Unit target, Abilities ability, AbilityEffect effect, float effectChance, bool affectSelf, AbilityCondition condition = AbilityCondition.NONE)
+    void ResolveAbilityEffect(Unit attacker, Unit target, Abilities ability, AbilityEffect effect, float effectChance, bool affectSelf, AbilityCondition condition = AbilityCondition.NONE, bool abilityMissed = false)
     {
         switch (condition)
         {
@@ -813,11 +832,14 @@ public class TBBS : MonoBehaviour
             case AbilityCondition.HASANYSTATUS:
                 if(attacker.status == Status.NONE) return;
                 break;
+            case AbilityCondition.ATTACKMISSED:
+                if(!abilityMissed) return;
+                break;
             default:
                 break;
         }
 
-        if (effectChance + attacker.effectChanceModifier >= UnityEngine.Random.Range(1, 101))
+        if (attacker.baseEffectChanceMulti*effectChance + attacker.effectChanceModifier >= UnityEngine.Random.Range(1, 101))
         {
             switch (effect)
             {
@@ -859,6 +881,12 @@ public class TBBS : MonoBehaviour
                 case AbilityEffect.SETGUARDIAN:
                     attacker.guardedBy = target;
                     break;
+                case AbilityEffect.LOSEHP:
+                    attacker.TakeDamage(attacker.GetRawStat(Stats.HP, attacker.level)/4);
+                    break;
+                case AbilityEffect.SWAPSTATS:
+                    attacker.SwapStats(ability.statToMod[0], ability.statToMod[1]);
+                    break;
                 default:
                     break;
             }
@@ -892,11 +920,12 @@ public class TBBS : MonoBehaviour
         float efficacy = GetAbilityEfficacy(ability.stance, target.currentStance);
         float roll = UnityEngine.Random.Range(.8f, 1f);
         float chanceToCrit = 1f - Mathf.Pow(1 - baseCritChance, attacker.GetStat(Stats.LUCK));
+        if(ability.effect1 == AbilityEffect.DOUBLECRITCHANCE || ability.effect2 == AbilityEffect.DOUBLECRITCHANCE) chanceToCrit *= 2;
         bool isCritical = UnityEngine.Random.Range(1, 101) <= chanceToCrit*100;
         float critMod = isCritical ? 1.5f : 1f;
         float freezeMod = target.status == Status.FROZEN ? 1.5f : 1f;
 
-        if(isCritical) defenseStat = Mathf.Min(defenseStat, target.GetRawStat(Stats.DEF, target.level));
+        if(isCritical) defenseStat = Mathf.Min(defenseStat, target.GetSetStat(Stats.DEF));
 
         float baseDamage = ((2 * attacker.level + 2) * .1f * power * attackStat) / (5.0f * defenseStat);
         float totalBeforeModifiers = baseDamage + 2;

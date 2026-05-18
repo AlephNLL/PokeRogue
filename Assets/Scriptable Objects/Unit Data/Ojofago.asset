@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fd34378b8d549f40b2244231e926bc1, type: 3}
   m_Name: Ojofago
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  id: 1
+  id: 0
   name: Ojofago
   prefab: {fileID: 1717970170875167366, guid: b992b5942d8d7384980f0e7231fcdc9f, type: 3}
-  level: 1
-  currentExp: 0
+  level: 5
+  currentExp: 130
   heldItem: {fileID: 0}
-  currentHp: 31
+  currentHp: 51
   status: 0
   knownAbilities:
   - {fileID: 11400000, guid: f75a8ad9698e57a408f12d4fd11bc9d4, type: 2}

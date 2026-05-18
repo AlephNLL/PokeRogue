@@ -10,34 +10,33 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
-  m_Name: Spin Attack
-  m_EditorClassIdentifier: 
-  name: Spin Attack
-  description: User spins quickly hitting 1-5 times
-  power: 20
+  m_Name: Sharp Claw
+  m_EditorClassIdentifier: Assembly-CSharp::Abilities
+  name: Sharp Claw
+  description: This attack has doubled crit chance
+  power: 70
   accuracy: 100
   abilityType: 0
   target: 1
-  stance: 2
+  stance: 0
   statToCalcDmgWith: 1
   mustUseStance: 0
   multiHit: 0
-  multiHitRange: 1
-  hits: 2
-  hitRange: 0100000005000000
-  endOnMiss: 0
+  multiHitRange: 0
+  hits: 0
+  hitRange: 
   passiveEffects: 0
-  passiveExecutionTime: 1
+  passiveExecutionTime: 0
   passiveEffectChance: 0
   status: 0
-  effect1: 0
+  effect1: 17
   condition1: 0
-  effect1Chance: 100
+  effect1Chance: 0
   effect2: 0
   condition2: 0
   effect2Chance: 0
   affectSelf: 0
-  stanceToChangeTo: 2
+  stanceToChangeTo: 0
   stanceCondition: 0
   healPercentage: 0
   statToMod: 

@@ -709,7 +709,7 @@ public class Unit : MonoBehaviour
             WakeUp();
             return;
         }
-        if (33 + sleepCounter * 16 > Random.Range(0, 100))
+        if (33 + sleepCounter * 16 > Random.Range(1, 101))
         {
             WakeUp();
             return;

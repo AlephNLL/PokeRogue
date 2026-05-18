@@ -40,4 +40,9 @@ public class Abilities : ScriptableObject
 
     public GameObject vfxPrefab;
     public bool spawnVfxOnSelf;
+
+    public bool HasEffect(AbilityEffect effect)
+    {
+        return effect1 == effect || effect2 == effect;
+    }
 }

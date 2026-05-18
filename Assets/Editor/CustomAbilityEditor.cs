@@ -10,6 +10,7 @@ public class CustomAbilityEditor : Editor
     #region SerializedProperties
     new SerializedProperty name;
     SerializedProperty description;
+    SerializedProperty sfx;
     SerializedProperty power;
     SerializedProperty accuracy;
     SerializedProperty abilityType;
@@ -54,6 +55,7 @@ public class CustomAbilityEditor : Editor
     {
         name = serializedObject.FindProperty("name");
         description = serializedObject.FindProperty("description");
+        sfx = serializedObject.FindProperty("sfx");
         power = serializedObject.FindProperty("power");
         accuracy = serializedObject.FindProperty("accuracy");
         abilityType = serializedObject.FindProperty("abilityType");
@@ -101,7 +103,8 @@ public class CustomAbilityEditor : Editor
         if (DataGroup)
         {
             EditorGUILayout.PropertyField(name);
-            EditorGUILayout.PropertyField(description);  
+            EditorGUILayout.PropertyField(description);
+            EditorGUILayout.PropertyField(sfx);
             EditorGUILayout.PropertyField(power);
             EditorGUILayout.PropertyField(accuracy);
             EditorGUILayout.PropertyField(abilityType);

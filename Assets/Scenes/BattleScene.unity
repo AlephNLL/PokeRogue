@@ -9733,6 +9733,7 @@ MonoBehaviour:
   enemyUnits: []
   capturableUnits: []
   allUnits: []
+  combatMusic: {fileID: 11400000, guid: 661e6933e6e740c438836e83f81028dc, type: 2}
 --- !u!1001 &1089447186
 PrefabInstance:
   m_ObjectHideFlags: 0

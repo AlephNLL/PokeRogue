@@ -32,6 +32,7 @@ public class DaycareManager : MonoBehaviour
     bool isBattle;
     private void Start()
     {
+        AudioManager.instance.PlayMusic(AudioLibrary.instance.daycareMusic);
         if (units == null)
         {
             units = new List<UnitData>();
@@ -246,6 +247,7 @@ public class DaycareManager : MonoBehaviour
         selectedUnits.Clear();
         selectedPrefabs.Clear();
 
+        AudioManager.instance.StopMusic();
         if (MapManager.instance)
         {
             MapManager.instance.LoadMapSceneFromStart();

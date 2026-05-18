@@ -5,6 +5,7 @@ public class Abilities : ScriptableObject
 {
     new public string name;
     public string description;
+    public SoundData sfx;
     public int power;
     public int accuracy;
     public AbilityType abilityType;

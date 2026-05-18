@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Relentless Attack
   description: Attacks 5 times but missing stops the attack and deals 1/2 recoil
+  sfx: {fileID: 11400000, guid: 79214797fcb65524ca706af2054617bd, type: 2}
   power: 30
   accuracy: 80
   abilityType: 0

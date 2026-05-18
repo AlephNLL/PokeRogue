@@ -9,6 +9,7 @@ using GameData;
 using UnityEngine.SceneManagement;
 using static UnityEditor.Rendering.InspectorCurveEditor;
 using Random = UnityEngine.Random;
+using UnityEngine.UIElements;
 
 
 //Turn Based Battle System
@@ -31,7 +32,6 @@ public class TBBS : MonoBehaviour
     public List<Unit> allUnits;
 
     private Coroutine currentTurnCoroutine;
-
     private void Awake()
     {
         instance = this;
@@ -44,6 +44,8 @@ public class TBBS : MonoBehaviour
 
     IEnumerator SetupBattleField()
     {
+        AudioManager.instance.PlayMusic(AudioLibrary.instance.combatMusic, 1.0f);
+
         playerPrefabs = PlayerData.Instance.GetTeamPrefabs();
         enemyPrefabs = BattleData.enemyTeam;
 
@@ -558,6 +560,8 @@ public class TBBS : MonoBehaviour
         if(ability.multiHit) hits = ability.hits;
         else if(ability.multiHitRange)hits = Random.Range(ability.hitRange[0], ability.hitRange[1]);
 
+        bool nextAttack = false;
+
         for (int i = 0; i < hits; i++)
         {
             if(i > 0)
@@ -576,16 +580,18 @@ public class TBBS : MonoBehaviour
                 {
                     Vector3 dir = visualTarget.position - attackerStartPos;
                     GameObject vfx = Instantiate(ability.vfxPrefab, attackerStartPos + .1f * dir, Quaternion.LookRotation(dir));
+                    if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerStartPos);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
-                    Damage(ability, attacker, targets);
+                    nextAttack = Damage(ability, attacker, targets);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
                     Destroy(vfx);
                 }
                 else
                 {
                     GameObject vfx = Instantiate(ability.vfxPrefab, visualTarget);
+                    if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, visualTarget.position);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
-                    Damage(ability, attacker, targets);
+                    nextAttack = Damage(ability, attacker, targets);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
                     Destroy(vfx);
                 }
@@ -602,7 +608,8 @@ public class TBBS : MonoBehaviour
                 }
 
                 Vector3 attackerEndPos = attacker.transform.position;
-                Damage(ability, attacker, targets);
+                if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
+                nextAttack = Damage(ability, attacker, targets);
                 t = 0;
                 yield return new WaitForSeconds(0.1f); // Pequeña pausa en el impacto
 
@@ -619,6 +626,7 @@ public class TBBS : MonoBehaviour
 
                 t = 0;
 
+                if (!nextAttack) break;
                 yield return new WaitForSeconds(0.1f);
             }
         }   
@@ -683,6 +691,7 @@ public class TBBS : MonoBehaviour
                 {
                     Vector3 dir = target.transform.position - attackerStartPos;
                     GameObject vfx = Instantiate(ability.vfxPrefab, attackerStartPos + .1f * dir, Quaternion.LookRotation(dir));
+                    if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerStartPos);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
                     nextAttack = Damage(ability, attacker, targets);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
@@ -691,6 +700,7 @@ public class TBBS : MonoBehaviour
                 else
                 {
                     GameObject vfx = Instantiate(ability.vfxPrefab, target.transform);
+                    if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, target.transform.position);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
                     nextAttack = Damage(ability, attacker, targets);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
@@ -709,6 +719,7 @@ public class TBBS : MonoBehaviour
                 }
 
                 Vector3 attackerEndPos = attacker.transform.position;
+                if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
                 nextAttack = Damage(ability, attacker, targets);
 
                 t = 0;

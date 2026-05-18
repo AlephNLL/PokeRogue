@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Oops
   description: Adios Sr. Tenshinhan... (Scales with defense)
+  sfx: {fileID: 11400000, guid: 7153a9a3d1aa55947b4e37b9c248401f, type: 2}
   power: 250
   accuracy: 85
   abilityType: 0
@@ -25,6 +26,7 @@ MonoBehaviour:
   multiHitRange: 0
   hits: 0
   hitRange: 
+  endOnMiss: 0
   passiveEffects: 0
   passiveExecutionTime: 0
   passiveEffectChance: 0

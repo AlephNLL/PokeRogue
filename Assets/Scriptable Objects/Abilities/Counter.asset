@@ -41,6 +41,6 @@ MonoBehaviour:
   healPercentage: 0
   statToMod: 
   statMod: []
-  powerVariables: 0
+  powerVariables: 1
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

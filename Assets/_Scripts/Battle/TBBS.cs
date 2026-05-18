@@ -9,6 +9,7 @@ using GameData;
 using UnityEngine.SceneManagement;
 using static UnityEditor.Rendering.InspectorCurveEditor;
 using Random = UnityEngine.Random;
+using UnityEngine.UIElements;
 
 
 //Turn Based Battle System
@@ -31,7 +32,6 @@ public class TBBS : MonoBehaviour
     public List<Unit> allUnits;
 
     private Coroutine currentTurnCoroutine;
-
     private void Awake()
     {
         instance = this;
@@ -44,6 +44,8 @@ public class TBBS : MonoBehaviour
 
     IEnumerator SetupBattleField()
     {
+        AudioManager.instance.PlayMusic(AudioLibrary.instance.combatMusic, 1.0f);
+
         playerPrefabs = PlayerData.Instance.GetTeamPrefabs();
         enemyPrefabs = BattleData.enemyTeam;
 
@@ -136,7 +138,10 @@ public class TBBS : MonoBehaviour
             Debug.Log("Round " + round + " Ended");
             round++;
             currentTurnIndex = 0;
-
+            for (int i = 0;i < allUnits.Count;i++)
+            {
+                allUnits[i].OnRoundEnd();
+            }
             StopAllCoroutines();
             // Recalcular orden basado en speed
             CalculateTurnOrder(allUnits);
@@ -150,7 +155,7 @@ public class TBBS : MonoBehaviour
     {
         TooltipUI.instance.HideTooltipText();
         yield return new WaitForSeconds(2f);
-        MapManager.instance.LoadMapScene();
+        SceneManager.LoadSceneAsync("Daycare");
     }
 
     IEnumerator PlayerTurn(Unit currentUnit, bool activateTurnStartEffect = true)
@@ -218,7 +223,14 @@ public class TBBS : MonoBehaviour
                 yield return StartCoroutine(AttackSequence(currentUnit, currentUnit, chosenAbility));
                 break;
             case AbilityTarget.ONEENEMY:
-                yield return StartCoroutine(AttackSequence(currentUnit, playerUnits[UnityEngine.Random.Range(0, playerUnits.Count)], chosenAbility));
+                Unit target;
+                if(playerUnits.Find(unit => unit.provoking)) target = playerUnits.Find(unit => unit.provoking);
+                else
+                {
+                    target = playerUnits[UnityEngine.Random.Range(0, playerUnits.Count)];
+                    if(target.guardedBy) target = target.guardedBy;
+                }
+                yield return StartCoroutine(AttackSequence(currentUnit, target, chosenAbility));
                 break;
             case AbilityTarget.ONEALLY:
                 yield return StartCoroutine(AttackSequence(currentUnit, enemyUnits[UnityEngine.Random.Range(0, enemyUnits.Count)], chosenAbility));
@@ -316,11 +328,17 @@ public class TBBS : MonoBehaviour
     }
     public IEnumerator ActivateAbility(Abilities ability)
     {
+        if (UnityEngine.EventSystems.EventSystem.current != null)
+        {
+            UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+        }
+
         Unit currentUnit = allUnits[currentTurnIndex];
         CameraManager.instance.SetBlendTime(2f);
         currentUnit.CloseAbilityMenu();
         currentUnit.DeactivateCamera();
 
+        List<Unit> targets = new List<Unit>();
         bool confirm = false;
         int selection = 0;
 
@@ -336,19 +354,21 @@ public class TBBS : MonoBehaviour
                     yield break;
                 }
                 else StartCoroutine(AttackSequence(currentUnit, currentUnit, ability));
-
                 yield break;
 
             case GameData.AbilityTarget.ONEENEMY:
                 yield return Run<int>(SelectTarget(), (output) => selection = output);
-                if(selection >= 0) StartCoroutine(AttackSequence(currentUnit, enemyUnits[selection], ability));
+                if (selection >= 0) StartCoroutine(AttackSequence(currentUnit, enemyUnits[selection], ability));
+                else AbilityMenu(currentUnit);
                 yield break;
 
             case GameData.AbilityTarget.ONEALLY:
+                targets = new List<Unit>(playerUnits);
+                targets.Remove(currentUnit);
                 yield return Run<int>(SelectTarget(false), (output) => selection = output);
-                if (selection >= 0) StartCoroutine(AttackSequence(currentUnit, playerUnits[selection], ability));
+                if (selection >= 0) StartCoroutine(AttackSequence(currentUnit, targets[selection], ability));
+                else AbilityMenu(currentUnit);
                 yield break;
-
             case GameData.AbilityTarget.ALLENEMIES:
                 currentUnit.SelectTarget(enemySide.gameObject);
                 yield return Run<bool>(WaitForConfirm(), (output) => confirm = output);
@@ -372,6 +392,8 @@ public class TBBS : MonoBehaviour
                 yield break;
 
             case GameData.AbilityTarget.ALL:
+                targets = new List<Unit>(allUnits);
+                targets.Remove(currentUnit);
                 CameraManager.instance.SetBlendTime(.75f);
                 CameraManager.instance.ActivateMainCamera();
                 yield return Run<bool>(WaitForConfirm(), (output) => confirm = output);
@@ -380,7 +402,7 @@ public class TBBS : MonoBehaviour
                     AbilityMenu(currentUnit);
                     yield break;
                 }
-                else StartCoroutine(AttackSequence(currentUnit, allUnits.ToArray(), ability));
+                else StartCoroutine(AttackSequence(currentUnit, targets.ToArray(), ability));
                 yield break;
 
             default:
@@ -416,6 +438,9 @@ public class TBBS : MonoBehaviour
     {
         int selection = 0;
         Unit attacker = allUnits[currentTurnIndex];
+
+        yield return null;
+
         if (enemySide)
         {
             attacker.SelectTarget(enemyUnits[selection].gameObject);
@@ -424,81 +449,16 @@ public class TBBS : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.sqrMagnitude < 0)
                 {
-                    if (selection == 0)
-                    {
-                        selection = enemyUnits.Count - 1;
-                    }
-                    else
-                    {
-                        selection--;
-                    }
-
+                    if (selection == 0) selection = enemyUnits.Count - 1;
+                    else selection--;
                     attacker.SelectTarget(enemyUnits[selection].gameObject);
                 }
 
                 if (Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.sqrMagnitude > 0)
                 {
-                    if (selection == enemyUnits.Count - 1)
-                    {
-                        selection = 0;
-                    }
-                    else
-                    {
-                        selection++;
-                    }
-
+                    if (selection == enemyUnits.Count - 1) selection = 0;
+                    else selection++;
                     attacker.SelectTarget(enemyUnits[selection].gameObject);
-                }
-
-                if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
-                {
-                    yield return selection;
-                    yield break;
-                }
-
-                if(Input.GetMouseButtonDown(1))
-                {
-                    AbilityMenu(attacker);
-                    selection = -1;
-                    yield return selection;
-                    yield break;
-                }
-
-                yield return null;
-            }
-        }
-        else
-        {
-            attacker.SelectTarget(playerUnits[selection].gameObject);
-
-            while (true)
-            {
-                if (Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.sqrMagnitude > 0)
-                {
-                    if (selection == 0)
-                    {
-                        selection = playerUnits.Count - 1;
-                    }
-                    else
-                    {
-                        selection--;
-                    }
-
-                    attacker.SelectTarget(playerUnits[selection].gameObject);
-                }
-
-                if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.sqrMagnitude < 0)
-                {
-                    if (selection == playerUnits.Count - 1)
-                    {
-                        selection = 0;
-                    }
-                    else
-                    {
-                        selection++;
-                    }
-
-                    attacker.SelectTarget(playerUnits[selection].gameObject);
                 }
 
                 if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
@@ -509,7 +469,50 @@ public class TBBS : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(1))
                 {
-                    AbilityMenu(attacker);
+                    selection = -1;
+                    yield return selection;
+                    yield break;
+                }
+
+                yield return null;
+            }
+        }
+        else
+        {
+            List<Unit> targets = new List<Unit>(playerUnits);
+            targets.Remove(attacker);
+            if(targets.Count > 0) attacker.SelectTarget(targets[selection].gameObject);
+            else
+            {
+                selection = -1;
+                yield return selection;
+                yield break;
+            }
+
+            while (true)
+            {
+                if (Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.sqrMagnitude > 0)
+                {
+                    if (selection == 0) selection = targets.Count - 1;
+                    else selection--;
+                    attacker.SelectTarget(targets[selection].gameObject);
+                }
+
+                if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.sqrMagnitude < 0)
+                {
+                    if (selection == targets.Count - 1) selection = 0;
+                    else selection++;
+                    attacker.SelectTarget(targets[selection].gameObject);
+                }
+
+                if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
+                {
+                    yield return selection;
+                    yield break;
+                }
+
+                if (Input.GetMouseButtonDown(1))
+                {
                     selection = -1;
                     yield return selection;
                     yield break;
@@ -527,7 +530,7 @@ public class TBBS : MonoBehaviour
         if (enemyUnits.Contains(attacker)) enemyUnits.Remove(attacker);
         else
         {
-            PlayerData.teamData.Remove(PlayerData.teamData[playerUnits.FindIndex(x => x.Equals(attacker))]);
+            if(playerUnits.FindIndex(x => x.Equals(attacker)) >= 0) PlayerData.teamData.Remove(PlayerData.teamData[playerUnits.FindIndex(x => x.Equals(attacker))]);
             playerUnits.Remove(attacker);
         }
     }
@@ -557,6 +560,8 @@ public class TBBS : MonoBehaviour
         if(ability.multiHit) hits = ability.hits;
         else if(ability.multiHitRange)hits = Random.Range(ability.hitRange[0], ability.hitRange[1]);
 
+        bool nextAttack = false;
+
         for (int i = 0; i < hits; i++)
         {
             if(i > 0)
@@ -575,16 +580,18 @@ public class TBBS : MonoBehaviour
                 {
                     Vector3 dir = visualTarget.position - attackerStartPos;
                     GameObject vfx = Instantiate(ability.vfxPrefab, attackerStartPos + .1f * dir, Quaternion.LookRotation(dir));
+                    if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerStartPos);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
-                    Damage(ability, attacker, targets);
+                    nextAttack = Damage(ability, attacker, targets);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
                     Destroy(vfx);
                 }
                 else
                 {
                     GameObject vfx = Instantiate(ability.vfxPrefab, visualTarget);
+                    if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, visualTarget.position);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
-                    Damage(ability, attacker, targets);
+                    nextAttack = Damage(ability, attacker, targets);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
                     Destroy(vfx);
                 }
@@ -601,7 +608,8 @@ public class TBBS : MonoBehaviour
                 }
 
                 Vector3 attackerEndPos = attacker.transform.position;
-                Damage(ability, attacker, targets);
+                if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
+                nextAttack = Damage(ability, attacker, targets);
                 t = 0;
                 yield return new WaitForSeconds(0.1f); // Pequeña pausa en el impacto
 
@@ -618,6 +626,7 @@ public class TBBS : MonoBehaviour
 
                 t = 0;
 
+                if (!nextAttack) break;
                 yield return new WaitForSeconds(0.1f);
             }
         }   
@@ -664,6 +673,8 @@ public class TBBS : MonoBehaviour
         if (ability.multiHit) hits = ability.hits;
         else if (ability.multiHitRange) hits = Random.Range(ability.hitRange[0], ability.hitRange[1]);
 
+        bool nextAttack = false;
+
         for (int i = 0; i < hits; i++)
         {
             if (!allUnits.Contains(target))
@@ -680,16 +691,18 @@ public class TBBS : MonoBehaviour
                 {
                     Vector3 dir = target.transform.position - attackerStartPos;
                     GameObject vfx = Instantiate(ability.vfxPrefab, attackerStartPos + .1f * dir, Quaternion.LookRotation(dir));
+                    if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerStartPos);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
-                    Damage(ability, attacker, targets);
+                    nextAttack = Damage(ability, attacker, targets);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
                     Destroy(vfx);
                 }
                 else
                 {
                     GameObject vfx = Instantiate(ability.vfxPrefab, target.transform);
+                    if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, target.transform.position);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
-                    Damage(ability, attacker, targets);
+                    nextAttack = Damage(ability, attacker, targets);
                     yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration / 2);
                     Destroy(vfx);
                 }
@@ -706,7 +719,8 @@ public class TBBS : MonoBehaviour
                 }
 
                 Vector3 attackerEndPos = attacker.transform.position;
-                Damage(ability, attacker, targets);
+                if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
+                nextAttack = Damage(ability, attacker, targets);
 
                 t = 0;
                 yield return new WaitForSeconds(0.1f); // Pequeña pausa en el impacto
@@ -724,7 +738,7 @@ public class TBBS : MonoBehaviour
 
                 t = 0;
             }
-
+            if(!nextAttack) break;
             yield return new WaitForSeconds(0.1f);
         }
 
@@ -750,24 +764,45 @@ public class TBBS : MonoBehaviour
         }
     }
 
-    void Damage(Abilities ability, Unit attacker, Unit[] targets)
+    bool Damage(Abilities ability, Unit attacker, Unit[] targets)
     {
         for (int i = 0; i < targets.Length; i++)
         {
+            if (targets[i].evasive)
+            {
+                TooltipUI.instance.ShowTooltipText(targets[i].name + " evaded the attack!");
+                if (ability.condition1 == AbilityCondition.ATTACKMISSED ||
+                    ability.condition2 == AbilityCondition.ATTACKMISSED)
+                {
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1, true);
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf, ability.condition2, true);
+                }
+                targets[i].evasive = false;
+                if (ability.endOnMiss) return false;
+                continue;
+            }
             if (!CheckHit(ability, attacker.precision))
             {
                 TooltipUI.instance.ShowTooltipText(attacker.name + " missed");
                 if(ability.condition1 == AbilityCondition.ATTACKMISSED ||
                     ability.condition2 == AbilityCondition.ATTACKMISSED)
                 {
-                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf);
-                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf);
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1, true);
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf, ability.condition2, true);
                 }
+                if (ability.endOnMiss) return false;
                 continue;
             }
             if (ability.power == 0 && targets[i].currentStance == Stance.CAUTIOUS)
             {
                 TooltipUI.instance.ShowTooltipText("It doesn't affect " + targets[i].name);
+                if (ability.condition1 == AbilityCondition.ATTACKMISSED ||
+                    ability.condition2 == AbilityCondition.ATTACKMISSED)
+                {
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1, true);
+                    ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf, ability.condition2, true);
+                }
+                if (ability.endOnMiss) return false;
                 continue;
             }
             ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1);
@@ -788,8 +823,12 @@ public class TBBS : MonoBehaviour
                 attacker.ResolveItemEffect(ExecutionTime.ONHIT, targets[i]);
             }
         }
+
+        if (ability.effect1 == AbilityEffect.INMOLATE) attacker.TakeDamage(int.MaxValue);
+
+        return true;
     }
-    void ResolveAbilityEffect(Unit attacker, Unit target, Abilities ability, AbilityEffect effect, float effectChance, bool affectSelf, AbilityCondition condition = AbilityCondition.NONE)
+    void ResolveAbilityEffect(Unit attacker, Unit target, Abilities ability, AbilityEffect effect, float effectChance, bool affectSelf, AbilityCondition condition = AbilityCondition.NONE, bool abilityMissed = false)
     {
         switch (condition)
         {
@@ -804,11 +843,14 @@ public class TBBS : MonoBehaviour
             case AbilityCondition.HASANYSTATUS:
                 if(attacker.status == Status.NONE) return;
                 break;
+            case AbilityCondition.ATTACKMISSED:
+                if(!abilityMissed) return;
+                break;
             default:
                 break;
         }
 
-        if (effectChance + attacker.effectChanceModifier >= UnityEngine.Random.Range(1, 101))
+        if (attacker.baseEffectChanceMulti*effectChance + attacker.effectChanceModifier >= UnityEngine.Random.Range(1, 101))
         {
             switch (effect)
             {
@@ -839,6 +881,23 @@ public class TBBS : MonoBehaviour
                 case AbilityEffect.FLINCH:
                     target.skipTurn = true;
                     break;
+                case AbilityEffect.SETEVASIVE:
+                    if (affectSelf) attacker.evasive = true;
+                    else target.evasive = true;
+                    break;
+                case AbilityEffect.PROVOKE:
+                    if (affectSelf) attacker.provoking = true;
+                    else target.provoking = true;
+                    break;
+                case AbilityEffect.SETGUARDIAN:
+                    attacker.guardedBy = target;
+                    break;
+                case AbilityEffect.LOSEHP:
+                    attacker.TakeDamage(attacker.GetRawStat(Stats.HP, attacker.level)/4);
+                    break;
+                case AbilityEffect.SWAPSTATS:
+                    attacker.SwapStats(ability.statToMod[0], ability.statToMod[1]);
+                    break;
                 default:
                     break;
             }
@@ -862,6 +921,7 @@ public class TBBS : MonoBehaviour
                 power = (int)(power * Mathf.Pow(2, PlayerData.teamData.Count - playerUnits.Count));
                 break;
             default:
+                power = ability.power;
                 break;
         }
         float baseCritChance = 0.01f;
@@ -871,20 +931,30 @@ public class TBBS : MonoBehaviour
         float efficacy = GetAbilityEfficacy(ability.stance, target.currentStance);
         float roll = UnityEngine.Random.Range(.8f, 1f);
         float chanceToCrit = 1f - Mathf.Pow(1 - baseCritChance, attacker.GetStat(Stats.LUCK));
+        if(ability.effect1 == AbilityEffect.DOUBLECRITCHANCE || ability.effect2 == AbilityEffect.DOUBLECRITCHANCE) chanceToCrit *= 2;
         bool isCritical = UnityEngine.Random.Range(1, 101) <= chanceToCrit*100;
         float critMod = isCritical ? 1.5f : 1f;
         float freezeMod = target.status == Status.FROZEN ? 1.5f : 1f;
 
-        if(isCritical) defenseStat = Mathf.Min(defenseStat, target.GetRawStat(Stats.DEF, target.level));
+        if(isCritical) defenseStat = Mathf.Min(defenseStat, target.GetSetStat(Stats.DEF));
 
-        int damage = Mathf.FloorToInt((((2 * attacker.level + 2) * .1f * power * attackStat / (5 * defenseStat)) + 2) * efficacy * stanceBonus * roll * critMod * freezeMod);
+        float baseDamage = ((2 * attacker.level + 2) * .1f * power * attackStat) / (5.0f * defenseStat);
+        float totalBeforeModifiers = baseDamage + 2;
+        float finalDamageFloat = totalBeforeModifiers * efficacy * stanceBonus * roll * critMod * freezeMod;
+        int damage = Mathf.FloorToInt(finalDamageFloat);
 
-        if(damage <= 0) damage = 1;
+        if (damage <= 0) damage = 1;
 
         if (ability.effect1 == AbilityEffect.LEECH || ability.effect2 == AbilityEffect.LEECH) attacker.Heal((int)(damage * .5f));
         if (ability.effect1 == AbilityEffect.RECOIL || ability.effect2 == AbilityEffect.RECOIL) attacker.TakeDamage((int)(damage * .5f));
 
-        Debug.Log(attacker.name + " attacks " + target.name + " dealing: " + damage + " damage.");
+        Debug.Log($"--- REPORTE DE DAÑO ---");
+        Debug.Log($"{attacker.name} usó habilidad con Poder: {power} y Stat Ofensivo: {attackStat}");
+        Debug.Log($"Defensa de {target.name}: {defenseStat}");
+        Debug.Log($"Daño Base calculado (sin modificadores): {baseDamage}");
+        Debug.Log($"Modificadores -> Efficacy: {efficacy}, Stance: {stanceBonus}, Roll: {roll}, Crit: {critMod}");
+        Debug.Log($"Daño Final antes de redondear: {finalDamageFloat} -> Daño Aplicado: {damage}");
+
         if (efficacy == 2) TooltipUI.instance.ShowTooltipText("It's super effective!");
         if (isCritical) TooltipUI.instance.ShowTooltipText("Critical Hit!");
 

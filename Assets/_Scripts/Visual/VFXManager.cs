@@ -151,6 +151,31 @@ public class VFXManager : MonoBehaviour
         }
     }
 
+    public void SpawnStatusFresnelOnly(Status statusToApply, GameObject unit)
+    {
+        switch (statusToApply)
+        {
+            case Status.NONE:
+                break;
+            case Status.BURNED:
+                FresnelApplier.applyFresnel(unit, Color.orange);
+                break;
+            case Status.POISONED:
+                FresnelApplier.applyFresnel(unit, Color.purple);
+                break;
+            case Status.PARALYZED:
+                FresnelApplier.applyFresnel(unit, Color.yellow);
+                break;
+            case Status.FROZEN:
+                FresnelApplier.applyFresnel(unit, Color.lightBlue);
+                break;
+            case Status.ASLEEP:
+                break;
+            default:
+                break;
+        }
+    }
+
     IEnumerator SpawnVFX(GameObject vfxPrefab, GameObject unit)
     {
         GameObject vfx = Instantiate(vfxPrefab, unit.transform.position, vfxPrefab.transform.rotation);

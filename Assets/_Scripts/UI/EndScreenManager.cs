@@ -124,7 +124,7 @@ public class EndScreenManager : MonoBehaviour
     }
     public void Continue()
     {
-        if (monSelected || dontShowConfirmScreen) MapManager.instance.LoadMapScene();
+        if (monSelected || dontShowConfirmScreen) BackToMapScreen();
         else
         { 
             confirmScreen.gameObject.SetActive(true);
@@ -134,6 +134,7 @@ public class EndScreenManager : MonoBehaviour
 
     public void BackToMapScreen()
     {
+        AudioManager.instance.StopMusic();
         MapManager.instance.LoadMapScene();
     }
 

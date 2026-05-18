@@ -47,6 +47,10 @@ public class Unit : MonoBehaviour
 
     public Item heldItem;
 
+    public bool evasive = false;
+    public bool provoking = false;
+    public Unit guardedBy = null;
+
     [Header("Misc")]
     [SerializeField]
     private CinemachineVirtualCamera actionCamera;
@@ -83,7 +87,8 @@ public class Unit : MonoBehaviour
     public bool takingDamage = false;
 
     int trickyStanceEffectChanceModifier = 30;
-    public int effectChanceModifier;
+    public float baseEffectChanceMulti = 1;
+    public int effectChanceModifier = 0;
 
     int sleepCounter;
     int sleepMaxTurns = 3;
@@ -327,6 +332,9 @@ public class Unit : MonoBehaviour
                 precision = precision * mod;
                 TooltipUI.instance.ShowTooltipText($"{name} precision {modAction}");
                 break;
+            case Stats.EFFECTCHANCEMOD:
+                baseEffectChanceMulti = baseEffectChanceMulti * mod;
+                break;
             default:
                 break;
         }
@@ -349,6 +357,40 @@ public class Unit : MonoBehaviour
                 break;
             default:
                 break;
+        }
+    }
+    public void SwapStats(Stats statA, Stats statB)
+    {
+        int tempValue = GetSetStat(statA);
+
+        GetSetStat(statA, GetSetStat(statB));
+
+        GetSetStat(statB, tempValue);
+
+        // Opcional: Feedback visual o logs
+        VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, gameObject); // O un efecto de "espejo/cambio"
+        TooltipUI.instance.ShowTooltipText($"{name} swapped {statA} and {statB}!");
+
+        Debug.Log($"{name} intercambió {statA} por {statB}. Nuevos valores -> {statA}: {GetSetStat(statA)} | {statB}: {GetSetStat(statB)}");
+    }
+    public int GetSetStat(Stats stat, int? newValue = null)
+    {
+        switch (stat)
+        {
+            case Stats.ATK:
+                if (newValue.HasValue) attack = newValue.Value;
+                return attack;
+            case Stats.DEF:
+                if (newValue.HasValue) defense = newValue.Value;
+                return defense;
+            case Stats.SPEED:
+                if (newValue.HasValue) speed = newValue.Value;
+                return speed;
+            case Stats.LUCK:
+                if (newValue.HasValue) luck = newValue.Value;
+                return luck;
+            default:
+                return 0;
         }
     }
     public void ChangeStance(Stance stance)
@@ -419,11 +461,8 @@ public class Unit : MonoBehaviour
 
         yield return new WaitForSeconds(.3f);
 
-        //healthBar.gameObject.SetActive(false);
-
-        FresnelApplier.clearFresnel(gameObject);
-        //if (status != Status.NONE) VFXManager.instance.SpawnStatusVFX(status, gameObject);
-        //else FresnelApplier.clearFresnel(gameObject);
+        if (status != Status.NONE) VFXManager.instance.SpawnStatusFresnelOnly(status, gameObject);
+        else FresnelApplier.clearFresnel(gameObject);
 
         takingDamage = false;
 
@@ -492,12 +531,17 @@ public class Unit : MonoBehaviour
         ResolvePassiveEffect(ExecutionTime.TURNEND);
         ResolveItemEffect(ExecutionTime.TURNEND);
     }
-
+    public void OnRoundEnd()
+    {
+        provoking = false;
+        guardedBy = null;
+        baseEffectChanceMulti = 1;
+    }
     public void ResolvePassiveEffect(ExecutionTime battleStage, Unit lastHitUnit = null)
     {
         foreach (var ability in knownAbilities)
         {
-            if (ability.abilityType == AbilityType.PASSIVE && ability.passiveExecutionTime == battleStage && ability.passiveEffectChance + effectChanceModifier >= Random.Range(1, 100))
+            if (ability.abilityType == AbilityType.PASSIVE && ability.passiveExecutionTime == battleStage && baseEffectChanceMulti*ability.passiveEffectChance + effectChanceModifier >= Random.Range(1, 100))
             {
                 List<Unit> target = new List<Unit>();
 
@@ -602,7 +646,7 @@ public class Unit : MonoBehaviour
 
         Unit target = heldItem.affectSelf ? this : lastHitUnit;
 
-        if(heldItem.executionTime == battleStage && heldItem.effectChance + effectChanceModifier >= Random.Range(1, 100))
+        if(heldItem.executionTime == battleStage && baseEffectChanceMulti*heldItem.effectChance + effectChanceModifier >= Random.Range(1, 100))
         {
             switch (heldItem.effect)
             {

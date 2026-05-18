@@ -25,6 +25,7 @@ MonoBehaviour:
   multiHitRange: 1
   hits: 2
   hitRange: 0100000005000000
+  endOnMiss: 0
   passiveEffects: 0
   passiveExecutionTime: 1
   passiveEffectChance: 0
@@ -41,5 +42,6 @@ MonoBehaviour:
   healPercentage: 0
   statToMod: 
   statMod: []
+  powerVariables: 0
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

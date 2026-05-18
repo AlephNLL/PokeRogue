@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Purify
   description: Cleanses the target status.
+  sfx: {fileID: 11400000, guid: 31013cbe3ac3a9e40b382f37bcf6fa73, type: 2}
   power: 0
   accuracy: 100
   abilityType: 0
@@ -25,6 +26,7 @@ MonoBehaviour:
   multiHitRange: 0
   hits: 0
   hitRange: 
+  endOnMiss: 0
   passiveEffects: 0
   passiveExecutionTime: 1
   passiveEffectChance: 0
@@ -41,5 +43,6 @@ MonoBehaviour:
   healPercentage: 0
   statToMod: 
   statMod: []
+  powerVariables: 0
   vfxPrefab: {fileID: 1411769535005688, guid: 4a0bd4851180bcd4984636d1e22f128b, type: 3}
   spawnVfxOnSelf: 0

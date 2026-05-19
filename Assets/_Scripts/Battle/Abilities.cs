@@ -5,6 +5,7 @@ public class Abilities : ScriptableObject
 {
     new public string name;
     public string description;
+    public SoundData sfx;
     public int power;
     public int accuracy;
     public AbilityType abilityType;
@@ -16,6 +17,7 @@ public class Abilities : ScriptableObject
     public bool multiHitRange;
     public int hits;
     public int[] hitRange;
+    public bool endOnMiss;
 
     public PassiveEffects passiveEffects;
     public ExecutionTime passiveExecutionTime;
@@ -32,6 +34,9 @@ public class Abilities : ScriptableObject
     public Stance stanceToChangeTo;
     public Stance stanceCondition;
     public float healPercentage;
+    public Stats[] statToMod;
+    public float[] statMod;
+    public AbilityPowerVariables powerVariables;
 
     public GameObject vfxPrefab;
     public bool spawnVfxOnSelf;

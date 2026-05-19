@@ -29,11 +29,17 @@ MonoBehaviour:
   passiveExecutionTime: 1
   passiveEffectChance: 0
   status: 4
-  effect1: 9
+  effect1: 4
+  condition1: 0
   effect1Chance: 10
   effect2: 0
+  condition2: 0
   effect2Chance: 0
   affectSelf: 0
   stanceToChangeTo: 2
+  stanceCondition: 0
+  healPercentage: 0
+  statToMod: 
+  statMod: []
   vfxPrefab: {fileID: 1326897950227318, guid: c7e10a9353b50424fbd4fda56d3bee1e, type: 3}
   spawnVfxOnSelf: 0

@@ -32,6 +32,7 @@ public class DaycareManager : MonoBehaviour
     bool isBattle;
     private void Start()
     {
+        AudioManager.instance.PlayMusic(AudioLibrary.instance.daycareMusic);
         if (units == null)
         {
             units = new List<UnitData>();
@@ -108,15 +109,16 @@ public class DaycareManager : MonoBehaviour
         UnitData abilityParent = Random.Range(0, 2) == 0 ? unit1 : unit2;
 
         //Choose a random ability to inherit
-        Abilities childAbility = abilityParent.knownAbilities[Random.Range(0, abilityParent.knownAbilities.Length)];
+        Abilities childAbility = abilityParent.knownAbilities[Random.Range(0, abilityParent.knownAbilities.Count)];
 
         UnitData unit = ScriptableObject.CreateInstance<UnitData>();
         unit.name = speciesParent.name;
         unit.prefab = speciesParent.prefab;
         unit.level = 1;
         unit.currentHp = speciesParent.prefab.GetComponent<Unit>().constitution + 1;
-        unit.knownAbilities = new Abilities[1];
-        unit.knownAbilities[0] = childAbility;
+        unit.knownAbilities = new List<Abilities>();
+        unit.knownAbilities.Add(childAbility);
+        unit.knownAbilities.Add(unit.prefab.GetComponent<Unit>().abilityPool[0]);
 
         units.Remove(unit1);
         units.Remove(unit2);
@@ -245,6 +247,7 @@ public class DaycareManager : MonoBehaviour
         selectedUnits.Clear();
         selectedPrefabs.Clear();
 
+        AudioManager.instance.StopMusic();
         if (MapManager.instance)
         {
             MapManager.instance.LoadMapSceneFromStart();

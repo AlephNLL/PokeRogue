@@ -4,6 +4,7 @@ using GameData;
 using NUnit.Framework;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -155,6 +156,9 @@ public class UIManager : MonoBehaviour
                         break;
                     case "Accuracy":
                         child.gameObject.GetComponent<TextMeshProUGUI>().text = ability.accuracy.ToString();
+                        break;
+                    case "Stance Lock":
+                        child.gameObject.GetComponent<Image>().enabled = ability.mustUseStance;
                         break;
                 }
             }

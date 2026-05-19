@@ -14,22 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Remedy
   description: Heals instead of harming.
+  sfx: {fileID: 11400000, guid: 31013cbe3ac3a9e40b382f37bcf6fa73, type: 2}
   power: 40
   accuracy: 100
   abilityType: 0
   target: 2
   stance: 3
   statToCalcDmgWith: 1
-  mustUseStance: 1
+  mustUseStance: 0
   multiHit: 0
   multiHitRange: 0
   hits: 0
   hitRange: 
+  endOnMiss: 0
   passiveEffects: 0
   passiveExecutionTime: 0
   passiveEffectChance: 0
   status: 0
-  effect1: 11
+  effect1: 6
   condition1: 0
   effect1Chance: 100
   effect2: 0
@@ -39,5 +41,8 @@ MonoBehaviour:
   stanceToChangeTo: 0
   stanceCondition: 0
   healPercentage: 0
-  vfxPrefab: {fileID: 0}
+  statToMod: 
+  statMod: []
+  powerVariables: 0
+  vfxPrefab: {fileID: 339158821923109191, guid: 108ca465382c11742bd2c91fe4fdb13f, type: 3}
   spawnVfxOnSelf: 0

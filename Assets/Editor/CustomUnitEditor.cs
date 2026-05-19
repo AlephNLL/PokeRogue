@@ -9,10 +9,12 @@ public class CustomUnitEditor : Editor
 {
     #region SerializedProperties
     new SerializedProperty name;
+    SerializedProperty icon;
     SerializedProperty id;
     SerializedProperty description;
     SerializedProperty currentStance;
     SerializedProperty level;
+    SerializedProperty expCurve;
     SerializedProperty status;
     SerializedProperty stanceModifier;
 
@@ -54,11 +56,14 @@ public class CustomUnitEditor : Editor
 
     private void OnEnable()
     {
+
         name = serializedObject.FindProperty("name");
+        icon = serializedObject.FindProperty("icon");
         id = serializedObject.FindProperty("id");
         description = serializedObject.FindProperty("description");
         currentStance = serializedObject.FindProperty("currentStance");
         level = serializedObject.FindProperty("level");
+        expCurve = serializedObject.FindProperty("expCurve");
         status = serializedObject.FindProperty("status");
         stanceModifier = serializedObject.FindProperty("stanceModifier");
 
@@ -100,10 +105,12 @@ public class CustomUnitEditor : Editor
 
         if (unitDataGroup)
         {
+            EditorGUILayout.PropertyField(icon);
             EditorGUILayout.PropertyField(name);
             EditorGUILayout.PropertyField(id);
             EditorGUILayout.PropertyField(description);  
             EditorGUILayout.PropertyField(level);
+            EditorGUILayout.PropertyField(expCurve);
             EditorGUILayout.PropertyField(status);
             EditorGUILayout.PropertyField(currentStance);
         }

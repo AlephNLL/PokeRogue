@@ -22,6 +22,7 @@ public class ShopManager : MonoBehaviour
     {
         HandAnimatorHelper.onAnimationEnd += OpenShop;
         ShopManagerUI.instance.UpdatePlayerGold();
+        AudioManager.instance.PlayMusic(AudioLibrary.instance.shopMusic);
     }
     private void Update()
     {
@@ -120,6 +121,7 @@ public class ShopManager : MonoBehaviour
 
     public void ExitShop()
     {
+        AudioManager.instance.StopMusic();
         if(MapManager.instance != null)
         {
             MapManager.instance.LoadMapScene();

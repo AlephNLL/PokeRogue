@@ -11,12 +11,14 @@ using Unity.VisualScripting;
 using static UnityEngine.UI.CanvasScaler;
 public class Unit : MonoBehaviour
 {
+    public Sprite icon;
     public int id;
     new public string name;
     public string description;
     public Stance currentStance;
     public int level;
     public int exp;
+    public ExpCurve expCurve;
     public Status status;
     private float stanceModifier = 1.5f;
 
@@ -38,11 +40,16 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private int speed;
 
+    public float precision = 1;
 
     public Abilities[] knownAbilities;
     public Abilities[] abilityPool;
 
     public Item heldItem;
+
+    public bool evasive = false;
+    public bool provoking = false;
+    public Unit guardedBy = null;
 
     [Header("Misc")]
     [SerializeField]
@@ -80,7 +87,8 @@ public class Unit : MonoBehaviour
     public bool takingDamage = false;
 
     int trickyStanceEffectChanceModifier = 30;
-    public int effectChanceModifier;
+    public float baseEffectChanceMulti = 1;
+    public int effectChanceModifier = 0;
 
     int sleepCounter;
     int sleepMaxTurns = 3;
@@ -151,7 +159,7 @@ public class Unit : MonoBehaviour
             defense = (int)(constitution / 5f * level + 1);
             speed = (int)(dexterity / 5f * level + 1);
 
-            knownAbilities = PlayerData.teamData.Find(item => item.id == id).knownAbilities;
+            knownAbilities = PlayerData.teamData.Find(item => item.id == id).knownAbilities.ToArray();
             ApplyStatus(PlayerData.teamData.Find(item => item.id == id).status);
             heldItem = PlayerData.teamData.Find(item => item.id == id).heldItem;
         }
@@ -165,7 +173,7 @@ public class Unit : MonoBehaviour
             speed = (int)(dexterity / 5f * level + 1);
 
             currentHp = maxHp;
-            knownAbilities = GetUnitKnownAbilities();
+            knownAbilities = GetUnitKnownAbilities(level).ToArray();
         }
 
         
@@ -262,15 +270,24 @@ public class Unit : MonoBehaviour
         if (itemMenu == null) return;
         itemMenu.gameObject.SetActive(true);
 
+        List<Item> consumables = new List<Item>();
         for (int i = 0; i < PlayerData.items.Count; i++)
+        {
+            if (PlayerData.items[i].isConsumible)
+            {
+                consumables.Add(PlayerData.items[i]);
+            }
+        }
+
+        for (int i = 0; i < consumables.Count; i++)
         {
             itemButtons[i].gameObject.SetActive(true);
             itemButtons[i].interactable=true;
-            itemButtons[i].GetComponentInChildren<TMP_Text>().text = PlayerData.items[i].name;
+            itemButtons[i].GetComponentInChildren<TMP_Text>().text = consumables[i].name;
 
             int index = i;
 
-            itemButtons[index].onClick.AddListener(delegate { TBBS.instance.SelectItem(PlayerData.items[index]); });
+            itemButtons[index].onClick.AddListener(delegate { TBBS.instance.SelectItem(consumables[index]); });
         }
     }
 
@@ -311,6 +328,13 @@ public class Unit : MonoBehaviour
                 luck = Mathf.FloorToInt(luck * mod);
                 TooltipUI.instance.ShowTooltipText($"{name} luck {modAction}");
                 break;
+            case Stats.PRECISION:
+                precision = precision * mod;
+                TooltipUI.instance.ShowTooltipText($"{name} precision {modAction}");
+                break;
+            case Stats.EFFECTCHANCEMOD:
+                baseEffectChanceMulti = baseEffectChanceMulti * mod;
+                break;
             default:
                 break;
         }
@@ -335,6 +359,40 @@ public class Unit : MonoBehaviour
                 break;
         }
     }
+    public void SwapStats(Stats statA, Stats statB)
+    {
+        int tempValue = GetSetStat(statA);
+
+        GetSetStat(statA, GetSetStat(statB));
+
+        GetSetStat(statB, tempValue);
+
+        // Opcional: Feedback visual o logs
+        VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, gameObject); // O un efecto de "espejo/cambio"
+        TooltipUI.instance.ShowTooltipText($"{name} swapped {statA} and {statB}!");
+
+        Debug.Log($"{name} intercambió {statA} por {statB}. Nuevos valores -> {statA}: {GetSetStat(statA)} | {statB}: {GetSetStat(statB)}");
+    }
+    public int GetSetStat(Stats stat, int? newValue = null)
+    {
+        switch (stat)
+        {
+            case Stats.ATK:
+                if (newValue.HasValue) attack = newValue.Value;
+                return attack;
+            case Stats.DEF:
+                if (newValue.HasValue) defense = newValue.Value;
+                return defense;
+            case Stats.SPEED:
+                if (newValue.HasValue) speed = newValue.Value;
+                return speed;
+            case Stats.LUCK:
+                if (newValue.HasValue) luck = newValue.Value;
+                return luck;
+            default:
+                return 0;
+        }
+    }
     public void ChangeStance(Stance stance)
     {
         currentStance = stance;
@@ -345,6 +403,8 @@ public class Unit : MonoBehaviour
     }
     public void Heal(int healAmount)
     {
+        if (currentHp >= maxHp) return;
+
         currentHp = currentHp + healAmount;
 
         if (currentHp > maxHp) currentHp = maxHp;
@@ -401,11 +461,8 @@ public class Unit : MonoBehaviour
 
         yield return new WaitForSeconds(.3f);
 
-        //healthBar.gameObject.SetActive(false);
-
-        FresnelApplier.clearFresnel(gameObject);
-        //if (status != Status.NONE) VFXManager.instance.SpawnStatusVFX(status, gameObject);
-        //else FresnelApplier.clearFresnel(gameObject);
+        if (status != Status.NONE) VFXManager.instance.SpawnStatusFresnelOnly(status, gameObject);
+        else FresnelApplier.clearFresnel(gameObject);
 
         takingDamage = false;
 
@@ -418,7 +475,7 @@ public class Unit : MonoBehaviour
         {
             case Stats.ATK:
                 int atk = attack;
-                if (HasPassive("Double Trouble")) atk = Mathf.FloorToInt(atk * .5f);
+                if (HasPassive("Double Trouble")) atk = Mathf.FloorToInt(atk * .6f);
                 if (status == Status.BURNED)
                 {
                     atk = HasPassive("Piromaniac") ? atk : Mathf.FloorToInt(atk * .5f);
@@ -474,12 +531,17 @@ public class Unit : MonoBehaviour
         ResolvePassiveEffect(ExecutionTime.TURNEND);
         ResolveItemEffect(ExecutionTime.TURNEND);
     }
-
+    public void OnRoundEnd()
+    {
+        provoking = false;
+        guardedBy = null;
+        baseEffectChanceMulti = 1;
+    }
     public void ResolvePassiveEffect(ExecutionTime battleStage, Unit lastHitUnit = null)
     {
         foreach (var ability in knownAbilities)
         {
-            if (ability.abilityType == AbilityType.PASSIVE && ability.passiveExecutionTime == battleStage && ability.passiveEffectChance + effectChanceModifier >= Random.Range(1, 100))
+            if (ability.abilityType == AbilityType.PASSIVE && ability.passiveExecutionTime == battleStage && baseEffectChanceMulti*ability.passiveEffectChance + effectChanceModifier >= Random.Range(1, 100))
             {
                 List<Unit> target = new List<Unit>();
 
@@ -584,7 +646,7 @@ public class Unit : MonoBehaviour
 
         Unit target = heldItem.affectSelf ? this : lastHitUnit;
 
-        if(heldItem.executionTime == battleStage && heldItem.effectChance + effectChanceModifier >= Random.Range(1, 100))
+        if(heldItem.executionTime == battleStage && baseEffectChanceMulti*heldItem.effectChance + effectChanceModifier >= Random.Range(1, 100))
         {
             switch (heldItem.effect)
             {
@@ -635,10 +697,6 @@ public class Unit : MonoBehaviour
         ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
         ResolveItemEffect(ExecutionTime.ONSTATUSCHANGE);
     }
-    public void AddExp(int expToAdd)
-    {
-        exp += expToAdd;
-    }
     void StartSleepCounter()
     {
         sleepCounter = 0;
@@ -686,11 +744,11 @@ public class Unit : MonoBehaviour
         return false;
     }
 
-    public Abilities[] GetUnitKnownAbilities()
+    public List<Abilities> GetUnitKnownAbilities(int monLevel)
     {
         List<Abilities> abilityList = new List<Abilities>();
 
-        for (int i = 0; i < level; i++)
+        for (int i = 0; i < monLevel + 1; i++)
         {
             if (i < abilityPool.Length)
             {
@@ -703,6 +761,6 @@ public class Unit : MonoBehaviour
             }
         }
 
-        return abilityList.ToArray();
+        return abilityList;
     }
 }

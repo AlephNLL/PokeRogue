@@ -551,8 +551,6 @@ public class TBBS : MonoBehaviour
         TooltipUI.instance.ShowTooltipText(attacker.name + " uses " + ability.name);
 
         Vector3 attackerStartPos = attacker.transform.position;
-        float t = 0;
-        float elapsedTime = 0;
 
         yield return new WaitForSeconds(1f);
 
@@ -561,6 +559,9 @@ public class TBBS : MonoBehaviour
         else if (ability.multiHitRange) hits = Random.Range(ability.hitRange[0], ability.hitRange[1]);
 
         bool nextAttack = false;
+
+        GameObject hand = HandAnimatorHelper.instance.gameObject;
+        HandAnimatorHelper.instance.TeleportHandBehindCamera();
 
         for (int i = 0; i < hits; i++)
         {
@@ -598,37 +599,34 @@ public class TBBS : MonoBehaviour
             }
             else
             {
-                //Se abalanza el personaje (ida)
-                while (t < .8f)
-                {
-                    elapsedTime += Time.deltaTime;
-                    t += elapsedTime * elapsedTime / 10;
-                    attacker.transform.position = Vector3.Lerp(attackerStartPos, visualTarget.transform.position, t);
-                    yield return null;
-                }
 
+                //GameObject hand = HandAnimatorHelper.instance.gameObject;
+
+                //tp de mano detras de camara para moverse hacia el grabpoint del bichote y emparentarlo
+                HandAnimatorHelper.instance.MoveToPosition(attacker.transform.Find("Capsule").Find("GrabPoint").transform.position, 1.5f);
+                yield return new WaitForSeconds(.5f);
+                HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", true);
+                yield return new WaitForSeconds(.25f);
+                HandAnimatorHelper.instance.ParentGrabbedObject(attacker.gameObject);
+
+                //movimiento hacia target
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(visualTarget.transform.position.x, (hand.transform.position.y + 1f), (visualTarget.transform.position.z) - 2.5f), 1f);
+                yield return new WaitForSeconds(1f);
                 Vector3 attackerEndPos = attacker.transform.position;
                 if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
                 nextAttack = Damage(ability, attacker, targets);
-                t = 0;
-                yield return new WaitForSeconds(0.1f); // Pequeña pausa en el impacto
 
-                // Regreso
-                while (t < 1)
-                {
-                    t += Time.deltaTime;
-                    attacker.transform.position = Vector3.Lerp(attackerEndPos, attackerStartPos, t);
-                    yield return null;
-                }
+                yield return new WaitForSeconds(0.05f);
 
-                // Asegurar que regresó a su posición exacta
+                //movimiento a posicion inicial (+ offset del grabpoint) y desparentar bicho
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(attackerStartPos.x, (hand.transform.position.y - 1f), attackerStartPos.z) + new Vector3(-0.154999f, 0, -0.830669f), .8f);
+                yield return new WaitForSeconds(.8f);
+                HandAnimatorHelper.instance.UnparentGrabbedObject();
                 attacker.transform.position = attackerStartPos;
-
-                t = 0;
-
-                if (!nextAttack) break;
-                yield return new WaitForSeconds(0.1f);
             }
+                if (!nextAttack) break;
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 30f), 1f);
+                yield return new WaitForSeconds(1f);
         }
 
         CameraManager.instance.SetBlendTime(1);
@@ -662,8 +660,6 @@ public class TBBS : MonoBehaviour
         TooltipUI.instance.ShowTooltipText(attacker.name + " uses " + ability.name);
 
         Vector3 attackerStartPos = attacker.transform.position;
-        float t = 0;
-        float elapsedTime = 0;
 
         Unit[] targets = new Unit[1];
 
@@ -710,44 +706,33 @@ public class TBBS : MonoBehaviour
             else
             {
                 GameObject hand = HandAnimatorHelper.instance.gameObject;
+
+                //tp de mano detras de camara para moverse hacia el grabpoint del bichote y emparentarlo
                 HandAnimatorHelper.instance.TeleportHandBehindCamera();
-                HandAnimatorHelper.instance.MoveToPosition(attacker.transform.Find("Capsule").Find("GrabPoint").transform.position);
-                yield return new WaitForSeconds(1f);
+                HandAnimatorHelper.instance.MoveToPosition(attacker.transform.Find("Capsule").Find("GrabPoint").transform.position, 1.5f);
+                yield return new WaitForSeconds(.5f);
+                HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", true);
+                yield return new WaitForSeconds(.25f);
                 HandAnimatorHelper.instance.ParentGrabbedObject(attacker.gameObject);
-                HandAnimatorHelper.instance.MoveToPosition(new Vector3(target.transform.position.x, hand.transform.position.y, target.transform.position.z));
 
-                //se abalanza el personaje (ida)
+                //movimiento hacia target
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(target.transform.position.x, (hand.transform.position.y + 1f), (target.transform.position.z) - 2.5f), 1f);
+                yield return new WaitForSeconds(1f);
+                Vector3 attackerEndPos = attacker.transform.position;
+                if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
+                nextAttack = Damage(ability, attacker, targets);
 
-                //while (t < .8f)
-                //{
-                //    elapsedTime += Time.deltaTime;
-                //    t += elapsedTime * elapsedTime / 10;
-                //    attacker.transform.position = Vector3.Lerp(attackerStartPos, target.transform.position, t);
-                //    yield return null;
-                //}
+                yield return new WaitForSeconds(0.05f);
 
-                //Vector3 attackerEndPos = attacker.transform.position;
-                //if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
-                //nextAttack = Damage(ability, attacker, targets);
-
-                //t = 0;
-                //yield return new WaitForSeconds(0.1f); // Pequena pausa en el impacto
-
-                //// Regreso
-                //while (t < 1)
-                //{
-                //    t += Time.deltaTime;
-                //    attacker.transform.position = Vector3.Lerp(attackerEndPos, attackerStartPos, t);
-                //    yield return null;
-                //}
-
-                //// Asegurar que regresa a su posicion exacta
-                //attacker.transform.position = attackerStartPos;
-
-                //t = 0;
+                //movimiento a posicion inicial (+ offset del grabpoint) y desparentar bicho
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3 (attackerStartPos.x, (hand.transform.position.y - 1f), attackerStartPos.z) + new Vector3(-0.154999f, 0, -0.830669f), .8f);
+                yield return new WaitForSeconds(.8f);
+                HandAnimatorHelper.instance.UnparentGrabbedObject();
+                attacker.transform.position = attackerStartPos;
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 5), 1f);
             }
             if (!nextAttack) break;
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(1f);
         }
 
         CameraManager.instance.SetBlendTime(1);

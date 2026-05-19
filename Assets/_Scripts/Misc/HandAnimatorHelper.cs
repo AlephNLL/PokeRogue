@@ -117,4 +117,9 @@ public class HandAnimatorHelper : MonoBehaviour
         GameObject cameraBrain = GameObject.FindGameObjectWithTag("MainCamera");
         gameObject.transform.position = new Vector3(cameraBrain.transform.position.x, 0.45f, (cameraBrain.transform.position.z)) - new Vector3(3, 0, 1);
     }
+
+    private void OnDestroy()
+    {
+        onAnimationEnd -= ResetRotation;
+    }
 }

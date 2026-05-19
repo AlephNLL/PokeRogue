@@ -4696,6 +4696,10 @@ PrefabInstance:
       propertyPath: lineMaterial
       value: 
       objectReference: {fileID: 2100000, guid: 5892bad877d988b42b542cdeff7761cd, type: 2}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: lineThickness
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 3413889519824911466, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: p_items.Array.size
       value: 3

@@ -82,7 +82,7 @@ public class CustomAbilityEditor : Editor
         effect2Chance = serializedObject.FindProperty("effect2Chance");
         stanceToChangeTo = serializedObject.FindProperty("stanceToChangeTo");
         conditionStance = serializedObject.FindProperty("stanceCondition");
-        healingPercent = serializedObject.FindProperty("healPercent");
+        healingPercent = serializedObject.FindProperty("healPercentage");
         statMod = serializedObject.FindProperty("statMod");
         statToMod = serializedObject.FindProperty("statToMod");
         powerVariables = serializedObject.FindProperty("powerVariables");
@@ -125,7 +125,13 @@ public class CustomAbilityEditor : Editor
             if (statsGroup)
             {
                 EditorGUILayout.PropertyField(passiveEffects);
-                if(ability.passiveEffects == PassiveEffects.APPLYSTATUS || ability.passiveEffects == PassiveEffects.UPATKONSTATUS) EditorGUILayout.PropertyField(status);
+                if (ability.passiveEffects != PassiveEffects.NONE) EditorGUILayout.PropertyField(condition1);
+                if (ability.passiveEffects == PassiveEffects.APPLYSTATUS) EditorGUILayout.PropertyField(status);
+                if (ability.passiveEffects == PassiveEffects.STATMOD) EditorGUILayout.PropertyField(statToMod);
+                if (ability.passiveEffects == PassiveEffects.STATMOD) EditorGUILayout.PropertyField(statMod);
+                if (ability.passiveEffects == PassiveEffects.STACKSTAT) EditorGUILayout.PropertyField(statToMod);
+                if (ability.passiveEffects == PassiveEffects.HEAL) EditorGUILayout.PropertyField(healingPercent);
+                if (ability.passiveEffects == PassiveEffects.DAMAGE) EditorGUILayout.PropertyField(healingPercent);
                 EditorGUILayout.PropertyField(passiveExecutionTime);
                 EditorGUILayout.PropertyField(passiveEffectChance);
             }

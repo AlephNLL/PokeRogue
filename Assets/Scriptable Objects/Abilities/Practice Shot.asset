@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
   m_Name: Practice Shot
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
-  name: Practice shot
+  name: Focus
   description: Test your combat skills to raise attack.
-  power: 30
+  sfx: {fileID: 0}
+  power: 0
   accuracy: 100
   abilityType: 0
-  target: 1
+  target: 0
   stance: 0
   statToCalcDmgWith: 1
   mustUseStance: 0
@@ -25,6 +26,7 @@ MonoBehaviour:
   multiHitRange: 0
   hits: 0
   hitRange: 
+  endOnMiss: 0
   passiveEffects: 0
   passiveExecutionTime: 0
   passiveEffectChance: 0
@@ -42,5 +44,6 @@ MonoBehaviour:
   statToMod: 01000000
   statMod:
   - 1.5
+  powerVariables: 0
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

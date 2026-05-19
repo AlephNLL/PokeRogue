@@ -26,7 +26,7 @@ public class TBBS : MonoBehaviour
     public List<Unit> enemyUnits;
     public List<GameObject> capturableUnits;
 
-    private int currentTurnIndex = 0;
+    public int currentTurnIndex = 0;
     private int round = 0;
 
     public List<Unit> allUnits;
@@ -358,7 +358,15 @@ public class TBBS : MonoBehaviour
 
             case GameData.AbilityTarget.ONEENEMY:
                 yield return Run<int>(SelectTarget(), (output) => selection = output);
-                if (selection >= 0) StartCoroutine(AttackSequence(currentUnit, enemyUnits[selection], ability));
+                if (selection >= 0) 
+                {
+                    if(currentUnit.HasPassive("Stubborn") && Random.Range(1, 101) <= 10)
+                    {
+                        TooltipUI.instance.ShowTooltipText($"{currentUnit.name}'s is being stubborn");
+                        selection = Random.Range(0, enemyUnits.Count);
+                    }
+                    StartCoroutine(AttackSequence(currentUnit, enemyUnits[selection], ability));
+                } 
                 else AbilityMenu(currentUnit);
                 yield break;
 
@@ -366,7 +374,15 @@ public class TBBS : MonoBehaviour
                 targets = new List<Unit>(playerUnits);
                 targets.Remove(currentUnit);
                 yield return Run<int>(SelectTarget(false), (output) => selection = output);
-                if (selection >= 0) StartCoroutine(AttackSequence(currentUnit, targets[selection], ability));
+                if (selection >= 0)
+                {
+                    if (currentUnit.HasPassive("Stubborn") && Random.Range(1, 101) <= 10)
+                    {
+                        TooltipUI.instance.ShowTooltipText($"{currentUnit.name}'s is being stubborn");
+                        selection = Random.Range(0, targets.Count);
+                    }
+                    StartCoroutine(AttackSequence(currentUnit, targets[selection], ability));
+                }
                 else AbilityMenu(currentUnit);
                 yield break;
             case GameData.AbilityTarget.ALLENEMIES:
@@ -393,7 +409,8 @@ public class TBBS : MonoBehaviour
 
             case GameData.AbilityTarget.ALL:
                 targets = new List<Unit>(allUnits);
-                targets.Remove(currentUnit);
+                if (currentUnit.HasPassive("Empath")) targets = new List<Unit>(enemyUnits);
+                else targets.Remove(currentUnit);
                 CameraManager.instance.SetBlendTime(.75f);
                 CameraManager.instance.ActivateMainCamera();
                 yield return Run<bool>(WaitForConfirm(), (output) => confirm = output);
@@ -936,7 +953,18 @@ public class TBBS : MonoBehaviour
         float critMod = isCritical ? 1.5f : 1f;
         float freezeMod = target.status == Status.FROZEN ? 1.5f : 1f;
 
-        if(isCritical) defenseStat = Mathf.Min(defenseStat, target.GetSetStat(Stats.DEF));
+        if (isCritical) 
+        {
+            if (target.HasPassive("Danger Alarm"))
+            {
+                TooltipUI.instance.ShowTooltipText($"{target.name}'s danger alarm ability activates");
+                TooltipUI.instance.ShowTooltipText($"{target.name} evades the attack");
+                ResolveAbilityEffect(attacker, target, ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1, true);
+                ResolveAbilityEffect(attacker, target, ability, ability.effect2, ability.effect2Chance, ability.affectSelf, ability.condition2, true);
+                return 0;
+            }
+            defenseStat = Mathf.Min(defenseStat, target.GetSetStat(Stats.DEF));
+        } 
 
         float baseDamage = ((2 * attacker.level + 2) * .1f * power * attackStat) / (5.0f * defenseStat);
         float totalBeforeModifiers = baseDamage + 2;

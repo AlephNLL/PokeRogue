@@ -22,7 +22,7 @@ public class ShopManager : MonoBehaviour
     {
         HandAnimatorHelper.onAnimationEnd += OpenShop;
         ShopManagerUI.instance.UpdatePlayerGold();
-        AudioManager.instance.PlayMusic(AudioLibrary.instance.shopMusic);
+        //AudioManager.instance.PlayMusic(AudioLibrary.instance.shopMusic);
     }
     private void Update()
     {

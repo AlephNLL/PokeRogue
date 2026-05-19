@@ -14,21 +14,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Pyromaniac
   description: Ups attack when burned.
+  sfx: {fileID: 0}
   power: 0
   accuracy: 0
   abilityType: 1
   target: 0
   stance: 0
+  statToCalcDmgWith: 1
   mustUseStance: 0
+  multiHit: 0
+  multiHitRange: 0
+  hits: 0
+  hitRange: 
+  endOnMiss: 0
   passiveEffects: 1
   passiveExecutionTime: 9
   passiveEffectChance: 100
   status: 1
   effect1: 0
+  condition1: 5
   effect1Chance: 0
   effect2: 0
+  condition2: 0
   effect2Chance: 0
   affectSelf: 0
   stanceToChangeTo: 0
+  stanceCondition: 0
+  healPercentage: 0
+  statToMod: 01000000
+  statMod:
+  - 1.5
+  powerVariables: 0
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

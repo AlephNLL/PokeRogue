@@ -66,7 +66,8 @@ public class EndScreenManager : MonoBehaviour
     {
         int currentLevel = monData.level;
         int currentExp = monData.currentExp;
-        int expToProcess = expGiven;
+        float expBoost = monData.HasAbility("Overgrowth") ? 1.5f : 1f;
+        int expToProcess = (int)(expGiven * expBoost);
         int levelsGained = 0;
 
         while (expToProcess > 0)

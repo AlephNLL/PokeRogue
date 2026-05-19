@@ -98,7 +98,7 @@ public class ShopManager : MonoBehaviour
             if (!HandAnimatorHelper.instance.IsHandAtXPos(handXPos))
             {
                 selectedItem = items[itemSlotIndex];
-                HandAnimatorHelper.instance.MoveToPosition(new Vector3(handXPos, 4.5f, HandAnimatorHelper.instance.transform.position.z));
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(handXPos, 4.5f, HandAnimatorHelper.instance.transform.position.z), 1f);
                 HandAnimatorHelper.instance.SetHandBoolParameter("point", true);
                 lastIndex = itemSlotIndex;
                 ShopManagerUI.instance.ShowItemDescription(selectedItem);
@@ -114,7 +114,7 @@ public class ShopManager : MonoBehaviour
     IEnumerator ReturnHandToDefautlPos()
     {
         yield return new WaitForSeconds(.2f);
-        HandAnimatorHelper.instance.MoveToDefaultPosition();
+        HandAnimatorHelper.instance.MoveToDefaultPosition(1f);
         HandAnimatorHelper.instance.SetHandBoolParameter("point", false);
         ShopManagerUI.instance.HideItemDescription();
     }

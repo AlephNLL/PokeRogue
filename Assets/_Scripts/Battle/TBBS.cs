@@ -66,7 +66,7 @@ public class TBBS : MonoBehaviour
             allUnits.Add(playerUnits[i]);
             playerUnits[i].isPlayerControlled = true;
             playerUnits[i].id = i;
-            
+
         }
 
         for (int i = 0; i < enemyPrefabs.Length; i++)
@@ -126,7 +126,7 @@ public class TBBS : MonoBehaviour
         if (currentTurnIndex < allUnits.Count)
         {
             Unit currentUnit = allUnits[currentTurnIndex];
-            Debug.Log("Iniciando turno de: " + currentUnit.name + " (Õndice: " + currentTurnIndex + ")");
+            Debug.Log("Iniciando turno de: " + currentUnit.name + " (√çndice: " + currentTurnIndex + ")");
 
             if (playerUnits.Contains(currentUnit))
                 currentTurnCoroutine = StartCoroutine(PlayerTurn(currentUnit, activateTurnStartEffect));
@@ -139,7 +139,7 @@ public class TBBS : MonoBehaviour
             Debug.Log("Round " + round + " Ended");
             round++;
             currentTurnIndex = 0;
-            for (int i = 0;i < allUnits.Count;i++)
+            for (int i = 0; i < allUnits.Count; i++)
             {
                 allUnits[i].OnRoundEnd();
             }
@@ -162,7 +162,7 @@ public class TBBS : MonoBehaviour
     IEnumerator PlayerTurn(Unit currentUnit, bool activateTurnStartEffect = true)
     {
         currentUnit.ActivateCamera();
-        if(activateTurnStartEffect) currentUnit.OnTurnStart();
+        if (activateTurnStartEffect) currentUnit.OnTurnStart();
         if (currentUnit.skipTurn)
         {
             TooltipUI.instance.ShowTooltipText(currentUnit.name + " flinched");
@@ -549,7 +549,7 @@ public class TBBS : MonoBehaviour
         {
             List<Unit> targets = new List<Unit>(playerUnits);
             targets.Remove(attacker);
-            if(targets.Count > 0) attacker.SelectTarget(targets[selection].gameObject);
+            if (targets.Count > 0) attacker.SelectTarget(targets[selection].gameObject);
             else
             {
                 selection = -1;
@@ -598,7 +598,7 @@ public class TBBS : MonoBehaviour
         if (enemyUnits.Contains(attacker)) enemyUnits.Remove(attacker);
         else
         {
-            if(playerUnits.FindIndex(x => x.Equals(attacker)) >= 0) PlayerData.teamData.Remove(PlayerData.teamData[playerUnits.FindIndex(x => x.Equals(attacker))]);
+            if (playerUnits.FindIndex(x => x.Equals(attacker)) >= 0) PlayerData.teamData.Remove(PlayerData.teamData[playerUnits.FindIndex(x => x.Equals(attacker))]);
             playerUnits.Remove(attacker);
         }
     }
@@ -619,20 +619,21 @@ public class TBBS : MonoBehaviour
         TooltipUI.instance.ShowTooltipText(attacker.name + " uses " + ability.name);
 
         Vector3 attackerStartPos = attacker.transform.position;
-        float t = 0;
-        float elapsedTime = 0;
 
         yield return new WaitForSeconds(1f);
 
         int hits = 1;
-        if(ability.multiHit) hits = ability.hits;
-        else if(ability.multiHitRange)hits = Random.Range(ability.hitRange[0], ability.hitRange[1]);
+        if (ability.multiHit) hits = ability.hits;
+        else if (ability.multiHitRange) hits = Random.Range(ability.hitRange[0], ability.hitRange[1]);
 
         bool nextAttack = false;
 
+        GameObject hand = HandAnimatorHelper.instance.gameObject;
+        HandAnimatorHelper.instance.TeleportHandBehindCamera();
+
         for (int i = 0; i < hits; i++)
         {
-            if(i > 0)
+            if (i > 0)
             {
                 List<Unit> newTargets = new List<Unit>();
                 for (int j = 0; j < targets.Length; j++)
@@ -666,42 +667,39 @@ public class TBBS : MonoBehaviour
             }
             else
             {
-                //Se abalanza el personaje (ida)
-                while (t < .8f)
-                {
-                    elapsedTime += Time.deltaTime;
-                    t += elapsedTime * elapsedTime / 10;
-                    attacker.transform.position = Vector3.Lerp(attackerStartPos, visualTarget.transform.position, t);
-                    yield return null;
-                }
 
+                //GameObject hand = HandAnimatorHelper.instance.gameObject;
+
+                //tp de mano detras de camara para moverse hacia el grabpoint del bichote y emparentarlo
+                HandAnimatorHelper.instance.MoveToPosition(attacker.transform.Find("Capsule").Find("GrabPoint").transform.position, 1.5f);
+                yield return new WaitForSeconds(.5f);
+                HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", true);
+                yield return new WaitForSeconds(.25f);
+                HandAnimatorHelper.instance.ParentGrabbedObject(attacker.gameObject);
+
+                //movimiento hacia target
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(visualTarget.transform.position.x, (hand.transform.position.y + 1f), (visualTarget.transform.position.z) - 2.5f), 1f);
+                yield return new WaitForSeconds(1f);
                 Vector3 attackerEndPos = attacker.transform.position;
                 if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
                 nextAttack = Damage(ability, attacker, targets);
-                t = 0;
-                yield return new WaitForSeconds(0.1f); // PequeÒa pausa en el impacto
 
-                // Regreso
-                while (t < 1)
-                {
-                    t += Time.deltaTime;
-                    attacker.transform.position = Vector3.Lerp(attackerEndPos, attackerStartPos, t);
-                    yield return null;
-                }
+                yield return new WaitForSeconds(0.05f);
 
-                // Asegurar que regresÛ a su posiciÛn exacta
+                //movimiento a posicion inicial (+ offset del grabpoint) y desparentar bicho
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(attackerStartPos.x, (hand.transform.position.y - 1f), attackerStartPos.z) + new Vector3(-0.154999f, 0, -0.830669f), .8f);
+                yield return new WaitForSeconds(.8f);
+                HandAnimatorHelper.instance.UnparentGrabbedObject();
                 attacker.transform.position = attackerStartPos;
-
-                t = 0;
-
-                if (!nextAttack) break;
-                yield return new WaitForSeconds(0.1f);
             }
-        }   
+                if (!nextAttack) break;
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 30f), 1f);
+                yield return new WaitForSeconds(1f);
+        }
 
         CameraManager.instance.SetBlendTime(1);
 
-        // Importante: Esperar un frame antes de activar la c·mara principal
+        // Importante: Esperar un frame antes de activar la c√°mara principal
         yield return new WaitForSeconds(0.3f + 3 * TooltipUI.instance.scheduledTexts.Count);
 
         TooltipUI.instance.HideTooltipText();
@@ -719,7 +717,7 @@ public class TBBS : MonoBehaviour
             StartNextTurn();
             yield break;
         }
-        
+
     }
 
     IEnumerator AttackSequence(Unit attacker, Unit target, Abilities ability)
@@ -730,8 +728,6 @@ public class TBBS : MonoBehaviour
         TooltipUI.instance.ShowTooltipText(attacker.name + " uses " + ability.name);
 
         Vector3 attackerStartPos = attacker.transform.position;
-        float t = 0;
-        float elapsedTime = 0;
 
         Unit[] targets = new Unit[1];
 
@@ -777,43 +773,40 @@ public class TBBS : MonoBehaviour
             }
             else
             {
-                //Se abalanza el personaje (ida)
-                while (t < .8f)
-                {
-                    elapsedTime += Time.deltaTime;
-                    t += elapsedTime * elapsedTime / 10;
-                    attacker.transform.position = Vector3.Lerp(attackerStartPos, target.transform.position, t);
-                    yield return null;
-                }
+                GameObject hand = HandAnimatorHelper.instance.gameObject;
 
+                //tp de mano detras de camara para moverse hacia el grabpoint del bichote y emparentarlo
+                HandAnimatorHelper.instance.TeleportHandBehindCamera();
+                HandAnimatorHelper.instance.MoveToPosition(attacker.transform.Find("Capsule").Find("GrabPoint").transform.position, 1.5f);
+                yield return new WaitForSeconds(.5f);
+                HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", true);
+                yield return new WaitForSeconds(.25f);
+                HandAnimatorHelper.instance.ParentGrabbedObject(attacker.gameObject);
+
+                //movimiento hacia target
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(target.transform.position.x, (hand.transform.position.y + 1f), (target.transform.position.z) - 2.5f), 1f);
+                yield return new WaitForSeconds(1f);
                 Vector3 attackerEndPos = attacker.transform.position;
                 if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
                 nextAttack = Damage(ability, attacker, targets);
 
-                t = 0;
-                yield return new WaitForSeconds(0.1f); // PequeÒa pausa en el impacto
+                yield return new WaitForSeconds(0.05f);
 
-                // Regreso
-                while (t < 1)
-                {
-                    t += Time.deltaTime;
-                    attacker.transform.position = Vector3.Lerp(attackerEndPos, attackerStartPos, t);
-                    yield return null;
-                }
-
-                // Asegurar que regresÛ a su posiciÛn exacta
+                //movimiento a posicion inicial (+ offset del grabpoint) y desparentar bicho
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3 (attackerStartPos.x, (hand.transform.position.y - 1f), attackerStartPos.z) + new Vector3(-0.154999f, 0, -0.830669f), .8f);
+                yield return new WaitForSeconds(.8f);
+                HandAnimatorHelper.instance.UnparentGrabbedObject();
                 attacker.transform.position = attackerStartPos;
-
-                t = 0;
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 5), 1f);
             }
-            if(!nextAttack) break;
-            yield return new WaitForSeconds(0.1f);
+            if (!nextAttack) break;
+            yield return new WaitForSeconds(1f);
         }
 
         CameraManager.instance.SetBlendTime(1);
-        
-        // Importante: Esperar un frame antes de activar la c·mara principal
-        yield return new WaitForSeconds(0.3f + 3*TooltipUI.instance.scheduledTexts.Count);
+
+        // Importante: Esperar un frame antes de activar la c√°mara principal
+        yield return new WaitForSeconds(0.3f + 3 * TooltipUI.instance.scheduledTexts.Count);
 
         TooltipUI.instance.HideTooltipText();
 
@@ -852,7 +845,7 @@ public class TBBS : MonoBehaviour
             if (!CheckHit(ability, attacker.precision))
             {
                 TooltipUI.instance.ShowTooltipText(attacker.name + " missed");
-                if(ability.condition1 == AbilityCondition.ATTACKMISSED ||
+                if (ability.condition1 == AbilityCondition.ATTACKMISSED ||
                     ability.condition2 == AbilityCondition.ATTACKMISSED)
                 {
                     ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1, true);
@@ -878,7 +871,7 @@ public class TBBS : MonoBehaviour
 
             if (ability.power != 0)
             {
-                if(ability.effect1 == AbilityEffect.HEALATTACK || ability.effect2 == AbilityEffect.HEALATTACK)
+                if (ability.effect1 == AbilityEffect.HEALATTACK || ability.effect2 == AbilityEffect.HEALATTACK)
                 {
                     targets[i].Heal(CalculateAttackDamage(attacker, targets[i], ability));
                 }
@@ -909,16 +902,16 @@ public class TBBS : MonoBehaviour
                 if (round > 0) return;
                 break;
             case AbilityCondition.HASANYSTATUS:
-                if(attacker.status == Status.NONE) return;
+                if (attacker.status == Status.NONE) return;
                 break;
             case AbilityCondition.ATTACKMISSED:
-                if(!abilityMissed) return;
+                if (!abilityMissed) return;
                 break;
             default:
                 break;
         }
 
-        if (attacker.baseEffectChanceMulti*effectChance + attacker.effectChanceModifier >= UnityEngine.Random.Range(1, 101))
+        if (attacker.baseEffectChanceMulti * effectChance + attacker.effectChanceModifier >= UnityEngine.Random.Range(1, 101))
         {
             switch (effect)
             {
@@ -927,7 +920,7 @@ public class TBBS : MonoBehaviour
                 case GameData.AbilityEffect.HEAL:
                     if (affectSelf) attacker.HealPercent(ability.healPercentage);
                     else target.HealPercent(ability.healPercentage);
-                        break;
+                    break;
                 case GameData.AbilityEffect.STATMOD:
                     for (int i = 0; i < ability.statToMod.Length; i++)
                     {
@@ -936,7 +929,7 @@ public class TBBS : MonoBehaviour
                     }
                     break;
                 case GameData.AbilityEffect.STANCECHANGE:
-                    if(affectSelf) attacker.ChangeStance(ability.stanceToChangeTo);
+                    if (affectSelf) attacker.ChangeStance(ability.stanceToChangeTo);
                     else target.ChangeStance(ability.stanceToChangeTo);
                     break;
                 case GameData.AbilityEffect.APPLYSTATUS:
@@ -961,7 +954,7 @@ public class TBBS : MonoBehaviour
                     attacker.guardedBy = target;
                     break;
                 case AbilityEffect.LOSEHP:
-                    attacker.TakeDamage(attacker.GetRawStat(Stats.HP, attacker.level)/4);
+                    attacker.TakeDamage(attacker.GetRawStat(Stats.HP, attacker.level) / 4);
                     break;
                 case AbilityEffect.SWAPSTATS:
                     attacker.SwapStats(ability.statToMod[0], ability.statToMod[1]);
@@ -973,8 +966,8 @@ public class TBBS : MonoBehaviour
     }
     bool CheckHit(Abilities ability, float precision)
     {
-        if(ability.effect1 == AbilityEffect.CANTMISS || ability.effect2 == AbilityEffect.CANTMISS) return true;
-        if (ability.accuracy * precision >= Random.Range(1,101)) return true;
+        if (ability.effect1 == AbilityEffect.CANTMISS || ability.effect2 == AbilityEffect.CANTMISS) return true;
+        if (ability.accuracy * precision >= Random.Range(1, 101)) return true;
         else return false;
     }
     int CalculateAttackDamage(Unit attacker, Unit target, Abilities ability)
@@ -983,7 +976,7 @@ public class TBBS : MonoBehaviour
         switch (ability.powerVariables)
         {
             case AbilityPowerVariables.REMAININGHP:
-                power = (int)(power * 5*(1 - (float)attacker.currentHp/attacker.maxHp));
+                power = (int)(power * 5 * (1 - (float)attacker.currentHp / attacker.maxHp));
                 break;
             case AbilityPowerVariables.DUPEONALLYDOWNED:
                 power = (int)(power * Mathf.Pow(2, PlayerData.teamData.Count - playerUnits.Count));
@@ -999,8 +992,8 @@ public class TBBS : MonoBehaviour
         float efficacy = GetAbilityEfficacy(ability.stance, target.currentStance);
         float roll = UnityEngine.Random.Range(.8f, 1f);
         float chanceToCrit = 1f - Mathf.Pow(1 - baseCritChance, attacker.GetStat(Stats.LUCK));
-        if(ability.effect1 == AbilityEffect.DOUBLECRITCHANCE || ability.effect2 == AbilityEffect.DOUBLECRITCHANCE) chanceToCrit *= 2;
-        bool isCritical = UnityEngine.Random.Range(1, 101) <= chanceToCrit*100;
+        if (ability.effect1 == AbilityEffect.DOUBLECRITCHANCE || ability.effect2 == AbilityEffect.DOUBLECRITCHANCE) chanceToCrit *= 2;
+        bool isCritical = UnityEngine.Random.Range(1, 101) <= chanceToCrit * 100;
         float critMod = isCritical ? 1.5f : 1f;
         float freezeMod = target.status == Status.FROZEN ? 1.5f : 1f;
 
@@ -1027,12 +1020,12 @@ public class TBBS : MonoBehaviour
         if (ability.effect1 == AbilityEffect.LEECH || ability.effect2 == AbilityEffect.LEECH) attacker.Heal((int)(damage * .5f));
         if (ability.effect1 == AbilityEffect.RECOIL || ability.effect2 == AbilityEffect.RECOIL) attacker.TakeDamage((int)(damage * .5f));
 
-        Debug.Log($"--- REPORTE DE DA—O ---");
-        Debug.Log($"{attacker.name} usÛ habilidad con Poder: {power} y Stat Ofensivo: {attackStat}");
+        Debug.Log($"--- REPORTE DE DA√ëO ---");
+        Debug.Log($"{attacker.name} us√≥ habilidad con Poder: {power} y Stat Ofensivo: {attackStat}");
         Debug.Log($"Defensa de {target.name}: {defenseStat}");
-        Debug.Log($"DaÒo Base calculado (sin modificadores): {baseDamage}");
+        Debug.Log($"Da√±o Base calculado (sin modificadores): {baseDamage}");
         Debug.Log($"Modificadores -> Efficacy: {efficacy}, Stance: {stanceBonus}, Roll: {roll}, Crit: {critMod}");
-        Debug.Log($"DaÒo Final antes de redondear: {finalDamageFloat} -> DaÒo Aplicado: {damage}");
+        Debug.Log($"Da√±o Final antes de redondear: {finalDamageFloat} -> Da√±o Aplicado: {damage}");
 
         if (efficacy == 2) TooltipUI.instance.ShowTooltipText("It's super effective!");
         if (isCritical) TooltipUI.instance.ShowTooltipText("Critical Hit!");

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.Hierarchy;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 
@@ -8,6 +9,7 @@ public class HandAnimatorHelper : MonoBehaviour
     public static HandAnimatorHelper instance;
     public static Action onAnimationEnd;
     [SerializeField] GameObject grabbedObject;
+    [SerializeField] GameObject baseFigureJoint;
 
     public bool isMoving = false;
     Vector3 defaultPosition;
@@ -20,11 +22,20 @@ public class HandAnimatorHelper : MonoBehaviour
     public void UnparentGrabbedObject()
     {
         grabbedObject.transform.parent = null;
+        grabbedObject = null;
     }
+
+    public void ParentGrabbedObject(GameObject GO)
+    {
+        grabbedObject = GO;
+        grabbedObject.transform.parent = baseFigureJoint.transform;
+        grabbedObject.transform.localPosition = new Vector3(0, 0, 0);
+    }
+
     void ResetRotation()
     {
-        defaultPosition = transform.position + 1.5f*Vector3.up;
-        MoveToDefaultPosition();
+        defaultPosition = transform.position + 1.5f * Vector3.up;
+        MoveToDefaultPosition(1f);
         StartCoroutine(LerpRotation(Quaternion.Euler(0, 180, 0)));
     }
     IEnumerator LerpRotation(Quaternion rotation)
@@ -48,31 +59,31 @@ public class HandAnimatorHelper : MonoBehaviour
         onAnimationEnd?.Invoke();
     }
 
-    public void MoveToPosition(Vector3 destination)
+    public void MoveToPosition(Vector3 destination, float duration)
     {
         if (!isMoving)
         {
-            StartCoroutine(Move(destination));
+            StartCoroutine(Move(destination, duration));
             //StartCoroutine(LerpRotation(Quaternion.Euler(90, 180, 0)));
         }
     }
-    public void MoveToDefaultPosition()
+    public void MoveToDefaultPosition(float duration)
     {
-        if (!isMoving) 
+        if (!isMoving)
         {
-            StartCoroutine(Move(defaultPosition));
+            StartCoroutine(Move(defaultPosition, duration));
             //StartCoroutine(LerpRotation(Quaternion.Euler(0, 180, 0)));
-        } 
+        }
     }
-    IEnumerator Move(Vector3 destination)
+    IEnumerator Move(Vector3 destination, float duration)
     {
-        
+
         isMoving = true;
         Vector3 startPos = transform.position;
         float t = 0;
         float elapsedTime = 0;
 
-        while (t < 1)
+        while (t < duration)
         {
             elapsedTime += Time.deltaTime;
             t += elapsedTime * elapsedTime / 10;
@@ -82,6 +93,7 @@ public class HandAnimatorHelper : MonoBehaviour
 
         transform.position = destination;
         isMoving = false;
+
     }
 
     public bool IsHandAtXPos(float x)
@@ -98,5 +110,11 @@ public class HandAnimatorHelper : MonoBehaviour
     public void SetHandTriggerParameter(string name)
     {
         gameObject.GetComponent<Animator>().SetTrigger(name);
+    }
+
+    public void TeleportHandBehindCamera()
+    {
+        GameObject cameraBrain = GameObject.FindGameObjectWithTag("MainCamera");
+        gameObject.transform.position = new Vector3(cameraBrain.transform.position.x, 0.45f, (cameraBrain.transform.position.z)) - new Vector3(3, 0, 1);
     }
 }

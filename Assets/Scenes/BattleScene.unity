@@ -9691,6 +9691,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1089292263}
   - component: {fileID: 1089292264}
+  - component: {fileID: 1089292265}
   m_Layer: 0
   m_Name: Battle Manager
   m_TagString: Untagged
@@ -9725,6 +9726,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98776e1d479b9fa419f839e401e2f7fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AIManager: {fileID: 1089292265}
   playerPrefabs: []
   enemyPrefabs: []
   playerSide: {fileID: 108010993}
@@ -9732,7 +9734,21 @@ MonoBehaviour:
   playerUnits: []
   enemyUnits: []
   capturableUnits: []
+  currentTurnIndex: 0
+  round: 0
   allUnits: []
+--- !u!114 &1089292265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089292262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57251e6eb04fa2c47b03fac41ac155d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AIManager
 --- !u!1001 &1089447186
 PrefabInstance:
   m_ObjectHideFlags: 0

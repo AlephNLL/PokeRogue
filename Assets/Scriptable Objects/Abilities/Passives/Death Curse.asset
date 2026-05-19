@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
+  m_Name: Death Curse
+  m_EditorClassIdentifier: Assembly-CSharp::Abilities
+  name: Death Curse
+  description: Lowers all stats to the murdering foe.
+  sfx: {fileID: 0}
+  power: 0
+  accuracy: 0
+  abilityType: 1
+  target: 6
+  stance: 4
+  statToCalcDmgWith: 1
+  mustUseStance: 0
+  multiHit: 0
+  multiHitRange: 0
+  hits: 0
+  hitRange: 
+  endOnMiss: 0
+  passiveEffects: 1
+  passiveExecutionTime: 6
+  passiveEffectChance: 100
+  status: 0
+  effect1: 0
+  condition1: 0
+  effect1Chance: 0
+  effect2: 0
+  condition2: 0
+  effect2Chance: 0
+  affectSelf: 0
+  stanceToChangeTo: 0
+  stanceCondition: 0
+  healPercentage: 0
+  statToMod: 0100000002000000030000000400000005000000
+  statMod:
+  - 0.5
+  - 0.5
+  - 0.5
+  - 0.5
+  - 0.5
+  powerVariables: 0
+  vfxPrefab: {fileID: 0}
+  spawnVfxOnSelf: 0

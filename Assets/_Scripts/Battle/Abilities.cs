@@ -45,4 +45,24 @@ public class Abilities : ScriptableObject
     {
         return effect1 == effect || effect2 == effect;
     }
+
+    public bool HasCondition(AbilityCondition condition)
+    {
+        return condition1 == condition || condition2 == condition;
+    }
+    public float GetAbilityEffectChance(AbilityEffect effect)
+    {
+        if (effect1 == effect)
+        {
+            return effect1Chance;
+        }
+        else if (effect2 == effect)
+        {
+            return effect2Chance;
+        }
+        else
+        {
+            return 0;
+        }
+    }
 }

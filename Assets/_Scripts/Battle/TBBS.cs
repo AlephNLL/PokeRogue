@@ -16,6 +16,7 @@ using UnityEngine.UIElements;
 public class TBBS : MonoBehaviour
 {
     public static TBBS instance;
+    public AIManager AIManager;
     public GameObject[] playerPrefabs;
     public GameObject[] enemyPrefabs;
 
@@ -27,7 +28,7 @@ public class TBBS : MonoBehaviour
     public List<GameObject> capturableUnits;
 
     public int currentTurnIndex = 0;
-    private int round = 0;
+    public int round = 0;
 
     public List<Unit> allUnits;
 
@@ -196,57 +197,107 @@ public class TBBS : MonoBehaviour
         }
 
         yield return new WaitForSeconds(2);
+        
+        List<Unit> allies = new List<Unit>(enemyUnits);
+        allies.Remove(currentUnit);
 
-        List<Abilities> usableAbilities = new List<Abilities>();
+        AIAction action = AIManager.CalculateBestAction(currentUnit, playerUnits.ToArray(), allies.ToArray());
 
-        for (int i = 0; i < currentUnit.knownAbilities.Length; i++)
+        if (action.skip)
         {
-            if (currentUnit.knownAbilities[i].abilityType == AbilityType.ACTIVE)
+            TooltipUI.instance.ShowTooltipText(currentUnit.name + " skipped turn");
+            currentUnit.OnTurnEnd();
+            yield return new WaitForSeconds(1);
+            currentTurnIndex++;
+            StartNextTurn();
+            yield break;
+        }
+        else
+        {
+            switch (action.chosenAbility.target)
             {
-                if(currentUnit.knownAbilities[i].mustUseStance && 
-                    currentUnit.currentStance == currentUnit.knownAbilities[i].stance)
-                {
-                    usableAbilities.Add(currentUnit.knownAbilities[i]);
-                }
-                else if (!currentUnit.knownAbilities[i].mustUseStance)
-                {
-                    usableAbilities.Add(currentUnit.knownAbilities[i]);
-                }
+                case AbilityTarget.SELF:
+                    yield return StartCoroutine(AttackSequence(currentUnit, currentUnit, action.chosenAbility));
+                    break;
+                case AbilityTarget.ONEENEMY:
+                    Unit target;
+                    if (playerUnits.Find(unit => unit.provoking)) target = playerUnits.Find(unit => unit.provoking);
+                    else
+                    {
+                        target = action.chosenTarget;
+                        if (target.guardedBy) target = target.guardedBy;
+                    }
+                    yield return StartCoroutine(AttackSequence(currentUnit, target, action.chosenAbility));
+                    break;
+                case AbilityTarget.ONEALLY:
+                    yield return StartCoroutine(AttackSequence(currentUnit, action.chosenTarget, action.chosenAbility));
+                    break;
+                case AbilityTarget.ALLENEMIES:
+                    StartCoroutine(AttackSequence(currentUnit, playerUnits.ToArray(), action.chosenAbility));
+                    break;
+                case AbilityTarget.ALLALLIES:
+                    StartCoroutine(AttackSequence(currentUnit, enemyUnits.ToArray(), action.chosenAbility));
+                    break;
+                case AbilityTarget.ALL:
+                    StartCoroutine(AttackSequence(currentUnit, allUnits.ToArray(), action.chosenAbility));
+                    break;
+                default:
+                    break;
             }
         }
 
-        Abilities chosenAbility = usableAbilities[UnityEngine.Random.Range(0, usableAbilities.Count)];
+        
 
-        switch (chosenAbility.target)
-        {
-            case AbilityTarget.SELF:
-                yield return StartCoroutine(AttackSequence(currentUnit, currentUnit, chosenAbility));
-                break;
-            case AbilityTarget.ONEENEMY:
-                Unit target;
-                if(playerUnits.Find(unit => unit.provoking)) target = playerUnits.Find(unit => unit.provoking);
-                else
-                {
-                    target = playerUnits[UnityEngine.Random.Range(0, playerUnits.Count)];
-                    if(target.guardedBy) target = target.guardedBy;
-                }
-                yield return StartCoroutine(AttackSequence(currentUnit, target, chosenAbility));
-                break;
-            case AbilityTarget.ONEALLY:
-                yield return StartCoroutine(AttackSequence(currentUnit, enemyUnits[UnityEngine.Random.Range(0, enemyUnits.Count)], chosenAbility));
-                break;
-            case AbilityTarget.ALLENEMIES:
-                StartCoroutine(AttackSequence(currentUnit, playerUnits.ToArray(), chosenAbility));
-                break;
-            case AbilityTarget.ALLALLIES:
-                StartCoroutine(AttackSequence(currentUnit, enemyUnits.ToArray(), chosenAbility));
-                break;
-            case AbilityTarget.ALL:
-                StartCoroutine(AttackSequence(currentUnit, allUnits.ToArray(), chosenAbility));
-                break;
-            default:
-                break;
-        }
+        //List<Abilities> usableAbilities = new List<Abilities>();
+
+        //for (int i = 0; i < currentUnit.knownAbilities.Length; i++)
+        //{
+        //    if (currentUnit.knownAbilities[i].abilityType == AbilityType.ACTIVE)
+        //    {
+        //        if(currentUnit.knownAbilities[i].mustUseStance && 
+        //            currentUnit.currentStance == currentUnit.knownAbilities[i].stance)
+        //        {
+        //            usableAbilities.Add(currentUnit.knownAbilities[i]);
+        //        }
+        //        else if (!currentUnit.knownAbilities[i].mustUseStance)
+        //        {
+        //            usableAbilities.Add(currentUnit.knownAbilities[i]);
+        //        }
+        //    }
+        //}
+
+        //Abilities chosenAbility = usableAbilities[UnityEngine.Random.Range(0, usableAbilities.Count)];
+
+        //switch (chosenAbility.target)
+        //{
+        //    case AbilityTarget.SELF:
+        //        yield return StartCoroutine(AttackSequence(currentUnit, currentUnit, chosenAbility));
+        //        break;
+        //    case AbilityTarget.ONEENEMY:
+        //        Unit target;
+        //        if(playerUnits.Find(unit => unit.provoking)) target = playerUnits.Find(unit => unit.provoking);
+        //        else
+        //        {
+        //            target = playerUnits[UnityEngine.Random.Range(0, playerUnits.Count)];
+        //            if(target.guardedBy) target = target.guardedBy;
+        //        }
+        //        yield return StartCoroutine(AttackSequence(currentUnit, target, chosenAbility));
+        //        break;
+        //    case AbilityTarget.ONEALLY:
+        //        yield return StartCoroutine(AttackSequence(currentUnit, enemyUnits[UnityEngine.Random.Range(0, enemyUnits.Count)], chosenAbility));
+        //        break;
+        //    case AbilityTarget.ALLENEMIES:
+        //        StartCoroutine(AttackSequence(currentUnit, playerUnits.ToArray(), chosenAbility));
+        //        break;
+        //    case AbilityTarget.ALLALLIES:
+        //        StartCoroutine(AttackSequence(currentUnit, enemyUnits.ToArray(), chosenAbility));
+        //        break;
+        //    case AbilityTarget.ALL:
+        //        StartCoroutine(AttackSequence(currentUnit, allUnits.ToArray(), chosenAbility));
+        //        break;
+        //    default:
+        //        break;
+        //}
     }
 
     public void AbilityMenu(Unit attacker) //Se llama desde la interfaz del jugador, los botones se suscriben al activarse
@@ -440,7 +491,7 @@ public class TBBS : MonoBehaviour
                 yield break;
             }
 
-            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1))
             {
                 result = false;
                 yield return result;

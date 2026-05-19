@@ -545,7 +545,7 @@ public class Unit : MonoBehaviour
                 if (HasPassive("Double Trouble")) atk = Mathf.FloorToInt(atk * .6f);
                 if (status == Status.BURNED)
                 {
-                    atk = HasPassive("Piromaniac") ? atk : Mathf.FloorToInt(atk * .5f);
+                    atk = HasPassive("Pyromaniac") ? atk : Mathf.FloorToInt(atk * .5f);
                 }
                 if (currentStance == Stance.AGRESSIVE) return Mathf.FloorToInt(atk * stanceModifier);
                 else return atk;
@@ -838,6 +838,18 @@ public class Unit : MonoBehaviour
                     abilityList.RemoveAt(0);
                 }
             }
+        }
+
+        return abilityList;
+    }
+
+    public List<Abilities> GetStanceLockedAbilities()
+    {
+        List<Abilities> abilityList = new List<Abilities>();
+
+        for (int i = 0; i < knownAbilities.Length; i++)
+        {
+            if (knownAbilities[i].mustUseStance) abilityList.Add(knownAbilities[i]);
         }
 
         return abilityList;

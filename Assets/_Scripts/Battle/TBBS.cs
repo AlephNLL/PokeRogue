@@ -65,7 +65,7 @@ public class TBBS : MonoBehaviour
             allUnits.Add(playerUnits[i]);
             playerUnits[i].isPlayerControlled = true;
             playerUnits[i].id = i;
-            
+
         }
 
         for (int i = 0; i < enemyPrefabs.Length; i++)
@@ -138,7 +138,7 @@ public class TBBS : MonoBehaviour
             Debug.Log("Round " + round + " Ended");
             round++;
             currentTurnIndex = 0;
-            for (int i = 0;i < allUnits.Count;i++)
+            for (int i = 0; i < allUnits.Count; i++)
             {
                 allUnits[i].OnRoundEnd();
             }
@@ -161,7 +161,7 @@ public class TBBS : MonoBehaviour
     IEnumerator PlayerTurn(Unit currentUnit, bool activateTurnStartEffect = true)
     {
         currentUnit.ActivateCamera();
-        if(activateTurnStartEffect) currentUnit.OnTurnStart();
+        if (activateTurnStartEffect) currentUnit.OnTurnStart();
         if (currentUnit.skipTurn)
         {
             TooltipUI.instance.ShowTooltipText(currentUnit.name + " flinched");
@@ -203,7 +203,7 @@ public class TBBS : MonoBehaviour
         {
             if (currentUnit.knownAbilities[i].abilityType == AbilityType.ACTIVE)
             {
-                if(currentUnit.knownAbilities[i].mustUseStance && 
+                if (currentUnit.knownAbilities[i].mustUseStance &&
                     currentUnit.currentStance == currentUnit.knownAbilities[i].stance)
                 {
                     usableAbilities.Add(currentUnit.knownAbilities[i]);
@@ -224,11 +224,11 @@ public class TBBS : MonoBehaviour
                 break;
             case AbilityTarget.ONEENEMY:
                 Unit target;
-                if(playerUnits.Find(unit => unit.provoking)) target = playerUnits.Find(unit => unit.provoking);
+                if (playerUnits.Find(unit => unit.provoking)) target = playerUnits.Find(unit => unit.provoking);
                 else
                 {
                     target = playerUnits[UnityEngine.Random.Range(0, playerUnits.Count)];
-                    if(target.guardedBy) target = target.guardedBy;
+                    if (target.guardedBy) target = target.guardedBy;
                 }
                 yield return StartCoroutine(AttackSequence(currentUnit, target, chosenAbility));
                 break;
@@ -481,7 +481,7 @@ public class TBBS : MonoBehaviour
         {
             List<Unit> targets = new List<Unit>(playerUnits);
             targets.Remove(attacker);
-            if(targets.Count > 0) attacker.SelectTarget(targets[selection].gameObject);
+            if (targets.Count > 0) attacker.SelectTarget(targets[selection].gameObject);
             else
             {
                 selection = -1;
@@ -530,7 +530,7 @@ public class TBBS : MonoBehaviour
         if (enemyUnits.Contains(attacker)) enemyUnits.Remove(attacker);
         else
         {
-            if(playerUnits.FindIndex(x => x.Equals(attacker)) >= 0) PlayerData.teamData.Remove(PlayerData.teamData[playerUnits.FindIndex(x => x.Equals(attacker))]);
+            if (playerUnits.FindIndex(x => x.Equals(attacker)) >= 0) PlayerData.teamData.Remove(PlayerData.teamData[playerUnits.FindIndex(x => x.Equals(attacker))]);
             playerUnits.Remove(attacker);
         }
     }
@@ -557,14 +557,14 @@ public class TBBS : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         int hits = 1;
-        if(ability.multiHit) hits = ability.hits;
-        else if(ability.multiHitRange)hits = Random.Range(ability.hitRange[0], ability.hitRange[1]);
+        if (ability.multiHit) hits = ability.hits;
+        else if (ability.multiHitRange) hits = Random.Range(ability.hitRange[0], ability.hitRange[1]);
 
         bool nextAttack = false;
 
         for (int i = 0; i < hits; i++)
         {
-            if(i > 0)
+            if (i > 0)
             {
                 List<Unit> newTargets = new List<Unit>();
                 for (int j = 0; j < targets.Length; j++)
@@ -629,7 +629,7 @@ public class TBBS : MonoBehaviour
                 if (!nextAttack) break;
                 yield return new WaitForSeconds(0.1f);
             }
-        }   
+        }
 
         CameraManager.instance.SetBlendTime(1);
 
@@ -651,7 +651,7 @@ public class TBBS : MonoBehaviour
             StartNextTurn();
             yield break;
         }
-        
+
     }
 
     IEnumerator AttackSequence(Unit attacker, Unit target, Abilities ability)
@@ -709,43 +709,51 @@ public class TBBS : MonoBehaviour
             }
             else
             {
-                //Se abalanza el personaje (ida)
-                while (t < .8f)
-                {
-                    elapsedTime += Time.deltaTime;
-                    t += elapsedTime * elapsedTime / 10;
-                    attacker.transform.position = Vector3.Lerp(attackerStartPos, target.transform.position, t);
-                    yield return null;
-                }
+                GameObject hand = HandAnimatorHelper.instance.gameObject;
+                HandAnimatorHelper.instance.TeleportHandBehindCamera();
+                HandAnimatorHelper.instance.MoveToPosition(attacker.transform.Find("Capsule").Find("GrabPoint").transform.position);
+                yield return new WaitForSeconds(1f);
+                HandAnimatorHelper.instance.ParentGrabbedObject(attacker.gameObject);
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(target.transform.position.x, hand.transform.position.y, target.transform.position.z));
 
-                Vector3 attackerEndPos = attacker.transform.position;
-                if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
-                nextAttack = Damage(ability, attacker, targets);
+                //se abalanza el personaje (ida)
 
-                t = 0;
-                yield return new WaitForSeconds(0.1f); // Pequeña pausa en el impacto
+                //while (t < .8f)
+                //{
+                //    elapsedTime += Time.deltaTime;
+                //    t += elapsedTime * elapsedTime / 10;
+                //    attacker.transform.position = Vector3.Lerp(attackerStartPos, target.transform.position, t);
+                //    yield return null;
+                //}
 
-                // Regreso
-                while (t < 1)
-                {
-                    t += Time.deltaTime;
-                    attacker.transform.position = Vector3.Lerp(attackerEndPos, attackerStartPos, t);
-                    yield return null;
-                }
+                //Vector3 attackerEndPos = attacker.transform.position;
+                //if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
+                //nextAttack = Damage(ability, attacker, targets);
 
-                // Asegurar que regresó a su posición exacta
-                attacker.transform.position = attackerStartPos;
+                //t = 0;
+                //yield return new WaitForSeconds(0.1f); // Pequena pausa en el impacto
 
-                t = 0;
+                //// Regreso
+                //while (t < 1)
+                //{
+                //    t += Time.deltaTime;
+                //    attacker.transform.position = Vector3.Lerp(attackerEndPos, attackerStartPos, t);
+                //    yield return null;
+                //}
+
+                //// Asegurar que regresa a su posicion exacta
+                //attacker.transform.position = attackerStartPos;
+
+                //t = 0;
             }
-            if(!nextAttack) break;
+            if (!nextAttack) break;
             yield return new WaitForSeconds(0.1f);
         }
 
         CameraManager.instance.SetBlendTime(1);
-        
+
         // Importante: Esperar un frame antes de activar la cámara principal
-        yield return new WaitForSeconds(0.3f + 3*TooltipUI.instance.scheduledTexts.Count);
+        yield return new WaitForSeconds(0.3f + 3 * TooltipUI.instance.scheduledTexts.Count);
 
         TooltipUI.instance.HideTooltipText();
 
@@ -784,7 +792,7 @@ public class TBBS : MonoBehaviour
             if (!CheckHit(ability, attacker.precision))
             {
                 TooltipUI.instance.ShowTooltipText(attacker.name + " missed");
-                if(ability.condition1 == AbilityCondition.ATTACKMISSED ||
+                if (ability.condition1 == AbilityCondition.ATTACKMISSED ||
                     ability.condition2 == AbilityCondition.ATTACKMISSED)
                 {
                     ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1, true);
@@ -810,7 +818,7 @@ public class TBBS : MonoBehaviour
 
             if (ability.power != 0)
             {
-                if(ability.effect1 == AbilityEffect.HEALATTACK || ability.effect2 == AbilityEffect.HEALATTACK)
+                if (ability.effect1 == AbilityEffect.HEALATTACK || ability.effect2 == AbilityEffect.HEALATTACK)
                 {
                     targets[i].Heal(CalculateAttackDamage(attacker, targets[i], ability));
                 }
@@ -841,16 +849,16 @@ public class TBBS : MonoBehaviour
                 if (round > 0) return;
                 break;
             case AbilityCondition.HASANYSTATUS:
-                if(attacker.status == Status.NONE) return;
+                if (attacker.status == Status.NONE) return;
                 break;
             case AbilityCondition.ATTACKMISSED:
-                if(!abilityMissed) return;
+                if (!abilityMissed) return;
                 break;
             default:
                 break;
         }
 
-        if (attacker.baseEffectChanceMulti*effectChance + attacker.effectChanceModifier >= UnityEngine.Random.Range(1, 101))
+        if (attacker.baseEffectChanceMulti * effectChance + attacker.effectChanceModifier >= UnityEngine.Random.Range(1, 101))
         {
             switch (effect)
             {
@@ -859,7 +867,7 @@ public class TBBS : MonoBehaviour
                 case GameData.AbilityEffect.HEAL:
                     if (affectSelf) attacker.HealPercent(ability.healPercentage);
                     else target.HealPercent(ability.healPercentage);
-                        break;
+                    break;
                 case GameData.AbilityEffect.STATMOD:
                     for (int i = 0; i < ability.statToMod.Length; i++)
                     {
@@ -868,7 +876,7 @@ public class TBBS : MonoBehaviour
                     }
                     break;
                 case GameData.AbilityEffect.STANCECHANGE:
-                    if(affectSelf) attacker.ChangeStance(ability.stanceToChangeTo);
+                    if (affectSelf) attacker.ChangeStance(ability.stanceToChangeTo);
                     else target.ChangeStance(ability.stanceToChangeTo);
                     break;
                 case GameData.AbilityEffect.APPLYSTATUS:
@@ -893,7 +901,7 @@ public class TBBS : MonoBehaviour
                     attacker.guardedBy = target;
                     break;
                 case AbilityEffect.LOSEHP:
-                    attacker.TakeDamage(attacker.GetRawStat(Stats.HP, attacker.level)/4);
+                    attacker.TakeDamage(attacker.GetRawStat(Stats.HP, attacker.level) / 4);
                     break;
                 case AbilityEffect.SWAPSTATS:
                     attacker.SwapStats(ability.statToMod[0], ability.statToMod[1]);
@@ -905,8 +913,8 @@ public class TBBS : MonoBehaviour
     }
     bool CheckHit(Abilities ability, float precision)
     {
-        if(ability.effect1 == AbilityEffect.CANTMISS || ability.effect2 == AbilityEffect.CANTMISS) return true;
-        if (ability.accuracy * precision >= Random.Range(1,101)) return true;
+        if (ability.effect1 == AbilityEffect.CANTMISS || ability.effect2 == AbilityEffect.CANTMISS) return true;
+        if (ability.accuracy * precision >= Random.Range(1, 101)) return true;
         else return false;
     }
     int CalculateAttackDamage(Unit attacker, Unit target, Abilities ability)
@@ -915,7 +923,7 @@ public class TBBS : MonoBehaviour
         switch (ability.powerVariables)
         {
             case AbilityPowerVariables.REMAININGHP:
-                power = (int)(power * 5*(1 - (float)attacker.currentHp/attacker.maxHp));
+                power = (int)(power * 5 * (1 - (float)attacker.currentHp / attacker.maxHp));
                 break;
             case AbilityPowerVariables.DUPEONALLYDOWNED:
                 power = (int)(power * Mathf.Pow(2, PlayerData.teamData.Count - playerUnits.Count));
@@ -931,12 +939,12 @@ public class TBBS : MonoBehaviour
         float efficacy = GetAbilityEfficacy(ability.stance, target.currentStance);
         float roll = UnityEngine.Random.Range(.8f, 1f);
         float chanceToCrit = 1f - Mathf.Pow(1 - baseCritChance, attacker.GetStat(Stats.LUCK));
-        if(ability.effect1 == AbilityEffect.DOUBLECRITCHANCE || ability.effect2 == AbilityEffect.DOUBLECRITCHANCE) chanceToCrit *= 2;
-        bool isCritical = UnityEngine.Random.Range(1, 101) <= chanceToCrit*100;
+        if (ability.effect1 == AbilityEffect.DOUBLECRITCHANCE || ability.effect2 == AbilityEffect.DOUBLECRITCHANCE) chanceToCrit *= 2;
+        bool isCritical = UnityEngine.Random.Range(1, 101) <= chanceToCrit * 100;
         float critMod = isCritical ? 1.5f : 1f;
         float freezeMod = target.status == Status.FROZEN ? 1.5f : 1f;
 
-        if(isCritical) defenseStat = Mathf.Min(defenseStat, target.GetSetStat(Stats.DEF));
+        if (isCritical) defenseStat = Mathf.Min(defenseStat, target.GetSetStat(Stats.DEF));
 
         float baseDamage = ((2 * attacker.level + 2) * .1f * power * attackStat) / (5.0f * defenseStat);
         float totalBeforeModifiers = baseDamage + 2;

@@ -162,25 +162,72 @@ public class AIManager : MonoBehaviour
                     else netStatsChange -= 1;
                 }
 
-                //A enemigos
+                // A enemigos (Debufos / Nerfs)
                 if ((ability.target == AbilityTarget.ONEENEMY || ability.target == AbilityTarget.ALLENEMIES) && !ability.affectSelf)
                 {
-                    if(netStatsChange < 0 && ability.GetAbilityEffectChance(AbilityEffect.STATMOD) == 100)
+                    if (netStatsChange < 0 && ability.GetAbilityEffectChance(AbilityEffect.STATMOD) == 100)
                     {
-                        score.scores[i] += RandomScore(6,8);
+                        score.scores[i] += RandomScore(6, 8);
                     }
-                    else if(netStatsChange < 0)
+                    else if (netStatsChange < 0)
                     {
                         score.scores[i] += 1;
                     }
                 }
 
-                //Aliados o usuario
+                // Allies or self (Buffs)
                 if (ability.target == AbilityTarget.SELF || ability.target == AbilityTarget.ONEALLY || ability.target == AbilityTarget.ALLALLIES || ability.affectSelf)
                 {
-                    if (netStatsChange >= 0 && ability.GetAbilityEffectChance(AbilityEffect.STATMOD) == 100)
+                    if (netStatsChange >= 0)
                     {
-                        score.scores[i] += RandomScore(6, 8);
+                        int scalePenalty = 0;
+
+                        // Verify if the ability actually modifies any stats in its array
+                        if (ability.statToMod != null && ability.statToMod.Length > 0)
+                        {
+                            float totalMultipliers = 0f;
+                            int statsTracked = 0;
+
+                            // Loop through each stat affected by this ability
+                            for (int j = 0; j < ability.statToMod.Length; j++)
+                            {
+                                Stats targetStat = ability.statToMod[j];
+
+                                int currentStatVal = score.targets[i].GetStat(targetStat);
+                                int baseStatVal = score.targets[i].GetRawStat(targetStat, score.targets[i].level);
+
+                                if (baseStatVal > 0)
+                                {
+                                    float currentMultiplier = (float)currentStatVal / baseStatVal;
+                                    totalMultipliers += currentMultiplier;
+                                    statsTracked++;
+                                }
+                            }
+
+                            if (statsTracked > 0)
+                            {
+                                // Calculate the average scaling across all modified stats
+                                float averageMultiplier = totalMultipliers / statsTracked;
+
+                                // If stats are inflated above their base values on average, apply a scale penalty
+                                if (averageMultiplier > 1.0f)
+                                {
+                                    // Example: If average is 2.0 (double the base), subtracts 4 points.
+                                    // If average is 3.0 (triple the base), subtracts 8 points.
+                                    scalePenalty = Mathf.RoundToInt((averageMultiplier - 1.0f) * 4f);
+                                }
+                            }
+                        }
+
+                        if (ability.GetAbilityEffectChance(AbilityEffect.STATMOD) == 100)
+                        {
+                            // Apply the penalty directly to the random buff score
+                            score.scores[i] += RandomScore(6, 8) - scalePenalty;
+                        }
+                        else
+                        {
+                            score.scores[i] += 1 - (scalePenalty / 2);
+                        }
                     }
                     else if (netStatsChange < 0)
                     {

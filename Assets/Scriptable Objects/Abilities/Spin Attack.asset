@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Spin Attack
   description: User spins quickly hitting 1-5 times
+  sfx: {fileID: 0}
   power: 20
   accuracy: 100
   abilityType: 0
@@ -24,7 +25,7 @@ MonoBehaviour:
   multiHit: 0
   multiHitRange: 1
   hits: 2
-  hitRange: 0100000005000000
+  hitRange: 0300000005000000
   endOnMiss: 0
   passiveEffects: 0
   passiveExecutionTime: 1

@@ -830,9 +830,9 @@ MonoBehaviour:
   knownAbilities: []
   abilityPool:
   - {fileID: 11400000, guid: 923c42d4c897604469479eada06a035a, type: 2}
-  - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
+  - {fileID: 11400000, guid: 2251ef1496db6b54b877601923aefaaf, type: 2}
   - {fileID: 11400000, guid: a825e7f4db9e8754c881c4e10150de8a, type: 2}
-  - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
+  - {fileID: 11400000, guid: 059a4631f8bd5b04e99d4f8d3c921817, type: 2}
   heldItem: {fileID: 0}
   evasive: 0
   provoking: 0

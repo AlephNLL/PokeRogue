@@ -62,6 +62,7 @@ public class HandAnimatorHelper : MonoBehaviour
 
     public void MoveToPosition(Vector3 destination, float duration)
     {
+        if(transform.position == destination) return;
         if (!isMoving)
         {
             StartCoroutine(Move(destination, duration));

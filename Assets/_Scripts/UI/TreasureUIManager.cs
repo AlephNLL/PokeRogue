@@ -12,6 +12,7 @@ public class TreasureUIManager : MonoBehaviour
     [SerializeField] GameObject itemIcon;
     [SerializeField] TMP_Text itemText;
 
+    public float itemVerticalStartPos;
     private void Awake()
     {
         instance = this;
@@ -27,7 +28,7 @@ public class TreasureUIManager : MonoBehaviour
 
         GridLayoutGroup itemSlotGrid = itemIcon.GetComponent<GridLayoutGroup>();
 
-        itemIcon.GetComponent<RectTransform>().position = new Vector3 (960, 340, 0);
+        itemIcon.GetComponent<RectTransform>().position = new Vector3 (960, itemVerticalStartPos, 0);
         Vector3 startPos = itemIcon.GetComponent<RectTransform>().position;
         Vector3 target = new Vector3(960, 940, 0);
 

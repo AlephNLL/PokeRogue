@@ -779,9 +779,9 @@ public class TBBS : MonoBehaviour
                 HandAnimatorHelper.instance.UnparentGrabbedObject();
                 attacker.transform.position = attackerStartPos;
 
-                HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", false);
-                HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 30f), 1f);
-                while (HandAnimatorHelper.instance.isMoving) yield return null;
+                //HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", false);
+                //HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 30f), 1f);
+                //while (HandAnimatorHelper.instance.isMoving) yield return null;
             }
 
             if (!nextAttack) break;
@@ -903,9 +903,9 @@ public class TBBS : MonoBehaviour
                 HandAnimatorHelper.instance.UnparentGrabbedObject();
                 attacker.transform.position = attackerStartPos;
 
-                HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", false);
-                HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 30f), 1f);
-                while (HandAnimatorHelper.instance.isMoving) yield return null;
+                //HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", false);
+                //HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 30f), 1f);
+                //while (HandAnimatorHelper.instance.isMoving) yield return null;
             }
 
             if (!nextAttack) break;

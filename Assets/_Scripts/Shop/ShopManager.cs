@@ -13,6 +13,8 @@ public class ShopManager : MonoBehaviour
     
     public Item selectedItem;
 
+    private Coroutine returnHandCoroutine;
+
     int lastIndex = 0;
     private void Awake()
     {
@@ -20,9 +22,11 @@ public class ShopManager : MonoBehaviour
     }
     private void Start()
     {
+        HandAnimatorHelper.onAnimationEnd -= OpenShop;
         HandAnimatorHelper.onAnimationEnd += OpenShop;
+
         ShopManagerUI.instance.UpdatePlayerGold();
-        //AudioManager.instance.PlayMusic(AudioLibrary.instance.shopMusic);
+        AudioManager.instance.PlayMusic(AudioLibrary.instance.shopMusic);
     }
     private void Update()
     {
@@ -91,14 +95,19 @@ public class ShopManager : MonoBehaviour
 
         if (itemUnderMouse != null && itemUnderMouse.layer != 2) 
         {
-            StopAllCoroutines();
+            if (returnHandCoroutine != null)
+            {
+                StopCoroutine(returnHandCoroutine);
+                returnHandCoroutine = null;
+            }
+
             int itemSlotIndex = GetItemSlotIndex(itemUnderMouse);
             float handXPos = itemSlotIndex - 3.75f;
             if (itemSlotIndex >= 3) handXPos += 2f;
             if (!HandAnimatorHelper.instance.IsHandAtXPos(handXPos))
             {
                 selectedItem = items[itemSlotIndex];
-                HandAnimatorHelper.instance.MoveToPosition(new Vector3(handXPos, 4.5f, HandAnimatorHelper.instance.transform.position.z));
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(handXPos, 4.5f, HandAnimatorHelper.instance.transform.position.z), 1f);
                 HandAnimatorHelper.instance.SetHandBoolParameter("point", true);
                 lastIndex = itemSlotIndex;
                 ShopManagerUI.instance.ShowItemDescription(selectedItem);
@@ -107,16 +116,20 @@ public class ShopManager : MonoBehaviour
         else
         {
             selectedItem = null;
-            if (!HandAnimatorHelper.instance.IsHandAtXPos(0)) StartCoroutine(ReturnHandToDefautlPos());
+            if (!HandAnimatorHelper.instance.IsHandAtXPos(0) && returnHandCoroutine == null)
+            {
+                returnHandCoroutine = StartCoroutine(ReturnHandToDefautlPos());
+            }
         }
     }
 
     IEnumerator ReturnHandToDefautlPos()
     {
         yield return new WaitForSeconds(.2f);
-        HandAnimatorHelper.instance.MoveToDefaultPosition();
+        HandAnimatorHelper.instance.MoveToDefaultPosition(1f);
         HandAnimatorHelper.instance.SetHandBoolParameter("point", false);
         ShopManagerUI.instance.HideItemDescription();
+        returnHandCoroutine = null;
     }
 
     public void ExitShop()
@@ -130,5 +143,10 @@ public class ShopManager : MonoBehaviour
         {
             SceneManager.LoadSceneAsync("MapGeneration");
         }
+    }
+
+    private void OnDestroy()
+    {
+        HandAnimatorHelper.onAnimationEnd -= OpenShop;
     }
 }

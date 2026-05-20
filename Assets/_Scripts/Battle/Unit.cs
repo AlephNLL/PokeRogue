@@ -53,6 +53,8 @@ public class Unit : MonoBehaviour
     public bool provoking = false;
     public Unit guardedBy = null;
 
+    public int timesBuffed;
+
     [Header("Misc")]
     [SerializeField]
     private CinemachineVirtualCamera actionCamera;
@@ -311,17 +313,6 @@ public class Unit : MonoBehaviour
         else VFXManager.instance.SpawnGlobalEffect(VFX.NERF, gameObject);
 
         string modAction = mod > 1 ? "rose" : "fell";
-         if(!contaged && HasPassive("Contagious"))
-        {
-            List<Unit> allies = new List<Unit>(TBBS.instance.playerUnits);
-            allies.Remove(this);
-
-            TooltipUI.instance.ShowTooltipText($"{name} shares stat changes");
-            foreach (Unit ally in allies)
-            {
-                ally.ApplyStatModifier(stat, mod, true);
-            }
-        }
 
         if (HasPassive("Double Or Nothing")) mod = mod > 1 ? mod * 2 : mod / 2;
 
@@ -352,6 +343,18 @@ public class Unit : MonoBehaviour
                 break;
             default:
                 break;
+        }
+
+        if (!contaged && HasPassive("Contagious"))
+        {
+            List<Unit> allies = new List<Unit>(TBBS.instance.playerUnits);
+            allies.Remove(this);
+
+            TooltipUI.instance.ShowTooltipText($"{name} shares stat changes");
+            foreach (Unit ally in allies)
+            {
+                ally.ApplyStatModifier(stat, mod, true);
+            }
         }
     }
 

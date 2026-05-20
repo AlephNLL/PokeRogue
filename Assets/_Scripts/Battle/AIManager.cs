@@ -123,6 +123,12 @@ public class AIManager : MonoBehaviour
         {
             score = new AIScore(new int[AIAllies.Length], AIAllies);
         }
+        else if (ability.target == AbilityTarget.SELF)
+        {
+            Unit[] self = new Unit[1];
+            self[0] = controlledUnit;
+            score = new AIScore(new int[1], self);
+        }
         else
         {
             List<Unit> temp = new List<Unit>(opponents);
@@ -162,25 +168,49 @@ public class AIManager : MonoBehaviour
                     else netStatsChange -= 1;
                 }
 
-                //A enemigos
+                // A enemigos (Debufos / Nerfs)
                 if ((ability.target == AbilityTarget.ONEENEMY || ability.target == AbilityTarget.ALLENEMIES) && !ability.affectSelf)
                 {
-                    if(netStatsChange < 0 && ability.GetAbilityEffectChance(AbilityEffect.STATMOD) == 100)
+                    if (netStatsChange < 0 && ability.GetAbilityEffectChance(AbilityEffect.STATMOD) == 100)
                     {
-                        score.scores[i] += RandomScore(6,8);
+                        score.scores[i] += RandomScore(6, 8);
                     }
-                    else if(netStatsChange < 0)
+                    else if (netStatsChange < 0)
                     {
                         score.scores[i] += 1;
                     }
                 }
 
-                //Aliados o usuario
+                // Allies or self (Buffs)
                 if (ability.target == AbilityTarget.SELF || ability.target == AbilityTarget.ONEALLY || ability.target == AbilityTarget.ALLALLIES || ability.affectSelf)
                 {
-                    if (netStatsChange >= 0 && ability.GetAbilityEffectChance(AbilityEffect.STATMOD) == 100)
+                    if (netStatsChange >= 0)
                     {
-                        score.scores[i] += RandomScore(6, 8);
+                        int scalePenalty = 0;
+
+                        for (int j = 0; j < ability.statToMod.Length; j++)
+                        {
+                            Stats targetStat = ability.statToMod[j];
+
+                            int currentStatVal = score.targets[i].GetSetStat(targetStat);
+                            int baseStatVal = score.targets[i].GetRawStat(targetStat, score.targets[i].level);
+
+                            if (baseStatVal > 0)
+                            {
+                                float currentMultiplier = (float)currentStatVal / baseStatVal;
+                                scalePenalty += Mathf.RoundToInt((currentMultiplier - 1.0f) * 4f / ability.statToMod.Length);
+                            }
+                        }
+                        Debug.Log($"Buff penalty: {scalePenalty}");
+                        if (ability.GetAbilityEffectChance(AbilityEffect.STATMOD) == 100)
+                        {
+                            // Apply the penalty directly to the random buff score
+                            score.scores[i] += RandomScore(6, 8) - scalePenalty;
+                        }
+                        else
+                        {
+                            score.scores[i] += 1 - (scalePenalty / 2);
+                        }
                     }
                     else if (netStatsChange < 0)
                     {
@@ -206,11 +236,11 @@ public class AIManager : MonoBehaviour
 
                 if (ability.target == AbilityTarget.SELF || ability.target == AbilityTarget.ONEALLY || ability.target == AbilityTarget.ALLALLIES || ability.affectSelf)
                 {
-                    if ((!ability.affectSelf && score.targets[i].HasPassive("Pyromaniac")) || (ability.affectSelf && controlledUnit.HasPassive("Pyromaniac")))
+                    if (ability.status == Status.BURNED && ((!ability.affectSelf && score.targets[i].HasPassive("Pyromaniac")) || (ability.affectSelf && controlledUnit.HasPassive("Pyromaniac"))))
                     {
                         score.scores[i] += RandomScore(6, 8);
                     }
-                    else
+                    else if ((ability.affectSelf && controlledUnit.status == Status.NONE) || ((!ability.affectSelf && score.targets[i].status == Status.NONE)))
                     {
                         score.scores[i] -= 3;
                     }     

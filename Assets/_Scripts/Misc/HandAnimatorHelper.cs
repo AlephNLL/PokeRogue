@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Unity.Hierarchy;
+using UnityEditor;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 
@@ -29,7 +30,7 @@ public class HandAnimatorHelper : MonoBehaviour
     {
         grabbedObject = GO;
         grabbedObject.transform.parent = baseFigureJoint.transform;
-        grabbedObject.transform.localPosition = new Vector3(0, 0, 0);
+        grabbedObject.transform.localPosition = new Vector3(0,0,0);
     }
 
     void ResetRotation()
@@ -94,6 +95,54 @@ public class HandAnimatorHelper : MonoBehaviour
         transform.position = destination;
         isMoving = false;
 
+    }
+
+    public void RaiseAndShake(Vector3 destination, float duration)
+    {
+        StartCoroutine(Shake(destination, duration));
+    }
+    IEnumerator Shake(Vector3 destination, float duration)
+    {
+        float newDuration = duration / 2;
+        MoveToPosition(destination, newDuration);
+        yield return new WaitForSeconds(newDuration);
+
+        isMoving = true;
+
+        Vector3 startPos = transform.localPosition;
+        float t = 0;
+        float elapsedTime = 0;
+
+        float nextChange = 0;
+        float interval = 1f / 15f;
+
+        Vector3 currentOffset = Vector3.zero;
+        Vector3 offset = Vector3.zero;
+
+        while (t < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            t += elapsedTime * elapsedTime / 10;
+
+            float progress = Mathf.Clamp01(t / duration);
+            float shakeStrength = Mathf.Lerp(1f, 0f, progress);
+
+            if (elapsedTime >= nextChange)
+            {
+                nextChange += interval;
+                offset = UnityEngine.Random.insideUnitSphere * shakeStrength;
+            }
+
+            currentOffset = Vector3.Lerp(currentOffset, offset, 3f * Time.deltaTime);
+
+            transform.localPosition = startPos + currentOffset;
+
+            yield return null;
+        }
+
+        isMoving = false;
+
+        yield return new WaitForSeconds(duration);
     }
 
     public bool IsHandAtXPos(float x)

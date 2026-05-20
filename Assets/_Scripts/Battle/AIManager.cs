@@ -28,7 +28,7 @@ public class AIManager : MonoBehaviour
             }
         }
 
-        // Guardaremos estructuras que recuerden exactamente: El mapa de score, el índice de la habilidad y el índice del objetivo
+        List<Unit> allies = new List<Unit>(AIAllies);
         var tiedDamageOptions = new List<(AIScore scoreMap, int abilityIdx, int targetIdx)>();
         int maxDamageFound = 0;
 
@@ -37,7 +37,8 @@ public class AIManager : MonoBehaviour
         {
             for (int j = 0; j < scores[i].scores.Length; j++)
             {
-                // Calculamos el daño real exacto de esta habilidad contra este objetivo en concreto
+                if (allies.Contains(scores[i].targets[j])) continue;
+
                 int currentDmg = CalculateAttackDamage(controlledUnit, scores[i].targets[j], activeAbilities[i]);
 
                 if (activeAbilities[i].power <= 0 || currentDmg <= 0) continue;
@@ -55,24 +56,23 @@ public class AIManager : MonoBehaviour
             }
         }
 
-        // Si encontramos algún movimiento que haga daño, desempatamos (si aplica) y aplicamos el +6
         if (tiedDamageOptions.Count > 0)
         {
             int randomIndex = UnityEngine.Random.Range(0, tiedDamageOptions.Count);
             var chosenOption = tiedDamageOptions[randomIndex];
 
+            Unit target = chosenOption.scoreMap.targets[chosenOption.targetIdx];
+
             if (tiedDamageOptions.Count > 1)
             {
-                Debug.Log($"<color=yellow>[AI] ¡Empate de daño detectado! Había {tiedDamageOptions.Count} opciones que hacían el daño máximo de ({maxDamageFound}). " +
-                          $"Se eligió al azar la habilidad <b>{activeAbilities[chosenOption.abilityIdx].name}</b> contra el objetivo <b>{chosenOption.scoreMap.targets[chosenOption.targetIdx].name}</b>.</color>");
+                Debug.Log($"<color=yellow>[AI] ¡Empate de daño detectado! Había {tiedDamageOptions.Count} opciones válidas que hacían el daño máximo de ({maxDamageFound}). " +
+                          $"Se eligió al azar la habilidad <b>{activeAbilities[chosenOption.abilityIdx].name}</b> contra el objetivo <b>{target.name}</b>.</color>");
             }
 
             chosenOption.scoreMap.scores[chosenOption.targetIdx] += 6;
 
-            Debug.Log($"<color=orange>[AI] ¡Bonus de Daño! Se aplica un +6 a <b>{activeAbilities[chosenOption.abilityIdx].name}</b> contra {chosenOption.scoreMap.targets[chosenOption.targetIdx].name}.</color>");
+            Debug.Log($"<color=orange>[AI] ¡Bonus de Daño! Se aplica un +6 a <b>{activeAbilities[chosenOption.abilityIdx].name}</b> contra {target.name}.</color>");
         }
-
-        // --- BÚSQUEDA DE LA MEJOR ACCIÓN GLOBAL ---
 
         Abilities bestAbility = null;
         Unit bestTarget = null;
@@ -292,6 +292,15 @@ public class AIManager : MonoBehaviour
                 {
                     score.scores[i] -= 10;
                 }
+            }
+
+            if (ability.target == AbilityTarget.ALL && AIAllies.Length > 0 && !controlledUnit.HasPassive("Empath"))
+            {
+                score.scores[i] -= 10;
+            }
+            else if(ability.target == AbilityTarget.ALL)
+            {
+                score.scores[i] += 3;
             }
         }
 

@@ -180,6 +180,8 @@ public class VFXManager : MonoBehaviour
     {
         GameObject vfx = Instantiate(vfxPrefab, unit.transform.position, vfxPrefab.transform.rotation);
 
+        vfx.transform.parent = unit.transform;
+
         yield return new WaitForSeconds(vfx.GetComponent<ParticleSystem>().main.duration);
 
         Destroy(vfx);

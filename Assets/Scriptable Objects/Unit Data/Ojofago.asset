@@ -18,7 +18,7 @@ MonoBehaviour:
   level: 1
   currentExp: 0
   heldItem: {fileID: 0}
-  currentHp: 20
+  currentHp: 10
   status: 0
   knownAbilities:
   - {fileID: 11400000, guid: 723a75a4d1c375948bd4ffb24467d9fa, type: 2}

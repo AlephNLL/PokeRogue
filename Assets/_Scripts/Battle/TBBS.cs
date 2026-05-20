@@ -684,7 +684,7 @@ public class TBBS : MonoBehaviour
                 }
 
                 //movimiento hacia target
-                HandAnimatorHelper.instance.MoveToPosition(new Vector3(visualTarget.transform.position.x, (hand.transform.position.y + 1f), (visualTarget.transform.position.z) - 2.5f), 1f);
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(visualTarget.transform.position.x, (hand.transform.position.y+1f), (visualTarget.transform.position.z) - 2.5f), 1f);
                 yield return new WaitForSeconds(1f);
                 Vector3 attackerEndPos = attacker.transform.position;
                 if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
@@ -693,7 +693,7 @@ public class TBBS : MonoBehaviour
                 yield return new WaitForSeconds(0.05f);
 
                 //movimiento a posicion inicial (+ offset del grabpoint) y desparentar bicho
-                HandAnimatorHelper.instance.MoveToPosition(new Vector3(attackerStartPos.x, (hand.transform.position.y - 1f), attackerStartPos.z) + new Vector3(-0.154999f, 0, -0.830669f), .8f);
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(attackerStartPos.x, (hand.transform.position.y-1f), attackerStartPos.z) + new Vector3(-0.154999f, 0, -0.830669f), .8f);
                 yield return new WaitForSeconds(.8f);
                 HandAnimatorHelper.instance.UnparentGrabbedObject();
                 attacker.transform.position = attackerStartPos;
@@ -798,7 +798,7 @@ public class TBBS : MonoBehaviour
                 }
 
                 //movimiento hacia target
-                HandAnimatorHelper.instance.MoveToPosition(new Vector3(target.transform.position.x, (hand.transform.position.y + 1f), (target.transform.position.z) - 2.5f), 1f);
+                HandAnimatorHelper.instance.MoveToPosition(new Vector3(target.transform.position.x, hand.transform.position.y, (target.transform.position.z) - 2.5f), 1f);
                 yield return new WaitForSeconds(1f);
                 Vector3 attackerEndPos = attacker.transform.position;
                 if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);

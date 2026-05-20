@@ -829,7 +829,7 @@ MonoBehaviour:
   precision: 1
   knownAbilities: []
   abilityPool:
-  - {fileID: 11400000, guid: 723a75a4d1c375948bd4ffb24467d9fa, type: 2}
+  - {fileID: 11400000, guid: 923c42d4c897604469479eada06a035a, type: 2}
   - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
   - {fileID: 11400000, guid: a825e7f4db9e8754c881c4e10150de8a, type: 2}
   - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
@@ -837,6 +837,7 @@ MonoBehaviour:
   evasive: 0
   provoking: 0
   guardedBy: {fileID: 0}
+  timesBuffed: 0
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
   battleMenu: {fileID: 0}

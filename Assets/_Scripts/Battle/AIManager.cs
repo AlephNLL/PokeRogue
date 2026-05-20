@@ -123,6 +123,12 @@ public class AIManager : MonoBehaviour
         {
             score = new AIScore(new int[AIAllies.Length], AIAllies);
         }
+        else if (ability.target == AbilityTarget.SELF)
+        {
+            Unit[] self = new Unit[1];
+            self[0] = controlledUnit;
+            score = new AIScore(new int[1], self);
+        }
         else
         {
             List<Unit> temp = new List<Unit>(opponents);
@@ -182,43 +188,20 @@ public class AIManager : MonoBehaviour
                     {
                         int scalePenalty = 0;
 
-                        // Verify if the ability actually modifies any stats in its array
-                        if (ability.statToMod != null && ability.statToMod.Length > 0)
+                        for (int j = 0; j < ability.statToMod.Length; j++)
                         {
-                            float totalMultipliers = 0f;
-                            int statsTracked = 0;
+                            Stats targetStat = ability.statToMod[j];
 
-                            // Loop through each stat affected by this ability
-                            for (int j = 0; j < ability.statToMod.Length; j++)
+                            int currentStatVal = score.targets[i].GetSetStat(targetStat);
+                            int baseStatVal = score.targets[i].GetRawStat(targetStat, score.targets[i].level);
+
+                            if (baseStatVal > 0)
                             {
-                                Stats targetStat = ability.statToMod[j];
-
-                                int currentStatVal = score.targets[i].GetStat(targetStat);
-                                int baseStatVal = score.targets[i].GetRawStat(targetStat, score.targets[i].level);
-
-                                if (baseStatVal > 0)
-                                {
-                                    float currentMultiplier = (float)currentStatVal / baseStatVal;
-                                    totalMultipliers += currentMultiplier;
-                                    statsTracked++;
-                                }
-                            }
-
-                            if (statsTracked > 0)
-                            {
-                                // Calculate the average scaling across all modified stats
-                                float averageMultiplier = totalMultipliers / statsTracked;
-
-                                // If stats are inflated above their base values on average, apply a scale penalty
-                                if (averageMultiplier > 1.0f)
-                                {
-                                    // Example: If average is 2.0 (double the base), subtracts 4 points.
-                                    // If average is 3.0 (triple the base), subtracts 8 points.
-                                    scalePenalty = Mathf.RoundToInt((averageMultiplier - 1.0f) * 4f);
-                                }
+                                float currentMultiplier = (float)currentStatVal / baseStatVal;
+                                scalePenalty += Mathf.RoundToInt((currentMultiplier - 1.0f) * 4f / ability.statToMod.Length);
                             }
                         }
-
+                        Debug.Log($"Buff penalty: {scalePenalty}");
                         if (ability.GetAbilityEffectChance(AbilityEffect.STATMOD) == 100)
                         {
                             // Apply the penalty directly to the random buff score
@@ -253,11 +236,11 @@ public class AIManager : MonoBehaviour
 
                 if (ability.target == AbilityTarget.SELF || ability.target == AbilityTarget.ONEALLY || ability.target == AbilityTarget.ALLALLIES || ability.affectSelf)
                 {
-                    if ((!ability.affectSelf && score.targets[i].HasPassive("Pyromaniac")) || (ability.affectSelf && controlledUnit.HasPassive("Pyromaniac")))
+                    if (ability.status == Status.BURNED && ((!ability.affectSelf && score.targets[i].HasPassive("Pyromaniac")) || (ability.affectSelf && controlledUnit.HasPassive("Pyromaniac"))))
                     {
                         score.scores[i] += RandomScore(6, 8);
                     }
-                    else
+                    else if ((ability.affectSelf && controlledUnit.status == Status.NONE) || ((!ability.affectSelf && score.targets[i].status == Status.NONE)))
                     {
                         score.scores[i] -= 3;
                     }     

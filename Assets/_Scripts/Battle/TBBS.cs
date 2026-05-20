@@ -34,6 +34,9 @@ public class TBBS : MonoBehaviour
     public List<Unit> allUnits;
 
     private Coroutine currentTurnCoroutine;
+    private Coroutine menuCoroutine;
+    private bool isActionExecuting;
+
     private void Awake()
     {
         instance = this;
@@ -304,28 +307,84 @@ public class TBBS : MonoBehaviour
         //}
     }
 
-    public void AbilityMenu(Unit attacker) //Se llama desde la interfaz del jugador, los botones se suscriben al activarse
+    public void AbilityMenu(Unit attacker) // Se llama desde la interfaz
+    {
+        // Si ya estamos atacando o usando un ítem, ignoramos los clics
+        if (isActionExecuting) return;
+
+        // Limpiamos cualquier corrutina de menú abierta previamente
+        if (menuCoroutine != null) StopCoroutine(menuCoroutine);
+
+        menuCoroutine = StartCoroutine(OpenAbilityMenu(attacker));
+    }
+
+    public IEnumerator OpenAbilityMenu(Unit attacker)
     {
         attacker.ActivateCamera();
         attacker.CloseBattleMenu();
         attacker.OpenAbilityMenu();
-    }
 
-    public void ItemMenu(Unit attacker) //Se llama desde la interfaz del jugador, los botones se suscriben al activarse
-    {
-        attacker.ActivateCamera();
-        attacker.CloseBattleMenu();
-        attacker.OpenItemMenu();
+        while (true)
+        {
+            if (Input.GetMouseButtonDown(1)) // Cancelar con clic derecho
+            {
+                break;
+            }
+
+            yield return null;
+        }
+
+        attacker.OpenBattleMenu();
+        attacker.CloseAbilityMenu();
+        menuCoroutine = null;
     }
 
     public void SelectAbility(Abilities ability)
     {
-        StartCoroutine(ActivateAbility(ability));
+        if (isActionExecuting) return; // Bloqueo de seguridad
+
+        if (menuCoroutine != null) StopCoroutine(menuCoroutine);
+
+        // ¡CRÍTICO! Guardamos la selección de habilidad en menuCoroutine
+        menuCoroutine = StartCoroutine(ActivateAbility(ability));
+    }
+
+    public void ItemMenu(Unit attacker) // Se llama desde la interfaz
+    {
+        // Si ya estamos ejecutando una acción final, ignoramos cualquier botón
+        if (isActionExecuting) return;
+
+        if (menuCoroutine != null) StopCoroutine(menuCoroutine);
+        menuCoroutine = StartCoroutine(OpenItemMenu(attacker));
+    }
+
+    public IEnumerator OpenItemMenu(Unit attacker)
+    {
+        attacker.ActivateCamera();
+        attacker.CloseBattleMenu();
+        attacker.OpenItemMenu();
+
+        while (true)
+        {
+            if (Input.GetMouseButtonDown(1)) // Cancelar con click derecho
+            {
+                break;
+            }
+            yield return null;
+        }
+
+        attacker.OpenBattleMenu();
+        attacker.CloseItemMenu();
+        menuCoroutine = null;
     }
 
     public void SelectItem(Item item)
     {
-        StartCoroutine(ActivateItem(item));
+        if (isActionExecuting) return; // Bloqueo de seguridad
+
+        if (menuCoroutine != null) StopCoroutine(menuCoroutine);
+
+        menuCoroutine = StartCoroutine(ActivateItem(item));
     }
 
     public IEnumerator ActivateItem(Item item)
@@ -335,11 +394,23 @@ public class TBBS : MonoBehaviour
         currentUnit.CloseItemMenu();
         currentUnit.DeactivateCamera();
 
-        int selection = 0;
+        int selection = -1;
 
+        // Esperamos a que el jugador elija objetivo
         yield return Run<int>(SelectTarget(false), (output) => selection = output);
-        if (selection >= 0) StartCoroutine(UseItem(item, playerUnits[selection]));
-        yield break;
+
+        if (selection >= 0)
+        {
+            isActionExecuting = true;
+
+            yield return StartCoroutine(UseItem(item, playerUnits[selection]));
+
+            isActionExecuting = false;
+        }
+        else
+        {
+            ItemMenu(currentUnit);
+        }
     }
 
     public IEnumerator UseItem(Item item, Unit target)
@@ -370,7 +441,6 @@ public class TBBS : MonoBehaviour
         if (currentUnit.HasAdditionalTurn())
         {
             StartNextTurn(false);
-            yield break;
         }
         else
         {
@@ -378,7 +448,6 @@ public class TBBS : MonoBehaviour
             currentTurnIndex++;
             // Avanzar al siguiente turno
             StartNextTurn();
-            yield break;
         }
     }
     public IEnumerator ActivateAbility(Abilities ability)
@@ -616,6 +685,7 @@ public class TBBS : MonoBehaviour
     }
     IEnumerator AttackSequence(Unit attacker, Unit[] targets, Abilities ability)
     {
+        isActionExecuting = true;
         Transform visualTarget = playerUnits.Contains(targets[0]) ? playerSide : enemySide;
         Vector3 zOffset = playerUnits.Contains(attacker) ? Vector3.zero : Vector3.left;
         attacker.EndSelect();
@@ -725,7 +795,7 @@ public class TBBS : MonoBehaviour
         yield return new WaitForSeconds(0.3f + 3 * TooltipUI.instance.scheduledTexts.Count);
 
         TooltipUI.instance.HideTooltipText();
-
+        isActionExecuting = false;
         if (attacker.HasAdditionalTurn())
         {
             StartNextTurn(false);
@@ -742,6 +812,7 @@ public class TBBS : MonoBehaviour
 
     IEnumerator AttackSequence(Unit attacker, Unit target, Abilities ability)
     {
+        isActionExecuting = true;
         Vector3 zOffset = playerUnits.Contains(attacker) ? Vector3.zero : Vector3.left;
         attacker.EndSelect();
         CameraManager.instance.ActivateAttackCamera();
@@ -848,7 +919,7 @@ public class TBBS : MonoBehaviour
         yield return new WaitForSeconds(0.3f + 3 * TooltipUI.instance.scheduledTexts.Count);
 
         TooltipUI.instance.HideTooltipText();
-
+        isActionExecuting = false;
         if (attacker.HasAdditionalTurn())
         {
             StartNextTurn(false);

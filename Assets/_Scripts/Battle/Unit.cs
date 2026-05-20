@@ -300,7 +300,16 @@ public class Unit : MonoBehaviour
         if (itemMenu == null) return;
         itemMenu.gameObject.SetActive(false);
 
-        for (int i = 0; i < knownAbilities.Length; i++)
+        List<Item> consumables = new List<Item>();
+        for (int i = 0; i < PlayerData.items.Count; i++)
+        {
+            if (PlayerData.items[i].isConsumible)
+            {
+                consumables.Add(PlayerData.items[i]);
+            }
+        }
+
+        for (int i = 0; i < consumables.Count; i++)
         {
             int index = i;
             itemButtons[index].onClick.RemoveAllListeners();

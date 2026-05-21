@@ -1,14 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.MemoryProfiler;
 using System.Linq;
 using GameData;
-using Unity.VisualScripting;
 using System.Collections;
-using UnityEngine.Rendering;
-using UnityEngine.UIElements;
 
 public class MapView : MonoBehaviour
 {

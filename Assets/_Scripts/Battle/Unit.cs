@@ -2,17 +2,9 @@ using Cinemachine;
 using GameData;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.Animations;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
-using static Unity.Collections.Unicode;
-using static UnityEngine.UI.CanvasScaler;
 public class Unit : MonoBehaviour
 {
     public Sprite icon;

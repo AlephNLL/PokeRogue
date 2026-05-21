@@ -1,12 +1,7 @@
-using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Hierarchy;
-using UnityEditor;
-using UnityEditor.Animations;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class LeftHandAnimatorHelper : MonoBehaviour
 {

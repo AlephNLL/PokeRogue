@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
   m_Name: LOL
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
-  name: 
+  name: LOL
   description: 
   sfx: {fileID: 0}
-  power: 0
-  accuracy: 0
+  power: 100000
+  accuracy: 100
   abilityType: 0
-  target: 0
+  target: 1
   stance: 0
   statToCalcDmgWith: 1
   mustUseStance: 0

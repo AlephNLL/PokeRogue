@@ -1,10 +1,6 @@
 using System;
 using System.Collections;
-using Unity.Hierarchy;
-using UnityEditor;
-using UnityEditor.Animations;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class HandAnimatorHelper : MonoBehaviour
 {

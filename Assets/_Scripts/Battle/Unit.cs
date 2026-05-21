@@ -127,10 +127,8 @@ public class Unit : MonoBehaviour
         {
             nameText = statusMenu.transform.Find("Panel").gameObject;
             nameText.gameObject.SetActive(true);
-            nameText.GetComponentInChildren<TextMeshProUGUI>(true).text = $"{name} Lvl: {level}";
+            nameText.GetComponentInChildren<TextMeshProUGUI>(true).text = $"{name} Lvl: {BattleData.enemyLevel}";
             nameText.GetComponentInChildren<TextMeshProUGUI>(true).gameObject.SetActive(true);
-
-
         }
     }
     public int GetRawStat(Stats stat, int monLevel)

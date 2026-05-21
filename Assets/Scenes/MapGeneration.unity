@@ -5055,6 +5055,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapManager
       objectReference: {fileID: 0}
+    - target: {fileID: 7245667063205552328, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: battleDifficulty
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: bosses.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'bosses.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: f3e52fa21ac5cc74dae5f132d416ebf1, type: 3}
     - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: enemyPool.Array.size
       value: 14

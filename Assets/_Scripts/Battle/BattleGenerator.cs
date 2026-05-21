@@ -9,6 +9,7 @@ public class BattleGenerator : MonoBehaviour
 
     [Header("Enemy Pools")]
     public GameObject[] enemyPool;
+    public GameObject[] bosses;
 
     public List<GameObject> cheapEnemies;
     public int cheapEnemyExtraCost = 0;
@@ -22,7 +23,7 @@ public class BattleGenerator : MonoBehaviour
         Instance = this;
     }
 
-    public void GenerateTeam(Difficulty difficulty)
+    public void GenerateTeam(Difficulty difficulty, bool isBoss = false)
     {
         int floorLevel = MapManager.instance.currentNode.floorLevel;
 
@@ -37,7 +38,7 @@ public class BattleGenerator : MonoBehaviour
         switch (difficulty)
         {
             case Difficulty.EASY:
-                minSize = 2; maxSize = 3;
+                minSize = 1; maxSize = 3;
                 budget = 150 + (floorLevel * 10);
                 break;
             case Difficulty.NORMAL:
@@ -72,13 +73,18 @@ public class BattleGenerator : MonoBehaviour
             totalBstInTeam += enemyBst;
         }
 
-        if (generatedTeam.Count == 0)
+        if (generatedTeam.Count < minSize)
         {
             GameObject weakestEnemy = enemyPool.OrderBy(e => GetEnemyCost(e)).First();
             generatedTeam.Add(weakestEnemy);
             totalBstInTeam += GetEnemyCost(weakestEnemy);
         }
 
+        if (isBoss)
+        {
+            if(generatedTeam.Count >= 4) generatedTeam.Remove(generatedTeam.OrderBy(e => GetEnemyCost(e)).First());
+            generatedTeam.Add(bosses[Random.Range(0, bosses.Length)]);
+        }
         BattleData.enemyTeam = generatedTeam.ToArray();
         BattleData.enemyLevel = finalEnemyLevel;
 

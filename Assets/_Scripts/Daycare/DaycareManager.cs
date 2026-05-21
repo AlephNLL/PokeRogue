@@ -121,6 +121,7 @@ public class DaycareManager : MonoBehaviour
         unit.knownAbilities = new List<Abilities>();
         unit.knownAbilities.Add(childAbility);
         unit.knownAbilities.Add(unit.prefab.GetComponent<Unit>().abilityPool[0]);
+        unit.knownAbilities.Add(unit.prefab.GetComponent<Unit>().abilityPool[1]);
 
         units.Remove(unit1);
         units.Remove(unit2);

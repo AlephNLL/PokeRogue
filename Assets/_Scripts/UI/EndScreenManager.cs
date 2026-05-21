@@ -4,6 +4,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class EndScreenManager : MonoBehaviour
@@ -138,7 +139,15 @@ public class EndScreenManager : MonoBehaviour
     public void BackToMapScreen()
     {
         AudioManager.instance.StopMusic();
-        MapManager.instance.LoadMapScene();
+        if (MapManager.instance.currentNode.roomType == GameData.RoomType.Boss)
+        {
+            SceneManager.LoadSceneAsync("Daycare");
+        }
+        else
+        {
+            MapManager.instance.mapCreated = false;
+            MapManager.instance.LoadMapScene();
+        }
     }
 
     public void ReturnToVictoryScreen()

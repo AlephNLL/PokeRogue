@@ -53,7 +53,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTexture:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 108b047bc0d96f643bbf339d0a3a403c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -134,10 +134,10 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BaseTextureColor: {r: 0.495283, g: 1, b: 0.9438302, a: 1}
+    - _BaseTextureColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FresnelColor: {r: 1, g: 0, b: 0.84548235, a: 0.8352941}
+    - _FresnelColor: {r: 1, g: 0, b: 0, a: 0.8352941}
     - _FresnelColor2: {r: 0.17122395, g: 2.4810178, b: 0, a: 0}
     - _OutlineColor: {r: 2.0474799, g: 2.0474799, b: 2.0474799, a: 0}
     - _OutlineColor2: {r: 1, g: 0, b: 0, a: 0}

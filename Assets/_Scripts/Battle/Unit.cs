@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.Animations;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
@@ -167,7 +168,7 @@ public class Unit : MonoBehaviour
             ApplyStatus(PlayerData.teamData.Find(item => item.id == id).status);
             heldItem = PlayerData.teamData.Find(item => item.id == id).heldItem;
         }
-        else 
+        else
         {
             level = BattleData.enemyLevel;
 
@@ -180,7 +181,7 @@ public class Unit : MonoBehaviour
             knownAbilities = GetUnitKnownAbilities(level).ToArray();
         }
 
-        
+
 
         if (currentHp < maxHp)
         {
@@ -286,7 +287,7 @@ public class Unit : MonoBehaviour
         for (int i = 0; i < consumables.Count; i++)
         {
             itemButtons[i].gameObject.SetActive(true);
-            itemButtons[i].interactable=true;
+            itemButtons[i].interactable = true;
             itemButtons[i].GetComponentInChildren<TMP_Text>().text = consumables[i].name;
 
             int index = i;
@@ -481,7 +482,6 @@ public class Unit : MonoBehaviour
         if (currentHp - dmgAmount <= 0)
         {
             currentHp = 0;
-            TBBS.instance.WaitingForDestroy(this);
         }
         else
         {
@@ -513,15 +513,25 @@ public class Unit : MonoBehaviour
             yield break;
         }
 
-        healthBar.gameObject.SetActive(true);   
+        healthBar.gameObject.SetActive(true);
         float t = 0;
         float startValue = healthBar.value;
         float endValue = (float)currentHp / maxHp;
 
-        if(startValue == endValue) yield break;
+        if (startValue == endValue) yield break;
 
         if (endValue > startValue) { FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.lightGreen); VFXManager.instance.SpawnGlobalEffect(VFX.HEAL, gameObject); }
         else { FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.red); VFXManager.instance.SpawnGlobalEffect(VFX.HIT, gameObject); }
+
+        if (currentHp == 0)
+        {
+            LeftHandAnimatorHelper.instance.MoveToPosition((transform.position) + LeftHandAnimatorHelper.instance.offsetFromFigureJoint(), 1.5f);
+            while (LeftHandAnimatorHelper.instance.isMoving) yield return null;
+            LeftHandAnimatorHelper.instance.ParentGrabbedObject(gameObject);
+            LeftHandAnimatorHelper.instance.SetHandTriggerParameter("flick");
+            yield return new WaitForSeconds(.8f);
+            LeftHandAnimatorHelper.instance.UnparentGrabbedObject();
+        }
 
         while (t < 1)
         {
@@ -620,14 +630,14 @@ public class Unit : MonoBehaviour
     {
         foreach (var ability in knownAbilities)
         {
-            if (ability.abilityType == AbilityType.PASSIVE && ability.passiveExecutionTime == battleStage && baseEffectChanceMulti*ability.passiveEffectChance + effectChanceModifier >= Random.Range(1, 100))
+            if (ability.abilityType == AbilityType.PASSIVE && ability.passiveExecutionTime == battleStage && baseEffectChanceMulti * ability.passiveEffectChance + effectChanceModifier >= Random.Range(1, 100))
             {
                 List<Unit> target = new List<Unit>();
                 List<Unit> allies = new List<Unit>(TBBS.instance.playerUnits);
                 allies.Remove(this);
                 List<Unit> enemies = new List<Unit>(TBBS.instance.enemyUnits);
 
-                if(allies.Count < 0) continue;
+                if (allies.Count < 0) continue;
 
                 switch (ability.target)
                 {
@@ -648,7 +658,7 @@ public class Unit : MonoBehaviour
                         break;
                     case AbilityTarget.ALL:
                         target.AddRange(TBBS.instance.allUnits);
-                        break ;
+                        break;
                     case AbilityTarget.LASTHIT:
                         if (lastHitUnit) target.Add(lastHitUnit);
                         break;
@@ -682,7 +692,7 @@ public class Unit : MonoBehaviour
                             for (int j = 0; j < target.Count; j++)
                             {
                                 target[j].ApplyStatModifier(ability.statToMod[i], ability.statMod[i]);
-                            }      
+                            }
                         }
                         break;
                     case PassiveEffects.ADDTURN:
@@ -732,7 +742,7 @@ public class Unit : MonoBehaviour
 
         Unit target = heldItem.affectSelf ? this : lastHitUnit;
 
-        if(heldItem.executionTime == battleStage && baseEffectChanceMulti*heldItem.effectChance + effectChanceModifier >= Random.Range(1, 100))
+        if (heldItem.executionTime == battleStage && baseEffectChanceMulti * heldItem.effectChance + effectChanceModifier >= Random.Range(1, 100))
         {
             switch (heldItem.effect)
             {
@@ -759,10 +769,10 @@ public class Unit : MonoBehaviour
 
     public void ApplyStatus(Status statusToApply)
     {
-        if(statusToApply == Status.NONE) return;
+        if (statusToApply == Status.NONE) return;
         if (status != Status.NONE) return;
 
-        if(HasPassive("Elusive Presence"))
+        if (HasPassive("Elusive Presence"))
         {
             TooltipUI.instance.ShowTooltipText($"{name}'s elusive presence blocks status changes");
             return;
@@ -774,7 +784,7 @@ public class Unit : MonoBehaviour
         ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
         ResolveItemEffect(ExecutionTime.ONSTATUSCHANGE);
 
-        if(statusToApply == Status.ASLEEP) StartSleepCounter();
+        if (statusToApply == Status.ASLEEP) StartSleepCounter();
     }
 
     public void CureStatus()

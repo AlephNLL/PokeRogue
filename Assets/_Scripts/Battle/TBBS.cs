@@ -705,6 +705,7 @@ public class TBBS : MonoBehaviour
 
         GameObject hand = HandAnimatorHelper.instance.gameObject;
         HandAnimatorHelper.instance.TeleportHandBehindCamera();
+        LeftHandAnimatorHelper.instance.TeleportHandBehindCamera();
 
         for (int i = 0; i < hits; i++)
         {

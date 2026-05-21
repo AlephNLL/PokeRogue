@@ -99,9 +99,6 @@ public class TBBS : MonoBehaviour
 
     public void StartNextTurn(bool activateTurnStartEffect = true)
     {
-        CameraManager.instance.ActivateMainCamera();
-
-        CameraManager.instance.SetBlendTime(1);
         // Detener la corrutina anterior si existe
         if (currentTurnCoroutine != null)
             StopCoroutine(currentTurnCoroutine);
@@ -117,12 +114,7 @@ public class TBBS : MonoBehaviour
         {
             if (IsBattleWon())
             {
-                Debug.Log("Win");
-                Debug.Log(playerUnits.Count);
-                TeamManager.instance.SaveTeamData(playerUnits);
-                EndScreenManager.instance.ShowVictoryScreen(playerUnits.ToArray(), capturableUnits.ToArray(), BattleData.goldReward, BattleData.expReward);
-                PlayerData.Instance.gold += BattleData.goldReward;
-                //StartCoroutine(EndBattle());
+                StartCoroutine(WinBattle());
                 return;
             }
             else
@@ -132,6 +124,10 @@ public class TBBS : MonoBehaviour
                 return;
             }
         }
+
+        CameraManager.instance.ActivateMainCamera();
+
+        CameraManager.instance.SetBlendTime(1);
 
         if (currentTurnIndex < allUnits.Count)
         {
@@ -167,6 +163,14 @@ public class TBBS : MonoBehaviour
         TooltipUI.instance.HideTooltipText();
         yield return new WaitForSeconds(2f);
         SceneManager.LoadSceneAsync("Daycare");
+    }
+
+    IEnumerator WinBattle()
+    {
+        TeamManager.instance.SaveTeamData(playerUnits);
+        while(LeftHandAnimatorHelper.instance.figuresToFling.Count > 0) yield return null;
+        EndScreenManager.instance.ShowVictoryScreen(playerUnits.ToArray(), capturableUnits.ToArray(), BattleData.goldReward, BattleData.expReward);
+        PlayerData.Instance.gold += BattleData.goldReward;
     }
 
     IEnumerator PlayerTurn(Unit currentUnit, bool activateTurnStartEffect = true)
@@ -714,6 +718,7 @@ public class TBBS : MonoBehaviour
 
         GameObject hand = HandAnimatorHelper.instance.gameObject;
         HandAnimatorHelper.instance.TeleportHandBehindCamera();
+        LeftHandAnimatorHelper.instance.TeleportHandBehindCamera();
 
         for (int i = 0; i < hits; i++)
         {
@@ -772,7 +777,7 @@ public class TBBS : MonoBehaviour
                 }
                 else
                 {
-                    HandAnimatorHelper.instance.MoveToPosition(new Vector3(visualTarget.transform.position.x, hand.transform.position.y, (visualTarget.transform.position.z) - 2.5f), .5f);
+                    HandAnimatorHelper.instance.MoveToPosition(new Vector3(visualTarget.transform.position.x, hand.transform.position.y, (visualTarget.transform.position.z)) + 2 * visualTarget.transform.forward, .5f);
                     while (HandAnimatorHelper.instance.isMoving) yield return null;
 
                     Vector3 attackerEndPos = attacker.transform.position;
@@ -905,7 +910,7 @@ public class TBBS : MonoBehaviour
                 }
                 else
                 {
-                    HandAnimatorHelper.instance.MoveToPosition(new Vector3(target.transform.position.x, hand.transform.position.y, (target.transform.position.z) - 2.5f), .5f);
+                    HandAnimatorHelper.instance.MoveToPosition(new Vector3(target.transform.position.x, hand.transform.position.y, (target.transform.position.z)) + 2*target.transform.forward, .5f);
                     while (HandAnimatorHelper.instance.isMoving) yield return null;
 
                     Vector3 attackerEndPos = attacker.transform.position;

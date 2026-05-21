@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Unity.Hierarchy;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 
@@ -10,7 +11,7 @@ public class HandAnimatorHelper : MonoBehaviour
     public static HandAnimatorHelper instance;
     public static Action onAnimationEnd;
     [SerializeField] GameObject grabbedObject;
-    [SerializeField] GameObject baseFigureJoint;
+    [SerializeField] public GameObject baseFigureJoint;
 
     public bool isMoving = false;
     Vector3 defaultPosition;
@@ -22,6 +23,7 @@ public class HandAnimatorHelper : MonoBehaviour
     }
     public void UnparentGrabbedObject()
     {
+        if (grabbedObject == null) return;
         grabbedObject.transform.parent = null;
         grabbedObject = null;
     }
@@ -62,7 +64,7 @@ public class HandAnimatorHelper : MonoBehaviour
 
     public void MoveToPosition(Vector3 destination, float duration)
     {
-        if(transform.position == destination) return;
+        if (transform.position == destination) return;
         if (!isMoving)
         {
             StartCoroutine(Move(destination, duration));
@@ -186,6 +188,16 @@ public class HandAnimatorHelper : MonoBehaviour
     {
         GameObject cameraBrain = GameObject.FindGameObjectWithTag("MainCamera");
         gameObject.transform.position = new Vector3(cameraBrain.transform.position.x, 0.45f, (cameraBrain.transform.position.z)) - new Vector3(3, 0, 1);
+    }
+
+    public Vector3 offsetFromFigureJoint()
+    {
+        Vector3 handPos = transform.position;
+        Vector3 basePosition = baseFigureJoint.transform.position;
+
+        Vector3 offset = handPos - basePosition;
+
+        return offset;
     }
 
     private void OnDestroy()

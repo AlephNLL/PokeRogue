@@ -2803,10 +2803,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DaycareManager
   startingUnits:
-  - {fileID: 11400000, guid: 925d57a2d96d39c4999a373ea3ddba4e, type: 2}
-  - {fileID: 11400000, guid: 86a7d95dde3aab04086db209e33f9886, type: 2}
-  - {fileID: 11400000, guid: 86a7d95dde3aab04086db209e33f9886, type: 2}
-  - {fileID: 11400000, guid: 86a7d95dde3aab04086db209e33f9886, type: 2}
+  - {fileID: 11400000, guid: 5971045b21bb04143a7a51ce68554c9d, type: 2}
+  - {fileID: 11400000, guid: b7743b243892b4448a234209e554b4ca, type: 2}
+  - {fileID: 11400000, guid: c6f28d7ef82f1c147a25193d8147b26e, type: 2}
+  - {fileID: 11400000, guid: 2a494ca251038a149bd260e708126cc6, type: 2}
+  - {fileID: 11400000, guid: f8d01f3225c12654cb8482d8a0cd255a, type: 2}
+  - {fileID: 11400000, guid: 18de7ca54f07673498c6a2789d552b09, type: 2}
   unitPrefabs: []
   maxUnits: 20
   spawnPoint: {fileID: 1077428975}

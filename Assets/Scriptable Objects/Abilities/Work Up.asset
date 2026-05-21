@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Work Up
   m_EditorClassIdentifier: 
   name: Work Up
-  description: Motivates all allies into agressive stance
+  description: Motivates himself into agressive stance
+  sfx: {fileID: 0}
   power: 0
   accuracy: 100
   abilityType: 0
@@ -25,6 +26,7 @@ MonoBehaviour:
   multiHitRange: 0
   hits: 0
   hitRange: 
+  endOnMiss: 0
   passiveEffects: 0
   passiveExecutionTime: 1
   passiveEffectChance: 0

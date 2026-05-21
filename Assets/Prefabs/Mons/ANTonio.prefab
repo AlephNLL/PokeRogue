@@ -810,13 +810,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: c7fe96ed2ecf21d4f9aa0b8b684940ea, type: 3}
   id: 0
-  name: Caracston
+  name: ANTonio
   description: 
-  currentStance: 1
+  currentStance: 2
   level: 1
   exp: 0
+  expCurve: {fileID: 11400000, guid: 42eec143c7464c24889a7a724a74e69f, type: 2}
   status: 0
-  strength: 12
+  strength: 15
   constitution: 12
   dexterity: 25
   luck: 7
@@ -828,11 +829,22 @@ MonoBehaviour:
   precision: 1
   knownAbilities: []
   abilityPool:
-  - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}
-  - {fileID: 11400000, guid: 1c10fb9f488085d4aaf6c6a22e96fd23, type: 2}
-  - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
-  - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
+  - {fileID: 11400000, guid: a04a8efcba5956245881f681a6a2bf72, type: 2}
+  - {fileID: 11400000, guid: 7e6f0397e13c26845a63dcce1a82627f, type: 2}
+  - {fileID: 11400000, guid: 7c519b83ede18284a8c92606d4d5ea92, type: 2}
+  - {fileID: 11400000, guid: e664bd8dc9d242645a35b522860ed38b, type: 2}
+  - {fileID: 11400000, guid: 059a4631f8bd5b04e99d4f8d3c921817, type: 2}
+  - {fileID: 11400000, guid: e06005e01a42a124488d4ce2537658f0, type: 2}
+  - {fileID: 11400000, guid: ead58990d24ca4849b46459f0a698a8f, type: 2}
+  - {fileID: 11400000, guid: 0711ac01ad7e45642981e27221c47b02, type: 2}
+  - {fileID: 11400000, guid: 4de5d42472953b242ad9d2db3d5e819b, type: 2}
+  - {fileID: 11400000, guid: b76f7e234d3da514d9a1804eb3875b35, type: 2}
+  - {fileID: 11400000, guid: 77bccabd9cf09c342abefb272c8d34bd, type: 2}
   heldItem: {fileID: 0}
+  evasive: 0
+  provoking: 0
+  guardedBy: {fileID: 0}
+  timesBuffed: 0
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
   battleMenu: {fileID: 0}
@@ -854,6 +866,7 @@ MonoBehaviour:
   additionalTurn: 0
   skipTurn: 0
   takingDamage: 0
+  baseEffectChanceMulti: 1
   effectChanceModifier: 0
 --- !u!1 &1760726793352929564
 GameObject:

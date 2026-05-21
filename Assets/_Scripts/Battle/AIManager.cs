@@ -28,54 +28,54 @@ public class AIManager : MonoBehaviour
             }
         }
 
-        List<Unit> allies = new List<Unit>(AIAllies);
-        var tiedDamageOptions = new List<(AIScore scoreMap, int abilityIdx, int targetIdx)>();
-        int maxDamageFound = 0;
+        //List<Unit> allies = new List<Unit>(AIAllies);
+        //var tiedDamageOptions = new List<(AIScore scoreMap, int abilityIdx, int targetIdx)>();
+        //int maxDamageFound = 0;
 
         // Recorremos de forma emparejada cada habilidad y cada uno de sus objetivos calculando su daño real
-        for (int i = 0; i < scores.Length; i++)
-        {
-            for (int j = 0; j < scores[i].scores.Length; j++)
-            {
-                if (allies.Contains(scores[i].targets[j])) continue;
+        //for (int i = 0; i < scores.Length; i++)
+        //{
+        //    for (int j = 0; j < scores[i].scores.Length; j++)
+        //    {
+        //        if (allies.Contains(scores[i].targets[j])) continue;
 
-                int currentDmg = CalculateAttackDamage(controlledUnit, scores[i].targets[j], activeAbilities[i]);
+        //        int currentDmg = CalculateAttackDamage(controlledUnit, scores[i].targets[j], activeAbilities[i]);
 
-                if (activeAbilities[i].power <= 0 || currentDmg <= 0) continue;
+        //        if (activeAbilities[i].power <= 0 || currentDmg <= 0) continue;
 
-                if (currentDmg > maxDamageFound)
-                {
-                    maxDamageFound = currentDmg;
-                    tiedDamageOptions.Clear();
-                    tiedDamageOptions.Add((scores[i], i, j));
-                }
-                else if (currentDmg == maxDamageFound)
-                {
-                    tiedDamageOptions.Add((scores[i], i, j));
-                }
-            }
-        }
+        //        if (currentDmg > maxDamageFound)
+        //        {
+        //            maxDamageFound = currentDmg;
+        //            tiedDamageOptions.Clear();
+        //            tiedDamageOptions.Add((scores[i], i, j));
+        //        }
+        //        else if (currentDmg == maxDamageFound)
+        //        {
+        //            tiedDamageOptions.Add((scores[i], i, j));
+        //        }
+        //    }
+        //}
 
-        if (tiedDamageOptions.Count > 0)
-        {
-            int randomIndex = UnityEngine.Random.Range(0, tiedDamageOptions.Count);
-            var chosenOption = tiedDamageOptions[randomIndex];
+        //if (tiedDamageOptions.Count > 0)
+        //{
+        //    int randomIndex = UnityEngine.Random.Range(0, tiedDamageOptions.Count);
+        //    var chosenOption = tiedDamageOptions[randomIndex];
 
-            Unit target = chosenOption.scoreMap.targets[chosenOption.targetIdx];
+        //    Unit target = chosenOption.scoreMap.targets[chosenOption.targetIdx];
 
-            if (tiedDamageOptions.Count > 1)
-            {
-                Debug.Log($"<color=yellow>[AI] ¡Empate de daño detectado! Había {tiedDamageOptions.Count} opciones válidas que hacían el daño máximo de ({maxDamageFound}). " +
-                          $"Se eligió al azar la habilidad <b>{activeAbilities[chosenOption.abilityIdx].name}</b> contra el objetivo <b>{target.name}</b>.</color>");
-            }
+        //    if (tiedDamageOptions.Count > 1)
+        //    {
+        //        Debug.Log($"<color=yellow>[AI] ¡Empate de daño detectado! Había {tiedDamageOptions.Count} opciones válidas que hacían el daño máximo de ({maxDamageFound}). " +
+        //                  $"Se eligió al azar la habilidad <b>{activeAbilities[chosenOption.abilityIdx].name}</b> contra el objetivo <b>{target.name}</b>.</color>");
+        //    }
 
-            chosenOption.scoreMap.scores[chosenOption.targetIdx] += 6;
+        //    chosenOption.scoreMap.scores[chosenOption.targetIdx] += 6;
 
-            Debug.Log($"<color=orange>[AI] ¡Bonus de Daño! Se aplica un +6 a <b>{activeAbilities[chosenOption.abilityIdx].name}</b> contra {target.name}.</color>");
-        }
+        //    Debug.Log($"<color=orange>[AI] ¡Bonus de Daño! Se aplica un +6 a <b>{activeAbilities[chosenOption.abilityIdx].name}</b> contra {target.name}.</color>");
+        //}
 
-        Abilities bestAbility = null;
-        Unit bestTarget = null;
+        List<Abilities> bestAbilities = new List<Abilities>();
+        List<Unit> bestTargets = new List<Unit>();
         int highestScoreValue = int.MinValue;
 
         for (int i = 0; i < scores.Length; i++)
@@ -85,11 +85,26 @@ public class AIManager : MonoBehaviour
                 if (scores[i].scores[j] > highestScoreValue)
                 {
                     highestScoreValue = scores[i].scores[j];
-                    bestAbility = activeAbilities[i];
-                    bestTarget = scores[i].targets[j];
+                    bestAbilities.Clear();
+                    bestAbilities.Add(activeAbilities[i]);
+                    bestTargets.Clear();
+                    bestTargets.Add(scores[i].targets[j]);
+                }
+
+                if (scores[i].scores[j] == highestScoreValue)
+                {
+                    bestAbilities.Add(activeAbilities[i]);
+                    bestTargets.Add(scores[i].targets[j]);
                 }
             }
         }
+
+        if(highestScoreValue < 0) return new AIAction { skip = true };
+
+        int randomIndex = UnityEngine.Random.Range(0, bestAbilities.Count);
+
+        Abilities bestAbility = bestAbilities[randomIndex];
+        Unit bestTarget = bestTargets[randomIndex];
 
         AIAction finalAction = new AIAction();
 
@@ -139,11 +154,11 @@ public class AIManager : MonoBehaviour
         for (int i = 0; i < score.targets.Length; i++)
         {
             //Habilidades ofensivas
-            if (ability.power > 0)
+            if (ability.power > 0 && !ability.HasEffect(AbilityEffect.HEALATTACK))
             {
                 if (CalculateAttackDamage(controlledUnit, score.targets[i], ability) >= score.targets[i].currentHp)
                 {
-                    score.scores[i] += 6;
+                    score.scores[i] += 12;
                 }
                 if (ability.HasEffect(AbilityEffect.RAISEDCRITCHANCE) || ability.HasEffect(AbilityEffect.FLINCH))
                 {
@@ -261,21 +276,24 @@ public class AIManager : MonoBehaviour
                 if (ability.target == AbilityTarget.SELF || ability.target == AbilityTarget.ONEALLY || ability.target == AbilityTarget.ALLALLIES || ability.affectSelf)
                 {
                     Abilities bestAbility = ability.affectSelf ? GetHighestPowerAbility(controlledUnit) : GetHighestPowerAbility(score.targets[i]);
-                    if (bestAbility.mustUseStance && ability.stanceToChangeTo == bestAbility.stance)
+                    if (bestAbility)
                     {
-                        score.scores[i] += 6;
-                    }
-                    if (!(ability.target == AbilityTarget.ONEENEMY || ability.target == AbilityTarget.ALLENEMIES) && GetUnusableAbilities(score.targets[i], ability.stanceToChangeTo).Length > 2)
-                    {
-                        score.scores[i] -= 10;
+                        if (bestAbility.mustUseStance && ability.stanceToChangeTo == bestAbility.stance)
+                        {
+                            score.scores[i] += 6;
+                        }
+                        if (!(ability.target == AbilityTarget.ONEENEMY || ability.target == AbilityTarget.ALLENEMIES) && GetUnusableAbilities(score.targets[i], ability.stanceToChangeTo).Length > 2)
+                        {
+                            score.scores[i] -= 10;
+                        }
                     }
                 }
             }
 
             //Curaciones
-            if (ability.HasEffect(AbilityEffect.HEAL))
+            if (ability.HasEffect(AbilityEffect.HEAL) || ability.HasEffect(AbilityEffect.HEALATTACK))
             {
-                if(score.targets[i].currentHp <= score.targets[i].maxHp / 2)
+                if(score.targets[i].currentHp <= score.targets[i].maxHp / 2f)
                 {
                     score.scores[i] += RandomScore(6, 8);
                 }
@@ -301,6 +319,28 @@ public class AIManager : MonoBehaviour
             else if(ability.target == AbilityTarget.ALL)
             {
                 score.scores[i] += 3;
+            }
+
+            if (ability.HasEffect(AbilityEffect.SETEVASIVE) && AIAllies.Length > 0 && controlledUnit.currentHp <= controlledUnit.maxHp/2f)
+            {
+                score.scores[i] += RandomScore(6, 8);
+            }
+
+            if (ability.HasEffect(AbilityEffect.PROVOKE) && AIAllies.Length > 1 && controlledUnit.currentHp >= 3f*controlledUnit.maxHp / 2)
+            {
+                score.scores[i] += RandomScore(6, 8);
+            }
+
+            if (ability.HasEffect(AbilityEffect.SETGUARDIAN))
+            {
+                if (AIAllies.Length > 0 && controlledUnit.currentHp <= controlledUnit.maxHp / 2f && score.targets[i].constitution >= 16)
+                {
+                    score.scores[i] += RandomScore(6, 8);
+                }
+                else if (AIAllies.Length == 0)
+                {
+                    score.scores[i] -= 10;
+                }
             }
         }
 
@@ -378,7 +418,7 @@ public class AIManager : MonoBehaviour
         float baseDamage = ((2 * attacker.level + 2) * .1f * power * attackStat) / (5.0f * defenseStat);
         float totalBeforeModifiers = baseDamage + 2;
         float finalDamageFloat = totalBeforeModifiers * efficacy * stanceBonus * roll * freezeMod;
-        int damage = Mathf.FloorToInt(finalDamageFloat);
+        int damage = Mathf.FloorToInt(finalDamageFloat * target.recivedDamageMultiplier);
 
         if (damage <= 0) damage = 1;
 
@@ -390,13 +430,13 @@ public class AIManager : MonoBehaviour
         switch (abilityStance)
         {
             case Stance.AGRESSIVE:
-                if (defenderStance == Stance.AGILE) return 2f;
+                if (defenderStance == Stance.AGILE) return 1.5f;
                 else return 1;
             case Stance.DEFENSIVE:
-                if (defenderStance == Stance.AGRESSIVE) return 2f;
+                if (defenderStance == Stance.AGRESSIVE) return 1.5f;
                 else return 1;
             case Stance.AGILE:
-                if (defenderStance == Stance.DEFENSIVE) return 2f;
+                if (defenderStance == Stance.DEFENSIVE) return 1.5f;
                 else return 1;
             case Stance.CAUTIOUS:
                 return 1;

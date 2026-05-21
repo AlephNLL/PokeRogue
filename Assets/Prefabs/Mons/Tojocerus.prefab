@@ -810,15 +810,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: 3798e760d135c7540a3eea037fe16197, type: 3}
   id: 0
-  name: Caracston
+  name: Tojocerus
   description: 
-  currentStance: 1
+  currentStance: 0
   level: 1
   exp: 0
+  expCurve: {fileID: 11400000, guid: 42eec143c7464c24889a7a724a74e69f, type: 2}
   status: 0
+  recivedDamageMultiplier: 0
   strength: 24
   constitution: 18
-  dexterity: 14
+  dexterity: 12
   luck: 8
   maxHp: 0
   currentHp: 0
@@ -828,11 +830,22 @@ MonoBehaviour:
   precision: 1
   knownAbilities: []
   abilityPool:
-  - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}
-  - {fileID: 11400000, guid: 1c10fb9f488085d4aaf6c6a22e96fd23, type: 2}
+  - {fileID: 11400000, guid: 03eea5717f97d5c4eb16a78f01b766b4, type: 2}
   - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
-  - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
+  - {fileID: 11400000, guid: e664bd8dc9d242645a35b522860ed38b, type: 2}
+  - {fileID: 11400000, guid: 7c519b83ede18284a8c92606d4d5ea92, type: 2}
+  - {fileID: 11400000, guid: 29ee25fd5cda68b4088baa3c18af3228, type: 2}
+  - {fileID: 11400000, guid: a3d2052e3f8eaeb428931de9ebd4f6cd, type: 2}
+  - {fileID: 11400000, guid: 1e37c0a4da7d926488fa4a8501363846, type: 2}
+  - {fileID: 11400000, guid: 81a8ad3b35636334b81ca5040c985f0b, type: 2}
+  - {fileID: 11400000, guid: ef163d4b1bbf7714aadd67c3b3b060e1, type: 2}
+  - {fileID: 11400000, guid: d0ad89c7a464fe44b833d72d73b08579, type: 2}
+  - {fileID: 11400000, guid: bba6ea75d3c8cae498b651d0a2129696, type: 2}
   heldItem: {fileID: 0}
+  evasive: 0
+  provoking: 0
+  guardedBy: {fileID: 0}
+  timesBuffed: 0
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
   battleMenu: {fileID: 0}
@@ -854,6 +867,7 @@ MonoBehaviour:
   additionalTurn: 0
   skipTurn: 0
   takingDamage: 0
+  baseEffectChanceMulti: 1
   effectChanceModifier: 0
 --- !u!1 &1760726793352929564
 GameObject:

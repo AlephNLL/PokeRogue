@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Slacker
   m_EditorClassIdentifier: 
   name: Slacker
-  description: 33% chance to skip turn.
+  description: 15% chance to skip turn.
   sfx: {fileID: 0}
   power: 0
   accuracy: 0

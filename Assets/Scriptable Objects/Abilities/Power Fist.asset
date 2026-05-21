@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
-  m_Name: Arsonist
-  m_EditorClassIdentifier: 
-  name: Arsonist
-  description: Has a chance to burn foes on hit.
+  m_Name: Power Fist
+  m_EditorClassIdentifier: Assembly-CSharp::Abilities
+  name: Power Fist
+  description: 'Has a chance to lower defense '
   sfx: {fileID: 0}
-  power: 0
-  accuracy: 0
-  abilityType: 1
-  target: 7
+  power: 40
+  accuracy: 100
+  abilityType: 0
+  target: 1
   stance: 0
   statToCalcDmgWith: 1
   mustUseStance: 0
@@ -27,13 +27,13 @@ MonoBehaviour:
   hits: 0
   hitRange: 
   endOnMiss: 0
-  passiveEffects: 4
-  passiveExecutionTime: 3
-  passiveEffectChance: 10
-  status: 1
-  effect1: 0
+  passiveEffects: 0
+  passiveExecutionTime: 0
+  passiveEffectChance: 0
+  status: 0
+  effect1: 2
   condition1: 0
-  effect1Chance: 0
+  effect1Chance: 50
   effect2: 0
   condition2: 0
   effect2Chance: 0
@@ -41,8 +41,9 @@ MonoBehaviour:
   stanceToChangeTo: 0
   stanceCondition: 0
   healPercentage: 0
-  statToMod: 
-  statMod: []
+  statToMod: 02000000
+  statMod:
+  - 0.75
   powerVariables: 0
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

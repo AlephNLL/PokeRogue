@@ -487,6 +487,8 @@ public class Unit : MonoBehaviour
         if (currentHp - dmgAmount <= 0)
         {
             currentHp = 0;
+            TBBS.instance.WaitingForDestroy(this);
+            LeftHandAnimatorHelper.instance.TryFlick(this);
         }
         else
         {
@@ -503,6 +505,7 @@ public class Unit : MonoBehaviour
         {
             currentHp = 0;
             TBBS.instance.WaitingForDestroy(this);
+            LeftHandAnimatorHelper.instance.TryFlick(this);
         }
 
         StartCoroutine(UpdateHealthBar());
@@ -528,16 +531,6 @@ public class Unit : MonoBehaviour
         if (endValue > startValue) { FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.lightGreen); VFXManager.instance.SpawnGlobalEffect(VFX.HEAL, gameObject); }
         else { FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.red); VFXManager.instance.SpawnGlobalEffect(VFX.HIT, gameObject); }
 
-        if (currentHp == 0)
-        {
-            LeftHandAnimatorHelper.instance.MoveToPosition((transform.position) + LeftHandAnimatorHelper.instance.offsetFromFigureJoint(), 1.5f);
-            while (LeftHandAnimatorHelper.instance.isMoving) yield return null;
-            LeftHandAnimatorHelper.instance.ParentGrabbedObject(gameObject);
-            LeftHandAnimatorHelper.instance.SetHandTriggerParameter("flick");
-            yield return new WaitForSeconds(.8f);
-            LeftHandAnimatorHelper.instance.UnparentGrabbedObject();
-        }
-
         while (t < 1)
         {
             healthBar.value = Mathf.Lerp(startValue, endValue, t);
@@ -552,13 +545,13 @@ public class Unit : MonoBehaviour
 
         takingDamage = false;
 
-        if (currentHp == 0)
-        {
-            Death();
-        }
+        //if (currentHp == 0)
+        //{
+        //    Death();
+        //}
     }
 
-    void Death()
+    public void Death()
     {
         ResolvePassiveEffect(ExecutionTime.ONDEATH);
         Destroy(gameObject);

@@ -1,5 +1,7 @@
+using NUnit.Framework;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Hierarchy;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -15,6 +17,12 @@ public class LeftHandAnimatorHelper : MonoBehaviour
 
     public bool isMoving = false;
     Vector3 defaultPosition;
+
+    public List<GameObject> figuresToFling = new List<GameObject>();
+
+    Vector3 startBaseJointPosition;
+    Quaternion startBaseJointRotation;
+
 
     private void Awake()
     {
@@ -202,5 +210,39 @@ public class LeftHandAnimatorHelper : MonoBehaviour
     private void OnDestroy()
     {
         onAnimationEnd -= ResetRotation;
+    }
+
+    public void TryFlick(Unit unit)
+    {
+
+       startBaseJointPosition = baseFigureJoint.transform.localPosition;
+       startBaseJointRotation = baseFigureJoint.transform.localRotation;
+
+        if (figuresToFling.Count > 0)
+        {
+            figuresToFling.Add(unit.gameObject);
+        }
+        else
+        {
+            figuresToFling.Add(unit.gameObject);
+            StartCoroutine(Flick());
+        }
+    }
+
+    IEnumerator Flick()
+    {
+
+        baseFigureJoint.transform.SetLocalPositionAndRotation(startBaseJointPosition, startBaseJointRotation);
+
+        MoveToPosition(figuresToFling[0].transform.position + offsetFromFigureJoint(), .8f);
+        while (isMoving) yield return null;
+        ParentGrabbedObject(figuresToFling[0]);
+        SetHandTriggerParameter("flick");
+        yield return new WaitForSeconds(.8f);
+        UnparentGrabbedObject();
+        //MoveToDefaultPosition(1f);
+        figuresToFling[0].GetComponent<Unit>().Death();
+        figuresToFling.RemoveAt(0);
+        if (figuresToFling.Count > 0) StartCoroutine(Flick());
     }
 }

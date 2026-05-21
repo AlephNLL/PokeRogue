@@ -37,16 +37,16 @@ public class BattleGenerator : MonoBehaviour
         switch (difficulty)
         {
             case Difficulty.EASY:
-                minSize = 1; maxSize = 3;
-                budget = 100 + (floorLevel * 10);
+                minSize = 2; maxSize = 3;
+                budget = 150 + (floorLevel * 10);
                 break;
             case Difficulty.NORMAL:
-                minSize = 1; maxSize = 4;
-                budget = 150 + (floorLevel * 15);
+                minSize = 2; maxSize = 4;
+                budget = 250 + (floorLevel * 15);
                 break;
             case Difficulty.HARD:
                 minSize = 2; maxSize = 5;
-                budget = 250 + (floorLevel * 20);
+                budget = 350 + (floorLevel * 20);
                 break;
             default:
                 return;

@@ -112,7 +112,7 @@ public class TeamManager : MonoBehaviour
         Unit unit = mon.GetComponent<Unit>();
 
         UnitData unitData = ScriptableObject.CreateInstance<UnitData>();
-        unitData.currentHp = unit.constitution * unit.level + 1;
+        unitData.currentHp = unit.GetRawStat(Stats.HP, BattleData.enemyLevel);
         unitData.id = PlayerData.teamData.Count;
         unitData.level = BattleData.enemyLevel;
         unitData.name = unit.name;

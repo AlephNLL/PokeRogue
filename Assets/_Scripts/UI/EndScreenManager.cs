@@ -16,7 +16,6 @@ public class EndScreenManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI goldText;
     [SerializeField] TextMeshProUGUI expText;
     [SerializeField] TextMeshProUGUI selectMonText;
-    GameObject monToCapture;
     static bool dontShowConfirmScreen = false;
     public static bool monSelected = false;
     List<GameObject> monButtons;
@@ -39,7 +38,10 @@ public class EndScreenManager : MonoBehaviour
             GameObject monButton = Instantiate(monSelectionButtonPrefab, endScreen.transform);
             monButton.GetComponent<RectTransform>().localPosition = new Vector3(250 * (i - (enemyMons.Length - 1) / 2f), -250, 0);
             monButton.GetComponentInChildren<TextMeshProUGUI>().text = enemyMons[i].name;
-            monToCapture = enemyMons[i];
+            
+            int index = i;
+            GameObject monToCapture = enemyMons[index];
+
             monButton.GetComponent<Button>().onClick.AddListener(delegate { TeamManager.instance.AddNewTeamMember(monToCapture); });
             monButtons.Add(monButton);
             monButton.GetComponent<Image>().sprite = monToCapture.GetComponent<Unit>().icon;

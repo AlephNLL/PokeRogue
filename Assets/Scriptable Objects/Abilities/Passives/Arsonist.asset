@@ -29,7 +29,7 @@ MonoBehaviour:
   endOnMiss: 0
   passiveEffects: 4
   passiveExecutionTime: 3
-  passiveEffectChance: 100
+  passiveEffectChance: 10
   status: 1
   effect1: 0
   condition1: 0

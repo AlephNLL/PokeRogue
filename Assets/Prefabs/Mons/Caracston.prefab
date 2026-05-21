@@ -817,10 +817,11 @@ MonoBehaviour:
   exp: 0
   expCurve: {fileID: 11400000, guid: 42eec143c7464c24889a7a724a74e69f, type: 2}
   status: 0
+  recivedDamageMultiplier: 0
   strength: 16
-  constitution: 5
+  constitution: 18
   dexterity: 11
-  luck: 2
+  luck: 4
   maxHp: 0
   currentHp: 0
   attack: 0
@@ -829,10 +830,17 @@ MonoBehaviour:
   precision: 1
   knownAbilities: []
   abilityPool:
-  - {fileID: 11400000, guid: 923c42d4c897604469479eada06a035a, type: 2}
-  - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
-  - {fileID: 11400000, guid: a825e7f4db9e8754c881c4e10150de8a, type: 2}
-  - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
+  - {fileID: 11400000, guid: d74da88247740e94e9a2cad04024bf3e, type: 2}
+  - {fileID: 11400000, guid: 4da41906e99ae474682c1bbb2d4f1b00, type: 2}
+  - {fileID: 11400000, guid: 577735c2d58df8d4a8282299d8bdc329, type: 2}
+  - {fileID: 11400000, guid: 1c10fb9f488085d4aaf6c6a22e96fd23, type: 2}
+  - {fileID: 11400000, guid: 1e37c0a4da7d926488fa4a8501363846, type: 2}
+  - {fileID: 11400000, guid: 556c490a905fb924fb18136800f1aab5, type: 2}
+  - {fileID: 11400000, guid: 5bea5b4745397354cb76917bc0ac6f14, type: 2}
+  - {fileID: 11400000, guid: c583e110ba48b154381c7ff373545d1d, type: 2}
+  - {fileID: 11400000, guid: a165a97d43c1fef4db6dbb316b38569e, type: 2}
+  - {fileID: 11400000, guid: 2251ef1496db6b54b877601923aefaaf, type: 2}
+  - {fileID: 11400000, guid: 981164e655a51834ea8a62269754f7d3, type: 2}
   heldItem: {fileID: 0}
   evasive: 0
   provoking: 0

@@ -817,10 +817,10 @@ MonoBehaviour:
   exp: 0
   expCurve: {fileID: 11400000, guid: 42eec143c7464c24889a7a724a74e69f, type: 2}
   status: 0
-  strength: 8
-  constitution: 10
-  dexterity: 20
-  luck: 18
+  strength: 11
+  constitution: 11
+  dexterity: 15
+  luck: 20
   maxHp: 0
   currentHp: 0
   attack: 0
@@ -831,13 +831,20 @@ MonoBehaviour:
   abilityPool:
   - {fileID: 11400000, guid: 849a9d9df5518e347b9c07d1b8aecbcd, type: 2}
   - {fileID: 11400000, guid: afa659248be8f7140b50d621b18ddf54, type: 2}
+  - {fileID: 11400000, guid: 1e1eb35cd1587e44c88161415cb68e04, type: 2}
   - {fileID: 11400000, guid: 55ba7787e420eb34ba33206315392df9, type: 2}
   - {fileID: 11400000, guid: 5685ac1d3d90dad45b0434627c96ebdd, type: 2}
   - {fileID: 11400000, guid: 723a75a4d1c375948bd4ffb24467d9fa, type: 2}
+  - {fileID: 11400000, guid: b45f215236b52d643a2b21b878d3210a, type: 2}
+  - {fileID: 11400000, guid: ded38d84878cfc649a4ba07942b15c03, type: 2}
+  - {fileID: 11400000, guid: 8534bf41cde3f664ebaa31c5335e6bde, type: 2}
+  - {fileID: 11400000, guid: ed7b319024c905444a2ac9b0e785cac1, type: 2}
+  - {fileID: 11400000, guid: e77861d479567bf4f81cdf8128283422, type: 2}
   heldItem: {fileID: 0}
   evasive: 0
   provoking: 0
   guardedBy: {fileID: 0}
+  timesBuffed: 0
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
   battleMenu: {fileID: 0}
@@ -859,6 +866,7 @@ MonoBehaviour:
   additionalTurn: 0
   skipTurn: 0
   takingDamage: 0
+  baseEffectChanceMulti: 1
   effectChanceModifier: 0
 --- !u!1 &1760726793352929564
 GameObject:

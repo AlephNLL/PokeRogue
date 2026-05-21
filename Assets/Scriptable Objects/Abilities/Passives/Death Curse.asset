@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Death Curse
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Death Curse
-  description: Lowers all stats to the murdering foe.
+  description: Lowers attack and defense to the murdering foe.
   sfx: {fileID: 0}
   power: 0
   accuracy: 0
@@ -41,13 +41,10 @@ MonoBehaviour:
   stanceToChangeTo: 0
   stanceCondition: 0
   healPercentage: 0
-  statToMod: 0100000002000000030000000400000005000000
+  statToMod: 0100000002000000
   statMod:
-  - 0.5
-  - 0.5
-  - 0.5
-  - 0.5
-  - 0.5
+  - 0.75
+  - 0.75
   powerVariables: 0
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

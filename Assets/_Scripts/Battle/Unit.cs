@@ -6,7 +6,9 @@ using System.Drawing;
 using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.Animations;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 using static Unity.Collections.Unicode;
@@ -24,6 +26,7 @@ public class Unit : MonoBehaviour
     public Status status;
     private float stanceModifier = 1.5f;
 
+    public float recivedDamageMultiplier = 1f;
 
     public int strength;
     public int constitution;
@@ -109,6 +112,8 @@ public class Unit : MonoBehaviour
 
         healthBar = statusMenu.transform.Find("Health Bar").gameObject.GetComponentInChildren<Slider>();
 
+        recivedDamageMultiplier = 1f;
+
         if (isPlayerControlled)
         {
             actionCamera = transform.Find("ActionCamera").gameObject.GetComponent<CinemachineVirtualCamera>();
@@ -122,6 +127,7 @@ public class Unit : MonoBehaviour
             attackButton = battleMenu.GetComponentsInChildren<Button>(true)[0];
             itemButton = battleMenu.GetComponentsInChildren<Button>(true)[1];
             runButton = battleMenu.GetComponentsInChildren<Button>(true)[2];
+            runButton.GetComponentInChildren<TMP_Text>().text = "Defend";
             abilityButtons = abilityMenu.GetComponentsInChildren<Button>(true);
             itemButtons = itemMenu.GetComponentsInChildren<Button>(true);
         }
@@ -129,7 +135,7 @@ public class Unit : MonoBehaviour
         {
             nameText = statusMenu.transform.Find("Panel").gameObject;
             nameText.gameObject.SetActive(true);
-            nameText.GetComponentInChildren<TextMeshProUGUI>(true).text = name;
+            nameText.GetComponentInChildren<TextMeshProUGUI>(true).text = $"{name} Lvl: {level}";
             nameText.GetComponentInChildren<TextMeshProUGUI>(true).gameObject.SetActive(true);
 
 
@@ -140,11 +146,11 @@ public class Unit : MonoBehaviour
         switch (stat)
         {
             case Stats.HP:
-                return constitution * monLevel + 1;
+                return (int)(constitution * level + 1);
             case Stats.ATK:
                 return (int)(strength / 5f * monLevel + 1);
             case Stats.DEF:
-                return (int)(constitution / 5f * monLevel + 1);
+                return (int)((.5f * constitution + .5f * dexterity) / 5f * monLevel + 1);
             case Stats.SPEED:
                 return (int)(dexterity / 5f * monLevel + 1);
             default:
@@ -158,29 +164,29 @@ public class Unit : MonoBehaviour
             currentHp = PlayerData.teamData.Find(item => item.id == id).currentHp;
             level = PlayerData.teamData.Find(item => item.id == id).level;
 
-            maxHp = constitution * level + 1;
+            maxHp = (int)(constitution * level + 1);
             attack = (int)(strength / 5f * level + 1);
-            defense = (int)(constitution / 5f * level + 1);
+            defense = (int)((.5f * constitution + .5f * dexterity) / 5f * level + 1);
             speed = (int)(dexterity / 5f * level + 1);
 
             knownAbilities = PlayerData.teamData.Find(item => item.id == id).knownAbilities.ToArray();
             ApplyStatus(PlayerData.teamData.Find(item => item.id == id).status);
             heldItem = PlayerData.teamData.Find(item => item.id == id).heldItem;
         }
-        else 
+        else
         {
             level = BattleData.enemyLevel;
 
-            maxHp = constitution * level + 1;
+            maxHp = (int)(constitution * level + 1);
             attack = (int)(strength / 5f * level + 1);
-            defense = (int)(constitution / 5f * level + 1);
+            defense = (int)((.5f * constitution + .5f * dexterity) / 5f * level + 1);
             speed = (int)(dexterity / 5f * level + 1);
 
             currentHp = maxHp;
             knownAbilities = GetUnitKnownAbilities(level).ToArray();
         }
 
-        
+
 
         if (currentHp < maxHp)
         {
@@ -286,7 +292,7 @@ public class Unit : MonoBehaviour
         for (int i = 0; i < consumables.Count; i++)
         {
             itemButtons[i].gameObject.SetActive(true);
-            itemButtons[i].interactable=true;
+            itemButtons[i].interactable = true;
             itemButtons[i].GetComponentInChildren<TMP_Text>().text = consumables[i].name;
 
             int index = i;
@@ -300,7 +306,16 @@ public class Unit : MonoBehaviour
         if (itemMenu == null) return;
         itemMenu.gameObject.SetActive(false);
 
-        for (int i = 0; i < knownAbilities.Length; i++)
+        List<Item> consumables = new List<Item>();
+        for (int i = 0; i < PlayerData.items.Count; i++)
+        {
+            if (PlayerData.items[i].isConsumible)
+            {
+                consumables.Add(PlayerData.items[i]);
+            }
+        }
+
+        for (int i = 0; i < consumables.Count; i++)
         {
             int index = i;
             itemButtons[index].onClick.RemoveAllListeners();
@@ -473,6 +488,7 @@ public class Unit : MonoBehaviour
         {
             currentHp = 0;
             TBBS.instance.WaitingForDestroy(this);
+            LeftHandAnimatorHelper.instance.TryFlick(this);
         }
         else
         {
@@ -489,6 +505,7 @@ public class Unit : MonoBehaviour
         {
             currentHp = 0;
             TBBS.instance.WaitingForDestroy(this);
+            LeftHandAnimatorHelper.instance.TryFlick(this);
         }
 
         StartCoroutine(UpdateHealthBar());
@@ -504,12 +521,12 @@ public class Unit : MonoBehaviour
             yield break;
         }
 
-        healthBar.gameObject.SetActive(true);   
+        healthBar.gameObject.SetActive(true);
         float t = 0;
         float startValue = healthBar.value;
         float endValue = (float)currentHp / maxHp;
 
-        if(startValue == endValue) yield break;
+        if (startValue == endValue) yield break;
 
         if (endValue > startValue) { FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.lightGreen); VFXManager.instance.SpawnGlobalEffect(VFX.HEAL, gameObject); }
         else { FresnelApplier.applyFresnel(gameObject, UnityEngine.Color.red); VFXManager.instance.SpawnGlobalEffect(VFX.HIT, gameObject); }
@@ -528,13 +545,13 @@ public class Unit : MonoBehaviour
 
         takingDamage = false;
 
-        if (currentHp == 0)
-        {
-            Death();
-        }
+        //if (currentHp == 0)
+        //{
+        //    Death();
+        //}
     }
 
-    void Death()
+    public void Death()
     {
         ResolvePassiveEffect(ExecutionTime.ONDEATH);
         Destroy(gameObject);
@@ -578,6 +595,8 @@ public class Unit : MonoBehaviour
         ResolveItemEffect(ExecutionTime.TURNSTART);
 
         if (status == Status.ASLEEP) SleepCounter();
+
+        recivedDamageMultiplier = 1f;
     }
 
     public void OnTurnEnd()
@@ -611,14 +630,14 @@ public class Unit : MonoBehaviour
     {
         foreach (var ability in knownAbilities)
         {
-            if (ability.abilityType == AbilityType.PASSIVE && ability.passiveExecutionTime == battleStage && baseEffectChanceMulti*ability.passiveEffectChance + effectChanceModifier >= Random.Range(1, 100))
+            if (ability.abilityType == AbilityType.PASSIVE && ability.passiveExecutionTime == battleStage && baseEffectChanceMulti * ability.passiveEffectChance + effectChanceModifier >= Random.Range(1, 100))
             {
                 List<Unit> target = new List<Unit>();
-                List<Unit> allies = new List<Unit>(TBBS.instance.playerUnits);
+                List<Unit> allies = isPlayerControlled ? new List<Unit>(TBBS.instance.playerUnits) : new List<Unit>(TBBS.instance.enemyUnits);
                 allies.Remove(this);
-                List<Unit> enemies = new List<Unit>(TBBS.instance.enemyUnits);
+                List<Unit> enemies = isPlayerControlled ? new List<Unit>(TBBS.instance.enemyUnits) : new List<Unit>(TBBS.instance.playerUnits);
 
-                if(allies.Count < 0) continue;
+                if (allies.Count < 0) continue;
 
                 switch (ability.target)
                 {
@@ -639,7 +658,7 @@ public class Unit : MonoBehaviour
                         break;
                     case AbilityTarget.ALL:
                         target.AddRange(TBBS.instance.allUnits);
-                        break ;
+                        break;
                     case AbilityTarget.LASTHIT:
                         if (lastHitUnit) target.Add(lastHitUnit);
                         break;
@@ -673,7 +692,7 @@ public class Unit : MonoBehaviour
                             for (int j = 0; j < target.Count; j++)
                             {
                                 target[j].ApplyStatModifier(ability.statToMod[i], ability.statMod[i]);
-                            }      
+                            }
                         }
                         break;
                     case PassiveEffects.ADDTURN:
@@ -723,7 +742,7 @@ public class Unit : MonoBehaviour
 
         Unit target = heldItem.affectSelf ? this : lastHitUnit;
 
-        if(heldItem.executionTime == battleStage && baseEffectChanceMulti*heldItem.effectChance + effectChanceModifier >= Random.Range(1, 100))
+        if (heldItem.executionTime == battleStage && baseEffectChanceMulti * heldItem.effectChance + effectChanceModifier >= Random.Range(1, 100))
         {
             switch (heldItem.effect)
             {
@@ -750,10 +769,10 @@ public class Unit : MonoBehaviour
 
     public void ApplyStatus(Status statusToApply)
     {
-        if(statusToApply == Status.NONE) return;
+        if (statusToApply == Status.NONE) return;
         if (status != Status.NONE) return;
 
-        if(HasPassive("Elusive Presence"))
+        if (HasPassive("Elusive Presence"))
         {
             TooltipUI.instance.ShowTooltipText($"{name}'s elusive presence blocks status changes");
             return;
@@ -765,7 +784,7 @@ public class Unit : MonoBehaviour
         ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
         ResolveItemEffect(ExecutionTime.ONSTATUSCHANGE);
 
-        if(statusToApply == Status.ASLEEP) StartSleepCounter();
+        if (statusToApply == Status.ASLEEP) StartSleepCounter();
     }
 
     public void CureStatus()

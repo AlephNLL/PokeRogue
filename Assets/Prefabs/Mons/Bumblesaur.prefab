@@ -810,16 +810,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: 6adda3dd90db2124ca65e893cdef5af1, type: 3}
   id: 0
-  name: Caracston
+  name: Bumblesaur
   description: 
   currentStance: 1
   level: 1
   exp: 0
+  expCurve: {fileID: 11400000, guid: 42eec143c7464c24889a7a724a74e69f, type: 2}
   status: 0
-  strength: 16
-  constitution: 26
-  dexterity: 11
-  luck: 2
+  recivedDamageMultiplier: 1
+  strength: 14
+  constitution: 18
+  dexterity: 10
+  luck: 9
   maxHp: 0
   currentHp: 0
   attack: 0
@@ -828,11 +830,22 @@ MonoBehaviour:
   precision: 1
   knownAbilities: []
   abilityPool:
-  - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}
-  - {fileID: 11400000, guid: 1c10fb9f488085d4aaf6c6a22e96fd23, type: 2}
-  - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
-  - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
+  - {fileID: 11400000, guid: 7826e2c983306434b96dd50f57b4afaf, type: 2}
+  - {fileID: 11400000, guid: 41b644029128717428d7fee53acd6f5f, type: 2}
+  - {fileID: 11400000, guid: 11b4f1823ea2e054faa41eef62970472, type: 2}
+  - {fileID: 11400000, guid: 724942a37ba3ef842aea939941732579, type: 2}
+  - {fileID: 11400000, guid: 5bea5b4745397354cb76917bc0ac6f14, type: 2}
+  - {fileID: 11400000, guid: cfb6d7e915de66f4a84c49be0ef79602, type: 2}
+  - {fileID: 11400000, guid: 29ee25fd5cda68b4088baa3c18af3228, type: 2}
+  - {fileID: 11400000, guid: cfc82a1f88b00ed4fb3ac7a457ccba87, type: 2}
+  - {fileID: 11400000, guid: d5c0ca67c7dc28c40953604518014341, type: 2}
+  - {fileID: 11400000, guid: 1e37c0a4da7d926488fa4a8501363846, type: 2}
+  - {fileID: 11400000, guid: ae188959216847e4e8318c12cf86ec4c, type: 2}
   heldItem: {fileID: 0}
+  evasive: 0
+  provoking: 0
+  guardedBy: {fileID: 0}
+  timesBuffed: 0
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
   battleMenu: {fileID: 0}
@@ -854,6 +867,7 @@ MonoBehaviour:
   additionalTurn: 0
   skipTurn: 0
   takingDamage: 0
+  baseEffectChanceMulti: 1
   effectChanceModifier: 0
 --- !u!1 &1760726793352929564
 GameObject:
@@ -4031,6 +4045,18 @@ PrefabInstance:
     - target: {fileID: 2687746176206621297, guid: 3e5db7fe4feb26c42a0b75703196251b, type: 3}
       propertyPath: m_Name
       value: Capsule
+      objectReference: {fileID: 0}
+    - target: {fileID: 4635186658179912142, guid: 3e5db7fe4feb26c42a0b75703196251b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.3492756
+      objectReference: {fileID: 0}
+    - target: {fileID: 4635186658179912142, guid: 3e5db7fe4feb26c42a0b75703196251b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.00000014901161
+      objectReference: {fileID: 0}
+    - target: {fileID: 4635186658179912142, guid: 3e5db7fe4feb26c42a0b75703196251b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.1796357
       objectReference: {fileID: 0}
     - target: {fileID: 8618749204975089976, guid: 3e5db7fe4feb26c42a0b75703196251b, type: 3}
       propertyPath: m_LocalPosition.x

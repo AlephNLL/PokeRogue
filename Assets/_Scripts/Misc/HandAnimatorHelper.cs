@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Unity.Hierarchy;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
 
@@ -10,7 +11,7 @@ public class HandAnimatorHelper : MonoBehaviour
     public static HandAnimatorHelper instance;
     public static Action onAnimationEnd;
     [SerializeField] GameObject grabbedObject;
-    [SerializeField] GameObject baseFigureJoint;
+    [SerializeField] public GameObject baseFigureJoint;
 
     public bool isMoving = false;
     Vector3 defaultPosition;
@@ -22,6 +23,7 @@ public class HandAnimatorHelper : MonoBehaviour
     }
     public void UnparentGrabbedObject()
     {
+        if (grabbedObject == null) return;
         grabbedObject.transform.parent = null;
         grabbedObject = null;
     }
@@ -30,7 +32,7 @@ public class HandAnimatorHelper : MonoBehaviour
     {
         grabbedObject = GO;
         grabbedObject.transform.parent = baseFigureJoint.transform;
-        grabbedObject.transform.localPosition = new Vector3(0,0,0);
+        //grabbedObject.transform.localPosition = new Vector3(0,0,0);
     }
 
     void ResetRotation()
@@ -62,6 +64,7 @@ public class HandAnimatorHelper : MonoBehaviour
 
     public void MoveToPosition(Vector3 destination, float duration)
     {
+        if (transform.position == destination) return;
         if (!isMoving)
         {
             StartCoroutine(Move(destination, duration));
@@ -78,71 +81,91 @@ public class HandAnimatorHelper : MonoBehaviour
     }
     IEnumerator Move(Vector3 destination, float duration)
     {
-
         isMoving = true;
         Vector3 startPos = transform.position;
-        float t = 0;
-        float elapsedTime = 0;
+        float elapsedTime = 0f;
 
-        while (t < duration)
+        while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
-            t += elapsedTime * elapsedTime / 10;
-            transform.position = Vector3.Lerp(startPos, destination, t);
+
+            float percent = Mathf.Clamp01(elapsedTime / duration);
+
+            float acceleratedPercent = percent * percent;
+
+            transform.position = Vector3.Lerp(startPos, destination, acceleratedPercent);
+
             yield return null;
         }
 
         transform.position = destination;
         isMoving = false;
-
     }
 
     public void RaiseAndShake(Vector3 destination, float duration)
     {
-        StartCoroutine(Shake(destination, duration));
+        StopAllCoroutines();
+        StartCoroutine(ExecuteRaiseAndShake(destination, duration));
     }
-    IEnumerator Shake(Vector3 destination, float duration)
-    {
-        float newDuration = duration / 2;
-        MoveToPosition(destination, newDuration);
-        yield return new WaitForSeconds(newDuration);
 
+    IEnumerator ExecuteRaiseAndShake(Vector3 destination, float duration)
+    {
         isMoving = true;
 
-        Vector3 startPos = transform.localPosition;
-        float t = 0;
-        float elapsedTime = 0;
+        Vector3 originalStartPos = transform.position;
 
-        float nextChange = 0;
-        float interval = 1f / 15f;
+        float raiseDuration = duration * 0.2f;
+        float time = 0f;
 
-        Vector3 currentOffset = Vector3.zero;
-        Vector3 offset = Vector3.zero;
-
-        while (t < duration)
+        while (time < raiseDuration)
         {
-            elapsedTime += Time.deltaTime;
-            t += elapsedTime * elapsedTime / 10;
+            time += Time.deltaTime;
+            float percent = Mathf.Clamp01(time / raiseDuration);
+            float smoothPercent = Mathf.SmoothStep(0f, 1f, percent);
 
-            float progress = Mathf.Clamp01(t / duration);
-            float shakeStrength = Mathf.Lerp(1f, 0f, progress);
+            transform.position = Vector3.Lerp(originalStartPos, destination, smoothPercent);
+            yield return null;
+        }
+        transform.position = destination;
 
-            if (elapsedTime >= nextChange)
-            {
-                nextChange += interval;
-                offset = UnityEngine.Random.insideUnitSphere * shakeStrength;
-            }
+        float shakeDuration = duration * 0.6f;
+        time = 0f;
+        Vector3 centerPosition = transform.position;
 
-            currentOffset = Vector3.Lerp(currentOffset, offset, 3f * Time.deltaTime);
+        float maxShakeStrength = 1.5f;
+        float shakeSpeed = 4f;
 
-            transform.localPosition = startPos + currentOffset;
+        while (time < shakeDuration)
+        {
+            time += Time.deltaTime;
+            float percent = Mathf.Clamp01(time / shakeDuration);
 
+            float shakeStrength = Mathf.Lerp(maxShakeStrength, 0f, percent);
+
+            float offsetX = (Mathf.PerlinNoise(Time.time * shakeSpeed, 0f) - 0.5f) * shakeStrength;
+            float offsetY = (Mathf.PerlinNoise(0f, Time.time * shakeSpeed) - 0.5f) * shakeStrength;
+            float offsetZ = (Mathf.PerlinNoise(Time.time * shakeSpeed, Time.time * shakeSpeed) - 0.5f) * shakeStrength;
+
+            transform.position = centerPosition + new Vector3(offsetX, offsetY, offsetZ);
+            yield return null;
+        }
+        transform.position = destination;
+
+        float returnDuration = duration * 0.2f;
+        time = 0f;
+
+        while (time < returnDuration)
+        {
+            time += Time.deltaTime;
+            float percent = Mathf.Clamp01(time / returnDuration);
+            float smoothPercent = Mathf.SmoothStep(0f, 1f, percent);
+
+            transform.position = Vector3.Lerp(destination, originalStartPos, smoothPercent);
             yield return null;
         }
 
+        transform.position = originalStartPos;
         isMoving = false;
-
-        yield return new WaitForSeconds(duration);
     }
 
     public bool IsHandAtXPos(float x)
@@ -165,6 +188,16 @@ public class HandAnimatorHelper : MonoBehaviour
     {
         GameObject cameraBrain = GameObject.FindGameObjectWithTag("MainCamera");
         gameObject.transform.position = new Vector3(cameraBrain.transform.position.x, 0.45f, (cameraBrain.transform.position.z)) - new Vector3(3, 0, 1);
+    }
+
+    public Vector3 offsetFromFigureJoint()
+    {
+        Vector3 handPos = transform.position;
+        Vector3 basePosition = baseFigureJoint.transform.position;
+
+        Vector3 offset = handPos - basePosition;
+
+        return offset;
     }
 
     private void OnDestroy()

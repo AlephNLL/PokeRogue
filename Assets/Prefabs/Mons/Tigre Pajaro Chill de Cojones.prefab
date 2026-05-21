@@ -812,15 +812,16 @@ MonoBehaviour:
   id: 0
   name: Tigre Pajaro Chill de Coj*nes
   description: 
-  currentStance: 1
+  currentStance: 0
   level: 1
   exp: 0
   expCurve: {fileID: 11400000, guid: f01d0285087c64644a6a385494e4dc6f, type: 2}
   status: 0
-  strength: 30
-  constitution: 28
+  recivedDamageMultiplier: 0
+  strength: 24
+  constitution: 24
   dexterity: 12
-  luck: 0
+  luck: 15
   maxHp: 0
   currentHp: 0
   attack: 0
@@ -829,11 +830,22 @@ MonoBehaviour:
   precision: 1
   knownAbilities: []
   abilityPool:
-  - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}
+  - {fileID: 11400000, guid: 732483a76a59d7d48a24b4adacfc88cd, type: 2}
+  - {fileID: 11400000, guid: 10707b8a25baf094481bfff9ddfd9e26, type: 2}
   - {fileID: 11400000, guid: 1c10fb9f488085d4aaf6c6a22e96fd23, type: 2}
-  - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
-  - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
+  - {fileID: 11400000, guid: daa0c4b00ff11eb40acf2c4bd3977572, type: 2}
+  - {fileID: 11400000, guid: 5730ad88989e7984989242cfa508e881, type: 2}
+  - {fileID: 11400000, guid: 29ee25fd5cda68b4088baa3c18af3228, type: 2}
+  - {fileID: 11400000, guid: bba6ea75d3c8cae498b651d0a2129696, type: 2}
+  - {fileID: 11400000, guid: 82a464c85dd9aaf47a31180359d54b2f, type: 2}
+  - {fileID: 11400000, guid: 923c42d4c897604469479eada06a035a, type: 2}
+  - {fileID: 11400000, guid: d07ca8c0e3ca14542be632860d5ff39d, type: 2}
+  - {fileID: 11400000, guid: 0f310c87da1a71d43bf46b40a61f9538, type: 2}
   heldItem: {fileID: 0}
+  evasive: 0
+  provoking: 0
+  guardedBy: {fileID: 0}
+  timesBuffed: 0
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
   battleMenu: {fileID: 0}
@@ -855,6 +867,7 @@ MonoBehaviour:
   additionalTurn: 0
   skipTurn: 0
   takingDamage: 0
+  baseEffectChanceMulti: 1
   effectChanceModifier: 0
 --- !u!1 &1760726793352929564
 GameObject:

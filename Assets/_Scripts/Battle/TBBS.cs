@@ -34,6 +34,9 @@ public class TBBS : MonoBehaviour
     public List<Unit> allUnits;
 
     private Coroutine currentTurnCoroutine;
+    private Coroutine menuCoroutine;
+    private bool isActionExecuting;
+
     private void Awake()
     {
         instance = this;
@@ -96,24 +99,22 @@ public class TBBS : MonoBehaviour
 
     public void StartNextTurn(bool activateTurnStartEffect = true)
     {
-        CameraManager.instance.ActivateMainCamera();
-
-        CameraManager.instance.SetBlendTime(1);
         // Detener la corrutina anterior si existe
         if (currentTurnCoroutine != null)
             StopCoroutine(currentTurnCoroutine);
 
+        if (menuCoroutine != null)
+        {
+            StopCoroutine(menuCoroutine);
+            isActionExecuting = false;
+        }
+            
         // Verificar si hay unidades vivas
         if (IsBattleOver())
         {
             if (IsBattleWon())
             {
-                Debug.Log("Win");
-                Debug.Log(playerUnits.Count);
-                TeamManager.instance.SaveTeamData(playerUnits);
-                EndScreenManager.instance.ShowVictoryScreen(playerUnits.ToArray(), capturableUnits.ToArray(), BattleData.goldReward, BattleData.expReward);
-                PlayerData.Instance.gold += BattleData.goldReward;
-                //StartCoroutine(EndBattle());
+                StartCoroutine(WinBattle());
                 return;
             }
             else
@@ -123,6 +124,10 @@ public class TBBS : MonoBehaviour
                 return;
             }
         }
+
+        CameraManager.instance.ActivateMainCamera();
+
+        CameraManager.instance.SetBlendTime(1);
 
         if (currentTurnIndex < allUnits.Count)
         {
@@ -158,6 +163,14 @@ public class TBBS : MonoBehaviour
         TooltipUI.instance.HideTooltipText();
         yield return new WaitForSeconds(2f);
         SceneManager.LoadSceneAsync("Daycare");
+    }
+
+    IEnumerator WinBattle()
+    {
+        TeamManager.instance.SaveTeamData(playerUnits);
+        while(LeftHandAnimatorHelper.instance.figuresToFling.Count > 0) yield return null;
+        EndScreenManager.instance.ShowVictoryScreen(playerUnits.ToArray(), capturableUnits.ToArray(), BattleData.goldReward, BattleData.expReward);
+        PlayerData.Instance.gold += BattleData.goldReward;
     }
 
     IEnumerator PlayerTurn(Unit currentUnit, bool activateTurnStartEffect = true)
@@ -206,8 +219,9 @@ public class TBBS : MonoBehaviour
 
         if (action.skip)
         {
-            TooltipUI.instance.ShowTooltipText(currentUnit.name + " skipped turn");
+            TooltipUI.instance.ShowTooltipText(currentUnit.name + " is defending");
             currentUnit.OnTurnEnd();
+            currentUnit.recivedDamageMultiplier = 0.5f;
             yield return new WaitForSeconds(1);
             currentTurnIndex++;
             StartNextTurn();
@@ -240,7 +254,10 @@ public class TBBS : MonoBehaviour
                     StartCoroutine(AttackSequence(currentUnit, enemyUnits.ToArray(), action.chosenAbility));
                     break;
                 case AbilityTarget.ALL:
-                    StartCoroutine(AttackSequence(currentUnit, allUnits.ToArray(), action.chosenAbility));
+                    List <Unit> targets = new List<Unit>(allUnits);
+                    if (currentUnit.HasPassive("Empath")) targets = new List<Unit>(enemyUnits);
+                    else targets.Remove(currentUnit);
+                    StartCoroutine(AttackSequence(currentUnit, targets.ToArray(), action.chosenAbility));
                     break;
                 default:
                     break;
@@ -301,28 +318,84 @@ public class TBBS : MonoBehaviour
         //}
     }
 
-    public void AbilityMenu(Unit attacker) //Se llama desde la interfaz del jugador, los botones se suscriben al activarse
+    public void AbilityMenu(Unit attacker) // Se llama desde la interfaz
+    {
+        // Si ya estamos atacando o usando un ítem, ignoramos los clics
+        if (isActionExecuting) return;
+
+        // Limpiamos cualquier corrutina de menú abierta previamente
+        if (menuCoroutine != null) StopCoroutine(menuCoroutine);
+
+        menuCoroutine = StartCoroutine(OpenAbilityMenu(attacker));
+    }
+
+    public IEnumerator OpenAbilityMenu(Unit attacker)
     {
         attacker.ActivateCamera();
         attacker.CloseBattleMenu();
         attacker.OpenAbilityMenu();
-    }
 
-    public void ItemMenu(Unit attacker) //Se llama desde la interfaz del jugador, los botones se suscriben al activarse
-    {
-        attacker.ActivateCamera();
-        attacker.CloseBattleMenu();
-        attacker.OpenItemMenu();
+        while (true)
+        {
+            if (Input.GetMouseButtonDown(1)) // Cancelar con clic derecho
+            {
+                break;
+            }
+
+            yield return null;
+        }
+
+        attacker.OpenBattleMenu();
+        attacker.CloseAbilityMenu();
+        menuCoroutine = null;
     }
 
     public void SelectAbility(Abilities ability)
     {
-        StartCoroutine(ActivateAbility(ability));
+        if (isActionExecuting) return; // Bloqueo de seguridad
+
+        if (menuCoroutine != null) StopCoroutine(menuCoroutine);
+
+        // ¡CRÍTICO! Guardamos la selección de habilidad en menuCoroutine
+        menuCoroutine = StartCoroutine(ActivateAbility(ability));
+    }
+
+    public void ItemMenu(Unit attacker) // Se llama desde la interfaz
+    {
+        // Si ya estamos ejecutando una acción final, ignoramos cualquier botón
+        if (isActionExecuting) return;
+
+        if (menuCoroutine != null) StopCoroutine(menuCoroutine);
+        menuCoroutine = StartCoroutine(OpenItemMenu(attacker));
+    }
+
+    public IEnumerator OpenItemMenu(Unit attacker)
+    {
+        attacker.ActivateCamera();
+        attacker.CloseBattleMenu();
+        attacker.OpenItemMenu();
+
+        while (true)
+        {
+            if (Input.GetMouseButtonDown(1)) // Cancelar con click derecho
+            {
+                break;
+            }
+            yield return null;
+        }
+
+        attacker.OpenBattleMenu();
+        attacker.CloseItemMenu();
+        menuCoroutine = null;
     }
 
     public void SelectItem(Item item)
     {
-        StartCoroutine(ActivateItem(item));
+        if (isActionExecuting) return; // Bloqueo de seguridad
+
+        if (menuCoroutine != null) StopCoroutine(menuCoroutine);
+
+        menuCoroutine = StartCoroutine(ActivateItem(item));
     }
 
     public IEnumerator ActivateItem(Item item)
@@ -332,11 +405,23 @@ public class TBBS : MonoBehaviour
         currentUnit.CloseItemMenu();
         currentUnit.DeactivateCamera();
 
-        int selection = 0;
+        int selection = -1;
 
+        // Esperamos a que el jugador elija objetivo
         yield return Run<int>(SelectTarget(false), (output) => selection = output);
-        if (selection >= 0) StartCoroutine(UseItem(item, playerUnits[selection]));
-        yield break;
+
+        if (selection >= 0)
+        {
+            isActionExecuting = true;
+
+            yield return StartCoroutine(UseItem(item, playerUnits[selection]));
+
+            isActionExecuting = false;
+        }
+        else
+        {
+            ItemMenu(currentUnit);
+        }
     }
 
     public IEnumerator UseItem(Item item, Unit target)
@@ -367,7 +452,6 @@ public class TBBS : MonoBehaviour
         if (currentUnit.HasAdditionalTurn())
         {
             StartNextTurn(false);
-            yield break;
         }
         else
         {
@@ -375,7 +459,6 @@ public class TBBS : MonoBehaviour
             currentTurnIndex++;
             // Avanzar al siguiente turno
             StartNextTurn();
-            yield break;
         }
     }
     public IEnumerator ActivateAbility(Abilities ability)
@@ -608,12 +691,16 @@ public class TBBS : MonoBehaviour
         attacker.DeactivateCamera();
         attacker.CloseBattleMenu();
         attacker.OnTurnEnd();
+        attacker.recivedDamageMultiplier = 0.5f;
+        TooltipUI.instance.ShowTooltipText($"{attacker.name} is defending!");
         currentTurnIndex++;
         StartNextTurn();
     }
     IEnumerator AttackSequence(Unit attacker, Unit[] targets, Abilities ability)
     {
+        isActionExecuting = true;
         Transform visualTarget = playerUnits.Contains(targets[0]) ? playerSide : enemySide;
+        Vector3 zOffset = playerUnits.Contains(attacker) ? Vector3.zero : Vector3.left;
         attacker.EndSelect();
         CameraManager.instance.ActivateAttackCamera();
 
@@ -631,10 +718,10 @@ public class TBBS : MonoBehaviour
 
         GameObject hand = HandAnimatorHelper.instance.gameObject;
         HandAnimatorHelper.instance.TeleportHandBehindCamera();
+        LeftHandAnimatorHelper.instance.TeleportHandBehindCamera();
 
         for (int i = 0; i < hits; i++)
         {
-
             bool hit = CheckHit(ability, attacker.precision);
 
             if (i > 0)
@@ -644,9 +731,9 @@ public class TBBS : MonoBehaviour
                 {
                     if (targets[j] != null) newTargets.Add(targets[j]);
                 }
-
                 targets = newTargets.ToArray();
             }
+
             if (ability.vfxPrefab)
             {
                 if (ability.spawnVfxOnSelf)
@@ -671,9 +758,11 @@ public class TBBS : MonoBehaviour
             }
             else
             {
+                Vector3 handStartPos = attacker.transform.Find("Capsule").Find("GrabPoint").transform.position + zOffset;
                 //tp de mano detras de camara para moverse hacia el grabpoint del bichote y emparentarlo
-                HandAnimatorHelper.instance.MoveToPosition(attacker.transform.Find("Capsule").Find("GrabPoint").transform.position, 1.5f);
-                yield return new WaitForSeconds(.5f);
+                HandAnimatorHelper.instance.MoveToPosition(handStartPos, 1f);
+                while (HandAnimatorHelper.instance.isMoving) yield return null;
+
                 HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", true);
                 yield return new WaitForSeconds(.25f);
                 HandAnimatorHelper.instance.ParentGrabbedObject(attacker.gameObject);
@@ -681,35 +770,46 @@ public class TBBS : MonoBehaviour
                 if (targets[i].evasive || !hit || ability.power == 0 && targets[i].currentStance == Stance.CAUTIOUS || ability.power == 0)
                 {
                     HandAnimatorHelper.instance.RaiseAndShake(new Vector3(hand.transform.position.x, (hand.transform.position.y + 1f), hand.transform.position.z), 1f);
+                    yield return null;
+                    while (HandAnimatorHelper.instance.isMoving) yield return null;
+
+                    nextAttack = Damage(ability, attacker, targets, hit);
+                }
+                else
+                {
+                    HandAnimatorHelper.instance.MoveToPosition(new Vector3(visualTarget.transform.position.x, hand.transform.position.y, (visualTarget.transform.position.z)) + 2 * visualTarget.transform.forward, .5f);
+                    while (HandAnimatorHelper.instance.isMoving) yield return null;
+
+                    Vector3 attackerEndPos = attacker.transform.position;
+                    if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
+                    nextAttack = Damage(ability, attacker, targets, hit);
+
+                    yield return new WaitForSeconds(0.2f);
+
+                    HandAnimatorHelper.instance.MoveToPosition(handStartPos, .5f);
+                    while (HandAnimatorHelper.instance.isMoving) yield return null;
                 }
 
-                //movimiento hacia target
-                HandAnimatorHelper.instance.MoveToPosition(new Vector3(visualTarget.transform.position.x, hand.transform.position.y, (visualTarget.transform.position.z) - 2.5f), 1f);
-                yield return new WaitForSeconds(1f);
-                Vector3 attackerEndPos = attacker.transform.position;
-                if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
-                nextAttack = Damage(ability, attacker, targets, hit);
-
-                yield return new WaitForSeconds(0.05f);
-
-                //movimiento a posicion inicial (+ offset del grabpoint) y desparentar bicho
-                HandAnimatorHelper.instance.MoveToPosition(new Vector3(attackerStartPos.x, (hand.transform.position.y - 1f), attackerStartPos.z) + new Vector3(-0.800014f, 0, -.559774f), .8f);
-                yield return new WaitForSeconds(.8f);
                 HandAnimatorHelper.instance.UnparentGrabbedObject();
                 attacker.transform.position = attackerStartPos;
+
+                //HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", false);
+                //HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 30f), 1f);
+                //while (HandAnimatorHelper.instance.isMoving) yield return null;
             }
+
             if (!nextAttack) break;
-            HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 30f), 1f);
-            yield return new WaitForSeconds(1f);
         }
 
-        CameraManager.instance.SetBlendTime(1);
+        HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", false);
+        HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 30f), 1f);
+        while (HandAnimatorHelper.instance.isMoving) yield return null;
 
-        // Importante: Esperar un frame antes de activar la cámara principal
+        CameraManager.instance.SetBlendTime(1);
         yield return new WaitForSeconds(0.3f + 3 * TooltipUI.instance.scheduledTexts.Count);
 
         TooltipUI.instance.HideTooltipText();
-
+        isActionExecuting = false;
         if (attacker.HasAdditionalTurn())
         {
             StartNextTurn(false);
@@ -719,22 +819,21 @@ public class TBBS : MonoBehaviour
         {
             attacker.OnTurnEnd();
             currentTurnIndex++;
-            // Avanzar al siguiente turno
             StartNextTurn();
             yield break;
         }
-
     }
 
     IEnumerator AttackSequence(Unit attacker, Unit target, Abilities ability)
     {
+        isActionExecuting = true;
+        Vector3 zOffset = playerUnits.Contains(attacker) ? Vector3.zero : Vector3.left;
         attacker.EndSelect();
         CameraManager.instance.ActivateAttackCamera();
 
         TooltipUI.instance.ShowTooltipText(attacker.name + " uses " + ability.name);
 
         Vector3 attackerStartPos = attacker.transform.position;
-
         Unit[] targets = new Unit[1];
 
         yield return new WaitForSeconds(1f);
@@ -750,13 +849,21 @@ public class TBBS : MonoBehaviour
 
         for (int i = 0; i < hits; i++)
         {
-
             bool hit = CheckHit(ability, attacker.precision);
 
             if (!allUnits.Contains(target))
             {
-                if (enemyUnits.Count > 0) target = enemyUnits[Random.Range(0, enemyUnits.Count)];
-                else break;
+                if (playerUnits.Contains(attacker))
+                {
+                    if (enemyUnits.Count > 0) target = enemyUnits[Random.Range(0, enemyUnits.Count)];
+                    else break;
+                }
+                else
+                {
+                    if (playerUnits.Count > 0) target = playerUnits[Random.Range(0, playerUnits.Count)];
+                    else break;
+
+                }
             }
 
             targets[0] = target;
@@ -785,45 +892,57 @@ public class TBBS : MonoBehaviour
             }
             else
             {
-                //tp de mano detras de camara para moverse hacia el grabpoint del bichote y emparentarlo
-                HandAnimatorHelper.instance.MoveToPosition(attacker.transform.Find("Capsule").Find("GrabPoint").transform.position, 1.5f);
-                yield return new WaitForSeconds(.5f);
+                Vector3 handStartPos = attacker.transform.Find("Capsule").Find("GrabPoint").transform.position + zOffset;
+                HandAnimatorHelper.instance.MoveToPosition(handStartPos, 1f);
+                while (HandAnimatorHelper.instance.isMoving) yield return null;
+
                 HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", true);
                 yield return new WaitForSeconds(.25f);
                 HandAnimatorHelper.instance.ParentGrabbedObject(attacker.gameObject);
 
-                if (targets[i].evasive || !hit || ability.power == 0 && targets[i].currentStance == Stance.CAUTIOUS || ability.power == 0)
+                if (target.evasive || !hit || ability.power == 0 && target.currentStance == Stance.CAUTIOUS || ability.power == 0)
                 {
                     HandAnimatorHelper.instance.RaiseAndShake(new Vector3(hand.transform.position.x, (hand.transform.position.y + 1f), hand.transform.position.z), 1f);
+                    yield return null;
+                    while (HandAnimatorHelper.instance.isMoving) yield return null;
+
+                    nextAttack = Damage(ability, attacker, targets, hit);
+                }
+                else
+                {
+                    HandAnimatorHelper.instance.MoveToPosition(new Vector3(target.transform.position.x, hand.transform.position.y, (target.transform.position.z)) + 2*target.transform.forward, .5f);
+                    while (HandAnimatorHelper.instance.isMoving) yield return null;
+
+                    Vector3 attackerEndPos = attacker.transform.position;
+                    if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
+                    nextAttack = Damage(ability, attacker, targets, hit);
+
+                    yield return new WaitForSeconds(0.2f);
+
+                    HandAnimatorHelper.instance.MoveToPosition(handStartPos, .5f);
+                    while (HandAnimatorHelper.instance.isMoving) yield return null;
                 }
 
-                //movimiento hacia target
-                HandAnimatorHelper.instance.MoveToPosition(new Vector3(target.transform.position.x, hand.transform.position.y, (target.transform.position.z) - 2.5f), 1f);
-                yield return new WaitForSeconds(1f);
-                Vector3 attackerEndPos = attacker.transform.position;
-                if (ability.sfx) AudioManager.instance.PlaySound3D(ability.sfx, attackerEndPos);
-                nextAttack = Damage(ability, attacker, targets, hit);
-
-                yield return new WaitForSeconds(0.05f);
-
-                //movimiento a posicion inicial (+ offset del grabpoint) y desparentar bicho
-                HandAnimatorHelper.instance.MoveToPosition(new Vector3(attackerStartPos.x, (hand.transform.position.y - 1f), attackerStartPos.z) + new Vector3(-0.800014f, 0, -.559774f), .8f);
-                yield return new WaitForSeconds(.8f);
                 HandAnimatorHelper.instance.UnparentGrabbedObject();
                 attacker.transform.position = attackerStartPos;
+
+                //HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", false);
+                //HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 30f), 1f);
+                //while (HandAnimatorHelper.instance.isMoving) yield return null;
             }
+
             if (!nextAttack) break;
-            HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 30f), 1f);
-            yield return new WaitForSeconds(1f);
         }
 
-        CameraManager.instance.SetBlendTime(1);
+        HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", false);
+        HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 30f), 1f);
+        while (HandAnimatorHelper.instance.isMoving) yield return null;
 
-        // Importante: Esperar un frame antes de activar la cámara principal
+        CameraManager.instance.SetBlendTime(1);
         yield return new WaitForSeconds(0.3f + 3 * TooltipUI.instance.scheduledTexts.Count);
 
         TooltipUI.instance.HideTooltipText();
-
+        isActionExecuting = false;
         if (attacker.HasAdditionalTurn())
         {
             StartNextTurn(false);
@@ -833,7 +952,6 @@ public class TBBS : MonoBehaviour
         {
             attacker.OnTurnEnd();
             currentTurnIndex++;
-            // Avanzar al siguiente turno
             StartNextTurn();
             yield break;
         }
@@ -1028,7 +1146,7 @@ public class TBBS : MonoBehaviour
         float baseDamage = ((2 * attacker.level + 2) * .1f * power * attackStat) / (5.0f * defenseStat);
         float totalBeforeModifiers = baseDamage + 2;
         float finalDamageFloat = totalBeforeModifiers * efficacy * stanceBonus * roll * critMod * freezeMod;
-        int damage = Mathf.FloorToInt(finalDamageFloat);
+        int damage = Mathf.FloorToInt(finalDamageFloat * target.recivedDamageMultiplier);
 
         if (damage <= 0) damage = 1;
 
@@ -1039,8 +1157,8 @@ public class TBBS : MonoBehaviour
         Debug.Log($"{attacker.name} usó habilidad con Poder: {power} y Stat Ofensivo: {attackStat}");
         Debug.Log($"Defensa de {target.name}: {defenseStat}");
         Debug.Log($"Daño Base calculado (sin modificadores): {baseDamage}");
-        Debug.Log($"Modificadores -> Efficacy: {efficacy}, Stance: {stanceBonus}, Roll: {roll}, Crit: {critMod}");
-        Debug.Log($"Daño Final antes de redondear: {finalDamageFloat} -> Daño Aplicado: {damage}");
+        Debug.Log($"Modificadores -> Efficacy: {efficacy}, Stance: {stanceBonus}, Roll: {roll}, Crit: {critMod}, Modificador de daño: {target.recivedDamageMultiplier}");
+        Debug.Log($"Daño Final antes de redondear: {finalDamageFloat * target.recivedDamageMultiplier} -> Daño Aplicado: {damage}");
 
         if (efficacy == 2) TooltipUI.instance.ShowTooltipText("It's super effective!");
         if (isCritical) TooltipUI.instance.ShowTooltipText("Critical Hit!");
@@ -1086,13 +1204,13 @@ public class TBBS : MonoBehaviour
         switch (abilityStance)
         {
             case Stance.AGRESSIVE:
-                if (defenderStance == Stance.AGILE) return 2f;
+                if (defenderStance == Stance.AGILE) return 1.5f;
                 else return 1;
             case Stance.DEFENSIVE:
-                if (defenderStance == Stance.AGRESSIVE) return 2f;
+                if (defenderStance == Stance.AGRESSIVE) return 1.5f;
                 else return 1;
             case Stance.AGILE:
-                if (defenderStance == Stance.DEFENSIVE) return 2f;
+                if (defenderStance == Stance.DEFENSIVE) return 1.5f;
                 else return 1;
             case Stance.CAUTIOUS:
                 return 1;

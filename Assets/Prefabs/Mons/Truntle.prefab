@@ -810,16 +810,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: 952e0ad38b796514fa8c427817be8f4f, type: 3}
   id: 0
-  name: Caracston
+  name: Truntle
   description: 
   currentStance: 1
   level: 1
   exp: 0
+  expCurve: {fileID: 11400000, guid: 42eec143c7464c24889a7a724a74e69f, type: 2}
   status: 0
-  strength: 16
-  constitution: 26
+  recivedDamageMultiplier: 0
+  strength: 12
+  constitution: 17
   dexterity: 11
-  luck: 2
+  luck: 14
   maxHp: 0
   currentHp: 0
   attack: 0
@@ -828,11 +830,22 @@ MonoBehaviour:
   precision: 1
   knownAbilities: []
   abilityPool:
+  - {fileID: 11400000, guid: 849a9d9df5518e347b9c07d1b8aecbcd, type: 2}
   - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}
+  - {fileID: 11400000, guid: daa0c4b00ff11eb40acf2c4bd3977572, type: 2}
+  - {fileID: 11400000, guid: 9ddda5891d8e14044ba7b4ec3cd24950, type: 2}
   - {fileID: 11400000, guid: 1c10fb9f488085d4aaf6c6a22e96fd23, type: 2}
-  - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
-  - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
+  - {fileID: 11400000, guid: 82a464c85dd9aaf47a31180359d54b2f, type: 2}
+  - {fileID: 11400000, guid: 55ba7787e420eb34ba33206315392df9, type: 2}
+  - {fileID: 11400000, guid: 5bea5b4745397354cb76917bc0ac6f14, type: 2}
+  - {fileID: 11400000, guid: 21f9ea56683cbd04daf0589ec26490ac, type: 2}
+  - {fileID: 11400000, guid: ded38d84878cfc649a4ba07942b15c03, type: 2}
+  - {fileID: 11400000, guid: 8d0ff8fa984de074dba8e1813b781b46, type: 2}
   heldItem: {fileID: 0}
+  evasive: 0
+  provoking: 0
+  guardedBy: {fileID: 0}
+  timesBuffed: 0
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
   battleMenu: {fileID: 0}
@@ -854,6 +867,7 @@ MonoBehaviour:
   additionalTurn: 0
   skipTurn: 0
   takingDamage: 0
+  baseEffectChanceMulti: 1
   effectChanceModifier: 0
 --- !u!1 &1760726793352929564
 GameObject:

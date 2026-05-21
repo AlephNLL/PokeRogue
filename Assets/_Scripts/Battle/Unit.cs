@@ -7,6 +7,7 @@ using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 using static Unity.Collections.Unicode;
@@ -24,6 +25,7 @@ public class Unit : MonoBehaviour
     public Status status;
     private float stanceModifier = 1.5f;
 
+    public float recivedDamageMultiplier = 1f;
 
     public int strength;
     public int constitution;
@@ -109,6 +111,8 @@ public class Unit : MonoBehaviour
 
         healthBar = statusMenu.transform.Find("Health Bar").gameObject.GetComponentInChildren<Slider>();
 
+        recivedDamageMultiplier = 1f;
+
         if (isPlayerControlled)
         {
             actionCamera = transform.Find("ActionCamera").gameObject.GetComponent<CinemachineVirtualCamera>();
@@ -122,6 +126,7 @@ public class Unit : MonoBehaviour
             attackButton = battleMenu.GetComponentsInChildren<Button>(true)[0];
             itemButton = battleMenu.GetComponentsInChildren<Button>(true)[1];
             runButton = battleMenu.GetComponentsInChildren<Button>(true)[2];
+            runButton.GetComponentInChildren<TMP_Text>().text = "Defend";
             abilityButtons = abilityMenu.GetComponentsInChildren<Button>(true);
             itemButtons = itemMenu.GetComponentsInChildren<Button>(true);
         }
@@ -129,7 +134,7 @@ public class Unit : MonoBehaviour
         {
             nameText = statusMenu.transform.Find("Panel").gameObject;
             nameText.gameObject.SetActive(true);
-            nameText.GetComponentInChildren<TextMeshProUGUI>(true).text = name;
+            nameText.GetComponentInChildren<TextMeshProUGUI>(true).text = $"{name} Lvl: {level}";
             nameText.GetComponentInChildren<TextMeshProUGUI>(true).gameObject.SetActive(true);
 
 
@@ -140,11 +145,11 @@ public class Unit : MonoBehaviour
         switch (stat)
         {
             case Stats.HP:
-                return constitution * monLevel + 1;
+                return (int)(constitution * level + 1);
             case Stats.ATK:
                 return (int)(strength / 5f * monLevel + 1);
             case Stats.DEF:
-                return (int)(constitution / 5f * monLevel + 1);
+                return (int)((.5f * constitution + .5f * dexterity) / 5f * monLevel + 1);
             case Stats.SPEED:
                 return (int)(dexterity / 5f * monLevel + 1);
             default:
@@ -158,9 +163,9 @@ public class Unit : MonoBehaviour
             currentHp = PlayerData.teamData.Find(item => item.id == id).currentHp;
             level = PlayerData.teamData.Find(item => item.id == id).level;
 
-            maxHp = constitution * level + 1;
+            maxHp = (int)(constitution * level + 1);
             attack = (int)(strength / 5f * level + 1);
-            defense = (int)(constitution / 5f * level + 1);
+            defense = (int)((.5f * constitution + .5f * dexterity) / 5f * level + 1);
             speed = (int)(dexterity / 5f * level + 1);
 
             knownAbilities = PlayerData.teamData.Find(item => item.id == id).knownAbilities.ToArray();
@@ -171,9 +176,9 @@ public class Unit : MonoBehaviour
         {
             level = BattleData.enemyLevel;
 
-            maxHp = constitution * level + 1;
+            maxHp = (int)(constitution * level + 1);
             attack = (int)(strength / 5f * level + 1);
-            defense = (int)(constitution / 5f * level + 1);
+            defense = (int)((.5f * constitution + .5f * dexterity) / 5f * level + 1);
             speed = (int)(dexterity / 5f * level + 1);
 
             currentHp = maxHp;
@@ -587,6 +592,8 @@ public class Unit : MonoBehaviour
         ResolveItemEffect(ExecutionTime.TURNSTART);
 
         if (status == Status.ASLEEP) SleepCounter();
+
+        recivedDamageMultiplier = 1f;
     }
 
     public void OnTurnEnd()
@@ -623,9 +630,9 @@ public class Unit : MonoBehaviour
             if (ability.abilityType == AbilityType.PASSIVE && ability.passiveExecutionTime == battleStage && baseEffectChanceMulti*ability.passiveEffectChance + effectChanceModifier >= Random.Range(1, 100))
             {
                 List<Unit> target = new List<Unit>();
-                List<Unit> allies = new List<Unit>(TBBS.instance.playerUnits);
+                List<Unit> allies = isPlayerControlled ? new List<Unit>(TBBS.instance.playerUnits) : new List<Unit>(TBBS.instance.enemyUnits);
                 allies.Remove(this);
-                List<Unit> enemies = new List<Unit>(TBBS.instance.enemyUnits);
+                List<Unit> enemies = isPlayerControlled ? new List<Unit>(TBBS.instance.enemyUnits) : new List<Unit>(TBBS.instance.playerUnits);
 
                 if(allies.Count < 0) continue;
 

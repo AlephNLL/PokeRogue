@@ -106,6 +106,12 @@ public class TBBS : MonoBehaviour
         if (currentTurnCoroutine != null)
             StopCoroutine(currentTurnCoroutine);
 
+        if (menuCoroutine != null)
+        {
+            StopCoroutine(menuCoroutine);
+            isActionExecuting = false;
+        }
+            
         // Verificar si hay unidades vivas
         if (IsBattleOver())
         {
@@ -209,8 +215,9 @@ public class TBBS : MonoBehaviour
 
         if (action.skip)
         {
-            TooltipUI.instance.ShowTooltipText(currentUnit.name + " skipped turn");
+            TooltipUI.instance.ShowTooltipText(currentUnit.name + " is defending");
             currentUnit.OnTurnEnd();
+            currentUnit.recivedDamageMultiplier = 0.5f;
             yield return new WaitForSeconds(1);
             currentTurnIndex++;
             StartNextTurn();
@@ -680,6 +687,8 @@ public class TBBS : MonoBehaviour
         attacker.DeactivateCamera();
         attacker.CloseBattleMenu();
         attacker.OnTurnEnd();
+        attacker.recivedDamageMultiplier = 0.5f;
+        TooltipUI.instance.ShowTooltipText($"{attacker.name} is defending!");
         currentTurnIndex++;
         StartNextTurn();
     }
@@ -839,8 +848,17 @@ public class TBBS : MonoBehaviour
 
             if (!allUnits.Contains(target))
             {
-                if (enemyUnits.Count > 0) target = enemyUnits[Random.Range(0, enemyUnits.Count)];
-                else break;
+                if (playerUnits.Contains(attacker))
+                {
+                    if (enemyUnits.Count > 0) target = enemyUnits[Random.Range(0, enemyUnits.Count)];
+                    else break;
+                }
+                else
+                {
+                    if (playerUnits.Count > 0) target = playerUnits[Random.Range(0, playerUnits.Count)];
+                    else break;
+
+                }
             }
 
             targets[0] = target;
@@ -1123,7 +1141,7 @@ public class TBBS : MonoBehaviour
         float baseDamage = ((2 * attacker.level + 2) * .1f * power * attackStat) / (5.0f * defenseStat);
         float totalBeforeModifiers = baseDamage + 2;
         float finalDamageFloat = totalBeforeModifiers * efficacy * stanceBonus * roll * critMod * freezeMod;
-        int damage = Mathf.FloorToInt(finalDamageFloat);
+        int damage = Mathf.FloorToInt(finalDamageFloat * target.recivedDamageMultiplier);
 
         if (damage <= 0) damage = 1;
 
@@ -1134,8 +1152,8 @@ public class TBBS : MonoBehaviour
         Debug.Log($"{attacker.name} usó habilidad con Poder: {power} y Stat Ofensivo: {attackStat}");
         Debug.Log($"Defensa de {target.name}: {defenseStat}");
         Debug.Log($"Daño Base calculado (sin modificadores): {baseDamage}");
-        Debug.Log($"Modificadores -> Efficacy: {efficacy}, Stance: {stanceBonus}, Roll: {roll}, Crit: {critMod}");
-        Debug.Log($"Daño Final antes de redondear: {finalDamageFloat} -> Daño Aplicado: {damage}");
+        Debug.Log($"Modificadores -> Efficacy: {efficacy}, Stance: {stanceBonus}, Roll: {roll}, Crit: {critMod}, Modificador de daño: {target.recivedDamageMultiplier}");
+        Debug.Log($"Daño Final antes de redondear: {finalDamageFloat * target.recivedDamageMultiplier} -> Daño Aplicado: {damage}");
 
         if (efficacy == 2) TooltipUI.instance.ShowTooltipText("It's super effective!");
         if (isCritical) TooltipUI.instance.ShowTooltipText("Critical Hit!");
@@ -1181,13 +1199,13 @@ public class TBBS : MonoBehaviour
         switch (abilityStance)
         {
             case Stance.AGRESSIVE:
-                if (defenderStance == Stance.AGILE) return 2f;
+                if (defenderStance == Stance.AGILE) return 1.5f;
                 else return 1;
             case Stance.DEFENSIVE:
-                if (defenderStance == Stance.AGRESSIVE) return 2f;
+                if (defenderStance == Stance.AGRESSIVE) return 1.5f;
                 else return 1;
             case Stance.AGILE:
-                if (defenderStance == Stance.DEFENSIVE) return 2f;
+                if (defenderStance == Stance.DEFENSIVE) return 1.5f;
                 else return 1;
             case Stance.CAUTIOUS:
                 return 1;

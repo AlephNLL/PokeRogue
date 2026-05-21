@@ -810,12 +810,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: bec9fa8a46cb9ec4196ab5b03f846889, type: 3}
   id: 0
-  name: Caracston
+  name: Lagardown
   description: 
   currentStance: 1
   level: 1
   exp: 0
+  expCurve: {fileID: 11400000, guid: f01d0285087c64644a6a385494e4dc6f, type: 2}
   status: 0
+  recivedDamageMultiplier: 0
   strength: 16
   constitution: 16
   dexterity: 8
@@ -828,11 +830,22 @@ MonoBehaviour:
   precision: 1
   knownAbilities: []
   abilityPool:
+  - {fileID: 11400000, guid: 0942eb40e7d06334c88000943bb0ef5f, type: 2}
   - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}
-  - {fileID: 11400000, guid: 1c10fb9f488085d4aaf6c6a22e96fd23, type: 2}
-  - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
-  - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
+  - {fileID: 11400000, guid: 321de13cfd530c54aba47ec3f0e95574, type: 2}
+  - {fileID: 11400000, guid: ef66adc30711f184f8aca36e3d0cd0a6, type: 2}
+  - {fileID: 11400000, guid: 556c490a905fb924fb18136800f1aab5, type: 2}
+  - {fileID: 11400000, guid: a9d2a78638812e7488c63d821e13c22b, type: 2}
+  - {fileID: 11400000, guid: 4da41906e99ae474682c1bbb2d4f1b00, type: 2}
+  - {fileID: 11400000, guid: a825e7f4db9e8754c881c4e10150de8a, type: 2}
+  - {fileID: 11400000, guid: 49aedcd7b5ebd704289a85b15aa87cd9, type: 2}
+  - {fileID: 11400000, guid: d07ca8c0e3ca14542be632860d5ff39d, type: 2}
+  - {fileID: 11400000, guid: 1ad9a45ea1e20ba4db54d9db0d17d6d8, type: 2}
   heldItem: {fileID: 0}
+  evasive: 0
+  provoking: 0
+  guardedBy: {fileID: 0}
+  timesBuffed: 0
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
   battleMenu: {fileID: 0}
@@ -854,6 +867,7 @@ MonoBehaviour:
   additionalTurn: 0
   skipTurn: 0
   takingDamage: 0
+  baseEffectChanceMulti: 1
   effectChanceModifier: 0
 --- !u!1 &1760726793352929564
 GameObject:

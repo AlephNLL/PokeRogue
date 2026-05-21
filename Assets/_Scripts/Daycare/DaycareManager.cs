@@ -1,12 +1,13 @@
 
+using GameData;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
-using GameData;
 
 public class DaycareManager : MonoBehaviour
 {
@@ -44,9 +45,10 @@ public class DaycareManager : MonoBehaviour
                 unit.name = startingUnits[i].name;
                 unit.prefab = startingUnits[i].prefab;
                 unit.level = startingUnits[i].level;
-                unit.currentHp = startingUnits[i].prefab.GetComponent<Unit>().constitution + 1;
-                unit.knownAbilities = startingUnits[i].knownAbilities;
-                unit.heldItem = startingUnits[i].heldItem;
+                unit.currentHp = startingUnits[i].prefab.GetComponent<Unit>().GetRawStat(Stats.HP, unit.level);
+                if (startingUnits[i].knownAbilities.Count > 0) unit.knownAbilities = startingUnits[i].knownAbilities;
+                else unit.knownAbilities = startingUnits[i].prefab.GetComponent<Unit>().GetUnitKnownAbilities(unit.level);
+                    unit.heldItem = startingUnits[i].heldItem;
 
                 units.Add(unit);
             }
@@ -247,7 +249,6 @@ public class DaycareManager : MonoBehaviour
         selectedUnits.Clear();
         selectedPrefabs.Clear();
 
-        AudioManager.instance.StopMusic();
         if (MapManager.instance)
         {
             MapManager.instance.LoadMapSceneFromStart();

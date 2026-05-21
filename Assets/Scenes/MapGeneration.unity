@@ -5055,6 +5055,166 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapManager
       objectReference: {fileID: 0}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: enemyPool.Array.size
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: normalEnemyExtraCost
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: cheapEnemies.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 5fe7b7b1ca0968e45bf3704276764ea9, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 5f943b2c635652a45adf0add8a4d9a11, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 3e56377424e78be4890cdb6ba75c6eab, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[3]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 2470fb1e28ee7b1439f2577f52247346, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[4]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[5]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: b992b5942d8d7384980f0e7231fcdc9f, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[6]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 87588304c2b5af44ca152b832eca0b75, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[7]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 25050988c599b9e4e8f75589a74a5d28, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[8]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 0ba7ba03ce074af4dbbfa66f4aa20c78, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[9]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: expensiveEnemyExtraCost
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[10]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 783abb16d1735ff46ba52cbef726d81b, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[11]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: b4bd1548d8e9f1849a896d6a024fcd36, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[12]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 1cb1ad5d88cb08249b6f88bb300d1c01, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[13]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 171b72f5768651c47b0125b063724a16, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[14]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 171b72f5768651c47b0125b063724a16, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'enemyPool.Array.data[15]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 171b72f5768651c47b0125b063724a16, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: normalEnemies.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'cheapEnemies.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 3e56377424e78be4890cdb6ba75c6eab, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'cheapEnemies.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 2470fb1e28ee7b1439f2577f52247346, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'cheapEnemies.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'cheapEnemies.Array.data[3]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 1cb1ad5d88cb08249b6f88bb300d1c01, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'cheapEnemies.Array.data[4]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 25050988c599b9e4e8f75589a74a5d28, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'cheapEnemies.Array.data[5]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'cheapEnemies.Array.data[6]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 5f943b2c635652a45adf0add8a4d9a11, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: expensiveEnemies.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'normalEnemies.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: b992b5942d8d7384980f0e7231fcdc9f, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'normalEnemies.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 0ba7ba03ce074af4dbbfa66f4aa20c78, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'normalEnemies.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 783abb16d1735ff46ba52cbef726d81b, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'normalEnemies.Array.data[3]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 5fe7b7b1ca0968e45bf3704276764ea9, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'normalEnemies.Array.data[4]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 87588304c2b5af44ca152b832eca0b75, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'normalEnemies.Array.data[5]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 87588304c2b5af44ca152b832eca0b75, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'normalEnemies.Array.data[6]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 87588304c2b5af44ca152b832eca0b75, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'expensiveEnemies.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: b4bd1548d8e9f1849a896d6a024fcd36, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'expensiveEnemies.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 171b72f5768651c47b0125b063724a16, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'expensiveEnemies.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 171b72f5768651c47b0125b063724a16, type: 3}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'expensiveEnemies.Array.data[3]'
+      value: 
+      objectReference: {fileID: 1717970170875167366, guid: 546b5ad13e741394b8649baad49f9268, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

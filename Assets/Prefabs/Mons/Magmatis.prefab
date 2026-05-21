@@ -815,9 +815,11 @@ MonoBehaviour:
   currentStance: 1
   level: 1
   exp: 0
+  expCurve: {fileID: 11400000, guid: f01d0285087c64644a6a385494e4dc6f, type: 2}
   status: 0
+  recivedDamageMultiplier: 0
   strength: 16
-  constitution: 24
+  constitution: 20
   dexterity: 12
   luck: 3
   maxHp: 0
@@ -828,11 +830,22 @@ MonoBehaviour:
   precision: 1
   knownAbilities: []
   abilityPool:
+  - {fileID: 11400000, guid: a196767889e297048bf39d46b49ff85a, type: 2}
   - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}
-  - {fileID: 11400000, guid: 1c10fb9f488085d4aaf6c6a22e96fd23, type: 2}
-  - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
-  - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
+  - {fileID: 11400000, guid: 7c519b83ede18284a8c92606d4d5ea92, type: 2}
+  - {fileID: 11400000, guid: a9d2a78638812e7488c63d821e13c22b, type: 2}
+  - {fileID: 11400000, guid: b45f215236b52d643a2b21b878d3210a, type: 2}
+  - {fileID: 11400000, guid: c583e110ba48b154381c7ff373545d1d, type: 2}
+  - {fileID: 11400000, guid: 4da41906e99ae474682c1bbb2d4f1b00, type: 2}
+  - {fileID: 11400000, guid: 81a8ad3b35636334b81ca5040c985f0b, type: 2}
+  - {fileID: 11400000, guid: c97c86d762f80514887e32f20052a304, type: 2}
+  - {fileID: 11400000, guid: 10707b8a25baf094481bfff9ddfd9e26, type: 2}
+  - {fileID: 11400000, guid: ae6c35fc2ecb80f4db15e202f47b2a4e, type: 2}
   heldItem: {fileID: 0}
+  evasive: 0
+  provoking: 0
+  guardedBy: {fileID: 0}
+  timesBuffed: 0
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
   battleMenu: {fileID: 0}
@@ -854,6 +867,7 @@ MonoBehaviour:
   additionalTurn: 0
   skipTurn: 0
   takingDamage: 0
+  baseEffectChanceMulti: 1
   effectChanceModifier: 0
 --- !u!1 &1760726793352929564
 GameObject:

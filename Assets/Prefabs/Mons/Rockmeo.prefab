@@ -810,16 +810,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: 4bfe4ea889416514c9376d3f9206fd3d, type: 3}
   id: 0
-  name: Caracston
+  name: Rockmeo
   description: 
   currentStance: 1
   level: 1
   exp: 0
+  expCurve: {fileID: 11400000, guid: f01d0285087c64644a6a385494e4dc6f, type: 2}
   status: 0
-  strength: 18
-  constitution: 30
+  recivedDamageMultiplier: 0
+  strength: 7
+  constitution: 24
   dexterity: 8
-  luck: 2
+  luck: 11
   maxHp: 0
   currentHp: 0
   attack: 0
@@ -828,11 +830,22 @@ MonoBehaviour:
   precision: 1
   knownAbilities: []
   abilityPool:
+  - {fileID: 11400000, guid: d74da88247740e94e9a2cad04024bf3e, type: 2}
   - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}
-  - {fileID: 11400000, guid: 1c10fb9f488085d4aaf6c6a22e96fd23, type: 2}
-  - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
-  - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
+  - {fileID: 11400000, guid: 03eea5717f97d5c4eb16a78f01b766b4, type: 2}
+  - {fileID: 11400000, guid: 0b8036aed22fd6648acfcf5dbfb9cd6b, type: 2}
+  - {fileID: 11400000, guid: 7250df0abda0f3d49b9d5c39cb0c6791, type: 2}
+  - {fileID: 11400000, guid: ae188959216847e4e8318c12cf86ec4c, type: 2}
+  - {fileID: 11400000, guid: 1ad9a45ea1e20ba4db54d9db0d17d6d8, type: 2}
+  - {fileID: 11400000, guid: 5bea5b4745397354cb76917bc0ac6f14, type: 2}
+  - {fileID: 11400000, guid: 8534bf41cde3f664ebaa31c5335e6bde, type: 2}
+  - {fileID: 11400000, guid: a825e7f4db9e8754c881c4e10150de8a, type: 2}
+  - {fileID: 11400000, guid: cfc82a1f88b00ed4fb3ac7a457ccba87, type: 2}
   heldItem: {fileID: 0}
+  evasive: 0
+  provoking: 0
+  guardedBy: {fileID: 0}
+  timesBuffed: 0
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
   battleMenu: {fileID: 0}
@@ -854,6 +867,7 @@ MonoBehaviour:
   additionalTurn: 0
   skipTurn: 0
   takingDamage: 0
+  baseEffectChanceMulti: 1
   effectChanceModifier: 0
 --- !u!1 &1760726793352929564
 GameObject:

@@ -10,15 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6fd34378b8d549f40b2244231e926bc1, type: 3}
-  m_Name: Caracston
+  m_Name: Chamncio
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   id: 1
-  name: Caracston
-  prefab: {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
+  name: Chamancio
+  prefab: {fileID: 1717970170875167366, guid: b992b5942d8d7384980f0e7231fcdc9f, type: 3}
   level: 1
   currentExp: 0
   heldItem: {fileID: 0}
-  currentHp: 0
+  currentHp: 10
   status: 0
-  knownAbilities: []
+  knownAbilities:
+  - {fileID: 11400000, guid: 723a75a4d1c375948bd4ffb24467d9fa, type: 2}
+  - {fileID: 11400000, guid: 732483a76a59d7d48a24b4adacfc88cd, type: 2}
+  - {fileID: 11400000, guid: 059a4631f8bd5b04e99d4f8d3c921817, type: 2}
+  - {fileID: 11400000, guid: 5bea5b4745397354cb76917bc0ac6f14, type: 2}
   isVeteran: 0

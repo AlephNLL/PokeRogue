@@ -146,7 +146,7 @@ public class Unit : MonoBehaviour
         switch (stat)
         {
             case Stats.HP:
-                return (int)(constitution * level + 1);
+                return (int)(constitution * monLevel + 1);
             case Stats.ATK:
                 return (int)(strength / 5f * monLevel + 1);
             case Stats.DEF:

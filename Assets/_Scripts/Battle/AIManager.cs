@@ -387,7 +387,11 @@ public class AIManager : MonoBehaviour
         {
             if (mon.knownAbilities[i].abilityType == AbilityType.ACTIVE)
             {
-                actives.Add(mon.knownAbilities[i]);
+                if(!mon.knownAbilities[i].mustUseStance) actives.Add(mon.knownAbilities[i]);
+                else if (mon.currentStance == mon.knownAbilities[i].stance)
+                {
+                    actives.Add(mon.knownAbilities[i]);
+                }
             }
         }
 

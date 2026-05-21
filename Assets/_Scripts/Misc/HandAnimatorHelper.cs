@@ -79,6 +79,10 @@ public class HandAnimatorHelper : MonoBehaviour
             //StartCoroutine(LerpRotation(Quaternion.Euler(0, 180, 0)));
         }
     }
+    public void SetDefaultPosition()
+    {
+        defaultPosition = transform.position;
+    }
     IEnumerator Move(Vector3 destination, float duration)
     {
         isMoving = true;

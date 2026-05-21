@@ -94,6 +94,11 @@ public class TBBS : MonoBehaviour
 
         yield return new WaitForSeconds(.2f);
 
+        HandAnimatorHelper.instance.TeleportHandBehindCamera();
+        HandAnimatorHelper.instance.SetDefaultPosition();
+        LeftHandAnimatorHelper.instance.TeleportHandBehindCamera();
+        LeftHandAnimatorHelper.instance.SetDefaultPosition();
+
         StartNextTurn();
     }
 
@@ -717,8 +722,6 @@ public class TBBS : MonoBehaviour
         bool nextAttack = false;
 
         GameObject hand = HandAnimatorHelper.instance.gameObject;
-        HandAnimatorHelper.instance.TeleportHandBehindCamera();
-        LeftHandAnimatorHelper.instance.TeleportHandBehindCamera();
 
         for (int i = 0; i < hits; i++)
         {
@@ -802,7 +805,7 @@ public class TBBS : MonoBehaviour
         }
 
         HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", false);
-        HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 30f), 1f);
+        HandAnimatorHelper.instance.MoveToDefaultPosition(1f);
         while (HandAnimatorHelper.instance.isMoving) yield return null;
 
         CameraManager.instance.SetBlendTime(1);
@@ -845,7 +848,6 @@ public class TBBS : MonoBehaviour
         bool nextAttack = false;
 
         GameObject hand = HandAnimatorHelper.instance.gameObject;
-        HandAnimatorHelper.instance.TeleportHandBehindCamera();
 
         for (int i = 0; i < hits; i++)
         {
@@ -935,7 +937,7 @@ public class TBBS : MonoBehaviour
         }
 
         HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", false);
-        HandAnimatorHelper.instance.MoveToPosition(new Vector3(hand.transform.position.x, hand.transform.position.y, hand.transform.position.z - 30f), 1f);
+        HandAnimatorHelper.instance.MoveToDefaultPosition(1f);
         while (HandAnimatorHelper.instance.isMoving) yield return null;
 
         CameraManager.instance.SetBlendTime(1);
@@ -1160,7 +1162,7 @@ public class TBBS : MonoBehaviour
         Debug.Log($"Modificadores -> Efficacy: {efficacy}, Stance: {stanceBonus}, Roll: {roll}, Crit: {critMod}, Modificador de daño: {target.recivedDamageMultiplier}");
         Debug.Log($"Daño Final antes de redondear: {finalDamageFloat * target.recivedDamageMultiplier} -> Daño Aplicado: {damage}");
 
-        if (efficacy == 2) TooltipUI.instance.ShowTooltipText("It's super effective!");
+        if (efficacy == 1.5f) TooltipUI.instance.ShowTooltipText("It's super effective!");
         if (isCritical) TooltipUI.instance.ShowTooltipText("Critical Hit!");
 
         return damage;

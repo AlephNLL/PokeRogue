@@ -108,7 +108,6 @@ public class TeamManager : MonoBehaviour
 
     public void AddNewTeamMember(GameObject mon)
     {
-        EndScreenManager.monSelected = true;
         Unit unit = mon.GetComponent<Unit>();
 
         UnitData unitData = ScriptableObject.CreateInstance<UnitData>();
@@ -121,17 +120,16 @@ public class TeamManager : MonoBehaviour
 
         if (PlayerData.teamData.Count < 4)
         {
+            // Si hay espacio, se añade normal
             PlayerData.teamData.Add(unitData);
             EndScreenManager.instance.EndMonSelection(unit);
         }
         else
         {
-            unitData.id = 0;
-            if (PlayerData.daycareTeamData == null) PlayerData.daycareTeamData = new List<UnitData>();
-            PlayerData.daycareTeamData.Add(unitData);
-            EndScreenManager.instance.EndMonSelection(unit, true);
+            // Si está lleno, le pasamos la pelota al EndScreenManager para que pregunte
+            EndScreenManager.instance.PromptDaycareSelection(unitData, unit);
         }
     }
 
-    
+
 }

@@ -500,6 +500,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tooltip
       objectReference: {fileID: 0}
+    - target: {fileID: 5241541595731854960, guid: de5d203148273a84583fc52cedef6d24, type: 3}
+      propertyPath: m_SortingOrder
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8718922984411827247, guid: de5d203148273a84583fc52cedef6d24, type: 3}
       propertyPath: m_Pivot.x
       value: 0

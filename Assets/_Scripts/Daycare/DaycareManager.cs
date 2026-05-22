@@ -97,22 +97,38 @@ public class DaycareManager : MonoBehaviour
 
     UnitData GenerateNewUnit(UnitData unit1, UnitData unit2)
     {
-        //Select a unit to inherit species and ability
         UnitData speciesParent = Random.Range(0, 2) == 0 ? unit1 : unit2;
         UnitData abilityParent = speciesParent == unit1 ? unit2 : unit1;
-
-        //Choose a random ability to inherit
-        Abilities childAbility = abilityParent.knownAbilities[Random.Range(0, abilityParent.knownAbilities.Count)];
 
         UnitData unit = ScriptableObject.CreateInstance<UnitData>();
         unit.name = speciesParent.name;
         unit.prefab = speciesParent.prefab;
         unit.level = 1;
-        unit.currentHp = speciesParent.prefab.GetComponent<Unit>().constitution + 1;
+
+        Unit speciesUnitComponent = unit.prefab.GetComponent<Unit>();
+        unit.currentHp = speciesUnitComponent.GetRawStat(Stats.HP, 1);
+
         unit.knownAbilities = new List<Abilities>();
-        unit.knownAbilities.Add(childAbility);
-        unit.knownAbilities.Add(unit.prefab.GetComponent<Unit>().abilityPool[0]);
-        unit.knownAbilities.Add(unit.prefab.GetComponent<Unit>().abilityPool[1]);
+
+        if (speciesUnitComponent.abilityPool.Length > 0)
+            unit.knownAbilities.Add(speciesUnitComponent.abilityPool[0]);
+        if (speciesUnitComponent.abilityPool.Length > 1)
+            unit.knownAbilities.Add(speciesUnitComponent.abilityPool[1]);
+
+        List<Abilities> inheritableAbilities = new List<Abilities>();
+        foreach (Abilities parentAbility in abilityParent.knownAbilities)
+        {
+            if (!unit.knownAbilities.Contains(parentAbility))
+            {
+                inheritableAbilities.Add(parentAbility);
+            }
+        }
+
+        if (inheritableAbilities.Count > 0)
+        {
+            Abilities inheritedAbility = inheritableAbilities[Random.Range(0, inheritableAbilities.Count)];
+            unit.knownAbilities.Add(inheritedAbility);
+        }
 
         units.Remove(unit1);
         units.Remove(unit2);

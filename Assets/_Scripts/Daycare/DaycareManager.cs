@@ -94,21 +94,12 @@ public class DaycareManager : MonoBehaviour
 
         unitPrefabs.Clear();
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            units.Add(GenerateNewUnit(units[0], units[1]));
-            DeleteUnits();
-            SpawnUnits();
-        }
-    }
 
     UnitData GenerateNewUnit(UnitData unit1, UnitData unit2)
     {
         //Select a unit to inherit species and ability
         UnitData speciesParent = Random.Range(0, 2) == 0 ? unit1 : unit2;
-        UnitData abilityParent = Random.Range(0, 2) == 0 ? unit1 : unit2;
+        UnitData abilityParent = speciesParent == unit1 ? unit2 : unit1;
 
         //Choose a random ability to inherit
         Abilities childAbility = abilityParent.knownAbilities[Random.Range(0, abilityParent.knownAbilities.Count)];
@@ -138,7 +129,9 @@ public class DaycareManager : MonoBehaviour
         DaycareUIManager.instance.DisableAllButtons();
         DaycareCamera.instance.EnableFusionCamera();
         DaycareCamera.instance.SetCameraTarget(unitPrefabs[0].transform);
-
+        UIManager.Instance.ShowCanvas(true);
+        UIManager.Instance.UpdateStats(units[0]);
+        UIManager.Instance.UpdateAbilities(units[0]);
         StartCoroutine(MonBattleSelection());
     }
     public void StartMonFusionSelection()
@@ -147,7 +140,9 @@ public class DaycareManager : MonoBehaviour
         DaycareUIManager.instance.DisableAllButtons();
         DaycareCamera.instance.EnableFusionCamera();
         DaycareCamera.instance.SetCameraTarget(unitPrefabs[0].transform);
-
+        UIManager.Instance.ShowCanvas(true);
+        UIManager.Instance.UpdateStats(units[0]);
+        UIManager.Instance.UpdateAbilities(units[0]);
         StartCoroutine(MonFusionSelection());
     }
     IEnumerator MonFusionSelection()
@@ -171,6 +166,11 @@ public class DaycareManager : MonoBehaviour
         {
             yield return Run<int>(SelectMon(selection), (output) => selection = output);
 
+            if(selection == -1)
+            {
+                Cancel();
+                yield break;
+            }
             if (!selectedUnits.Any(u => u.id == units[selection].id))
             {
                 FresnelApplier.applyFresnel(unitPrefabs[selection], Color.white);
@@ -208,6 +208,7 @@ public class DaycareManager : MonoBehaviour
     }
     public void Cancel()
     {
+        DaycareCamera.instance.DisableFusionCamera();
         DaycareUIManager.instance.HideConfirmScreen();
         DaycareUIManager.instance.HideBattleConfirm();
         TooltipUI.instance.HideTooltipText();
@@ -226,7 +227,7 @@ public class DaycareManager : MonoBehaviour
         isBattle = true;
 
         TooltipUI.instance.HideTooltipText();
-
+        UIManager.Instance.ShowCanvas(false);
         DaycareCamera.instance.DisableFusionCamera();
 
         yield return new WaitForSeconds(2);
@@ -264,7 +265,7 @@ public class DaycareManager : MonoBehaviour
         isBattle = false;
 
         TooltipUI.instance.HideTooltipText();
-
+        UIManager.Instance.ShowCanvas(false);
         DaycareUIManager.instance.HideMainButtons();
 
         DaycareCamera.instance.DisableFusionCamera();
@@ -282,7 +283,7 @@ public class DaycareManager : MonoBehaviour
         int selection = monSelection;
         while (true)
         {
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+            if (Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.sqrMagnitude < 0)
             {
                 selection++;
 
@@ -292,8 +293,13 @@ public class DaycareManager : MonoBehaviour
                 }
 
                 DaycareCamera.instance.SetCameraTarget(unitPrefabs[selection].transform);
+                UIManager.Instance.UpdateStats(units[selection]);
+                if (UIManager.Instance.abilities.activeInHierarchy)
+                {
+                    UIManager.Instance.UpdateAbilities(units[selection]);
+                }
             }
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.sqrMagnitude > 0)
             {
                 selection--;
 
@@ -303,10 +309,21 @@ public class DaycareManager : MonoBehaviour
                 }
 
                 DaycareCamera.instance.SetCameraTarget(unitPrefabs[selection].transform);
+                UIManager.Instance.UpdateStats(units[selection]);
+                if (UIManager.Instance.abilities.activeInHierarchy)
+                {
+                    UIManager.Instance.UpdateAbilities(units[selection]);
+                }
             }
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 yield return selection;
+                yield break;
+            }
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1))
+            {
+                UIManager.Instance.ShowCanvas(false);
+                yield return -1;
                 yield break;
             }
 

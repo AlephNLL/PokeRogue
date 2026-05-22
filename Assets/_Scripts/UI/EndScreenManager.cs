@@ -141,11 +141,13 @@ public class EndScreenManager : MonoBehaviour
         AudioManager.instance.StopMusic();
         if (MapManager.instance.currentNode.roomType == GameData.RoomType.Boss)
         {
+            MapManager.instance.mapCreated = false;
+            MapManager.instance.createdRooms.Clear();
+            MapManager.instance.nodes.Clear();
             SceneManager.LoadSceneAsync("Daycare");
         }
         else
         {
-            MapManager.instance.mapCreated = false;
             MapManager.instance.LoadMapScene();
         }
     }

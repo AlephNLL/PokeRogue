@@ -86,7 +86,11 @@ public class MapCamera : MonoBehaviour
             {
                 statsCamera.gameObject.SetActive(true);
                 UIManager.Instance.ShowCanvas(true);
-                UIManager.Instance.UpdateStats(0);
+                UIManager.Instance.UpdateStats(null, 0);
+                if (UIManager.Instance.abilities.activeInHierarchy)
+                {
+                    UIManager.Instance.UpdateAbilities(null, lookAtIndex);
+                }
             }
             else
             {
@@ -112,10 +116,10 @@ public class MapCamera : MonoBehaviour
                 statsCamera.Follow = MapView.instance.team[lookAtIndex].transform;
                 statsCamera.LookAt = MapView.instance.team[lookAtIndex].transform;
 
-                UIManager.Instance.UpdateStats(lookAtIndex);
+                UIManager.Instance.UpdateStats(null, lookAtIndex);
                 if (UIManager.Instance.abilities.activeInHierarchy)
                 {
-                    UIManager.Instance.UpdateAbilities(lookAtIndex);
+                    UIManager.Instance.UpdateAbilities(null,lookAtIndex);
                 }
             }
 
@@ -135,9 +139,9 @@ public class MapCamera : MonoBehaviour
 
                 if (UIManager.Instance.abilities.activeInHierarchy)
                 {
-                    UIManager.Instance.UpdateAbilities(lookAtIndex);
+                    UIManager.Instance.UpdateAbilities(null,lookAtIndex);
                 }
-                UIManager.Instance.UpdateStats(lookAtIndex);
+                UIManager.Instance.UpdateStats(null, lookAtIndex);
             }
         }
 

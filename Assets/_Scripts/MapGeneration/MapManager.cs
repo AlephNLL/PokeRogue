@@ -107,7 +107,14 @@ public class MapManager : MonoBehaviour
         {
             if(sceneName == "BattleScene") 
             { 
-                BattleGenerator.Instance.GenerateTeam(BattleData.Difficulty);
+                if(currentNode.roomType == GameData.RoomType.Boss)
+                {
+                    BattleGenerator.Instance.GenerateTeam(BattleData.Difficulty, true);
+                }
+                else
+                {
+                    BattleGenerator.Instance.GenerateTeam(BattleData.Difficulty);
+                }     
             }
             SceneManager.LoadSceneAsync(sceneName);
         }

@@ -1,7 +1,7 @@
 using GameData;
-using UnityEngine;
 using System.Collections.Generic;
 using System.Linq; // Necesario para filtrar listas fácilmente
+using UnityEngine;
 
 public class BattleGenerator : MonoBehaviour
 {
@@ -9,7 +9,6 @@ public class BattleGenerator : MonoBehaviour
 
     [Header("Enemy Pools")]
     public GameObject[] enemyPool;
-    public GameObject[] bosses;
 
     public List<GameObject> cheapEnemies;
     public int cheapEnemyExtraCost = 0;
@@ -18,6 +17,7 @@ public class BattleGenerator : MonoBehaviour
     public List<GameObject> expensiveEnemies;
     public int expensiveEnemyExtraCost = 0;
 
+    public Team[] bossTeams;
     private void Awake()
     {
         Instance = this;
@@ -27,7 +27,7 @@ public class BattleGenerator : MonoBehaviour
     {
         int floorLevel = MapManager.instance.currentNode.floorLevel;
 
-        int baseLevel = ((int)difficulty) + 1 + (floorLevel / 2);
+        int baseLevel = ((int)difficulty) * (floorLevel / 2) + 1;
         int levelVariance = 0;// Random.Range(0, 2);
         int finalEnemyLevel = Mathf.Max(1, baseLevel + levelVariance);
 
@@ -43,11 +43,11 @@ public class BattleGenerator : MonoBehaviour
                 break;
             case Difficulty.NORMAL:
                 minSize = 2; maxSize = 4;
-                budget = 250 + (floorLevel * 15);
+                budget = 170 + (floorLevel * 15);
                 break;
             case Difficulty.HARD:
                 minSize = 2; maxSize = 5;
-                budget = 350 + (floorLevel * 20);
+                budget = 200 + (floorLevel * 20);
                 break;
             default:
                 return;
@@ -82,16 +82,14 @@ public class BattleGenerator : MonoBehaviour
 
         if (isBoss)
         {
-            if(generatedTeam.Count >= 4) generatedTeam.Remove(generatedTeam.OrderBy(e => GetEnemyCost(e)).First());
-            generatedTeam.Add(bosses[Random.Range(0, bosses.Length)]);
+            generatedTeam.Clear();
+            generatedTeam.AddRange(bossTeams[Random.Range(0, bossTeams.Length)].team);
         }
         BattleData.enemyTeam = generatedTeam.ToArray();
         BattleData.enemyLevel = finalEnemyLevel;
 
-        float rewardMultiplier = ((int)difficulty + 1) * 0.5f; // Easy = 0.5x, Normal = 1x, Hard = 1.5x
-
-        BattleData.goldReward = Mathf.RoundToInt((totalBstInTeam * 0.1f) * rewardMultiplier) + (floorLevel * 5);
-        BattleData.expReward = Mathf.RoundToInt((totalBstInTeam * 0.5f) * finalEnemyLevel * rewardMultiplier);
+        BattleData.goldReward = Mathf.RoundToInt((totalBstInTeam * 0.1f));
+        BattleData.expReward = Mathf.RoundToInt((totalBstInTeam * 0.2f) * finalEnemyLevel);
     }
 
     private int GetEnemyCost(GameObject enemyPrefab)
@@ -110,4 +108,10 @@ public class BattleGenerator : MonoBehaviour
         Debug.LogWarning($"El prefab {enemyPrefab.name} no tiene el componente Unit. Retornando BST por defecto.");
         return 50;
     }
+}
+
+[System.Serializable]
+public class Team
+{
+    public GameObject[] team;
 }

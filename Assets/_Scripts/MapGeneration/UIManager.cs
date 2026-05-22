@@ -55,8 +55,6 @@ public class UIManager : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         canvas.enabled = true;
-        ShowAbilities();
-        UpdateAbilities();
     }
 
     private void UpdateInventory()
@@ -118,7 +116,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void UpdateAbilities(int index = 0)
+    public void UpdateAbilities(UnitData mon, int index = 0)
     {
         if (instantiatedItems != null)
         {
@@ -131,7 +129,18 @@ public class UIManager : MonoBehaviour
 
         instantiatedItems = new List<GameObject>();
 
-        foreach (Abilities ability in PlayerData.teamData[index].knownAbilities)
+        UnitData viewMon = mon;
+
+        if (!viewMon) 
+        {
+            if (PlayerData.teamData.Count > 0)
+            {
+                viewMon = PlayerData.teamData[index];
+            }
+            else return;
+        } 
+
+        foreach (Abilities ability in viewMon.knownAbilities)
         {
             GameObject newAbility = Instantiate(abilitySlot);
             newAbility.transform.parent = abilities.transform;
@@ -167,15 +176,26 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void UpdateStats(int index)
+    public void UpdateStats(UnitData mon, int index = 0)
     {
-        string health = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.HP, PlayerData.teamData[index].level).ToString();
-        string defense = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.DEF, PlayerData.teamData[index].level).ToString();
-        string attack = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.ATK, PlayerData.teamData[index].level).ToString();
-        string speed = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.SPEED, PlayerData.teamData[index].level).ToString();
-        string luck = PlayerData.teamData[index].prefab.GetComponent<Unit>().luck.ToString();
-        string name = PlayerData.teamData[index].name.ToUpper();
-        string level = PlayerData.teamData[index].level.ToString();
+        UnitData viewMon = mon;
+
+        if (!viewMon)
+        {
+            if (PlayerData.teamData.Count > 0)
+            {
+                viewMon = PlayerData.teamData[index];
+            }
+            else return;
+        }
+
+        string health = viewMon.prefab.GetComponent<Unit>().GetRawStat(Stats.HP, viewMon.level).ToString();
+        string defense = viewMon.prefab.GetComponent<Unit>().GetRawStat(Stats.DEF, viewMon.level).ToString();
+        string attack = viewMon.prefab.GetComponent<Unit>().GetRawStat(Stats.ATK, viewMon.level).ToString();
+        string speed = viewMon.prefab.GetComponent<Unit>().GetRawStat(Stats.SPEED, viewMon.level).ToString();
+        string luck = viewMon.prefab.GetComponent<Unit>().luck.ToString();
+        string name = viewMon.name.ToUpper();
+        string level = viewMon.level.ToString();
 
         nameText.text = name;
         levelText.text = "LVL: " + level;
@@ -206,13 +226,13 @@ public class UIManager : MonoBehaviour
         UpdateConsumables();
     }
 
-    public void ShowAbilities()
+    public void ShowAbilities(UnitData mon)
     {
         abilities.SetActive(true);
 
-        consumables.SetActive(false);
-        inventory.SetActive(false);
+        consumables?.SetActive(false);
+        inventory?.SetActive(false);
 
-        UpdateAbilities(lookAtIndex);
+        UpdateAbilities(mon);
     }
 }

@@ -156,6 +156,8 @@ public class AIManager : MonoBehaviour
             //Habilidades ofensivas
             if (ability.power > 0 && !ability.HasEffect(AbilityEffect.HEALATTACK))
             {
+                score.scores[i] += 1;
+
                 if (CalculateAttackDamage(controlledUnit, score.targets[i], ability) >= score.targets[i].currentHp)
                 {
                     score.scores[i] += 12;

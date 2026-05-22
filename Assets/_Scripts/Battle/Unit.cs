@@ -339,26 +339,27 @@ public class Unit : MonoBehaviour
         {
             case Stats.ATK:
                 attack = Mathf.FloorToInt(attack * mod);
-                TooltipUI.instance.ShowTooltipText($"{name} attack {modAction}");
+                TooltipUI.instance.AddEffectToCurrentAction($"{name}'s attack {modAction}");
                 break;
             case Stats.DEF:
                 defense = Mathf.FloorToInt(defense * mod);
-                TooltipUI.instance.ShowTooltipText($"{name} defense {modAction}");
+                TooltipUI.instance.AddEffectToCurrentAction($"{name}'s defense {modAction}");
                 break;
             case Stats.SPEED:
                 speed = Mathf.FloorToInt(speed * mod);
-                TooltipUI.instance.ShowTooltipText($"{name} speed {modAction}");
+                TooltipUI.instance.AddEffectToCurrentAction($"{name}'s speed {modAction}");
                 break;
             case Stats.LUCK:
                 luck = Mathf.FloorToInt(luck * mod);
-                TooltipUI.instance.ShowTooltipText($"{name} luck {modAction}");
+                TooltipUI.instance.AddEffectToCurrentAction($"{name}'s luck {modAction}");
                 break;
             case Stats.PRECISION:
                 precision = precision * mod;
-                TooltipUI.instance.ShowTooltipText($"{name} precision {modAction}");
+                TooltipUI.instance.AddEffectToCurrentAction($"{name}'s precision {modAction}");
                 break;
             case Stats.EFFECTCHANCEMOD:
                 baseEffectChanceMulti = baseEffectChanceMulti * mod;
+                TooltipUI.instance.AddEffectToCurrentAction($"{name}'s abilities secondary effect chance {modAction}");
                 break;
             default:
                 break;
@@ -368,8 +369,8 @@ public class Unit : MonoBehaviour
         {
             List<Unit> allies = new List<Unit>(TBBS.instance.playerUnits);
             allies.Remove(this);
-
-            TooltipUI.instance.ShowTooltipText($"{name} shares stat changes");
+            TooltipUI.instance.EndCurrentAction();
+            TooltipUI.instance.StartNewAction($"{name} shares stat changes");
             foreach (Unit ally in allies)
             {
                 ally.ApplyStatModifier(stat, mod, true);
@@ -385,15 +386,19 @@ public class Unit : MonoBehaviour
                 break;
             case Stats.ATK:
                 attack += amount;
+                TooltipUI.instance.AddEffectToCurrentAction($"{name} shares its attack with the team!");
                 break;
             case Stats.DEF:
                 defense += amount;
+                TooltipUI.instance.AddEffectToCurrentAction($"{name} shares its defense with the team!");
                 break;
             case Stats.SPEED:
                 speed += amount;
+                TooltipUI.instance.AddEffectToCurrentAction($"{name} shares its speed with the team!");
                 break;
             case Stats.LUCK:
                 luck += amount;
+                TooltipUI.instance.AddEffectToCurrentAction($"{name} shares its luck with the team!");
                 break;
             case Stats.PRECISION:
                 break;
@@ -432,7 +437,7 @@ public class Unit : MonoBehaviour
 
         // Opcional: Feedback visual o logs
         VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, gameObject); // O un efecto de "espejo/cambio"
-        TooltipUI.instance.ShowTooltipText($"{name} swapped {statA} and {statB}!");
+        TooltipUI.instance.AddEffectToCurrentAction($"{name} swapped {statA} and {statB}!");
 
         Debug.Log($"{name} intercambió {statA} por {statB}. Nuevos valores -> {statA}: {GetSetStat(statA)} | {statB}: {GetSetStat(statB)}");
     }
@@ -462,7 +467,7 @@ public class Unit : MonoBehaviour
         if (currentStance == Stance.TRICKY) effectChanceModifier = trickyStanceEffectChanceModifier;
         else effectChanceModifier = 0;
 
-        TooltipUI.instance.ShowTooltipText($"{name} changes to a {stance.ToString().ToLower()} stance");
+        TooltipUI.instance.AddEffectToCurrentAction($"{name} changes to a {stance.ToString().ToLower()} stance");
     }
     public void Heal(int healAmount)
     {
@@ -611,11 +616,11 @@ public class Unit : MonoBehaviour
                 break;
             case Status.BURNED:
                 TakeDamage((Mathf.FloorToInt(maxHp * .1f) + 1));
-                TooltipUI.instance.ShowTooltipText(name + " lost " + (Mathf.FloorToInt(maxHp * .1f) + 1) + " hp due to his burns");
+                TooltipUI.instance.AddEffectToCurrentAction(name + " lost " + (Mathf.FloorToInt(maxHp * .1f) + 1) + " hp due to his burns");
                 break;
             case Status.POISONED:
                 TakeDamage((Mathf.FloorToInt(maxHp * .2f) + 1));
-                TooltipUI.instance.ShowTooltipText(name + " lost " + (Mathf.FloorToInt(maxHp * .2f) + 1) + " hp due to poison");
+                TooltipUI.instance.AddEffectToCurrentAction(name + " lost " + (Mathf.FloorToInt(maxHp * .2f) + 1) + " hp due to poison");
                 break;
             default:
                 break;
@@ -686,56 +691,59 @@ public class Unit : MonoBehaviour
                         break;
                 }
 
-                TooltipUI.instance.ShowTooltipText($"{name}' ability {ability.name} activates!");
+                if(ability.passiveExecutionTime != ExecutionTime.ONHIT) TooltipUI.instance.StartNewAction($"{name}' ability {ability.name} activates!");
+                else TooltipUI.instance.AddEffectToCurrentAction($"{name}' ability {ability.name} activates!");
 
                 switch (ability.passiveEffects)
-                {
-                    case PassiveEffects.STATMOD:
-                        for (int i = 0; i < ability.statToMod.Length; i++)
-                        {
-                            for (int j = 0; j < target.Count; j++)
+                    {
+                        case PassiveEffects.STATMOD:
+                            for (int i = 0; i < ability.statToMod.Length; i++)
                             {
-                                target[j].ApplyStatModifier(ability.statToMod[i], ability.statMod[i]);
+                                for (int j = 0; j < target.Count; j++)
+                                {
+                                    target[j].ApplyStatModifier(ability.statToMod[i], ability.statMod[i]);
+                                }
                             }
-                        }
-                        break;
-                    case PassiveEffects.ADDTURN:
-                        additionalTurn = true;
-                        break;
-                    case PassiveEffects.SKIPTURN:
-                        Debug.Log(name + " is slacking.");
-                        skipTurn = true;
-                        break;
-                    case PassiveEffects.APPLYSTATUS:
-                        foreach (var unit in target)
-                        {
-                            unit.ApplyStatus(ability.status);
-                        }
-                        break;
-                    case PassiveEffects.HEAL:
-                        foreach (var unit in target)
-                        {
-                            unit.HealPercent(ability.healPercentage);
-                        }
-                        break;
-                    case PassiveEffects.STACKSTAT:
-                        for (int i = 0; i < ability.statToMod.Length; i++)
-                        {
-                            for (int j = 0; j < target.Count; j++)
+                            break;
+                        case PassiveEffects.ADDTURN:
+                            additionalTurn = true;
+                            break;
+                        case PassiveEffects.SKIPTURN:
+                            Debug.Log(name + " is slacking.");
+                            skipTurn = true;
+                            break;
+                        case PassiveEffects.APPLYSTATUS:
+                            foreach (var unit in target)
                             {
-                                target[j].IncreaseStat(ability.statToMod[i], GetStat(ability.statToMod[i]));
+                                unit.ApplyStatus(ability.status);
                             }
-                        }
-                        break;
-                    case PassiveEffects.DAMAGE:
-                        foreach (var unit in target)
-                        {
-                            unit.TakeDamagePercent(ability.healPercentage);
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                            break;
+                        case PassiveEffects.HEAL:
+                            foreach (var unit in target)
+                            {
+                                unit.HealPercent(ability.healPercentage);
+                            }
+                            break;
+                        case PassiveEffects.STACKSTAT:
+                            for (int i = 0; i < ability.statToMod.Length; i++)
+                            {
+                                for (int j = 0; j < target.Count; j++)
+                                {
+                                    target[j].IncreaseStat(ability.statToMod[i], GetStat(ability.statToMod[i]));
+                                }
+                            }
+                            break;
+                        case PassiveEffects.DAMAGE:
+                            foreach (var unit in target)
+                            {
+                                unit.TakeDamagePercent(ability.healPercentage);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+
+                TooltipUI.instance.EndCurrentAction();
             }
         }
     }
@@ -778,11 +786,11 @@ public class Unit : MonoBehaviour
 
         if (HasPassive("Elusive Presence"))
         {
-            TooltipUI.instance.ShowTooltipText($"{name}'s elusive presence blocks status changes");
+            TooltipUI.instance.AddEffectToCurrentAction($"{name}'s elusive presence blocks status changes");
             return;
         }
         VFXManager.instance.SpawnStatusVFX(statusToApply, gameObject);
-        TooltipUI.instance.ShowTooltipText($"{name} is {statusToApply.ToString().ToLower()}");
+        TooltipUI.instance.AddEffectToCurrentAction($"{name} is {statusToApply.ToString().ToLower()}");
         status = statusToApply;
 
         ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
@@ -819,13 +827,13 @@ public class Unit : MonoBehaviour
             WakeUp();
             return;
         }
-        TooltipUI.instance.ShowTooltipText(name + " is fast asleep.");
+        TooltipUI.instance.StartNewAction(name + " is fast asleep.");
         skipTurn = true;
         sleepCounter++;
     }
     void WakeUp()
     {
-        TooltipUI.instance.ShowTooltipText(name + " woke up!");
+        TooltipUI.instance.StartNewAction(name + " woke up!");
         CureStatus();
         skipTurn = false;
     }

@@ -37,13 +37,13 @@ public class UIManager : MonoBehaviour
         Instance = this;
     }
 
-    public void ShowCanvas(bool state)
+    public void ShowCanvas(bool state, float delay = 2f)
     {
         if (canvas != null)
         {
             if (state)
             {
-                StartCoroutine(WaitAndShow(2f, canvas));
+                StartCoroutine(WaitAndShow(delay, canvas));
             } else
             {
                 canvas.enabled = state;
@@ -226,13 +226,13 @@ public class UIManager : MonoBehaviour
         UpdateConsumables();
     }
 
-    public void ShowAbilities(UnitData mon)
+    public void ShowAbilities()
     {
         abilities.SetActive(true);
 
-        consumables?.SetActive(false);
-        inventory?.SetActive(false);
+        consumables.SetActive(false);
+        inventory.SetActive(false);
 
-        UpdateAbilities(mon);
+        UpdateAbilities(null,lookAtIndex);
     }
 }

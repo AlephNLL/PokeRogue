@@ -1,4 +1,5 @@
 using Cinemachine;
+using System.Collections;
 using UnityEngine;
 
 public class DaycareCamera : MonoBehaviour
@@ -32,5 +33,25 @@ public class DaycareCamera : MonoBehaviour
         fusionCamera.Follow = transform;
     }
 
-    
+    public IEnumerator LerpCameraOffset(float x , float duration)
+    {
+        var transposer = fusionCamera.GetCinemachineComponent<CinemachineTransposer>();
+        var composer = fusionCamera.GetCinemachineComponent<CinemachineComposer>();
+
+        Vector3 startingPos = transposer.m_FollowOffset;
+        Vector3 endingPos = new Vector3(x, startingPos.y, startingPos.z);
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+
+            float percent = Mathf.Clamp01(elapsedTime / duration);
+            transposer.m_FollowOffset = Vector3.Lerp(startingPos, endingPos, percent);
+            composer.m_TrackedObjectOffset = Vector3.Lerp(startingPos, new Vector3(x, 0, 0), percent);
+            yield return null;
+        }
+    }
+
 }

@@ -91,6 +91,8 @@ public class Unit : MonoBehaviour
 
     int sleepCounter;
     int sleepMaxTurns = 3;
+
+    GameObject lastMenu;
     private void Start()
     {
         InitializeVariables();
@@ -222,6 +224,8 @@ public class Unit : MonoBehaviour
         attackButton.onClick.AddListener(delegate { TBBS.instance.AbilityMenu(this); });
         itemButton.onClick.AddListener(delegate { TBBS.instance.ItemMenu(this); });
         runButton.onClick.AddListener(delegate { TBBS.instance.Skip(this); });
+
+        lastMenu = battleMenu.gameObject;
     }
     public void CloseBattleMenu()
     {
@@ -230,6 +234,8 @@ public class Unit : MonoBehaviour
 
         attackButton.onClick.RemoveAllListeners();
         runButton.onClick.RemoveAllListeners();
+
+        lastMenu = null;
     }
 
     public void OpenAbilityMenu()
@@ -251,6 +257,8 @@ public class Unit : MonoBehaviour
 
             if (knownAbilities[i].mustUseStance && currentStance != knownAbilities[i].stance) abilityButtons[i].interactable = false;
         }
+
+        lastMenu = abilityMenu.gameObject;
     }
 
     public void CloseAbilityMenu()
@@ -263,6 +271,8 @@ public class Unit : MonoBehaviour
             int index = i;
             abilityButtons[index].onClick.RemoveAllListeners();
         }
+
+        lastMenu = null;
     }
 
     public void OpenItemMenu()
@@ -289,6 +299,8 @@ public class Unit : MonoBehaviour
 
             itemButtons[index].onClick.AddListener(delegate { TBBS.instance.SelectItem(consumables[index]); });
         }
+
+        lastMenu = itemMenu.gameObject;
     }
 
     public void CloseItemMenu()
@@ -310,6 +322,8 @@ public class Unit : MonoBehaviour
             int index = i;
             itemButtons[index].onClick.RemoveAllListeners();
         }
+
+        lastMenu = null;
     }
 
     public void ApplyStatModifier(Stats stat, float mod, bool contaged = false)
@@ -552,7 +566,7 @@ public class Unit : MonoBehaviour
         {
             case Stats.ATK:
                 int atk = attack;
-                if (HasPassive("Double Trouble")) atk = Mathf.FloorToInt(atk * .6f);
+                if (HasPassive("Double Trouble")) atk = Mathf.FloorToInt(atk * .5f);
                 if (status == Status.BURNED)
                 {
                     atk = HasPassive("Pyromaniac") ? atk : Mathf.FloorToInt(atk * .5f);
@@ -865,5 +879,19 @@ public class Unit : MonoBehaviour
         }
 
         return abilityList;
+    }
+
+    public bool OpenLastMenu()
+    {
+        if(!lastMenu) return false;
+        lastMenu.SetActive(true);
+        return true;
+    }
+
+    public bool CloseLastMenu()
+    {
+        if (!lastMenu) return false;
+        lastMenu.SetActive(false);
+        return true;
     }
 }

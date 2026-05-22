@@ -129,20 +129,14 @@ public class DaycareManager : MonoBehaviour
         DaycareUIManager.instance.DisableAllButtons();
         DaycareCamera.instance.EnableFusionCamera();
         DaycareCamera.instance.SetCameraTarget(unitPrefabs[0].transform);
-        UIManager.Instance.ShowCanvas(true);
-        UIManager.Instance.UpdateStats(units[0]);
-        UIManager.Instance.UpdateAbilities(units[0]);
         StartCoroutine(MonBattleSelection());
     }
     public void StartMonFusionSelection()
     {
         TooltipUI.instance.InstantShowText("Select 2 mons");
-        DaycareUIManager.instance.DisableAllButtons();
+        DaycareUIManager.instance.HideMainButtons();
         DaycareCamera.instance.EnableFusionCamera();
         DaycareCamera.instance.SetCameraTarget(unitPrefabs[0].transform);
-        UIManager.Instance.ShowCanvas(true);
-        UIManager.Instance.UpdateStats(units[0]);
-        UIManager.Instance.UpdateAbilities(units[0]);
         StartCoroutine(MonFusionSelection());
     }
     IEnumerator MonFusionSelection()
@@ -281,6 +275,9 @@ public class DaycareManager : MonoBehaviour
     IEnumerator SelectMon(int monSelection)
     {
         int selection = monSelection;
+
+        bool toggle = true;
+
         while (true)
         {
             if (Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.sqrMagnitude < 0)
@@ -325,6 +322,24 @@ public class DaycareManager : MonoBehaviour
                 UIManager.Instance.ShowCanvas(false);
                 yield return -1;
                 yield break;
+            }
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                if (toggle)
+                {
+                    UIManager.Instance.ShowCanvas(true, .3f);
+                    UIManager.Instance.UpdateStats(units[selection]);
+                    UIManager.Instance.UpdateAbilities(units[selection]);
+                    StartCoroutine(DaycareCamera.instance.LerpCameraOffset(2, .3f));
+                    toggle = false;
+                }
+                else
+                {
+                    yield return DaycareCamera.instance.LerpCameraOffset(0, .3f);
+                    UIManager.Instance.ShowCanvas(false);
+                    toggle = true;
+                }
+                
             }
 
             yield return null;

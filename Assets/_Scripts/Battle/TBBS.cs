@@ -193,6 +193,22 @@ public class TBBS : MonoBehaviour
 
             yield return null;
         }
+
+        bool toggle = true;
+        while (true)
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                UIManager.Instance.ShowCanvas(toggle, 0);
+                UIManager.Instance.UpdateAbilities(null, currentUnit.id);
+                UIManager.Instance.UpdateStats(null, currentUnit.id);
+                bool success;
+                if(toggle) success = currentUnit.CloseLastMenu();
+                else success = currentUnit.OpenLastMenu();
+                toggle ^= success;
+            }
+            yield return null;
+        }
     }
 
     IEnumerator EnemyTurn(Unit currentUnit, bool activateTurnStartEffect = true)
@@ -343,9 +359,9 @@ public class TBBS : MonoBehaviour
 
             yield return null;
         }
-
-        attacker.OpenBattleMenu();
+        
         attacker.CloseAbilityMenu();
+        attacker.OpenBattleMenu();
         menuCoroutine = null;
     }
 
@@ -383,8 +399,8 @@ public class TBBS : MonoBehaviour
             yield return null;
         }
 
-        attacker.OpenBattleMenu();
         attacker.CloseItemMenu();
+        attacker.OpenBattleMenu();
         menuCoroutine = null;
     }
 

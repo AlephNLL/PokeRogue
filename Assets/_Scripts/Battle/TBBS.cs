@@ -585,10 +585,14 @@ public class TBBS : MonoBehaviour
     {
         Unit currentUnit = allUnits[currentTurnIndex];
         bool result;
+
+        ControlsUI.instance.ShowConfirm();
+
         while (true)
         {
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
             {
+                ControlsUI.instance.HideConfirm();
                 result = true;
                 yield return result;
                 yield break;
@@ -596,6 +600,7 @@ public class TBBS : MonoBehaviour
 
             if (Input.GetMouseButtonDown(1))
             {
+                ControlsUI.instance.HideConfirm();
                 result = false;
                 yield return result;
                 yield break;
@@ -609,6 +614,8 @@ public class TBBS : MonoBehaviour
     {
         int selection = 0;
         Unit attacker = allUnits[currentTurnIndex];
+
+        ControlsUI.instance.ShowSelectionControls(true);
 
         yield return null;
 
@@ -634,12 +641,14 @@ public class TBBS : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
                 {
+                    ControlsUI.instance.HideSelectionControls();
                     yield return selection;
                     yield break;
                 }
 
                 if (Input.GetMouseButtonDown(1))
                 {
+                    ControlsUI.instance.HideSelectionControls();
                     selection = -1;
                     yield return selection;
                     yield break;
@@ -678,12 +687,14 @@ public class TBBS : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
                 {
+                    ControlsUI.instance.HideSelectionControls();
                     yield return selection;
                     yield break;
                 }
 
                 if (Input.GetMouseButtonDown(1))
                 {
+                    ControlsUI.instance.HideSelectionControls();
                     selection = -1;
                     yield return selection;
                     yield break;

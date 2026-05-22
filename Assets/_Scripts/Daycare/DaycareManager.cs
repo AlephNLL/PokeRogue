@@ -142,6 +142,7 @@ public class DaycareManager : MonoBehaviour
     public void StartBattleSelection()
     {
         TooltipUI.instance.StartNewAction("Select your team");
+        ControlsUI.instance.ShowSelectionControls();
         DaycareUIManager.instance.DisableAllButtons();
         DaycareCamera.instance.EnableFusionCamera();
         DaycareCamera.instance.SetCameraTarget(unitPrefabs[0].transform);
@@ -150,6 +151,7 @@ public class DaycareManager : MonoBehaviour
     public void StartMonFusionSelection()
     {
         TooltipUI.instance.StartNewAction("Select 2 mons");
+        ControlsUI.instance.ShowSelectionControls();
         DaycareUIManager.instance.HideMainButtons();
         DaycareCamera.instance.EnableFusionCamera();
         DaycareCamera.instance.SetCameraTarget(unitPrefabs[0].transform);
@@ -241,6 +243,7 @@ public class DaycareManager : MonoBehaviour
 
         UIManager.Instance.ShowCanvas(false);
         DaycareCamera.instance.DisableFusionCamera();
+        ControlsUI.instance.HideSelectionControls();
 
         yield return new WaitForSeconds(2);
 
@@ -280,6 +283,7 @@ public class DaycareManager : MonoBehaviour
 
         UIManager.Instance.ShowCanvas(false);
         DaycareUIManager.instance.HideMainButtons();
+        ControlsUI.instance.HideSelectionControls();
 
         DaycareCamera.instance.DisableFusionCamera();
 

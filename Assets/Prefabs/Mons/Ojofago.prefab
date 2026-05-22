@@ -776,28 +776,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82c0dcb3fbdb35f40bf6f64fede1a51d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  icon: {fileID: 21300000, guid: c1b1cf653aa07954581df790ba744b50, type: 3}
   id: 0
   name: Ojofago
   description: 
-  currentStance: 3
+  currentStance: 0
   level: 1
+  exp: 0
+  expCurve: {fileID: 11400000, guid: 42eec143c7464c24889a7a724a74e69f, type: 2}
   status: 0
-  strength: 12
-  constitution: 12
-  dexterity: 23
-  luck: 8
+  strength: 13
+  constitution: 10
+  dexterity: 15
+  luck: 13
   maxHp: 0
   currentHp: 0
   attack: 0
   defense: 0
   speed: 0
+  precision: 1
   knownAbilities: []
   abilityPool:
+  - {fileID: 11400000, guid: 03eea5717f97d5c4eb16a78f01b766b4, type: 2}
   - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
-  - {fileID: 11400000, guid: 0b8036aed22fd6648acfcf5dbfb9cd6b, type: 2}
-  - {fileID: 11400000, guid: e664bd8dc9d242645a35b522860ed38b, type: 2}
-  - {fileID: 11400000, guid: 7c519b83ede18284a8c92606d4d5ea92, type: 2}
+  - {fileID: 11400000, guid: 7250df0abda0f3d49b9d5c39cb0c6791, type: 2}
+  - {fileID: 11400000, guid: afa659248be8f7140b50d621b18ddf54, type: 2}
+  - {fileID: 11400000, guid: 059a4631f8bd5b04e99d4f8d3c921817, type: 2}
+  - {fileID: 11400000, guid: d10ba5524daf389448bdf1278c147236, type: 2}
+  - {fileID: 11400000, guid: 8534bf41cde3f664ebaa31c5335e6bde, type: 2}
+  - {fileID: 11400000, guid: 1ee973edc81561d488925e6fc93e7f3c, type: 2}
+  - {fileID: 11400000, guid: e2d788c65f2b6f540a87a1b9f0616958, type: 2}
+  - {fileID: 11400000, guid: f75a8ad9698e57a408f12d4fd11bc9d4, type: 2}
+  - {fileID: 11400000, guid: b76f7e234d3da514d9a1804eb3875b35, type: 2}
   heldItem: {fileID: 0}
+  evasive: 0
+  provoking: 0
+  guardedBy: {fileID: 0}
+  timesBuffed: 0
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
   battleMenu: {fileID: 0}
@@ -819,6 +834,7 @@ MonoBehaviour:
   additionalTurn: 0
   skipTurn: 0
   takingDamage: 0
+  baseEffectChanceMulti: 1
   effectChanceModifier: 0
 --- !u!1 &1760726793352929564
 GameObject:

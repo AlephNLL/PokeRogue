@@ -46,6 +46,7 @@ public class TooltipUI : MonoBehaviour
         isTextActive = true;
         yield return new WaitForSeconds(textMinDuration);
         HideTooltipText();
+        yield return new WaitForSeconds(.1f);
         if (scheduledTexts.Count > 0)
         {
             ShowTooltipText(scheduledTexts[0]);

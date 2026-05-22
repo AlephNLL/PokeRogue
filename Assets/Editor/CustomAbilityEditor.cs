@@ -10,6 +10,7 @@ public class CustomAbilityEditor : Editor
     #region SerializedProperties
     new SerializedProperty name;
     SerializedProperty description;
+    SerializedProperty sfx;
     SerializedProperty power;
     SerializedProperty accuracy;
     SerializedProperty abilityType;
@@ -21,16 +22,24 @@ public class CustomAbilityEditor : Editor
     SerializedProperty multiHitRange;
     SerializedProperty hits;
     SerializedProperty hitRange;
+    SerializedProperty endOnMiss;
     SerializedProperty passiveEffects;
     SerializedProperty passiveExecutionTime;
     SerializedProperty passiveEffectChance;
     SerializedProperty status;
 
     SerializedProperty effect1;
+    SerializedProperty condition1;
     SerializedProperty effect1Chance;
     SerializedProperty effect2;
+    SerializedProperty condition2;
     SerializedProperty effect2Chance;
     SerializedProperty stanceToChangeTo;
+    SerializedProperty conditionStance;
+    SerializedProperty healingPercent;
+    SerializedProperty statToMod;
+    SerializedProperty statMod;
+    SerializedProperty powerVariables;
     SerializedProperty affectSelf;
 
     SerializedProperty vfxPrefab;
@@ -46,6 +55,7 @@ public class CustomAbilityEditor : Editor
     {
         name = serializedObject.FindProperty("name");
         description = serializedObject.FindProperty("description");
+        sfx = serializedObject.FindProperty("sfx");
         power = serializedObject.FindProperty("power");
         accuracy = serializedObject.FindProperty("accuracy");
         abilityType = serializedObject.FindProperty("abilityType");
@@ -57,6 +67,7 @@ public class CustomAbilityEditor : Editor
         multiHitRange = serializedObject.FindProperty("multiHitRange");
         hits = serializedObject.FindProperty("hits");
         hitRange = serializedObject.FindProperty("hitRange");
+        endOnMiss = serializedObject.FindProperty("endOnMiss");
 
         passiveEffects = serializedObject.FindProperty("passiveEffects");
         passiveExecutionTime = serializedObject.FindProperty("passiveExecutionTime");
@@ -64,10 +75,17 @@ public class CustomAbilityEditor : Editor
         status = serializedObject.FindProperty("status");
 
         effect1 = serializedObject.FindProperty("effect1");
+        condition1 = serializedObject.FindProperty("condition1");
         effect1Chance = serializedObject.FindProperty("effect1Chance");
         effect2 = serializedObject.FindProperty("effect2");
+        condition2 = serializedObject.FindProperty("condition2");
         effect2Chance = serializedObject.FindProperty("effect2Chance");
         stanceToChangeTo = serializedObject.FindProperty("stanceToChangeTo");
+        conditionStance = serializedObject.FindProperty("stanceCondition");
+        healingPercent = serializedObject.FindProperty("healPercentage");
+        statMod = serializedObject.FindProperty("statMod");
+        statToMod = serializedObject.FindProperty("statToMod");
+        powerVariables = serializedObject.FindProperty("powerVariables");
         affectSelf = serializedObject.FindProperty("affectSelf");
 
         vfxPrefab = serializedObject.FindProperty("vfxPrefab");
@@ -85,7 +103,8 @@ public class CustomAbilityEditor : Editor
         if (DataGroup)
         {
             EditorGUILayout.PropertyField(name);
-            EditorGUILayout.PropertyField(description);  
+            EditorGUILayout.PropertyField(description);
+            EditorGUILayout.PropertyField(sfx);
             EditorGUILayout.PropertyField(power);
             EditorGUILayout.PropertyField(accuracy);
             EditorGUILayout.PropertyField(abilityType);
@@ -97,6 +116,7 @@ public class CustomAbilityEditor : Editor
             EditorGUILayout.PropertyField(multiHitRange);
             if (ability.multiHit) EditorGUILayout.PropertyField(hits);
             if (ability.multiHitRange) EditorGUILayout.PropertyField(hitRange);
+            if (ability.multiHitRange || ability.multiHit) EditorGUILayout.PropertyField(endOnMiss);
         }
 
         if (ability.abilityType == AbilityType.PASSIVE)
@@ -105,7 +125,13 @@ public class CustomAbilityEditor : Editor
             if (statsGroup)
             {
                 EditorGUILayout.PropertyField(passiveEffects);
-                if(ability.passiveEffects == PassiveEffects.APPLYSTATUS || ability.passiveEffects == PassiveEffects.UPATKONSTATUS) EditorGUILayout.PropertyField(status);
+                if (ability.passiveEffects != PassiveEffects.NONE) EditorGUILayout.PropertyField(condition1);
+                if (ability.passiveEffects == PassiveEffects.APPLYSTATUS) EditorGUILayout.PropertyField(status);
+                if (ability.passiveEffects == PassiveEffects.STATMOD) EditorGUILayout.PropertyField(statToMod);
+                if (ability.passiveEffects == PassiveEffects.STATMOD) EditorGUILayout.PropertyField(statMod);
+                if (ability.passiveEffects == PassiveEffects.STACKSTAT) EditorGUILayout.PropertyField(statToMod);
+                if (ability.passiveEffects == PassiveEffects.HEAL) EditorGUILayout.PropertyField(healingPercent);
+                if (ability.passiveEffects == PassiveEffects.DAMAGE) EditorGUILayout.PropertyField(healingPercent);
                 EditorGUILayout.PropertyField(passiveExecutionTime);
                 EditorGUILayout.PropertyField(passiveEffectChance);
             }
@@ -116,11 +142,19 @@ public class CustomAbilityEditor : Editor
             if (abilitiesGroup)
             {
                 EditorGUILayout.PropertyField(effect1);
+                if (ability.effect1 != AbilityEffect.NONE) EditorGUILayout.PropertyField(condition1);
                 if (ability.effect1 != AbilityEffect.NONE) EditorGUILayout.PropertyField(effect1Chance);   
                 EditorGUILayout.PropertyField(effect2);
+                if (ability.effect2 != AbilityEffect.NONE) EditorGUILayout.PropertyField(condition2);
                 if (ability.effect2 != AbilityEffect.NONE) EditorGUILayout.PropertyField(effect2Chance);
                 if (ability.effect1 == AbilityEffect.APPLYSTATUS || ability.effect2 == AbilityEffect.APPLYSTATUS) EditorGUILayout.PropertyField(status);
                 if (ability.effect1 == AbilityEffect.STANCECHANGE || ability.effect2 == AbilityEffect.STANCECHANGE) EditorGUILayout.PropertyField(stanceToChangeTo);
+                if(ability.effect1 == AbilityEffect.STANCECHANGE && ability.condition1 == AbilityCondition.HASSTANCE ||
+                    ability.effect2 == AbilityEffect.STANCECHANGE && ability.condition2 == AbilityCondition.HASSTANCE) EditorGUILayout.PropertyField(conditionStance);
+                if (ability.effect1 == AbilityEffect.HEAL || ability.effect2 == AbilityEffect.HEAL) EditorGUILayout.PropertyField(healingPercent);
+                if (ability.effect1 == AbilityEffect.STATMOD || ability.effect2 == AbilityEffect.STATMOD || ability.effect1 == AbilityEffect.SWAPSTATS || ability.effect2 == AbilityEffect.SWAPSTATS) EditorGUILayout.PropertyField(statToMod);
+                if (ability.effect1 == AbilityEffect.STATMOD || ability.effect2 == AbilityEffect.STATMOD) EditorGUILayout.PropertyField(statMod);
+                if (ability.effect1 == AbilityEffect.VARIABLEPOWER || ability.effect2 == AbilityEffect.VARIABLEPOWER) EditorGUILayout.PropertyField(powerVariables);
                 EditorGUILayout.PropertyField(affectSelf);
             }
         }  

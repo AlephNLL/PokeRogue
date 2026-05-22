@@ -15,11 +15,14 @@ MonoBehaviour:
   eventText: You find some coins scattered on the ground, do you pick them up?
   defaultIcon: {fileID: 21300000, guid: 6609141200915334283db6c7337d68bd, type: 3}
   eventConfirmEffect: 01000000
-  confirmText: You pickup the coins and gain 8g!
+  confirmText: You pickup the coins and gain 10g!
   confirmIcon: {fileID: 0}
   eventCancelEffect: 00000000
   cancelText: 
   cancelIcon: {fileID: 0}
-  goldToGive: 8
-  itemToGive: {fileID: 0}
+  goldToGive: 10
+  checkGoldToConfirm: 0
+  itemsToGive: []
+  giveRandomItem: 0
   statusToApply: 0
+  healingPercent: 0

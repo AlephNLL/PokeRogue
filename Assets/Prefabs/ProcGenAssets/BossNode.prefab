@@ -133,7 +133,7 @@ MonoBehaviour:
   connectedNodes: []
   roomType: 5
   nodeEvent: 3
-  sceneName: 
+  sceneName: BattleScene
   floorLevel: 0
 --- !u!1 &8895892879154264339
 GameObject:

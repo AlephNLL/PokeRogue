@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
+  m_Name: Oops
+  m_EditorClassIdentifier: Assembly-CSharp::Abilities
+  name: Oops
+  description: Adios Sr. Tenshinhan... (Scales with defense)
+  sfx: {fileID: 11400000, guid: 7153a9a3d1aa55947b4e37b9c248401f, type: 2}
+  power: 250
+  accuracy: 85
+  abilityType: 0
+  target: 5
+  stance: 1
+  statToCalcDmgWith: 2
+  mustUseStance: 0
+  multiHit: 0
+  multiHitRange: 0
+  hits: 0
+  hitRange: 
+  endOnMiss: 0
+  passiveEffects: 0
+  passiveExecutionTime: 0
+  passiveEffectChance: 0
+  status: 0
+  effect1: 13
+  condition1: 0
+  effect1Chance: 100
+  effect2: 0
+  condition2: 0
+  effect2Chance: 100
+  affectSelf: 0
+  stanceToChangeTo: 0
+  stanceCondition: 0
+  healPercentage: 0
+  statToMod: 
+  statMod: []
+  powerVariables: 0
+  vfxPrefab: {fileID: 8464950693656172981, guid: 83ad694f134ab954580473212156b35a, type: 3}
+  spawnVfxOnSelf: 1

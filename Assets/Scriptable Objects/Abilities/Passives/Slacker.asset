@@ -13,22 +13,36 @@ MonoBehaviour:
   m_Name: Slacker
   m_EditorClassIdentifier: 
   name: Slacker
-  description: 33% chance to skip turn.
+  description: 15% chance to skip turn.
+  sfx: {fileID: 0}
   power: 0
   accuracy: 0
   abilityType: 1
   target: 0
   stance: 0
+  statToCalcDmgWith: 1
   mustUseStance: 0
-  passiveEffects: 8
+  multiHit: 0
+  multiHitRange: 0
+  hits: 0
+  hitRange: 
+  endOnMiss: 0
+  passiveEffects: 3
   passiveExecutionTime: 1
   passiveEffectChance: 15
   status: 0
   effect1: 0
+  condition1: 0
   effect1Chance: 0
   effect2: 0
+  condition2: 0
   effect2Chance: 0
   affectSelf: 0
   stanceToChangeTo: 0
+  stanceCondition: 0
+  healPercentage: 0
+  statToMod: 
+  statMod: []
+  powerVariables: 0
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

@@ -187,7 +187,7 @@ public class MapCamera : MonoBehaviour
         }
     }
 
-    private void HandleTopViewCamera()
+    public void HandleTopViewCamera()
     {
         if (topViewCamera == null) { return; }
 
@@ -204,7 +204,7 @@ public class MapCamera : MonoBehaviour
         }
     }
 
-    private void HandleStatsCam()
+    public void HandleStatsCam()
     {
         if (statsCamera == null) { return; }
 

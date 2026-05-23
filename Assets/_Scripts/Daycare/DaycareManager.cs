@@ -429,7 +429,6 @@ public class DaycareManager : MonoBehaviour
         GameObject newUnit = Instantiate(unitPrefabs[^1], cameraCenterPoint.transform.position, Quaternion.Euler(0, 180, 0));
         newUnit.GetComponent<Unit>().enabled = false;
         TooltipUI.instance.InstantShowText($"Wow! A {newUnit.GetComponent<Unit>().name}");
-        FresnelApplier.applyFresnel(unitPrefabs[^1], Color.white);
 
         selectedPrefabs.Clear();
         selectedUnits.Clear();
@@ -437,12 +436,13 @@ public class DaycareManager : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         Destroy(newUnit);
+        FresnelApplier.applyFresnel(unitPrefabs[^1], Color.blue);
         TooltipUI.instance.HideTooltipText();
         DaycareUIManager.instance.ShowMainButtons();
 
         startingUnits = units;
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3f);
 
         FresnelApplier.clearFresnel(unitPrefabs[^1]);
     }

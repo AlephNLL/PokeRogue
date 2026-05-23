@@ -752,7 +752,7 @@ Transform:
   m_GameObject: {fileID: 1717970170875167366}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3, y: 0.25, z: 9.55}
+  m_LocalPosition: {x: -3, y: 0, z: 9.55}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -785,6 +785,7 @@ MonoBehaviour:
   exp: 0
   expCurve: {fileID: 11400000, guid: 42eec143c7464c24889a7a724a74e69f, type: 2}
   status: 0
+  recivedDamageMultiplier: 1
   strength: 13
   constitution: 10
   dexterity: 15
@@ -4051,7 +4052,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8665074616251168620, guid: c850d3422f8cc6a44add5dd76e3b239c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 8665074616251168620, guid: c850d3422f8cc6a44add5dd76e3b239c, type: 3}
       propertyPath: m_LocalPosition.z

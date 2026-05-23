@@ -459,11 +459,21 @@ public class Unit : MonoBehaviour
     public void ChangeStance(Stance stance)
     {
         currentStance = stance;
+        FresnelApplier.changeStance(this.gameObject, currentStance);
         if (currentStance == Stance.TRICKY) effectChanceModifier = trickyStanceEffectChanceModifier;
         else effectChanceModifier = 0;
 
         TooltipUI.instance.ShowTooltipText($"{name} changes to a {stance.ToString().ToLower()} stance");
     }
+
+    public void GetInitialStance(Stance stance)
+    {
+        currentStance = stance;
+        FresnelApplier.changeStance(this.gameObject, currentStance);
+        if (currentStance == Stance.TRICKY) effectChanceModifier = trickyStanceEffectChanceModifier;
+        else effectChanceModifier = 0;
+    }
+
     public void Heal(int healAmount)
     {
         if (currentHp >= maxHp) return;
@@ -591,6 +601,7 @@ public class Unit : MonoBehaviour
     {
         ResolvePassiveEffect(ExecutionTime.BATTLESTART);
         ResolveItemEffect(ExecutionTime.BATTLESTART);
+        GetInitialStance(currentStance);
     }
 
     public void OnTurnStart()

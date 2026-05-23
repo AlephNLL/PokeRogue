@@ -5,6 +5,8 @@ using System;
 using GameData;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
+using UnityEditor;
+using System.Linq;
 
 
 //Turn Based Battle System
@@ -17,6 +19,9 @@ public class TBBS : MonoBehaviour
 
     public Transform playerSide;
     public Transform enemySide;
+
+    public Vector3 playerHandPos;
+    public Vector3 enemyHandPos;
 
     public List<Unit> playerUnits;
     public List<Unit> enemyUnits;
@@ -39,6 +44,7 @@ public class TBBS : MonoBehaviour
     private void Start()
     {
         StartCoroutine(SetupBattleField());
+        enemyHandPos = new Vector3(GameObject.Find("enemyHandPos").transform.position.x, 0, GameObject.Find("enemyHandPos").transform.position.z);
     }
 
     IEnumerator SetupBattleField()
@@ -88,7 +94,8 @@ public class TBBS : MonoBehaviour
 
         yield return new WaitForSeconds(.2f);
 
-        HandAnimatorHelper.instance.TeleportHandBehindCamera();
+        playerHandPos = HandAnimatorHelper.instance.HandBehindCamera();
+        HandAnimatorHelper.instance.transform.position = playerHandPos;
         HandAnimatorHelper.instance.SetDefaultPosition();
         LeftHandAnimatorHelper.instance.TeleportHandBehindCamera();
         LeftHandAnimatorHelper.instance.SetDefaultPosition();
@@ -107,7 +114,7 @@ public class TBBS : MonoBehaviour
             StopCoroutine(menuCoroutine);
             isActionExecuting = false;
         }
-            
+
         // Verificar si hay unidades vivas
         if (IsBattleOver())
         {
@@ -160,6 +167,7 @@ public class TBBS : MonoBehaviour
     IEnumerator EndBattle()
     {
         TooltipUI.instance.HideTooltipText();
+        AudioManager.instance.PlaySound2D(AudioManager.instance.trombone);
         yield return new WaitForSeconds(2f);
         SceneManager.LoadSceneAsync("Daycare");
     }
@@ -167,7 +175,7 @@ public class TBBS : MonoBehaviour
     IEnumerator WinBattle()
     {
         TeamManager.instance.SaveTeamData(playerUnits);
-        while(LeftHandAnimatorHelper.instance.figuresToFling.Count > 0) yield return null;
+        while (LeftHandAnimatorHelper.instance.figuresToFling.Count > 0) yield return null;
         EndScreenManager.instance.ShowVictoryScreen(playerUnits.ToArray(), capturableUnits.ToArray(), BattleData.goldReward, BattleData.expReward);
         PlayerData.Instance.gold += BattleData.goldReward;
     }
@@ -203,7 +211,7 @@ public class TBBS : MonoBehaviour
                 UIManager.Instance.UpdateAbilities(null, currentUnit.id);
                 UIManager.Instance.UpdateStats(null, currentUnit.id);
                 bool success;
-                if(toggle) success = currentUnit.CloseLastMenu();
+                if (toggle) success = currentUnit.CloseLastMenu();
                 else success = currentUnit.OpenLastMenu();
                 toggle ^= success;
             }
@@ -269,7 +277,7 @@ public class TBBS : MonoBehaviour
                     StartCoroutine(AttackSequence(currentUnit, enemyUnits.ToArray(), action.chosenAbility));
                     break;
                 case AbilityTarget.ALL:
-                    List <Unit> targets = new List<Unit>(allUnits);
+                    List<Unit> targets = new List<Unit>(allUnits);
                     if (currentUnit.HasPassive("Empath")) targets = new List<Unit>(enemyUnits);
                     else targets.Remove(currentUnit);
                     StartCoroutine(AttackSequence(currentUnit, targets.ToArray(), action.chosenAbility));
@@ -359,7 +367,7 @@ public class TBBS : MonoBehaviour
 
             yield return null;
         }
-        
+
         attacker.CloseAbilityMenu();
         attacker.OpenBattleMenu();
         menuCoroutine = null;
@@ -715,13 +723,19 @@ public class TBBS : MonoBehaviour
     {
         isActionExecuting = true;
         Transform visualTarget = playerUnits.Contains(targets[0]) ? playerSide : enemySide;
-        Vector3 zOffset = playerUnits.Contains(attacker) ? Vector3.zero : Vector3.left;
         attacker.EndSelect();
         CameraManager.instance.ActivateAttackCamera();
 
         TooltipUI.instance.ShowTooltipText(attacker.name + " uses " + ability.name);
 
+        float rotationOffset = (playerUnits.Contains(attacker) ? 60.728f : -126.38f);
+        HandAnimatorHelper.instance.transform.rotation = Quaternion.Euler(0f, rotationOffset, 0f);
+
+        Vector3 handPos = (playerUnits.Contains(attacker) ? playerHandPos : enemyHandPos);
+        HandAnimatorHelper.instance.transform.position = handPos;
+
         Vector3 attackerStartPos = attacker.transform.position;
+        Vector3 offset = HandAnimatorHelper.instance.offsetFromFigureJoint();
 
         yield return new WaitForSeconds(1f);
 
@@ -771,7 +785,7 @@ public class TBBS : MonoBehaviour
             }
             else
             {
-                Vector3 handStartPos = attacker.transform.Find("Capsule").Find("GrabPoint").transform.position + zOffset;
+                Vector3 handStartPos = attacker.transform.position + offset;
                 //tp de mano detras de camara para moverse hacia el grabpoint del bichote y emparentarlo
                 HandAnimatorHelper.instance.MoveToPosition(handStartPos, 1f);
                 while (HandAnimatorHelper.instance.isMoving) yield return null;
@@ -779,8 +793,9 @@ public class TBBS : MonoBehaviour
                 HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", true);
                 yield return new WaitForSeconds(.25f);
                 HandAnimatorHelper.instance.ParentGrabbedObject(attacker.gameObject);
+                handStartPos = hand.transform.position;
 
-                if (targets[i].evasive || !hit || ability.power == 0 && targets[i].currentStance == Stance.CAUTIOUS || ability.power == 0)
+                if (targets[i].evasive || !hit || ability.power == 0 && targets[i].currentStance == Stance.CAUTIOUS || ability.power == 0 || ability.effect1 == AbilityEffect.INMOLATE || ContainsAttacker(targets, attacker))
                 {
                     HandAnimatorHelper.instance.RaiseAndShake(new Vector3(hand.transform.position.x, (hand.transform.position.y + 1f), hand.transform.position.z), 1f);
                     yield return null;
@@ -815,7 +830,7 @@ public class TBBS : MonoBehaviour
         }
 
         HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", false);
-        HandAnimatorHelper.instance.MoveToDefaultPosition(1f);
+        HandAnimatorHelper.instance.MoveToPosition(handPos, 1f);
         while (HandAnimatorHelper.instance.isMoving) yield return null;
 
         CameraManager.instance.SetBlendTime(1);
@@ -837,16 +852,34 @@ public class TBBS : MonoBehaviour
         }
     }
 
+    private bool ContainsAttacker(Unit[] targets, Unit attacker)
+    {
+        for (int i = 0; i < targets.Length; i++)
+        {
+            if (targets[i] == attacker) return true;
+        }
+        return false;
+    }
+
     IEnumerator AttackSequence(Unit attacker, Unit target, Abilities ability)
     {
         isActionExecuting = true;
-        Vector3 zOffset = playerUnits.Contains(attacker) ? Vector3.zero : Vector3.left;
         attacker.EndSelect();
         CameraManager.instance.ActivateAttackCamera();
 
         TooltipUI.instance.ShowTooltipText(attacker.name + " uses " + ability.name);
 
+        GameObject hand = HandAnimatorHelper.instance.gameObject;
+
+        float rotationOffset = (playerUnits.Contains(attacker) ? 60.728f : -126.38f);
+        hand.transform.rotation = Quaternion.Euler(0f, rotationOffset, 0f);
+
+        Vector3 handPos = (playerUnits.Contains(attacker) ? playerHandPos : enemyHandPos);
+        hand.transform.position = handPos;
+
         Vector3 attackerStartPos = attacker.transform.position;
+        Vector3 offset = HandAnimatorHelper.instance.offsetFromFigureJoint();
+
         Unit[] targets = new Unit[1];
 
         yield return new WaitForSeconds(1f);
@@ -857,7 +890,6 @@ public class TBBS : MonoBehaviour
 
         bool nextAttack = false;
 
-        GameObject hand = HandAnimatorHelper.instance.gameObject;
 
         for (int i = 0; i < hits; i++)
         {
@@ -904,15 +936,17 @@ public class TBBS : MonoBehaviour
             }
             else
             {
-                Vector3 handStartPos = attacker.transform.Find("Capsule").Find("GrabPoint").transform.position + zOffset;
+                Vector3 handStartPos = attacker.transform.position + offset;
                 HandAnimatorHelper.instance.MoveToPosition(handStartPos, 1f);
                 while (HandAnimatorHelper.instance.isMoving) yield return null;
 
                 HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", true);
+                //HandAnimatorHelper.instance.RotateHandAround(rotationOffset, attacker.transform.position, .25f);
                 yield return new WaitForSeconds(.25f);
                 HandAnimatorHelper.instance.ParentGrabbedObject(attacker.gameObject);
+                handStartPos = hand.transform.position;
 
-                if (target.evasive || !hit || ability.power == 0 && target.currentStance == Stance.CAUTIOUS || ability.power == 0)
+                if (target.evasive || !hit || ability.power == 0 && target.currentStance == Stance.CAUTIOUS || ability.power == 0 || target == attacker || ability.effect1 == AbilityEffect.INMOLATE)
                 {
                     HandAnimatorHelper.instance.RaiseAndShake(new Vector3(hand.transform.position.x, (hand.transform.position.y + 1f), hand.transform.position.z), 1f);
                     yield return null;
@@ -922,7 +956,7 @@ public class TBBS : MonoBehaviour
                 }
                 else
                 {
-                    HandAnimatorHelper.instance.MoveToPosition(new Vector3(target.transform.position.x, hand.transform.position.y, (target.transform.position.z)) + 2*target.transform.forward, .5f);
+                    HandAnimatorHelper.instance.MoveToPosition(new Vector3(target.transform.position.x, hand.transform.position.y, (target.transform.position.z)) + 2 * target.transform.forward, .5f);
                     while (HandAnimatorHelper.instance.isMoving) yield return null;
 
                     Vector3 attackerEndPos = attacker.transform.position;
@@ -936,6 +970,7 @@ public class TBBS : MonoBehaviour
                 }
 
                 HandAnimatorHelper.instance.UnparentGrabbedObject();
+
                 attacker.transform.position = attackerStartPos;
 
                 //HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", false);
@@ -947,7 +982,7 @@ public class TBBS : MonoBehaviour
         }
 
         HandAnimatorHelper.instance.SetHandBoolParameter("isGrabbing", false);
-        HandAnimatorHelper.instance.MoveToDefaultPosition(1f);
+        HandAnimatorHelper.instance.MoveToPosition(handPos, 1f);
         while (HandAnimatorHelper.instance.isMoving) yield return null;
 
         CameraManager.instance.SetBlendTime(1);

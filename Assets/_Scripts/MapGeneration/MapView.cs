@@ -311,6 +311,8 @@ public class MapView : MonoBehaviour
                 );
             decorationGO.transform.Rotate(new Vector3(-90, 0, 0));
             decorationGO.layer = LayerMask.NameToLayer("Decoration");
+
+            decorationGO.AddComponent<CapsuleCollider>();
         }
     }
 

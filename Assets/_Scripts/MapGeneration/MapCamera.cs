@@ -37,9 +37,21 @@ public class MapCamera : MonoBehaviour
     void Start()
     {
         nodeLayerMask = LayerMask.GetMask("Node");
-        nodeLayerMask = LayerMask.GetMask("Decoration");
+        decorationLayerMask = LayerMask.GetMask("Decoration");
 
-        UpdateLayers(MapManager.instance.currentRoom);
+        if (MapManager.instance.mapCreated)
+        {
+            UpdateLayers(MapManager.instance.currentRoom);
+
+            //    Vector3 currentPos = MapManager.instance.currentRoom.transform.position;
+            //    Vector3 desiredPosition = new Vector3(
+            //    currentPos.x - followOffsetX,
+            //    currentPos.y + followOffsetY,
+            //    currentPos.z
+            //    );
+
+            //    transform.position = desiredPosition;
+        }
 
         if (MapManager.instance.mapLoaded == true)
         {
@@ -183,10 +195,10 @@ public class MapCamera : MonoBehaviour
         }
     }
 
-    //private void FixedUpdate()
-    //{
-    //    CameraTransparencyRaycast();
-    //}
+    private void FixedUpdate()
+    {
+        CameraTransparencyRaycast();
+    }
 
     public void HandleTopViewCamera()
     {
@@ -252,12 +264,19 @@ public class MapCamera : MonoBehaviour
         Vector3 rayStartPosition = mapCamera.transform.position;
         Vector3 rayEndPosition = MapManager.instance.currentRoom.transform.position;
 
+        Vector3 direction = (rayEndPosition - rayStartPosition).normalized;
+
         RaycastHit hit;
 
-        if (Physics.Raycast(rayStartPosition,rayEndPosition, out hit, decorationLayerMask))
+        if (Physics.Raycast(rayStartPosition, direction, out hit, float.MaxValue,decorationLayerMask))
         {
+            Debug.DrawRay(rayStartPosition, rayEndPosition, Color.red, 0.1f);
+
             FresnelApplier.SetTransparencyToMapDecoration(hit.collider.gameObject, 0.5f);
             Debug.Log("Camera Hit Decoration");
+            Debug.Log(rayStartPosition);
+            Debug.Log(direction);
+
         }
     }
 
@@ -299,7 +318,6 @@ public class MapCamera : MonoBehaviour
             MapNode mapNode = MapManager.instance.NodeToMapNode(node);
             MapManager.instance.currentNode = mapNode;
         }
-        UpdateLayers(MapManager.instance.currentRoom);
     }
 
     public static void UpdateLayers(GameObject obj)

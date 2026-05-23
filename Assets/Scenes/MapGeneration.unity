@@ -1004,6 +1004,9 @@ MonoBehaviour:
   nodeLayerMask:
     serializedVersion: 2
     m_Bits: 8
+  decorationLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
   enableFollowMode: 1
   mapCamera: {fileID: 426288677}
   statsCamera: {fileID: 1402047899}
@@ -3245,6 +3248,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 407657665994588858, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: skipBattles
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 407657665994588858, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: canLoadRooms
       value: 1

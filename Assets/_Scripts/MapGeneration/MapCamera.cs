@@ -20,6 +20,7 @@ public class MapCamera : MonoBehaviour
 
     public CinemachineVirtualCamera mapCamera;
     public CinemachineVirtualCamera statsCamera;
+    public CinemachineVirtualCamera topViewCamera;
 
     private int lookAtIndex = 0;
 
@@ -53,6 +54,9 @@ public class MapCamera : MonoBehaviour
             statsCamera = GameObject.Find("StatsCam").GetComponent <CinemachineVirtualCamera>();
             statsCamera.gameObject.SetActive(false);
             statsCamera.Priority = 2;
+
+            topViewCamera.gameObject.SetActive(false);
+            topViewCamera.Priority = 2;
         }
 
     }
@@ -78,26 +82,14 @@ public class MapCamera : MonoBehaviour
 
         }
 
+        if (topViewCamera.Follow == null)
+        {
+            topViewCamera.Follow = MapView.instance.team [0].transform;
+        }
+
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if (statsCamera == null) { return; }
-
-            if (statsCamera.gameObject.activeInHierarchy == false)
-            {
-                statsCamera.gameObject.SetActive(true);
-                UIManager.Instance.ShowCanvas(true);
-                UIManager.Instance.UpdateStats(null, 0);
-                if (UIManager.Instance.abilities.activeInHierarchy)
-                {
-                    UIManager.Instance.UpdateAbilities(null, lookAtIndex);
-                }
-            }
-            else
-            {
-                statsCamera.gameObject.SetActive(false);
-                UIManager.Instance.ShowCanvas(false);
-
-            }
+            HandleStatsCam();
         }
 
         if (statsCamera.gameObject.activeInHierarchy)
@@ -119,7 +111,7 @@ public class MapCamera : MonoBehaviour
                 UIManager.Instance.UpdateStats(null, lookAtIndex);
                 if (UIManager.Instance.abilities.activeInHierarchy)
                 {
-                    UIManager.Instance.UpdateAbilities(null,lookAtIndex);
+                    UIManager.Instance.UpdateAbilities(null, lookAtIndex);
                 }
             }
 
@@ -139,10 +131,15 @@ public class MapCamera : MonoBehaviour
 
                 if (UIManager.Instance.abilities.activeInHierarchy)
                 {
-                    UIManager.Instance.UpdateAbilities(null,lookAtIndex);
+                    UIManager.Instance.UpdateAbilities(null, lookAtIndex);
                 }
                 UIManager.Instance.UpdateStats(null, lookAtIndex);
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            HandleTopViewCamera();
         }
 
         if (!enableFollowMode) return;
@@ -180,7 +177,10 @@ public class MapCamera : MonoBehaviour
                         MapManager.instance.LoadScene(MapManager.instance.currentRoom.GetComponent<Node>().sceneName);
                     }
                     break;
-                case GameData.NodeEvents.SPECIAL:
+                case GameData.NodeEvents.RANDOM:
+                    RandomEventManager.instance.CreateRandomEvent();
+                    MapManager.instance.currentRoom.GetComponent<Node>().nodeEvent = NodeEvents.NONE;
+                    UpdateLayers(MapManager.instance.currentRoom);
                     break;
                 default:
                     break;
@@ -188,6 +188,48 @@ public class MapCamera : MonoBehaviour
 
             reachedTarget = false;
         }
+    }
+
+    public void HandleTopViewCamera()
+    {
+        if (topViewCamera == null) { return; }
+
+        if (topViewCamera.gameObject.activeInHierarchy == false)
+        {
+            statsCamera.gameObject.SetActive(false);
+            UIManager.Instance.ShowCanvas(false);
+
+            topViewCamera.gameObject.SetActive(true);
+        }
+        else
+        {
+            topViewCamera.gameObject.SetActive(false);
+        }
+    }
+
+    public void HandleStatsCam()
+    {
+        if (statsCamera == null) { return; }
+
+        if (statsCamera.gameObject.activeInHierarchy == false)
+        {
+            topViewCamera.gameObject.SetActive(false);
+
+            statsCamera.gameObject.SetActive(true);
+            UIManager.Instance.ShowCanvas(true);
+            UIManager.Instance.UpdateStats(null, 0);
+            if (UIManager.Instance.abilities.activeInHierarchy)
+            {
+                UIManager.Instance.UpdateAbilities(null, lookAtIndex);
+            }
+        }
+        else
+        {
+            statsCamera.gameObject.SetActive(false);
+            UIManager.Instance.ShowCanvas(false);
+
+        }
+
     }
 
     private void CheckRaycast()

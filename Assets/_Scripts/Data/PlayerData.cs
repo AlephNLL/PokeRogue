@@ -10,6 +10,8 @@ public class PlayerData : MonoBehaviour
     public static List<UnitData> teamData;
     public static List<UnitData> daycareTeamData;
 
+    public static bool tutorial = true;
+
     private void Awake()
     {
         if (Instance == null)

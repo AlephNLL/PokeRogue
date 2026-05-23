@@ -914,8 +914,23 @@ public class Unit : MonoBehaviour
         return true;
     }
 
-    //public void RegisterUIButtons()
-    //{
-    //    BattleTutorialManager.instance.RegisterPlayerUI(currentUnit.healthBar.gameObject.GetComponent<RectTransform>(), currentUnit.attackButton.gameObject.GetComponent<RectTransform>());
-    //} 
+    public void RegisterUIButtons()
+    {
+        List<RectTransform> buttons = new List<RectTransform>();
+        buttons.Add(attackButton.gameObject.GetComponent<RectTransform>());
+        buttons.Add(itemButton.gameObject.GetComponent<RectTransform>());
+        buttons.Add(runButton.gameObject.GetComponent<RectTransform>());
+
+        if (knownAbilities[0].abilityType == AbilityType.PASSIVE)
+        {
+            buttons.Add(abilityButtons[1].gameObject.GetComponent<RectTransform>());
+            buttons.Add(abilityButtons[0].gameObject.GetComponent<RectTransform>());
+        }
+        else
+        {
+            buttons.Add(abilityButtons[0].gameObject.GetComponent<RectTransform>());
+            buttons.Add(abilityButtons[1].gameObject.GetComponent<RectTransform>());
+        }
+        BattleTutorialManager.instance.RegisterPlayerUI(buttons.ToArray());
+    }
 }

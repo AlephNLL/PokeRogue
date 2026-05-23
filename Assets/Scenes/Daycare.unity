@@ -2470,11 +2470,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2a494ca251038a149bd260e708126cc6, type: 2}
   - {fileID: 11400000, guid: f8d01f3225c12654cb8482d8a0cd255a, type: 2}
   - {fileID: 11400000, guid: 18de7ca54f07673498c6a2789d552b09, type: 2}
+  - {fileID: 11400000, guid: d12a39800ea11eb4ea3fb471883ee7ee, type: 2}
+  - {fileID: 11400000, guid: b119c886d460fdd4ab3e4a7484609dbd, type: 2}
   unitPrefabs: []
   maxUnits: 20
-  spawnPoint: {fileID: 1065018775}
-  cameraCenterPoint: {fileID: 2073260426}
-  maxUnitsPerShelf: 7
+  spawnPoint: {fileID: 1077428975}
+  cameraCenterPoint: {fileID: 782298739}
+  maxUnitsPerShelf: 8
   unitSpacing: 3
   shelfOffset: {x: 0, y: -9.185, z: 0}
   selectedUnits: []

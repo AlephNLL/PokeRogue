@@ -166,7 +166,7 @@ public class TBBS : MonoBehaviour
 
     IEnumerator EndBattle()
     {
-        TooltipUI.instance.HideTooltipText();
+        TooltipUI.instance.EndCurrentAction();
         AudioManager.instance.PlaySound2D(AudioManager.instance.trombone);
         yield return new WaitForSeconds(2f);
         SceneManager.LoadSceneAsync("Daycare");
@@ -184,6 +184,9 @@ public class TBBS : MonoBehaviour
     {
         while(TooltipUI.instance.isProcessing) yield return null;
 
+        if (PlayerData.tutorial) BattleTutorialManager.instance.StartTutorial();
+
+        currentUnit.RegisterUIButtons();
         currentUnit.ActivateCamera();
         ControlsUI.instance.ShowSummaryControls();
         if (activateTurnStartEffect) currentUnit.OnTurnStart();
@@ -355,6 +358,11 @@ public class TBBS : MonoBehaviour
         // Limpiamos cualquier corrutina de menú abierta previamente
         if (menuCoroutine != null) StopCoroutine(menuCoroutine);
 
+        if(BattleTutorialManager.instance != null)
+        {
+            BattleTutorialManager.instance.PlayerPerformedAction(TutorialState.WaitForAttackClick);
+        }
+
         menuCoroutine = StartCoroutine(OpenAbilityMenu(attacker));
     }
 
@@ -384,8 +392,6 @@ public class TBBS : MonoBehaviour
         if (isActionExecuting) return; // Bloqueo de seguridad
 
         if (menuCoroutine != null) StopCoroutine(menuCoroutine);
-
-        BattleTutorialManager.instance.PlayerPerformedAction(TutorialState.WaitForAttackClick);
 
         // ¡CRÍTICO! Guardamos la selección de habilidad en menuCoroutine
         menuCoroutine = StartCoroutine(ActivateAbility(ability));
@@ -503,6 +509,10 @@ public class TBBS : MonoBehaviour
             UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
         }
 
+        if(BattleTutorialManager.instance != null)
+        {
+            BattleTutorialManager.instance.PlayerPerformedAction(TutorialState.WaitForAbility);
+        }
         Unit currentUnit = allUnits[currentTurnIndex];
         CameraManager.instance.SetBlendTime(2f);
         currentUnit.CloseAbilityMenu();

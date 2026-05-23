@@ -18,6 +18,8 @@ public class BattleGenerator : MonoBehaviour
     public int expensiveEnemyExtraCost = 0;
 
     public Team[] bossTeams;
+
+    public GameObject[] tutorialTeam;
     private void Awake()
     {
         Instance = this;
@@ -84,6 +86,12 @@ public class BattleGenerator : MonoBehaviour
         {
             generatedTeam.Clear();
             generatedTeam.AddRange(bossTeams[Random.Range(0, bossTeams.Length)].team);
+        }
+
+        if (PlayerData.tutorial)
+        {
+            generatedTeam.Clear();
+            generatedTeam.AddRange(tutorialTeam);
         }
         BattleData.enemyTeam = generatedTeam.ToArray();
         BattleData.enemyLevel = finalEnemyLevel;

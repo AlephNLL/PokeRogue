@@ -10,8 +10,13 @@ public enum TutorialState
     ExplainAttack,
     ExplainItem,
     ExplainDefend,
-    ExplainStats,
     WaitForAttackClick,
+    ExplainAbilities,
+    ExplainStats,
+    ExplainPassives,
+    ExplainActives,
+    WaitForAbility,
+    Targeting,
     ShowSurprise,
     Finished
 }
@@ -21,8 +26,9 @@ public class TutorialStep
 {
     [TextArea(2, 4)] public string message;
     public bool waitForPlayerAction;
+    public bool disableBackgroundButton = false;
     public HandPose handPose;
-    public string targetKey; // "None", "Stats", o "Attack"
+    public string targetKey;
     public Vector3 handOffset;
 }
 
@@ -32,7 +38,8 @@ public class BattleTutorialManager : MonoBehaviour
 
     public TutorialState currentState = TutorialState.Welcome;
 
-    [Header("Referencias de la Burbuja UI")]
+    [Header("Referencias de UI")]
+    [SerializeField] private GameObject tutorialCanvas;
     [SerializeField] private GameObject dialogueBubbleParent;
     [SerializeField] private TMP_Text bubbleText;
 
@@ -41,15 +48,19 @@ public class BattleTutorialManager : MonoBehaviour
     private Coroutine typewriterCoroutine;
     private bool isTyping = false;
 
+    [Header("Invisible button")]
+    [SerializeField] private GameObject invisibleButton;
+
     // Aquí almacenamos el guión
     private Dictionary<TutorialState, TutorialStep> tutorialSteps = new Dictionary<TutorialState, TutorialStep>();
 
     // Referencias dinámicas de la UI del bicho
-    private RectTransform cachedPlayerStatsUI;
     private RectTransform cachedPlayerAttackButtonUI;
     private RectTransform cachedPlayerItemButtonUI;
     private RectTransform cachedPlayerDefendButtonUI;
-    private RectTransform cachedPlayerStatsButtonUI;
+
+    private RectTransform cachedPlayerActiveButtonUI;
+    private RectTransform cachedPlayerPassiveButtonUI;
 
     private void Awake()
     {
@@ -59,6 +70,11 @@ public class BattleTutorialManager : MonoBehaviour
 
     private void Start()
     {
+        if (!PlayerData.tutorial) Destroy(gameObject);
+    }
+    public void StartTutorial()
+    {
+        tutorialCanvas.SetActive(true);
         // Forzamos que la burbuja empiece oculta por si acaso
         dialogueBubbleParent.SetActive(false);
 
@@ -67,10 +83,14 @@ public class BattleTutorialManager : MonoBehaviour
     }
 
     // El bicho llama a esta función cuando aparece en combate
-    public void RegisterPlayerUI(RectTransform stats, RectTransform attackButton)
+    public void RegisterPlayerUI(RectTransform[] buttons)
     {
-        cachedPlayerStatsUI = stats;
-        cachedPlayerAttackButtonUI = attackButton;
+        if (currentState == TutorialState.Finished) return;
+        cachedPlayerAttackButtonUI = buttons[0];
+        cachedPlayerItemButtonUI = buttons[1];
+        cachedPlayerDefendButtonUI = buttons[2];
+        cachedPlayerActiveButtonUI = buttons[3];
+        cachedPlayerPassiveButtonUI = buttons[4];
 
         // Actualizamos la mano por si estaba esperando que apareciera el bicho
         UpdateHandActor(tutorialSteps[currentState]);
@@ -89,7 +109,7 @@ public class BattleTutorialManager : MonoBehaviour
 
         tutorialSteps[TutorialState.ExplainAttack] = new TutorialStep
         {
-            message = "This button opens de attack menu, where you can choose an ability",
+            message = "This button opens the <color=#FF0000>Attack</color> menu, where you can choose an ability",
             waitForPlayerAction = false,
             handPose = HandPose.Point,
             targetKey = "ExplainAttack",
@@ -107,33 +127,79 @@ public class BattleTutorialManager : MonoBehaviour
 
         tutorialSteps[TutorialState.ExplainDefend] = new TutorialStep
         {
-            message = "The <color=#FFD700>Defend</color> button makes your unit take half damage until its next turn",
+            message = "The <color=#0000FF>Defend</color> button makes your unit take half damage until its next turn",
             waitForPlayerAction = false,
             handPose = HandPose.Point,
             targetKey = "ExplainDefend",
             handOffset = new Vector3(400f, -10f, 0f)
         };
 
-        tutorialSteps[TutorialState.ExplainStats] = new TutorialStep
-        {
-            message = "You can also access you stats pressing tab",
-            waitForPlayerAction = true,
-            handPose = HandPose.Idle,
-            targetKey = "ExplainStats",
-        };
-
         tutorialSteps[TutorialState.WaitForAttackClick] = new TutorialStep
         {
-            message = "Try choosing the attack button!",
+            message = "Try choosing the <color=#FF0000>Attack</color> button!",
             waitForPlayerAction = true, // Espera que el jugador ataque, oculta la flecha
+            disableBackgroundButton = true,
             handPose = HandPose.Point,
             targetKey = "ExplainAttack",
-            handOffset = new Vector3(400f, -10, 0f) 
+            handOffset = new Vector3(400f, -10, 0f)
+        };
+
+        tutorialSteps[TutorialState.ExplainAbilities] = new TutorialStep
+        {
+            message = "These are your abilities",
+            waitForPlayerAction = false, // Espera que el jugador ataque, oculta la flecha
+            handPose = HandPose.Idle,
+            targetKey = "None",
+            handOffset = new Vector3(400f, -10, 0f)
+        };
+
+        tutorialSteps[TutorialState.ExplainStats] = new TutorialStep
+        {
+            message = "You can access a more detailed explanation of your abilities and stats with TAB.",
+            waitForPlayerAction = false,
+            handPose = HandPose.Idle,
+            targetKey = "None",
+        };
+
+        tutorialSteps[TutorialState.ExplainPassives] = new TutorialStep
+        {
+            message = "Abilities can be <color=#00FFFF>passive</color>, like this one. <color=#00FFFF>Passives</color> triger automatically on battle.",
+            waitForPlayerAction = false,
+            handPose = HandPose.Point,
+            targetKey = "Passives",
+            handOffset = new Vector3(400f, -10, 0f)
+        };
+
+        tutorialSteps[TutorialState.ExplainActives] = new TutorialStep
+        {
+            message = "Or <color=#FF0000>active</color> like this one. <color=#FF0000>Actives</color> are your main damage output.",
+            waitForPlayerAction = false,
+            handPose = HandPose.Point,
+            targetKey = "Actives",
+            handOffset = new Vector3(400f, -10, 0f)
+        };
+
+        tutorialSteps[TutorialState.WaitForAbility] = new TutorialStep
+        {
+            message = "Choose your <color=#FF0000>active</color> ability!",
+            waitForPlayerAction = true,
+            disableBackgroundButton = true,
+            handPose = HandPose.Point,
+            targetKey = "Actives",
+            handOffset = new Vector3(400f, -10, 0f)
+        };
+
+        tutorialSteps[TutorialState.Targeting] = new TutorialStep
+        {
+            message = "Now you have to chose your target, click when you are ready!",
+            waitForPlayerAction = false,
+            handPose = HandPose.Idle,
+            targetKey = "None",
         };
 
         tutorialSteps[TutorialState.ShowSurprise] = new TutorialStep
         {
-            message = "Wow! You hand-led that very well!",
+            message = "Wow! You <color=#FFD700>hand-led</color> that very well!",
             waitForPlayerAction = false,
             handPose = HandPose.Idle,
             targetKey = "None"
@@ -163,6 +229,9 @@ public class BattleTutorialManager : MonoBehaviour
 
         // 3. Posicionar la mano
         UpdateHandActor(step);
+
+        if(step.disableBackgroundButton) invisibleButton.SetActive(false);
+        else invisibleButton.SetActive(true);
     }
 
     private IEnumerator TypeTextRoutine(string text, bool waitingForAction)
@@ -211,7 +280,6 @@ public class BattleTutorialManager : MonoBehaviour
 
     public void PlayerPerformedAction(TutorialState expectedState)
     {
-        // Solo avanza si la acción coincide con lo que el tutorial pedía
         if (currentState == expectedState)
         {
             SetState(currentState + 1);
@@ -259,13 +327,17 @@ public class BattleTutorialManager : MonoBehaviour
         {
             TutorialHandActor.instance.PointAt(cachedPlayerDefendButtonUI, step.handOffset, step.handPose);
         }
-        else if (step.targetKey == "ExplainStats" && cachedPlayerStatsButtonUI != null)
-        {
-            TutorialHandActor.instance.PointAt(cachedPlayerStatsButtonUI, step.handOffset, step.handPose);
-        }
         else if (step.targetKey == "Attack" && cachedPlayerAttackButtonUI != null)
         {
             TutorialHandActor.instance.PointAt(cachedPlayerAttackButtonUI, step.handOffset, step.handPose);
+        }
+        else if (step.targetKey == "Passives" && cachedPlayerPassiveButtonUI != null)
+        {
+            TutorialHandActor.instance.PointAt(cachedPlayerPassiveButtonUI, step.handOffset, step.handPose);
+        }
+        else if (step.targetKey == "Actives" && cachedPlayerActiveButtonUI != null)
+        {
+            TutorialHandActor.instance.PointAt(cachedPlayerActiveButtonUI, step.handOffset, step.handPose);
         }
         else
         {
@@ -273,12 +345,16 @@ public class BattleTutorialManager : MonoBehaviour
             TutorialHandActor.instance.Hide();
         }
 
-        dialogueBubbleParent.transform.position = TutorialHandActor.instance.transform.position + new Vector3(0, -50f, 0f);
+        dialogueBubbleParent.transform.position = TutorialHandActor.instance.transform.position + new Vector3(0, -150f, 0f);
     }
 
     private void EndTutorial()
     {
         dialogueBubbleParent.SetActive(false);
+        invisibleButton.SetActive(false);
         if (TutorialHandActor.instance != null) TutorialHandActor.instance.Hide();
+        PlayerData.tutorial = false;
+
+        Destroy(gameObject);
     }
 }

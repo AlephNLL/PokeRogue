@@ -301,6 +301,8 @@ public class MapView : MonoBehaviour
 
             GameObject decorationGO = Instantiate(decorationPrefabs[randomPrefab], position, Quaternion.identity, decorations.transform);
 
+            FresnelApplier.SetMapDecorationShader(decorationGO);
+
             float randomScale = UnityEngine.Random.Range(-3, 3);
             decorationGO.transform.localScale = new Vector3 (
                 decorationGO.transform.localScale.x + randomScale, 
@@ -420,7 +422,7 @@ public class MapView : MonoBehaviour
     {
         int count = team.Count;
         Vector3 offset = Vector3.zero;
-        Vector3 offsetY = new(0, 0f, 0);
+        Vector3 offsetY = new(0, 0.0275f, 0);
 
         switch (count)
         {

@@ -23,6 +23,44 @@ public class FresnelApplier : MonoBehaviour
         capsule.SetPropertyBlock(mpb);
     }
 
+    public static void SetMapDecorationShader(GameObject GO)
+    {
+        MeshRenderer objMR = GO.GetComponentInChildren<MeshRenderer>();
+        Shader transparencyShader = Shader.Find("Shader Graphs/MapDecoration");
+
+        foreach (Material material in objMR.materials)
+        {
+            Texture oldMainText = material.mainTexture;
+            Color oldColor = material.color;
+            float oldSmoothness = material.GetFloat("_Smoothness");
+            Texture oldNormal = material.GetTexture("_BumpMap");
+
+            material.shader = transparencyShader;
+
+            if (oldMainText != null) { material.SetTexture("_MainTexture", oldMainText); };
+            material.color = oldColor;
+            material.SetFloat("_Smoothness", oldSmoothness);
+            if (oldNormal != null) material.SetTexture("_BumpMap", oldNormal);
+        }
+    }
+
+    public static void SetTransparencyToMapDecoration(GameObject GO, float transparencyValue)
+    {
+        MeshRenderer objMR = GO.GetComponent<MeshRenderer>();
+        if (objMR != null) return;
+
+        transparencyValue = Mathf.Clamp01(transparencyValue);
+
+        Mathf.Clamp01(transparencyValue);
+
+
+        foreach (Material material in objMR.materials)
+        {
+            if (!material.HasFloat("_Transparency")) return;
+            material.SetFloat("_Transparency", transparencyValue);
+        }
+    }
+
     public static void changeStance(GameObject unit, Stance stance)
     {
         switch (stance)
@@ -47,7 +85,6 @@ public class FresnelApplier : MonoBehaviour
         }
 
     }
-
     public static void changeBase(GameObject unit, Color color)
     {
         MeshRenderer baseMesh = unit.transform.Find("Capsule").Find("Base").GetComponent<MeshRenderer>();

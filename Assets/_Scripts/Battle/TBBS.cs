@@ -1048,6 +1048,11 @@ public class TBBS : MonoBehaviour
 
     bool Damage(Abilities ability, Unit attacker, Unit[] targets, bool hit)
     {
+        if (BattleTutorialManager.instance != null)
+        {
+            BattleTutorialManager.instance.PlayerPerformedAction(TutorialState.Targeting);
+        }
+
         for (int i = 0; i < targets.Length; i++)
         {
             if (targets[i].evasive)

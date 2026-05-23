@@ -34,10 +34,10 @@ public class FresnelApplier : MonoBehaviour
                 changeBase(unit, Color.blue);
                 break;
             case Stance.AGILE:
-                changeBase(unit, Color.yellow);
+                changeBase(unit, Color.green);
                 break;
             case Stance.CAUTIOUS:
-                changeBase(unit, Color.green);
+                changeBase(unit, Color.cyan);
                 break;
             case Stance.TRICKY:
                 changeBase(unit, Color.purple);

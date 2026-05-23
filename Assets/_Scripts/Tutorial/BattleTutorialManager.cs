@@ -18,6 +18,11 @@ public enum TutorialState
     WaitForAbility,
     Targeting,
     ShowSurprise,
+    ExplainColors,
+    ExplainStance,
+    ExplainWeakness,
+    StanceLock,
+    Ending,
     Finished
 }
 
@@ -27,6 +32,7 @@ public class TutorialStep
     [TextArea(2, 4)] public string message;
     public bool waitForPlayerAction;
     public bool disableBackgroundButton = false;
+    public bool pauseGame = false;
     public HandPose handPose;
     public string targetKey;
     public Vector3 handOffset;
@@ -74,6 +80,8 @@ public class BattleTutorialManager : MonoBehaviour
     }
     public void StartTutorial()
     {
+        if (currentState != TutorialState.Welcome) return;
+
         tutorialCanvas.SetActive(true);
         // Forzamos que la burbuja empiece oculta por si acaso
         dialogueBubbleParent.SetActive(false);
@@ -192,7 +200,7 @@ public class BattleTutorialManager : MonoBehaviour
         tutorialSteps[TutorialState.Targeting] = new TutorialStep
         {
             message = "Now you have to chose your target, click when you are ready!",
-            waitForPlayerAction = false,
+            waitForPlayerAction = true,
             handPose = HandPose.Idle,
             targetKey = "None",
         };
@@ -200,6 +208,53 @@ public class BattleTutorialManager : MonoBehaviour
         tutorialSteps[TutorialState.ShowSurprise] = new TutorialStep
         {
             message = "Wow! You <color=#FFD700>hand-led</color> that very well!",
+            waitForPlayerAction = false,
+            pauseGame = true,
+            handPose = HandPose.Idle,
+            targetKey = "None"
+        };
+
+        tutorialSteps[TutorialState.ExplainColors] = new TutorialStep
+        {
+            message = "One last thing. See those colors on the rim of the base? Those colors indicate stances.",
+            waitForPlayerAction = false,
+            pauseGame = true,
+            handPose = HandPose.Idle,
+            targetKey = "None"
+        };
+
+        tutorialSteps[TutorialState.ExplainStance] = new TutorialStep
+        {
+            message = "There are 5 stances: <color=#FF0000>Agressive</color> (raises attack), <color=#0000FF>Defensive</color> (raises defense), " +
+            "<color=#00FF00>Agile</color> (raises speed), <color=#00FFFF>Cautious</color> (user is inmune to abilities with 0 power), <color=#FF00FF>Tricky</color> (increases secondary effect chance)",
+            waitForPlayerAction = false,
+            pauseGame = true,
+            handPose = HandPose.Idle,
+            targetKey = "None"
+        };
+
+        tutorialSteps[TutorialState.ExplainWeakness] = new TutorialStep
+        {
+            message = "<color=#FF0000>Agressive</color> stance is weak to <color=#0000FF>Defensive</color> abilities. <color=#0000FF>Defensive</color> stance is weak to <color=#00FF00>Agile</color> abilities" +
+            ". And <color=#00FF00>Agile</color> stance is weak to <color=#FF0000>Agressive</color> abilities.",
+            waitForPlayerAction = false,
+            pauseGame = true,
+            handPose = HandPose.Idle,
+            targetKey = "None"
+        };
+
+        tutorialSteps[TutorialState.StanceLock] = new TutorialStep
+        {
+            message = "Some abilities can only be used in their stance. Stance locked abilities are marked with a lock on the summary.",
+            waitForPlayerAction = false,
+            pauseGame = true,
+            handPose = HandPose.Idle,
+            targetKey = "None"
+        };
+
+        tutorialSteps[TutorialState.Ending] = new TutorialStep
+        {
+            message = "That covers all the basics, have fun!",
             waitForPlayerAction = false,
             handPose = HandPose.Idle,
             targetKey = "None"
@@ -232,6 +287,9 @@ public class BattleTutorialManager : MonoBehaviour
 
         if(step.disableBackgroundButton) invisibleButton.SetActive(false);
         else invisibleButton.SetActive(true);
+
+        if (step.pauseGame) PauseMenuUI.instance.PauseGame();
+        else PauseMenuUI.instance.Resume();
     }
 
     private IEnumerator TypeTextRoutine(string text, bool waitingForAction)
@@ -247,7 +305,7 @@ public class BattleTutorialManager : MonoBehaviour
         for (int i = 0; i <= totalCharacters; i++)
         {
             bubbleText.maxVisibleCharacters = i;
-            yield return new WaitForSeconds(typingSpeed);
+            yield return new WaitForSecondsRealtime(typingSpeed);
         }
 
         FinishTyping(waitingForAction);
@@ -294,7 +352,7 @@ public class BattleTutorialManager : MonoBehaviour
         float t = 0;
         while (t < 1)
         {
-            t += Time.deltaTime * 6f; // Velocidad del pop
+            t += Time.unscaledDeltaTime * 6f; // Velocidad del pop
             // Fórmula simple de rebote elástico
             float scale = Mathf.Lerp(0f, 1.05f, Mathf.Sin(t * Mathf.PI / 2));
             if (t > 0.8f) scale = Mathf.Lerp(1.05f, 1f, (t - 0.8f) * 5f);
@@ -345,7 +403,7 @@ public class BattleTutorialManager : MonoBehaviour
             TutorialHandActor.instance.Hide();
         }
 
-        dialogueBubbleParent.transform.position = TutorialHandActor.instance.transform.position + new Vector3(0, -150f, 0f);
+        dialogueBubbleParent.transform.position = TutorialHandActor.instance.transform.position + new Vector3(0, -200f, 0f);
     }
 
     private void EndTutorial()

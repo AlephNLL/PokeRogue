@@ -2474,9 +2474,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b119c886d460fdd4ab3e4a7484609dbd, type: 2}
   unitPrefabs: []
   maxUnits: 20
-  spawnPoint: {fileID: 1077428975}
-  cameraCenterPoint: {fileID: 782298739}
-  maxUnitsPerShelf: 8
+  spawnPoint: {fileID: 1065018775}
+  cameraCenterPoint: {fileID: 2073260426}
+  maxUnitsPerShelf: 7
   unitSpacing: 3
   shelfOffset: {x: 0, y: -9.185, z: 0}
   selectedUnits: []

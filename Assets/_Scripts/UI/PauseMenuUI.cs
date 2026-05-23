@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenuUI : MonoBehaviour
 {
-    static PauseMenuUI instance;
+    public static PauseMenuUI instance;
 
     public GameObject pauseCanvas;
     public GameObject optionsCanvas;
@@ -39,6 +39,11 @@ public class PauseMenuUI : MonoBehaviour
 
         isPaused = state;
         pauseCanvas.SetActive(state);
+    }
+
+    public void PauseGame()
+    {
+        isPaused = true;
     }
 
     public void Resume()

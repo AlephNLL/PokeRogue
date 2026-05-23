@@ -173,7 +173,9 @@ public class TBBS : MonoBehaviour
 
     IEnumerator PlayerTurn(Unit currentUnit, bool activateTurnStartEffect = true)
     {
+        while(TooltipUI.instance.isProcessing) yield return null;
         currentUnit.ActivateCamera();
+        ControlsUI.instance.ShowSummaryControls();
         if (activateTurnStartEffect) currentUnit.OnTurnStart();
         if (currentUnit.skipTurn)
         {
@@ -375,6 +377,8 @@ public class TBBS : MonoBehaviour
 
         // ¡CRÍTICO! Guardamos la selección de habilidad en menuCoroutine
         menuCoroutine = StartCoroutine(ActivateAbility(ability));
+
+        ControlsUI.instance.HideSummaryControls();
     }
 
     public void ItemMenu(Unit attacker) // Se llama desde la interfaz
@@ -413,6 +417,8 @@ public class TBBS : MonoBehaviour
         if (menuCoroutine != null) StopCoroutine(menuCoroutine);
 
         menuCoroutine = StartCoroutine(ActivateItem(item));
+
+        ControlsUI.instance.HideSummaryControls();
     }
 
     public IEnumerator ActivateItem(Item item)
@@ -724,6 +730,7 @@ public class TBBS : MonoBehaviour
         attacker.recivedDamageMultiplier = 0.5f;
         TooltipUI.instance.StartNewAction($"{attacker.name} is defending!");
         TooltipUI.instance.EndCurrentAction();
+        ControlsUI.instance.HideSummaryControls();
         currentTurnIndex++;
         StartNextTurn();
     }

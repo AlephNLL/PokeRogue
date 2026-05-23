@@ -166,7 +166,7 @@ public class TBBS : MonoBehaviour
 
     IEnumerator EndBattle()
     {
-        TooltipUI.instance.HideTooltipText();
+//        TooltipUI.instance.HideTooltipText();
         AudioManager.instance.PlaySound2D(AudioManager.instance.trombone);
         yield return new WaitForSeconds(2f);
         SceneManager.LoadSceneAsync("Daycare");

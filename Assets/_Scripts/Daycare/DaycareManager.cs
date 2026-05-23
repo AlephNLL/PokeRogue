@@ -48,11 +48,11 @@ public class DaycareManager : MonoBehaviour
                 unit.currentHp = startingUnits[i].prefab.GetComponent<Unit>().GetRawStat(Stats.HP, unit.level);
                 if (startingUnits[i].knownAbilities.Count > 0) unit.knownAbilities = startingUnits[i].knownAbilities;
                 else unit.knownAbilities = startingUnits[i].prefab.GetComponent<Unit>().GetUnitKnownAbilities(unit.level);
-                    unit.heldItem = startingUnits[i].heldItem;
+                unit.heldItem = startingUnits[i].heldItem;
 
                 units.Add(unit);
             }
-            startingUnits = units;  
+            startingUnits = units;
         }
         if (PlayerData.daycareTeamData != null)
         {
@@ -77,6 +77,7 @@ public class DaycareManager : MonoBehaviour
         {
             Vector3 offset = i / maxUnitsPerShelf * shelfOffset + Vector3.right * unitSpacing * (i % maxUnitsPerShelf);
             GameObject unitPrefab = Instantiate(units[i].prefab.gameObject, spawnPoint.transform.position + offset, Quaternion.Euler(0, 180, 0));
+            unitPrefab.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
             unitPrefab.GetComponent<Unit>().enabled = false;
             unitPrefabs.Add(unitPrefab);
 
@@ -87,7 +88,7 @@ public class DaycareManager : MonoBehaviour
     {
         Unit[] unitToDestroy = FindObjectsOfType<Unit>();
 
-        foreach (Unit unit in unitToDestroy) 
+        foreach (Unit unit in unitToDestroy)
         {
             Destroy(unit.gameObject);
         }
@@ -178,7 +179,7 @@ public class DaycareManager : MonoBehaviour
         {
             yield return Run<int>(SelectMon(selection), (output) => selection = output);
 
-            if(selection == -1)
+            if (selection == -1)
             {
                 Cancel();
                 yield break;
@@ -363,7 +364,7 @@ public class DaycareManager : MonoBehaviour
                     UIManager.Instance.ShowCanvas(false);
                     toggle = true;
                 }
-                
+
             }
 
             yield return null;
@@ -378,7 +379,7 @@ public class DaycareManager : MonoBehaviour
             Vector3 unitStartPos = unit.transform.position;
             float t = 0;
             float elapsedTime = 0;
-            Vector3 offset = new Vector3(2 * (i - (selectedPrefabs.Count - 1) / 2f), 0, 0);
+            Vector3 offset = new Vector3(3 * (i - (selectedPrefabs.Count - 1) / 2f), 0, 0);
             while (t < 1)
             {
                 elapsedTime += Time.deltaTime;
@@ -389,7 +390,7 @@ public class DaycareManager : MonoBehaviour
 
             unit.transform.position = cameraCenterPoint.transform.position + offset;
         }
-        
+
     }
 
     IEnumerator FuseMons()

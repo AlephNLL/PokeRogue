@@ -11,6 +11,7 @@ public class DaycareCamera : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        RenderSettings.skybox.SetFloat("Rotation", 136);
     }
     public void EnableFusionCamera()
     {
@@ -26,14 +27,14 @@ public class DaycareCamera : MonoBehaviour
     public void SetCameraTarget(Transform target)
     {
         Transform transform = new GameObject().transform;
-        transform.position = target.position;
+        transform.position = target.position - new Vector3(0, -1f, 3f);
         transform.rotation = Quaternion.identity;
 
         fusionCamera.LookAt = transform;
         fusionCamera.Follow = transform;
     }
 
-    public IEnumerator LerpCameraOffset(float x , float duration)
+    public IEnumerator LerpCameraOffset(float x, float duration)
     {
         var transposer = fusionCamera.GetCinemachineComponent<CinemachineTransposer>();
         var composer = fusionCamera.GetCinemachineComponent<CinemachineComposer>();

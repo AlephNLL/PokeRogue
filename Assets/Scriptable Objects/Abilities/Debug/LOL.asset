@@ -15,10 +15,10 @@ MonoBehaviour:
   name: LOL
   description: 
   sfx: {fileID: 0}
-  power: 100000
+  power: 100
   accuracy: 100
   abilityType: 0
-  target: 1
+  target: 4
   stance: 0
   statToCalcDmgWith: 1
   mustUseStance: 0
@@ -38,11 +38,12 @@ MonoBehaviour:
   condition2: 0
   effect2Chance: 0
   affectSelf: 0
-  stanceToChangeTo: 0
+  stanceToChangeTo: 1
   stanceCondition: 0
   healPercentage: 0
-  statToMod: 
-  statMod: []
+  statToMod: 01000000
+  statMod:
+  - 0.75
   powerVariables: 0
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

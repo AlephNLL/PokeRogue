@@ -808,13 +808,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82c0dcb3fbdb35f40bf6f64fede1a51d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  icon: {fileID: 0}
   id: 0
   name: Mareaus
   description: 
   currentStance: 2
   level: 1
   exp: 0
+  expCurve: {fileID: 0}
   status: 0
+  recivedDamageMultiplier: 1
   strength: 20
   constitution: 14
   dexterity: 28
@@ -824,6 +827,7 @@ MonoBehaviour:
   attack: 0
   defense: 0
   speed: 0
+  precision: 1
   knownAbilities: []
   abilityPool:
   - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}
@@ -831,6 +835,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
   - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
   heldItem: {fileID: 0}
+  evasive: 0
+  provoking: 0
+  guardedBy: {fileID: 0}
+  timesBuffed: 0
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
   battleMenu: {fileID: 0}
@@ -852,6 +860,7 @@ MonoBehaviour:
   additionalTurn: 0
   skipTurn: 0
   takingDamage: 0
+  baseEffectChanceMulti: 1
   effectChanceModifier: 0
 --- !u!1 &1760726793352929564
 GameObject:
@@ -4036,7 +4045,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4776740991585679903, guid: 400b05a73be9b0a458fff3fd2844a63c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4776740991585679903, guid: 400b05a73be9b0a458fff3fd2844a63c, type: 3}
       propertyPath: m_LocalPosition.z

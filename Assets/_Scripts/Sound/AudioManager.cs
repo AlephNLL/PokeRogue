@@ -18,6 +18,9 @@ public class AudioManager : MonoBehaviour
 
     private List<AudioSource> pool = new List<AudioSource>();
 
+    [Header("Sonidos UI")]
+    [SerializeField] public SoundData trombone;
+
     void Awake()
     {
         if (instance == null)

@@ -2310,6 +2310,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
+    - target: {fileID: 8076780922674567326, guid: ed1f4cfa3d3f8e04ab66b271585aade4, type: 3}
+      propertyPath: trombone
+      value: 
+      objectReference: {fileID: 11400000, guid: 6f702a3553927f440a31c03aeeb71b04, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

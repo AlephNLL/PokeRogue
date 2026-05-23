@@ -56,6 +56,26 @@ Material:
         m_Texture: {fileID: 2800000, guid: 21e8ab4c85593064a88b9dcc83098c5e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Maintexture_49ef5d77825d415c957c209e85068ecf_MaskTexture_935042354_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Maintexture_502cb1d5af0a433490efb0b4aca9e5ba_MaskTexture_935042354_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Maintexture_84318eeae6dc4d2c89ce5bf8887ef491_MaskTexture_935042354_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Maintexture_dcb0f6e78b2e4c5db7fc3c9990d13c3b_MaskTexture_935042354_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -95,7 +115,7 @@ Material:
     - _AlphaToMask: 0
     - _ApplyFresnel: 0
     - _ApplyOutline: 0
-    - _BaseColorEmission: 1
+    - _BaseColorEmission: 1.5
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -114,6 +134,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Intensity: -1.8
+    - _MaskEmission: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _OutlineIntensity: -6.31
@@ -139,6 +160,7 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FresnelColor: {r: 1, g: 0, b: 0.84548235, a: 0.8352941}
     - _FresnelColor2: {r: 0.17122395, g: 2.4810178, b: 0, a: 0}
+    - _MaskColor: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineColor: {r: 2.0474799, g: 2.0474799, b: 2.0474799, a: 0}
     - _OutlineColor2: {r: 1, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

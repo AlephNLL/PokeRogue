@@ -817,6 +817,7 @@ MonoBehaviour:
   exp: 0
   expCurve: {fileID: 11400000, guid: 42eec143c7464c24889a7a724a74e69f, type: 2}
   status: 0
+  recivedDamageMultiplier: 1
   strength: 15
   constitution: 12
   dexterity: 25
@@ -4051,7 +4052,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7362156051818012779, guid: 0757f64f4ce0db849983b9135bcad9d5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 7362156051818012779, guid: 0757f64f4ce0db849983b9135bcad9d5, type: 3}
       propertyPath: m_LocalPosition.z

@@ -2868,6 +2868,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 5892bad877d988b42b542cdeff7761cd, type: 2}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: randomPrefab
+      value: 
+      objectReference: {fileID: 5162666568920561364, guid: fd4dfe3bbad1df142bbedae5420b7ad9, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: lineThickness
       value: 0.75
       objectReference: {fileID: 0}
@@ -2970,6 +2974,18 @@ PrefabInstance:
     - target: {fileID: 7245667063205552328, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: battleDifficulty
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8344179702439157708, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: healProb
+      value: 0.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 8344179702439157708, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: enemyProb
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8344179702439157708, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: treasureProb
+      value: 0.9
       objectReference: {fileID: 0}
     - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: bosses.Array.size

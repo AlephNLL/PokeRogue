@@ -16,6 +16,7 @@ public class MapView : MonoBehaviour
     [SerializeField] private GameObject healPrefab;
     [SerializeField] private GameObject shopPrefab;
     [SerializeField] private GameObject startPrefab;
+    [SerializeField] private GameObject randomPrefab;
     [SerializeField] private GameObject[] decorationPrefabs;
 
     [Header("Configuracion del path")]
@@ -126,6 +127,12 @@ public class MapView : MonoBehaviour
                     treasureNode.name = node.roomType + "-" + node.id;
                     PassNodeData(treasureNode, node);
                     MapManager.instance.createdRooms.Add(treasureNode);
+                    break;
+                case RoomType.Random:
+                    GameObject randomNode = Instantiate(randomPrefab, node.position, Quaternion.identity);
+                    randomNode.name = node.roomType + "-" + node.id;
+                    PassNodeData(randomNode, node);
+                    MapManager.instance.createdRooms.Add(randomNode);
                     break;
             }
         }

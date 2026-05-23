@@ -177,7 +177,10 @@ public class MapCamera : MonoBehaviour
                         MapManager.instance.LoadScene(MapManager.instance.currentRoom.GetComponent<Node>().sceneName);
                     }
                     break;
-                case GameData.NodeEvents.SPECIAL:
+                case GameData.NodeEvents.RANDOM:
+                    RandomEventManager.instance.CreateRandomEvent();
+                    MapManager.instance.currentRoom.GetComponent<Node>().nodeEvent = NodeEvents.NONE;
+                    UpdateLayers(MapManager.instance.currentRoom);
                     break;
                 default:
                     break;

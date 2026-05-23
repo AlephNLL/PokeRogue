@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using GameData;
 using Cinemachine;
+using Unity.Burst.CompilerServices;
+using System.Collections;
 public class MapCamera : MonoBehaviour
 {
     public static MapCamera instance;
@@ -13,6 +15,7 @@ public class MapCamera : MonoBehaviour
     public float followOffsetX = 2.0f;
     public float smoothSpeed = 15.0f;
     public LayerMask nodeLayerMask;
+    public LayerMask decorationLayerMask;
     private static bool reachedTarget = false;
 
     [Header("Opciones de Interacción")]
@@ -34,19 +37,9 @@ public class MapCamera : MonoBehaviour
     void Start()
     {
         nodeLayerMask = LayerMask.GetMask("Node");
-        if (MapManager.instance.mapCreated)
-        {
-            UpdateLayers(MapManager.instance.currentRoom);
+        nodeLayerMask = LayerMask.GetMask("Decoration");
 
-        //    Vector3 currentPos = MapManager.instance.currentRoom.transform.position;
-        //    Vector3 desiredPosition = new Vector3(
-        //    currentPos.x - followOffsetX,
-        //    currentPos.y + followOffsetY,
-        //    currentPos.z
-        //    );
-
-        //    transform.position = desiredPosition;
-        }
+        UpdateLayers(MapManager.instance.currentRoom);
 
         if (MapManager.instance.mapLoaded == true)
         {
@@ -58,7 +51,6 @@ public class MapCamera : MonoBehaviour
             topViewCamera.gameObject.SetActive(false);
             topViewCamera.Priority = 2;
         }
-
     }
 
     void Update()
@@ -146,6 +138,7 @@ public class MapCamera : MonoBehaviour
 
         if (Input.GetMouseButton(0))
         {
+            Debug.Log("Click");
             CheckRaycast();
         }
 
@@ -190,6 +183,11 @@ public class MapCamera : MonoBehaviour
         }
     }
 
+    //private void FixedUpdate()
+    //{
+    //    CameraTransparencyRaycast();
+    //}
+
     public void HandleTopViewCamera()
     {
         if (topViewCamera == null) { return; }
@@ -227,9 +225,7 @@ public class MapCamera : MonoBehaviour
         {
             statsCamera.gameObject.SetActive(false);
             UIManager.Instance.ShowCanvas(false);
-
         }
-
     }
 
     private void CheckRaycast()
@@ -248,7 +244,20 @@ public class MapCamera : MonoBehaviour
             SetSelectedObject(obj);
             MapManager.instance.selectedRooms.Add(obj);
             MapManager.instance.mapView.MoveTeam(obj.transform.position);
+        }
+    }
 
+    private void CameraTransparencyRaycast()
+    {
+        Vector3 rayStartPosition = mapCamera.transform.position;
+        Vector3 rayEndPosition = MapManager.instance.currentRoom.transform.position;
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(rayStartPosition,rayEndPosition, out hit, decorationLayerMask))
+        {
+            FresnelApplier.SetTransparencyToMapDecoration(hit.collider.gameObject, 0.5f);
+            Debug.Log("Camera Hit Decoration");
         }
     }
 
@@ -290,7 +299,7 @@ public class MapCamera : MonoBehaviour
             MapNode mapNode = MapManager.instance.NodeToMapNode(node);
             MapManager.instance.currentNode = mapNode;
         }
-
+        UpdateLayers(MapManager.instance.currentRoom);
     }
 
     public static void UpdateLayers(GameObject obj)
@@ -300,6 +309,7 @@ public class MapCamera : MonoBehaviour
             if (conection != null)
             {
                 conection.layer = LayerMask.NameToLayer("Node");
+                Debug.Log("updated layer");
             }
         }
     }

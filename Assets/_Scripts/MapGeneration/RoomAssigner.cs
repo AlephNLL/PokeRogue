@@ -11,6 +11,7 @@ public class RoomAssigner : MonoBehaviour
     public float enemyProb = 0.8f;
     public float healProb = 0.95f;
     public float treasureProb = 1f;
+    public float randomProb = 1f;
 
     public void AssignRoomTypes(List<MapNode> path)
     {
@@ -83,6 +84,10 @@ public class RoomAssigner : MonoBehaviour
                 else if (randomValue <= treasureProb)
                 {
                     room.roomType = RoomType.Treasure;
+                }
+                else if (randomValue <= randomProb)
+                {
+                    room.roomType = RoomType.Random;
                 }
                 else
                 {

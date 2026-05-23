@@ -1004,9 +1004,6 @@ MonoBehaviour:
   nodeLayerMask:
     serializedVersion: 2
     m_Bits: 8
-  decorationLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
   enableFollowMode: 1
   mapCamera: {fileID: 426288677}
   statsCamera: {fileID: 1402047899}
@@ -2393,6 +2390,7 @@ GameObject:
   - component: {fileID: 1380664021}
   - component: {fileID: 1380664025}
   - component: {fileID: 1380664026}
+  - component: {fileID: 1380664027}
   m_Layer: 0
   m_Name: MapCamera
   m_TagString: MainCamera
@@ -2553,6 +2551,19 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1380664027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1380664020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e184e2a356752674cbfa03d8a62acabd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraSeeThrough
+  camera: {fileID: 1380664020}
 --- !u!1 &1402047898
 GameObject:
   m_ObjectHideFlags: 0

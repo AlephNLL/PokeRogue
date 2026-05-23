@@ -15,7 +15,6 @@ public class MapCamera : MonoBehaviour
     public float followOffsetX = 2.0f;
     public float smoothSpeed = 15.0f;
     public LayerMask nodeLayerMask;
-    public LayerMask decorationLayerMask;
     private static bool reachedTarget = false;
 
     [Header("Opciones de Interacción")]
@@ -37,7 +36,6 @@ public class MapCamera : MonoBehaviour
     void Start()
     {
         nodeLayerMask = LayerMask.GetMask("Node");
-        decorationLayerMask = LayerMask.GetMask("Decoration");
 
         if (MapManager.instance.mapCreated)
         {
@@ -195,11 +193,6 @@ public class MapCamera : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
-    {
-        CameraTransparencyRaycast();
-    }
-
     public void HandleTopViewCamera()
     {
         if (topViewCamera == null) { return; }
@@ -259,26 +252,7 @@ public class MapCamera : MonoBehaviour
         }
     }
 
-    private void CameraTransparencyRaycast()
-    {
-        Vector3 rayStartPosition = mapCamera.transform.position;
-        Vector3 rayEndPosition = MapManager.instance.currentRoom.transform.position;
 
-        Vector3 direction = (rayEndPosition - rayStartPosition).normalized;
-
-        RaycastHit hit;
-
-        if (Physics.Raycast(rayStartPosition, direction, out hit, float.MaxValue,decorationLayerMask))
-        {
-            Debug.DrawRay(rayStartPosition, rayEndPosition, Color.red, 0.1f);
-
-            FresnelApplier.SetTransparencyToMapDecoration(hit.collider.gameObject, 0.5f);
-            Debug.Log("Camera Hit Decoration");
-            Debug.Log(rayStartPosition);
-            Debug.Log(direction);
-
-        }
-    }
 
     private void FollowTarget()
     {

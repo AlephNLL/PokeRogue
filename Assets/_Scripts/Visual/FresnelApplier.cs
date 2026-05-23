@@ -47,7 +47,7 @@ public class FresnelApplier : MonoBehaviour
     public static void SetTransparencyToMapDecoration(GameObject GO, float transparencyValue)
     {
         MeshRenderer objMR = GO.GetComponent<MeshRenderer>();
-        if (objMR != null) return;
+        if (objMR == null) return;
 
         transparencyValue = Mathf.Clamp01(transparencyValue);
 

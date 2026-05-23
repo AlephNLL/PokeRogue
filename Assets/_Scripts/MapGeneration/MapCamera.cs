@@ -96,7 +96,7 @@ public class MapCamera : MonoBehaviour
 
         if (statsCamera.gameObject.activeInHierarchy)
         {
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y < 0)
             {
                 lookAtIndex++;
                 UIManager.Instance.lookAtIndex = lookAtIndex;
@@ -117,7 +117,7 @@ public class MapCamera : MonoBehaviour
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+            if (Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.y > 0)
             {
                 lookAtIndex--;
                 UIManager.Instance.lookAtIndex = lookAtIndex;

@@ -175,7 +175,6 @@ public class TBBS : MonoBehaviour
     {
         while(TooltipUI.instance.isProcessing) yield return null;
 
-        BattleTutorialManager.instance.RegisterPlayerUI(currentUnit.healthBar.gameObject.GetComponent<RectTransform>(), currentUnit.attackButton.gameObject.GetComponent<RectTransform>());
         currentUnit.ActivateCamera();
         ControlsUI.instance.ShowSummaryControls();
         if (activateTurnStartEffect) currentUnit.OnTurnStart();

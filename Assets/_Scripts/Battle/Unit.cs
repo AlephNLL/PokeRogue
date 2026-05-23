@@ -903,5 +903,8 @@ public class Unit : MonoBehaviour
         return true;
     }
 
-    //public 
+    //public void RegisterUIButtons()
+    //{
+    //    BattleTutorialManager.instance.RegisterPlayerUI(currentUnit.healthBar.gameObject.GetComponent<RectTransform>(), currentUnit.attackButton.gameObject.GetComponent<RectTransform>());
+    //} 
 }

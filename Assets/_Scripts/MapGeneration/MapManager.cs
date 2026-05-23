@@ -39,6 +39,7 @@ public class MapManager : MonoBehaviour
 
    private void Start()
     {
+        ControlsUI.instance.ShowSummaryControls();
         if (createdRooms.Count() == 0 && nodes.Count() == 0 && mapCreated == false)
         {
             nodes.Clear();
@@ -105,7 +106,8 @@ public class MapManager : MonoBehaviour
     {
         if (loadRooms && canLoadRooms && sceneName != "TestScene")
         {
-            if(sceneName == "BattleScene") 
+            ControlsUI.instance.HideSummaryControls();
+            if (sceneName == "BattleScene") 
             { 
                 if(currentNode.roomType == GameData.RoomType.Boss)
                 {
@@ -122,6 +124,7 @@ public class MapManager : MonoBehaviour
 
     public void LoadMapScene()
     {
+        ControlsUI.instance.ShowSummaryControls();
         createdRooms.Clear();
         loadRooms = false;
         SceneManager.LoadSceneAsync("MapGeneration");

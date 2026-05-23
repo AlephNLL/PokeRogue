@@ -818,8 +818,8 @@ MonoBehaviour:
   expCurve: {fileID: 11400000, guid: 42eec143c7464c24889a7a724a74e69f, type: 2}
   status: 0
   recivedDamageMultiplier: 1
-  strength: 11
-  constitution: 8
+  strength: 8
+  constitution: 11
   dexterity: 16
   luck: 18
   maxHp: 0

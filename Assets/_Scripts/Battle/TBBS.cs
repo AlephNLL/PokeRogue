@@ -182,11 +182,15 @@ public class TBBS : MonoBehaviour
 
     IEnumerator PlayerTurn(Unit currentUnit, bool activateTurnStartEffect = true)
     {
+        while(TooltipUI.instance.isProcessing) yield return null;
+
         currentUnit.ActivateCamera();
+        ControlsUI.instance.ShowSummaryControls();
         if (activateTurnStartEffect) currentUnit.OnTurnStart();
         if (currentUnit.skipTurn)
         {
-            TooltipUI.instance.ShowTooltipText(currentUnit.name + " flinched");
+            TooltipUI.instance.StartNewAction(currentUnit.name + " flinched");
+            TooltipUI.instance.EndCurrentAction();
             currentUnit.OnTurnEnd();
             yield return new WaitForSeconds(1);
             currentUnit.DeactivateCamera();
@@ -224,7 +228,8 @@ public class TBBS : MonoBehaviour
         if (activateTurnStartEffect) currentUnit.OnTurnStart();
         if (currentUnit.skipTurn)
         {
-            TooltipUI.instance.ShowTooltipText(currentUnit.name + " flinched");
+            TooltipUI.instance.StartNewAction(currentUnit.name + " flinched");
+            TooltipUI.instance.EndCurrentAction();
             currentUnit.OnTurnEnd();
             yield return new WaitForSeconds(1);
             currentUnit.skipTurn = false;
@@ -242,7 +247,8 @@ public class TBBS : MonoBehaviour
 
         if (action.skip)
         {
-            TooltipUI.instance.ShowTooltipText(currentUnit.name + " is defending");
+            TooltipUI.instance.StartNewAction(currentUnit.name + " is defending");
+            TooltipUI.instance.EndCurrentAction();
             currentUnit.OnTurnEnd();
             currentUnit.recivedDamageMultiplier = 0.5f;
             yield return new WaitForSeconds(1);
@@ -379,8 +385,12 @@ public class TBBS : MonoBehaviour
 
         if (menuCoroutine != null) StopCoroutine(menuCoroutine);
 
+        BattleTutorialManager.instance.PlayerPerformedAction(TutorialState.WaitForAttackClick);
+
         // ¡CRÍTICO! Guardamos la selección de habilidad en menuCoroutine
         menuCoroutine = StartCoroutine(ActivateAbility(ability));
+
+        ControlsUI.instance.HideSummaryControls();
     }
 
     public void ItemMenu(Unit attacker) // Se llama desde la interfaz
@@ -419,6 +429,8 @@ public class TBBS : MonoBehaviour
         if (menuCoroutine != null) StopCoroutine(menuCoroutine);
 
         menuCoroutine = StartCoroutine(ActivateItem(item));
+
+        ControlsUI.instance.HideSummaryControls();
     }
 
     public IEnumerator ActivateItem(Item item)
@@ -520,7 +532,8 @@ public class TBBS : MonoBehaviour
                 {
                     if (currentUnit.HasPassive("Stubborn") && Random.Range(1, 101) <= 10)
                     {
-                        TooltipUI.instance.ShowTooltipText($"{currentUnit.name}'s is being stubborn");
+                        TooltipUI.instance.StartNewAction($"{currentUnit.name}'s is being stubborn");
+                        TooltipUI.instance.EndCurrentAction();
                         selection = Random.Range(0, enemyUnits.Count);
                     }
                     StartCoroutine(AttackSequence(currentUnit, enemyUnits[selection], ability));
@@ -536,7 +549,8 @@ public class TBBS : MonoBehaviour
                 {
                     if (currentUnit.HasPassive("Stubborn") && Random.Range(1, 101) <= 10)
                     {
-                        TooltipUI.instance.ShowTooltipText($"{currentUnit.name}'s is being stubborn");
+                        TooltipUI.instance.StartNewAction($"{currentUnit.name}'s is being stubborn");
+                        TooltipUI.instance.EndCurrentAction();
                         selection = Random.Range(0, targets.Count);
                     }
                     StartCoroutine(AttackSequence(currentUnit, targets[selection], ability));
@@ -589,10 +603,14 @@ public class TBBS : MonoBehaviour
     {
         Unit currentUnit = allUnits[currentTurnIndex];
         bool result;
+
+        ControlsUI.instance.ShowConfirm();
+
         while (true)
         {
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
             {
+                ControlsUI.instance.HideConfirm();
                 result = true;
                 yield return result;
                 yield break;
@@ -600,6 +618,7 @@ public class TBBS : MonoBehaviour
 
             if (Input.GetMouseButtonDown(1))
             {
+                ControlsUI.instance.HideConfirm();
                 result = false;
                 yield return result;
                 yield break;
@@ -613,6 +632,8 @@ public class TBBS : MonoBehaviour
     {
         int selection = 0;
         Unit attacker = allUnits[currentTurnIndex];
+
+        ControlsUI.instance.ShowSelectionControls(true);
 
         yield return null;
 
@@ -638,12 +659,14 @@ public class TBBS : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
                 {
+                    ControlsUI.instance.HideSelectionControls();
                     yield return selection;
                     yield break;
                 }
 
                 if (Input.GetMouseButtonDown(1))
                 {
+                    ControlsUI.instance.HideSelectionControls();
                     selection = -1;
                     yield return selection;
                     yield break;
@@ -682,12 +705,14 @@ public class TBBS : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
                 {
+                    ControlsUI.instance.HideSelectionControls();
                     yield return selection;
                     yield break;
                 }
 
                 if (Input.GetMouseButtonDown(1))
                 {
+                    ControlsUI.instance.HideSelectionControls();
                     selection = -1;
                     yield return selection;
                     yield break;
@@ -715,7 +740,9 @@ public class TBBS : MonoBehaviour
         attacker.CloseBattleMenu();
         attacker.OnTurnEnd();
         attacker.recivedDamageMultiplier = 0.5f;
-        TooltipUI.instance.ShowTooltipText($"{attacker.name} is defending!");
+        TooltipUI.instance.StartNewAction($"{attacker.name} is defending!");
+        TooltipUI.instance.EndCurrentAction();
+        ControlsUI.instance.HideSummaryControls();
         currentTurnIndex++;
         StartNextTurn();
     }
@@ -726,7 +753,7 @@ public class TBBS : MonoBehaviour
         attacker.EndSelect();
         CameraManager.instance.ActivateAttackCamera();
 
-        TooltipUI.instance.ShowTooltipText(attacker.name + " uses " + ability.name);
+        TooltipUI.instance.StartNewAction(attacker.name + " uses " + ability.name);
 
         float rotationOffset = (playerUnits.Contains(attacker) ? 60.728f : -126.38f);
         HandAnimatorHelper.instance.transform.rotation = Quaternion.Euler(0f, rotationOffset, 0f);
@@ -749,6 +776,8 @@ public class TBBS : MonoBehaviour
 
         for (int i = 0; i < hits; i++)
         {
+            if (ability.multiHit || ability.multiHitRange) TooltipUI.instance.AddEffectToCurrentAction($"{i + 1} hits!");
+
             bool hit = CheckHit(ability, attacker.precision);
 
             if (i > 0)
@@ -834,9 +863,9 @@ public class TBBS : MonoBehaviour
         while (HandAnimatorHelper.instance.isMoving) yield return null;
 
         CameraManager.instance.SetBlendTime(1);
-        yield return new WaitForSeconds(0.3f + 3 * TooltipUI.instance.scheduledTexts.Count);
+        yield return new WaitForSeconds(.5f);
+        TooltipUI.instance.EndCurrentAction();
 
-        TooltipUI.instance.HideTooltipText();
         isActionExecuting = false;
         if (attacker.HasAdditionalTurn())
         {
@@ -867,7 +896,7 @@ public class TBBS : MonoBehaviour
         attacker.EndSelect();
         CameraManager.instance.ActivateAttackCamera();
 
-        TooltipUI.instance.ShowTooltipText(attacker.name + " uses " + ability.name);
+        TooltipUI.instance.StartNewAction(attacker.name + " uses " + ability.name);
 
         GameObject hand = HandAnimatorHelper.instance.gameObject;
 
@@ -893,6 +922,7 @@ public class TBBS : MonoBehaviour
 
         for (int i = 0; i < hits; i++)
         {
+            if (ability.multiHit || ability.multiHitRange) TooltipUI.instance.AddEffectToCurrentAction($"{i + 1} hits!");
             bool hit = CheckHit(ability, attacker.precision);
 
             if (!allUnits.Contains(target))
@@ -986,9 +1016,11 @@ public class TBBS : MonoBehaviour
         while (HandAnimatorHelper.instance.isMoving) yield return null;
 
         CameraManager.instance.SetBlendTime(1);
-        yield return new WaitForSeconds(0.3f + 3 * TooltipUI.instance.scheduledTexts.Count);
 
-        TooltipUI.instance.HideTooltipText();
+        yield return new WaitForSeconds(.5f);
+
+        TooltipUI.instance.EndCurrentAction();
+
         isActionExecuting = false;
         if (attacker.HasAdditionalTurn())
         {
@@ -1010,7 +1042,7 @@ public class TBBS : MonoBehaviour
         {
             if (targets[i].evasive)
             {
-                TooltipUI.instance.ShowTooltipText(targets[i].name + " evaded the attack!");
+                TooltipUI.instance.AddEffectToCurrentAction(targets[i].name + " evaded the attack!");
                 if (ability.condition1 == AbilityCondition.ATTACKMISSED ||
                     ability.condition2 == AbilityCondition.ATTACKMISSED)
                 {
@@ -1023,7 +1055,7 @@ public class TBBS : MonoBehaviour
             }
             if (!hit)
             {
-                TooltipUI.instance.ShowTooltipText(attacker.name + " missed");
+                TooltipUI.instance.AddEffectToCurrentAction(attacker.name + " missed");
                 if (ability.condition1 == AbilityCondition.ATTACKMISSED ||
                     ability.condition2 == AbilityCondition.ATTACKMISSED)
                 {
@@ -1035,7 +1067,7 @@ public class TBBS : MonoBehaviour
             }
             if (ability.power == 0 && targets[i].currentStance == Stance.CAUTIOUS)
             {
-                TooltipUI.instance.ShowTooltipText("It doesn't affect " + targets[i].name);
+                TooltipUI.instance.AddEffectToCurrentAction("It doesn't affect " + targets[i].name);
                 if (ability.condition1 == AbilityCondition.ATTACKMISSED ||
                     ability.condition2 == AbilityCondition.ATTACKMISSED)
                 {
@@ -1181,8 +1213,8 @@ public class TBBS : MonoBehaviour
         {
             if (target.HasPassive("Danger Alarm"))
             {
-                TooltipUI.instance.ShowTooltipText($"{target.name}'s danger alarm ability activates");
-                TooltipUI.instance.ShowTooltipText($"{target.name} evades the attack");
+                TooltipUI.instance.StartNewAction($"{target.name}'s danger alarm ability activates");
+                TooltipUI.instance.AddEffectToCurrentAction($"{target.name} evades the attack");
                 ResolveAbilityEffect(attacker, target, ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1, true);
                 ResolveAbilityEffect(attacker, target, ability, ability.effect2, ability.effect2Chance, ability.affectSelf, ability.condition2, true);
                 return 0;
@@ -1207,8 +1239,8 @@ public class TBBS : MonoBehaviour
         Debug.Log($"Modificadores -> Efficacy: {efficacy}, Stance: {stanceBonus}, Roll: {roll}, Crit: {critMod}, Modificador de daño: {target.recivedDamageMultiplier}");
         Debug.Log($"Daño Final antes de redondear: {finalDamageFloat * target.recivedDamageMultiplier} -> Daño Aplicado: {damage}");
 
-        if (efficacy == 1.5f) TooltipUI.instance.ShowTooltipText("It's super effective!");
-        if (isCritical) TooltipUI.instance.ShowTooltipText("Critical Hit!");
+        if (efficacy == 1.5f) TooltipUI.instance.AddEffectToCurrentAction("It's super effective!");
+        if (isCritical) TooltipUI.instance.AddEffectToCurrentAction("Critical Hit!");
 
         return damage;
     }

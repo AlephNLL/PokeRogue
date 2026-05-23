@@ -62,9 +62,9 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private Canvas itemMenu;
     [SerializeField]
-    private Canvas statusMenu;
+    public Canvas statusMenu;
     [SerializeField]
-    private Button attackButton;
+    public Button attackButton;
     [SerializeField]
     private Button itemButton;
     [SerializeField]
@@ -74,7 +74,7 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private Button[] itemButtons;
     [SerializeField]
-    private Slider healthBar;
+    public Slider healthBar;
     [SerializeField]
     private GameObject nameText;
 
@@ -902,4 +902,6 @@ public class Unit : MonoBehaviour
         lastMenu.SetActive(false);
         return true;
     }
+
+    //public 
 }

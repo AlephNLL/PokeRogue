@@ -174,6 +174,8 @@ public class TBBS : MonoBehaviour
     IEnumerator PlayerTurn(Unit currentUnit, bool activateTurnStartEffect = true)
     {
         while(TooltipUI.instance.isProcessing) yield return null;
+
+        BattleTutorialManager.instance.RegisterPlayerUI(currentUnit.healthBar.gameObject.GetComponent<RectTransform>(), currentUnit.attackButton.gameObject.GetComponent<RectTransform>());
         currentUnit.ActivateCamera();
         ControlsUI.instance.ShowSummaryControls();
         if (activateTurnStartEffect) currentUnit.OnTurnStart();
@@ -374,6 +376,8 @@ public class TBBS : MonoBehaviour
         if (isActionExecuting) return; // Bloqueo de seguridad
 
         if (menuCoroutine != null) StopCoroutine(menuCoroutine);
+
+        BattleTutorialManager.instance.PlayerPerformedAction(TutorialState.WaitForAttackClick);
 
         // ¡CRÍTICO! Guardamos la selección de habilidad en menuCoroutine
         menuCoroutine = StartCoroutine(ActivateAbility(ability));

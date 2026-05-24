@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System.Linq;
 
-public class MapManager : MonoBehaviour
+public class MapManager : MonoBehaviour, ISaveData
 {
     public static MapManager instance;
 
@@ -175,6 +175,16 @@ public class MapManager : MonoBehaviour
     public void SetLastRoom(GameObject obj)
     {
         lastRoom = obj;
+    }
+
+    public void SaveData(ref GameSaveData data)
+    {
+        // data.mapData = this.nodes;
+    }
+
+    public void LoadData(GameSaveData data)
+    {
+        // this.nodes = data.mapData;
     }
 
     //public void UpdatePathNodes(List<GameObject> pathNodes)

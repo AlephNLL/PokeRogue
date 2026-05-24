@@ -16,6 +16,8 @@ public class CameraSeeThrough : MonoBehaviour
     }
     private void CameraTransparencyRaycast()
     {
+        if (MapManager.instance.currentRoom == null) { return; }
+
         Vector3 rayStartPosition = camera.transform.position;
         Vector3 rayEndPosition = MapManager.instance.currentRoom.transform.position;
 

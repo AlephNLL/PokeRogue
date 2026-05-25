@@ -9,6 +9,8 @@ using UnityEditor.Experimental.GraphView;
 using System.Collections;
 public class MapGenerator : MonoBehaviour
 {
+    public static MapGenerator Instance;
+
     [Header("Ajustes del grid")]
     [SerializeField] public int gridWidth = 10;
     [SerializeField] public int gridHeight = 10;
@@ -25,8 +27,19 @@ public class MapGenerator : MonoBehaviour
     List<MapNode> worldPath = new();
 
     private int lastId = 0;
+    private int bossId = 0;
 
-    private MapNode bossRoom;
+    public MapNode bossRoom;
+    public string bossGO;
+    public GameObject secondBossGO;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        } else { Destroy(this); }
+    }
 
     public void GenerateMap()
     {
@@ -39,7 +52,7 @@ public class MapGenerator : MonoBehaviour
         roomAssigner.AssignRoomTypes(path);
 
         mapView.DrawMap(path);
-        GameObject start = MapManager.instance.currentRoom = GameObject.Find("Spawn-0");
+        GameObject start = MapManager.instance.currentRoom = GameObject.Find(MapManager.instance.currentRoomName);
         MapCamera.SetSelectedObject(start);
     }
 
@@ -128,7 +141,7 @@ public class MapGenerator : MonoBehaviour
         }
         if (nextRoom != null) 
         {
-            if (!currentRoom.connectedNodes.Contains(nextRoom)) { currentRoom.AddConnection(nextRoom); }
+            if (!currentRoom.connectedNodesIds.Contains(nextRoom.id)) { currentRoom.AddConnection(nextRoom); }
             if (!path.Contains(nextRoom)) { path.Add(nextRoom); worldPath.Add(nextRoom); }
         }
 
@@ -160,9 +173,10 @@ public class MapGenerator : MonoBehaviour
         // Comprobar que no se crucen los caminos con el vecino izquierdo.
         if (leftNeighbour != null && nextRoom.gridPosition.y < room)
         {
-            foreach (MapNode connections in leftNeighbour.connectedNodes)
+            foreach (int connectionId in leftNeighbour.connectedNodesIds)
             {
-                if (connections.gridPosition.y > leftNeighbour.gridPosition.y)
+                MapNode connection = path.FirstOrDefault(g => g.id == connectionId);
+                if (connection.gridPosition.y > leftNeighbour.gridPosition.y)
                 {
                     return true;
                 }
@@ -172,9 +186,10 @@ public class MapGenerator : MonoBehaviour
         // Comprobar que no se crucen los caminos con el vecino derecho.
         if (rightNeighbour != null && nextRoom.gridPosition.y > room)
         {
-            foreach (MapNode connections in rightNeighbour.connectedNodes)
+            foreach (int connectionId in rightNeighbour.connectedNodesIds)
             {
-                if (connections.gridPosition.y < rightNeighbour.gridPosition.y)
+                MapNode connection = path.FirstOrDefault(g => g.id == connectionId);
+                if (connection.gridPosition.y < rightNeighbour.gridPosition.y)
                 {
                     return true;
                 }
@@ -189,10 +204,11 @@ public class MapGenerator : MonoBehaviour
         bossRoom.roomType = RoomType.Boss;
         bossRoom.position = new Vector3((startFloor + gridHeight) * 3 + 2 + offset , 0, (gridWidth * 3)/2);
         bossRoom.floorLevel = gridHeight;
-        bossRoom.id = 1;
+        lastId++;
+        bossRoom.id = lastId;
 
         int secondBossOffset = 0;
-        if (startFloor != 0) { bossRoom.id = startFloor; secondBossOffset = 1; }
+        if (startFloor != 0) { secondBossOffset = 1; }
 
         foreach (MapNode room in path)
         {
@@ -237,22 +253,21 @@ public class MapGenerator : MonoBehaviour
 
     private void ConnectNextMap(int startFloor = 0)
     {
-        Node bossNode = GameObject.Find("Boss-1").GetComponent<Node>();
-        bossRoom = MapManager.instance.NodeToMapNode(bossNode);
-        bossRoom.id = -1;
+        Node bossNode = GameObject.Find(bossGO).GetComponent<Node>();
+        MapNode firstBoss = MapManager.instance.NodeToMapNode(bossNode);
+        firstBoss.id = -1;
 
         foreach (MapNode room in path)
         {
             if (room.floorLevel == startFloor + 1)
             {
-                bossRoom.AddConnection(room);
+                firstBoss.AddConnection(room);
             }
         }
-        path.Add(bossRoom);
+        path.Add(firstBoss);
         MapNode oldBossRoom = worldPath.FirstOrDefault(x => x.roomType == RoomType.Boss);
         Debug.Log(oldBossRoom.id);
-        worldPath.Add(bossRoom);
-
+        worldPath.Add(firstBoss);
         StartCoroutine(FindSpawn());
     }
 
@@ -266,7 +281,7 @@ public class MapGenerator : MonoBehaviour
 
     public void FixDuplicateBoss()
     {
-        GameObject boss0 = GameObject.Find("Boss-1");
+        GameObject boss0 = GameObject.Find(bossGO);
         GameObject boss1 = GameObject.Find("Boss--1");
 
         Node node0 = boss0.GetComponent<Node>();

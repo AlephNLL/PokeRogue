@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using GameData;
+using System.Linq;
 
 public class RoomAssigner : MonoBehaviour
 {
@@ -31,8 +32,10 @@ public class RoomAssigner : MonoBehaviour
                 continue;
             }
 
-            foreach (MapNode connection in room.connectedNodes)
+            foreach (int connectionId in room.connectedNodesIds)
             {
+                MapNode connection = path.FirstOrDefault(g => g.id == connectionId);
+
                 RoomType connectionType = connection.roomType;
                 if (currentType == connectionType)
                 {

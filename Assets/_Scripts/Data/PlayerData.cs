@@ -71,7 +71,8 @@ public class PlayerData : MonoBehaviour, ISaveData
 
         foreach (UnitSaveData unitData in data.teamData)
         {
-            teamData.Add(new UnitData().SaveData(unitData));
+            UnitData empty = (UnitData)ScriptableObject.CreateInstance(typeof(UnitData));
+            teamData.Add(empty.SaveData(unitData));
         }
 
         TeamManager.instance.teamData = teamData;

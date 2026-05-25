@@ -12,7 +12,9 @@ public class GameSaveData
     public List<UnitSaveData> daycareTeamData;
 
     // Mapa
-    public List<MapNode> mapData;
+    public List<MapNodeData> mapData;
+    public bool mapCreated;
+    public string currentRoom;
 
     // Progresion
     public bool tutorial = true;
@@ -28,6 +30,8 @@ public class GameSaveData
 
         daycareTeamData = new List<UnitSaveData>();
 
-        mapData = new List<MapNode>();
+        mapData = new List<MapNodeData>();
+        mapCreated = false;
+        currentRoom = "Spawn-0";
     }
 }

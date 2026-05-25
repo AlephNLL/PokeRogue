@@ -10,7 +10,7 @@ public class GameSaveManager : MonoBehaviour
 
     // Data
     public static GameSaveManager instance;
-    private GameSaveData saveData;
+    [SerializeReference]private GameSaveData saveData;
 
     public List<UnitSaveData> startTeamData;
     public List<UnitData> teamReferences;

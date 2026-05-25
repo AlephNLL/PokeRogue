@@ -2670,6 +2670,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSaveManager
   fileName: gameSave.json
+  saveData:
+    rid: -2
   startTeamData:
   - id: 1
     name: Ojofago
@@ -2700,6 +2702,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f8d01f3225c12654cb8482d8a0cd255a, type: 2}
   - {fileID: 11400000, guid: 18de7ca54f07673498c6a2789d552b09, type: 2}
   - {fileID: 11400000, guid: 86a7d95dde3aab04086db209e33f9886, type: 2}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!4 &1487193301
 Transform:
   m_ObjectHideFlags: 0

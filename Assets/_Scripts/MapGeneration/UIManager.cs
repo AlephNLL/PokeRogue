@@ -125,12 +125,8 @@ public class UIManager : MonoBehaviour
             itemIcon.transform.parent = newSlot.transform;
             itemIcon.transform.localScale = Vector3.one;
 
-            string currentScene = SceneManager.GetActiveScene().name;
-            if (currentScene != "BattleScene")
-            {
-                Button slotButton = newSlot.AddComponent<Button>();
-                slotButton.onClick.AddListener(() => { MakeConsumeItem(item); });
-            }
+            Button slotButton = newSlot.AddComponent<Button>();
+            slotButton.onClick.AddListener(() => { MakeConsumeItem(item); });
 
             instantiatedItems.Add(newSlot);
         }
@@ -258,12 +254,8 @@ public class UIManager : MonoBehaviour
             tooltip.itemDescriptionBox = itemTooltipUI;
             tooltip.itemDescription = item.description;
 
-            string currentScene = SceneManager.GetActiveScene().name;
-            if (currentScene != "BattleScene")
-            {
-                Button button = itemIcon.AddComponent<Button>();
-                button.onClick.AddListener(() => { SetHeldItem(null); });
-            }
+            Button button = itemIcon.AddComponent<Button>();
+            button.onClick.AddListener(() => { SetHeldItem(null); });
         }
         else return;
     }

@@ -12,7 +12,6 @@ public class MapManager : MonoBehaviour
     public List<GameObject> selectedRooms = new List<GameObject>();
     public List<MapNode> nodes = new List<MapNode>();
     public GameObject currentRoom;
-    public GameObject lastRoom;
     public MapNode currentNode;
 
     [Header("Referencias")]
@@ -47,8 +46,6 @@ public class MapManager : MonoBehaviour
             createdRooms.Clear();
 
             mapGenerator.GenerateMap();
-
-            if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.GenerateNextMap(); }
             Debug.Log("Mapa Generado");
         }
     }
@@ -72,9 +69,7 @@ public class MapManager : MonoBehaviour
             if (mapCreated)
             {
                 FindCurrentRoom(currentNode);
-                if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.FixDuplicateBoss(); }
             }
-
 
         } else
         {
@@ -100,8 +95,6 @@ public class MapManager : MonoBehaviour
     {
         foreach (GameObject node in createdRooms)
         {
-            if (node == null) { continue; }
-
             if (node.layer == LayerMask.NameToLayer("Node") && node != obj)
             {
                 node.layer = 0;

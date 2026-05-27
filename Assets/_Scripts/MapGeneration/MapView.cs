@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using GameData;
 using System.Collections;
-using System.IO;
 
 public class MapView : MonoBehaviour
 {
@@ -525,17 +524,8 @@ public class MapView : MonoBehaviour
         {
             Debug.Log("Reached Target");
             MapCamera.instance.ReachedTarget = true;
-            MapCamera.UpdateLayers(MapManager.instance.currentRoom);
         }
 
         yield return null;
-    }
-
-    public void DrawNextMap(List<MapNode> path)
-    {
-        DrawNodes(path);
-        DrawConnections(path);
-        PassConnectedRooms(path);
-        DrawTeam();
     }
 }

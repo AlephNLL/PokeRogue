@@ -11,7 +11,6 @@ public class PlayerData : MonoBehaviour
     public static List<UnitData> daycareTeamData;
 
     public static bool tutorial = true;
-    public bool beatenFirstBoss = true;
 
     private void Awake()
     {

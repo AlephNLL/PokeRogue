@@ -2423,6 +2423,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db5655f182650a2468dc151eeff1c41e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSaveManager
+  fileName: save.json
+  saveData:
+    rid: -2
+  startTeamData: []
+  teamReferences: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!4 &1344895385
 Transform:
   m_ObjectHideFlags: 0

@@ -30,10 +30,6 @@ public class CameraSeeThrough : MonoBehaviour
             Debug.DrawRay(rayStartPosition, rayEndPosition, Color.red, 0.1f);
 
             FresnelApplier.SetTransparencyToMapDecoration(hit.collider.gameObject, 0.3f);
-            Debug.Log("Camera Hit Decoration");
-            Debug.Log(rayStartPosition);
-            Debug.Log(direction);
-
         }
     }
 }

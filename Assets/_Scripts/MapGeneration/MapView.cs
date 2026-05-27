@@ -4,6 +4,8 @@ using System.Linq;
 using GameData;
 using System.Collections;
 using System.IO;
+using Unity.VisualScripting;
+using UnityEngine.Networking.PlayerConnection;
 
 public class MapView : MonoBehaviour
 {
@@ -39,6 +41,8 @@ public class MapView : MonoBehaviour
     private GameObject map;
     private GameObject connections;
     private GameObject nodes;
+
+    private bool firstBoss = true;
 
     private void Awake()
     {
@@ -101,6 +105,16 @@ public class MapView : MonoBehaviour
                 case RoomType.Boss:
                     GameObject bossNode = Instantiate(bossPrefab, node.position, Quaternion.identity);
                     bossNode.name = node.roomType + "-" + node.id;
+
+                    if (firstBoss)
+                    {
+                        firstBoss = false;
+                        MapGenerator.Instance.bossGO = bossNode.name;
+                    } else
+                    {
+                        MapGenerator.Instance.secondBossGO = bossNode;
+                    }
+
                     PassNodeData(bossNode, node);
                     MapManager.instance.createdRooms.Add(bossNode);
                     break;
@@ -143,11 +157,12 @@ public class MapView : MonoBehaviour
     {
         foreach (MapNode node in path)
         {
-            foreach (MapNode connection in node.connectedNodes)
+            foreach (int connectionID in node.connectedNodesIds)
             {
                 //GameObject childGO = new("Collider");
                 GameObject connectionGO = new("Connection", typeof(LineRenderer));
                 //childGO.transform.parent = connectionGO.transform;
+                MapNode connection = path.FirstOrDefault(g => g.id == connectionID);
 
                 LineRenderer lr = connectionGO.GetComponent<LineRenderer>();
                 lr.material = lineMaterial;
@@ -348,9 +363,9 @@ public class MapView : MonoBehaviour
 
             if (mapNode != null)
             {
-                foreach (MapNode connectionTarget in node.connectedNodes)
+                foreach (int connectionTarget in node.connectedNodesIds)
                 {
-                    GameObject targetInstance = MapManager.instance.createdRooms.FirstOrDefault(g => g.name == $"{connectionTarget.roomType}-{connectionTarget.id}");
+                    GameObject targetInstance = MapManager.instance.createdRooms.FirstOrDefault(g => g.GetComponent<Node>().id == connectionTarget);
 
                     if (targetInstance != null)
                     {
@@ -422,7 +437,7 @@ public class MapView : MonoBehaviour
         UpdateTeamPositions(team, position);
     }
 
-    private void UpdateTeamPositions(List<GameObject> team, Vector3 position)
+    public void UpdateTeamPositions(List<GameObject> team, Vector3 position)
     {
         int count = team.Count;
         Vector3 offset = Vector3.zero;

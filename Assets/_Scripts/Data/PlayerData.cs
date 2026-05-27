@@ -42,8 +42,8 @@ public class PlayerData : MonoBehaviour, ISaveData
     public void SaveData(ref GameSaveData data)
     {
         data.gold = gold;
-        //data.p_items = this.p_items;
-        //data.items = PlayerData.items;
+        data.p_items = this.p_items;
+        data.items = PlayerData.items;
         data.teamData = new();
         data.tutorial = tutorial;
 
@@ -63,8 +63,8 @@ public class PlayerData : MonoBehaviour, ISaveData
     public void LoadData(GameSaveData data)
     {
         this.gold = data.gold;
-        //this.p_items = data.p_items;
-        //PlayerData.items = data.items;
+        this.p_items = data.p_items;
+        PlayerData.items = data.items;
         teamData = new();
         daycareTeamData = new();
         tutorial = data.tutorial;

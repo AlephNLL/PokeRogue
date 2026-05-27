@@ -6,8 +6,8 @@ public class GameSaveData
 {
     // Mons y Stats
     public int gold;
-    public List<string> p_items;
-    public List<string> items;
+    public List<Item> p_items;
+    public List<Item> items;
     public List<UnitSaveData> teamData;
     public List<UnitSaveData> daycareTeamData;
 
@@ -24,8 +24,8 @@ public class GameSaveData
     public GameSaveData()
     {
         gold = 0;
-        p_items = new List<string>();
-        items = new List<string>();
+        p_items = PlayerData.Instance.p_items;
+        items = PlayerData.items;
         teamData = GameSaveManager.startTeam;
 
         daycareTeamData = new List<UnitSaveData>();

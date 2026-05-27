@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerData : MonoBehaviour
+public class PlayerData : MonoBehaviour, ISaveData
 {
     public static PlayerData Instance;
     public int gold;
@@ -37,5 +37,50 @@ public class PlayerData : MonoBehaviour
         }
 
         return list.ToArray();
+    }
+
+    public void SaveData(ref GameSaveData data)
+    {
+        data.gold = gold;
+        //data.p_items = this.p_items;
+        //data.items = PlayerData.items;
+        data.teamData = new();
+        data.tutorial = tutorial;
+
+        foreach (UnitData unitData in teamData)
+        {
+            data.teamData.Add(unitData.LoadData());
+        }
+
+
+        if (daycareTeamData == null) return;
+        for (int i = 0; i < daycareTeamData.Count; i++)
+        {
+            data.daycareTeamData[i] = daycareTeamData[i].LoadData();
+        }
+    }
+
+    public void LoadData(GameSaveData data)
+    {
+        this.gold = data.gold;
+        //this.p_items = data.p_items;
+        //PlayerData.items = data.items;
+        teamData = new();
+        daycareTeamData = new();
+        tutorial = data.tutorial;
+
+        foreach (UnitSaveData unitData in data.teamData)
+        {
+            UnitData empty = (UnitData)ScriptableObject.CreateInstance(typeof(UnitData));
+            teamData.Add(empty.SaveData(unitData));
+        }
+
+        TeamManager.instance.teamData = teamData;
+
+        if (daycareTeamData == null) return;
+        for (int i = 0; i < data.daycareTeamData.Count; i++)
+        {
+            daycareTeamData[i].SaveData(data.daycareTeamData[i]);
+        }
     }
 }

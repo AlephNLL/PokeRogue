@@ -60,6 +60,34 @@ public class UnitData : ScriptableObject
                 break;
 
         }
+    }
 
+    public UnitSaveData LoadData()
+    {
+        UnitSaveData data = new UnitSaveData();
+        data.id = id;
+        data.name = name;
+        data.prefab = prefab;
+        data.level = level;
+        data.currentExp = currentExp;
+        data.heldItem = heldItem;
+        data.currentHp = currentHp;
+        data.knownAbilities = knownAbilities;
+        data.isVeteran = isVeteran;
+        return data;
+    }
+
+    public UnitData SaveData(UnitSaveData data)
+    {
+        id = data.id;
+        name = data.name;
+        prefab = data.prefab;
+        level = data.level;
+        currentExp = data.currentExp;
+        heldItem = data.heldItem;
+        currentHp = data.currentHp;
+        knownAbilities = data.knownAbilities;
+        isVeteran = data.isVeteran;
+        return this;
     }
 }

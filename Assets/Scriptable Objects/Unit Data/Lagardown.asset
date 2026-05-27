@@ -15,14 +15,10 @@ MonoBehaviour:
   id: 1
   name: Lagardown
   prefab: {fileID: 1717970170875167366, guid: 25050988c599b9e4e8f75589a74a5d28, type: 3}
-  level: 2
-  currentExp: 23
+  level: 1
+  currentExp: 0
   heldItem: {fileID: 0}
-  currentHp: 33
+  currentHp: 0
   status: 0
-  knownAbilities:
-  - {fileID: 11400000, guid: 1c10fb9f488085d4aaf6c6a22e96fd23, type: 2}
-  - {fileID: 11400000, guid: 059a4631f8bd5b04e99d4f8d3c921817, type: 2}
-  - {fileID: 11400000, guid: 321de13cfd530c54aba47ec3f0e95574, type: 2}
-  - {fileID: 11400000, guid: 321de13cfd530c54aba47ec3f0e95574, type: 2}
+  knownAbilities: []
   isVeteran: 0

@@ -2,9 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System.Linq;
-using System.Collections;
 
-public class MapManager : MonoBehaviour, ISaveData
+public class MapManager : MonoBehaviour
 {
     public static MapManager instance;
 
@@ -26,8 +25,6 @@ public class MapManager : MonoBehaviour, ISaveData
     public bool mapCreated = false;
     public bool mapLoaded = false;
     public bool skipBattles = false;
-
-    public string currentRoomName;
 
     private void Awake()
     {
@@ -54,10 +51,6 @@ public class MapManager : MonoBehaviour, ISaveData
             if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.GenerateNextMap(); }
             Debug.Log("Mapa Generado");
         }
-        if (createdRooms.Count == 0 && nodes.Count != 0)
-        {
-            mapView.DrawMap(nodes);
-        }
     }
 
     void OnEnable()
@@ -81,6 +74,7 @@ public class MapManager : MonoBehaviour, ISaveData
                 FindCurrentRoom(currentNode);
                 if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.FixDuplicateBoss(); }
             }
+
 
         } else
         {
@@ -181,36 +175,6 @@ public class MapManager : MonoBehaviour, ISaveData
     public void SetLastRoom(GameObject obj)
     {
         lastRoom = obj;
-    }
-
-    public void SaveData(ref GameSaveData data)
-    {
-        data.mapData = new();
-        data.mapCreated = mapCreated;
-        data.currentRoom = currentRoom.name;
-        foreach (MapNode mapNode in nodes)
-        {
-            data.mapData.Add(mapNode.LoadData());
-        }
-    }
-
-    public void LoadData(GameSaveData data)
-    {
-        nodes = new();
-        mapCreated = data.mapCreated;
-        foreach (MapNodeData mapNode in data.mapData)
-        {
-            nodes.Add(new MapNode().SaveData(mapNode, data));
-        }
-        currentRoomName = data.currentRoom;
-        StartCoroutine(WaitAndFind(currentRoomName));
-    }
-
-    private IEnumerator WaitAndFind(string name)
-    {
-        yield return new WaitForEndOfFrame();
-        currentRoom = GameObject.Find(name);
-        currentNode = NodeToMapNode(currentRoom.GetComponent<Node>());
     }
 
     //public void UpdatePathNodes(List<GameObject> pathNodes)

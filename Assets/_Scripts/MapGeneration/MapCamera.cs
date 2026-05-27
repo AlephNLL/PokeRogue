@@ -39,16 +39,7 @@ public class MapCamera : MonoBehaviour
 
         if (MapManager.instance.mapCreated)
         {
-            UpdateLayers(MapManager.instance.currentRoom);
-
-            //    Vector3 currentPos = MapManager.instance.currentRoom.transform.position;
-            //    Vector3 desiredPosition = new Vector3(
-            //    currentPos.x - followOffsetX,
-            //    currentPos.y + followOffsetY,
-            //    currentPos.z
-            //    );
-
-            //    transform.position = desiredPosition;
+            StartCoroutine(Wait());
         }
 
         if (MapManager.instance.mapLoaded == true)
@@ -61,6 +52,12 @@ public class MapCamera : MonoBehaviour
             topViewCamera.gameObject.SetActive(false);
             topViewCamera.Priority = 2;
         }
+    }
+    private IEnumerator Wait()
+    {
+        yield return new WaitForEndOfFrame();
+        UpdateLayers(MapManager.instance.currentRoom);
+        MapView.instance.UpdateTeamPositions(MapView.instance.team, MapManager.instance.currentRoom.transform.position);
     }
 
     void Update()
@@ -291,6 +288,7 @@ public class MapCamera : MonoBehaviour
             Node node = obj.GetComponent<Node>();
             MapNode mapNode = MapManager.instance.NodeToMapNode(node);
             MapManager.instance.currentNode = mapNode;
+            MapManager.instance.currentRoomName = $"{mapNode.roomType}-{mapNode.id}";
         }
     }
 

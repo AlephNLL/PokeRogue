@@ -1675,6 +1675,14 @@ PrefabInstance:
       propertyPath: beatenFirstBoss
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1554669770446034163, guid: b38dcf3b2310e2440b40c82e67ea0695, type: 3}
+      propertyPath: p_items.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1554669770446034163, guid: b38dcf3b2310e2440b40c82e67ea0695, type: 3}
+      propertyPath: 'p_items.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 48b2bd8b7dd0faf479e8690223ffffa2, type: 2}
     - target: {fileID: 3919731519463807911, guid: b38dcf3b2310e2440b40c82e67ea0695, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1344.3517
@@ -4539,6 +4547,14 @@ PrefabInstance:
       propertyPath: heldItemSlot
       value: 
       objectReference: {fileID: 1090314897}
+    - target: {fileID: 6983606483890356141, guid: ce1adb8c73abf3845abd5be35db9f0b8, type: 3}
+      propertyPath: itemTooltipUI
+      value: 
+      objectReference: {fileID: 4234463259283579864, guid: 70b16ddb70a349f40bbf351e19cc882e, type: 3}
+    - target: {fileID: 6983606483890356141, guid: ce1adb8c73abf3845abd5be35db9f0b8, type: 3}
+      propertyPath: monLevelUpWindowPrefab
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7345885413768070708, guid: ce1adb8c73abf3845abd5be35db9f0b8, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

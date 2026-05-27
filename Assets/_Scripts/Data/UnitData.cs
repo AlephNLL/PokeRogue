@@ -39,4 +39,27 @@ public class UnitData : ScriptableObject
             heldItem = item;
         }
     }
+
+    public void ConsumeItem(Item item)
+    {
+        PlayerData.Instance.p_items.Remove(item);
+
+        switch (item.effect)
+        {
+            case ItemEffects.CLEARSTATUS:
+                status = Status.NONE;
+                break;
+            case ItemEffects.HEAL:
+                currentHp += item.healingAmount;
+                break;
+            case ItemEffects.LEVELUP:
+                level += 1;
+                MoveLearner.instance.LearnMove(this, level);
+                break;
+            default:
+                break;
+
+        }
+
+    }
 }

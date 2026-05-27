@@ -815,6 +815,7 @@ MonoBehaviour:
   heldItemSlot: {fileID: 5400850354992837496}
   consumables: {fileID: 7485353306358241319}
   abilities: {fileID: 584877680225764856}
+  itemTooltipUI: {fileID: 0}
   instantiatedItems: []
   nameText: {fileID: 4095319894867893401}
   levelText: {fileID: 5184531877153221476}
@@ -1346,7 +1347,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 37, y: 341}
+  m_AnchoredPosition: {x: 37, y: 222}
   m_SizeDelta: {x: 270, y: 315}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5527936664782962630

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using GameData;
 using NUnit.Framework;
 using TMPro;
+using Unity.VectorGraphics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static UnityEditor.Progress;
 
@@ -63,15 +65,6 @@ public class UIManager : MonoBehaviour
         //   UpdateHeldItem();
     }
 
-    private void SetHeldItem(Item item)
-    {
-        UnitData mons = PlayerData.teamData[lookAtIndex];
-
-        mons.HoldItem(item);
-        UpdateInventory();
-        UpdateHeldItem();
-    }
-
     private void UpdateInventory()
     {
         if (instantiatedItems != null)
@@ -93,6 +86,7 @@ public class UIManager : MonoBehaviour
             GameObject newSlot = Instantiate(slot);
             newSlot.transform.parent = inventory.transform;
             newSlot.transform.localScale = Vector3.one;
+            newSlot.GetComponent<InventoryTooltip>().itemDescription = item.description;
 
             GameObject itemIcon = Instantiate(item.icon);
             itemIcon.transform.parent = newSlot.transform;
@@ -125,10 +119,14 @@ public class UIManager : MonoBehaviour
             GameObject newSlot = Instantiate(slot);
             newSlot.transform.parent = consumables.transform;
             newSlot.transform.localScale = Vector3.one;
+            newSlot.GetComponent<InventoryTooltip>().itemDescription = item.description;
 
             GameObject itemIcon = Instantiate(item.icon);
             itemIcon.transform.parent = newSlot.transform;
             itemIcon.transform.localScale = Vector3.one;
+
+            Button slotButton = newSlot.AddComponent<Button>();
+            slotButton.onClick.AddListener(() => { MakeConsumeItem(item); });
 
             instantiatedItems.Add(newSlot);
         }
@@ -223,7 +221,9 @@ public class UIManager : MonoBehaviour
         speedText.text = "SPD: " + speed;
         luckText.text = "LCK: " + luck;
 
-        UpdateHeldItem();
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        if (currentScene != "Daycare") UpdateHeldItem();
     }
 
     private void UpdateHeldItem()
@@ -252,10 +252,29 @@ public class UIManager : MonoBehaviour
 
             InventoryTooltip tooltip = itemIcon.AddComponent<InventoryTooltip>();
             tooltip.itemDescriptionBox = itemTooltipUI;
+            tooltip.itemDescription = item.description;
 
             Button button = itemIcon.AddComponent<Button>();
             button.onClick.AddListener(() => { SetHeldItem(null); });
         }
+        else return;
+    }
+
+    private void SetHeldItem(Item item)
+    {
+        UnitData mons = PlayerData.teamData[lookAtIndex];
+
+        mons.HoldItem(item);
+        UpdateInventory();
+        UpdateHeldItem();
+    }
+
+    private void MakeConsumeItem(Item item)
+    {
+        UnitData mons = PlayerData.teamData[lookAtIndex];
+
+        mons.ConsumeItem(item);
+        UpdateConsumables();
     }
 
     public void ShowInventory()

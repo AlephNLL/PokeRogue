@@ -627,16 +627,17 @@ public class Unit : MonoBehaviour
                 break;
             case Status.BURNED:
                 TakeDamage((Mathf.FloorToInt(maxHp * .1f) + 1));
-                TooltipUI.instance.AddEffectToCurrentAction(name + " lost " + (Mathf.FloorToInt(maxHp * .1f) + 1) + " hp due to his burns");
+                TooltipUI.instance.StartNewAction(name + " lost " + (Mathf.FloorToInt(maxHp * .1f) + 1) + " hp due to his burns");
                 break;
             case Status.POISONED:
                 TakeDamage((Mathf.FloorToInt(maxHp * .2f) + 1));
-                TooltipUI.instance.AddEffectToCurrentAction(name + " lost " + (Mathf.FloorToInt(maxHp * .2f) + 1) + " hp due to poison");
+                TooltipUI.instance.StartNewAction(name + " lost " + (Mathf.FloorToInt(maxHp * .2f) + 1) + " hp due to poison");
                 break;
             default:
                 break;
         }
 
+        TooltipUI.instance.EndCurrentAction();
         ResolvePassiveEffect(ExecutionTime.TURNEND);
         ResolveItemEffect(ExecutionTime.TURNEND);
     }

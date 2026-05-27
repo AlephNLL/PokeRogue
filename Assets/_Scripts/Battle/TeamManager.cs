@@ -24,7 +24,10 @@ public class TeamManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
 
+    private void Start()
+    {
         if (PlayerData.teamData.Count == 0) PlayerData.teamData = teamData;
         else teamData = PlayerData.teamData;
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GameData;
 using System.Collections;
-using UnityEditor.MemoryProfiler;
+using System.IO;
 
 public class MapView : MonoBehaviour
 {
@@ -143,10 +143,8 @@ public class MapView : MonoBehaviour
     {
         foreach (MapNode node in path)
         {
-            foreach (int connectionId in node.connectedNodesIds)
+            foreach (MapNode connection in node.connectedNodes)
             {
-                MapNode connection = path.FirstOrDefault(g => g.id == connectionId);
-
                 //GameObject childGO = new("Collider");
                 GameObject connectionGO = new("Connection", typeof(LineRenderer));
                 //childGO.transform.parent = connectionGO.transform;
@@ -350,10 +348,9 @@ public class MapView : MonoBehaviour
 
             if (mapNode != null)
             {
-                foreach (int connectionTargetId in node.connectedNodesIds)
+                foreach (MapNode connectionTarget in node.connectedNodes)
                 {
-                    MapNode connection = path.FirstOrDefault(g => g.id == connectionTargetId);
-                    GameObject targetInstance = MapManager.instance.createdRooms.FirstOrDefault(g => g.name == $"{connection.roomType}-{connection.id}");
+                    GameObject targetInstance = MapManager.instance.createdRooms.FirstOrDefault(g => g.name == $"{connectionTarget.roomType}-{connectionTarget.id}");
 
                     if (targetInstance != null)
                     {
@@ -425,7 +422,7 @@ public class MapView : MonoBehaviour
         UpdateTeamPositions(team, position);
     }
 
-    public void UpdateTeamPositions(List<GameObject> team, Vector3 position)
+    private void UpdateTeamPositions(List<GameObject> team, Vector3 position)
     {
         int count = team.Count;
         Vector3 offset = Vector3.zero;

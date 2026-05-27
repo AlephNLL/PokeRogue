@@ -2,9 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System.Linq;
-using System.Collections;
 
-public class MapManager : MonoBehaviour, ISaveData
+public class MapManager : MonoBehaviour
 {
     public static MapManager instance;
 
@@ -23,11 +22,9 @@ public class MapManager : MonoBehaviour, ISaveData
     [Header("Debug")]
     public bool loadRooms = false;
     public bool canLoadRooms = false;
-    public bool mapCreated;
+    public bool mapCreated = false;
     public bool mapLoaded = false;
     public bool skipBattles = false;
-
-    public string currentRoomName = "";
 
     private void Awake()
     {
@@ -54,10 +51,6 @@ public class MapManager : MonoBehaviour, ISaveData
             if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.GenerateNextMap(); }
             Debug.Log("Mapa Generado");
         }
-        else if (nodes.Count != 0)
-        {
-            mapView.DrawMap(nodes);
-        }
     }
 
     void OnEnable()
@@ -70,11 +63,16 @@ public class MapManager : MonoBehaviour, ISaveData
         if (scene.name == "MapGeneration")
         {
             mapLoaded = true;
+            Debug.Log("Mapa Generado en escena de mapa");
             if (mapCreated == true)
             {
-                Debug.Log("Mapa Generado en escena de mapa");
                 mapView.DrawMap(nodes);
-                currentRoom = GameObject.Find(currentRoomName);
+            }
+
+            if (mapCreated)
+            {
+                FindCurrentRoom(currentNode);
+                if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.FixDuplicateBoss(); }
             }
 
 
@@ -173,33 +171,21 @@ public class MapManager : MonoBehaviour, ISaveData
             }
         }
     }
-    public void SaveData(ref GameSaveData data)
+
+    public void SetLastRoom(GameObject obj)
     {
-        data.mapData = new();
-        data.mapCreated = mapCreated;
-        data.currentRoom = currentRoom.name;
-        foreach (MapNode mapNode in nodes)
-        {
-            data.mapData.Add(mapNode.LoadData());
-        }
+        lastRoom = obj;
     }
 
-    public void LoadData(GameSaveData data)
-    {
-        nodes = new();
-        this.mapCreated = data.mapCreated;
-        foreach (MapNodeData mapNode in data.mapData)
-        {
-            nodes.Add(new MapNode().SaveData(mapNode, data));
-        }
-        currentRoomName = data.currentRoom;
-        StartCoroutine(WaitAndFind(currentRoomName));
-    }
+    //public void UpdatePathNodes(List<GameObject> pathNodes)
+    //{
+    //    nodes.Clear();
 
-    private IEnumerator WaitAndFind(string name)
-    {
-        yield return new WaitForEndOfFrame();
-        currentRoom = GameObject.Find(name);
-        currentNode = NodeToMapNode(currentRoom.GetComponent<Node>());
-    }
+    //    foreach(GameObject node in pathNodes)
+    //    {
+    //        MapNode mapNode = NodeToMapNode(node.GetComponent<Node>());
+    //        nodes.Add(mapNode);
+    //        MapView.instance.PassConnectedRooms();
+    //    }
+    //}
 }

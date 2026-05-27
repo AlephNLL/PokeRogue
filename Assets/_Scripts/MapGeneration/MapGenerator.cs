@@ -5,8 +5,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using GameData;
-using UnityEditor.Experimental.GraphView;
-using System.Collections;
 public class MapGenerator : MonoBehaviour
 {
     [Header("Ajustes del grid")]

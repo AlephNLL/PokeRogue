@@ -171,21 +171,4 @@ public class MapManager : MonoBehaviour
             }
         }
     }
-
-    public void SetLastRoom(GameObject obj)
-    {
-        lastRoom = obj;
-    }
-
-    //public void UpdatePathNodes(List<GameObject> pathNodes)
-    //{
-    //    nodes.Clear();
-
-    //    foreach(GameObject node in pathNodes)
-    //    {
-    //        MapNode mapNode = NodeToMapNode(node.GetComponent<Node>());
-    //        nodes.Add(mapNode);
-    //        MapView.instance.PassConnectedRooms();
-    //    }
-    //}
 }

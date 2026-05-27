@@ -35,6 +35,7 @@ public class TreasureRoomManager : MonoBehaviour
         TreasureUIManager.instance.ShowItem(itemToGive);
 
         PlayerData.items.Add(itemToGive);
+        PlayerData.Instance.p_items.Add(itemToGive);
 
         yield return new WaitForSeconds(.5f);
 

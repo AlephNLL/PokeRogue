@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4701738341221660661}
   - component: {fileID: 1802879691876843601}
   - component: {fileID: 4715867358196219789}
+  - component: {fileID: 5312959676983532821}
   m_Layer: 5
   m_Name: Slot
   m_TagString: Untagged
@@ -100,3 +101,16 @@ MonoBehaviour:
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!114 &5312959676983532821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4527626970601199919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16f63dfc0c1dc6f459b09debf12b5b32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryTooltip
+  itemDescriptionBox: {fileID: 4234463259283579864, guid: 70b16ddb70a349f40bbf351e19cc882e, type: 3}

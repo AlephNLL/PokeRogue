@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using GameData;
 using NUnit.Framework;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour
 {
@@ -15,9 +17,11 @@ public class UIManager : MonoBehaviour
     public GameObject inventory;
     public GameObject slot;
     public GameObject abilitySlot;
-    
+    public GameObject heldItemSlot;
     public GameObject consumables;
     public GameObject abilities;
+
+    public GameObject itemTooltipUI;
 
     public List<GameObject> instantiatedItems;
 
@@ -44,7 +48,8 @@ public class UIManager : MonoBehaviour
             if (state)
             {
                 StartCoroutine(WaitAndShow(delay, canvas));
-            } else
+            }
+            else
             {
                 canvas.enabled = state;
             }
@@ -55,6 +60,16 @@ public class UIManager : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         canvas.enabled = true;
+        //   UpdateHeldItem();
+    }
+
+    private void SetHeldItem(Item item)
+    {
+        UnitData mons = PlayerData.teamData[lookAtIndex];
+
+        mons.HoldItem(item);
+        UpdateInventory();
+        UpdateHeldItem();
     }
 
     private void UpdateInventory()
@@ -82,6 +97,9 @@ public class UIManager : MonoBehaviour
             GameObject itemIcon = Instantiate(item.icon);
             itemIcon.transform.parent = newSlot.transform;
             itemIcon.transform.localScale = Vector3.one;
+
+            Button slotButton = newSlot.AddComponent<Button>();
+            slotButton.onClick.AddListener(() => { SetHeldItem(item); });
 
             instantiatedItems.Add(newSlot);
         }
@@ -131,14 +149,14 @@ public class UIManager : MonoBehaviour
 
         UnitData viewMon = mon;
 
-        if (!viewMon) 
+        if (!viewMon)
         {
             if (PlayerData.teamData.Count > 0)
             {
                 viewMon = PlayerData.teamData[index];
             }
             else return;
-        } 
+        }
 
         foreach (Abilities ability in viewMon.knownAbilities)
         {
@@ -204,6 +222,40 @@ public class UIManager : MonoBehaviour
         healthText.text = "HP: " + health;
         speedText.text = "SPD: " + speed;
         luckText.text = "LCK: " + luck;
+
+        UpdateHeldItem();
+    }
+
+    private void UpdateHeldItem()
+    {
+        if (heldItemSlot.transform.childCount > 0)
+        {
+            foreach (Transform child in heldItemSlot.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        if (PlayerData.teamData[lookAtIndex].heldItem != null)
+        {
+            Item item = PlayerData.teamData[lookAtIndex].heldItem;
+
+            GameObject itemIcon = Instantiate(item.icon);
+            RectTransform rect = itemIcon.GetComponent<RectTransform>();
+            RectTransform rectHeldItemSlot = heldItemSlot.GetComponent<RectTransform>();
+
+            itemIcon.transform.parent = heldItemSlot.transform;
+            rect.anchoredPosition = Vector3.zero;
+            rect.localPosition = Vector3.zero;
+            rect.sizeDelta = new Vector2(rectHeldItemSlot.sizeDelta.x * 0.8f, rectHeldItemSlot.sizeDelta.y * 0.8f);
+            rect.localScale = Vector3.one;
+
+            InventoryTooltip tooltip = itemIcon.AddComponent<InventoryTooltip>();
+            tooltip.itemDescriptionBox = itemTooltipUI;
+
+            Button button = itemIcon.AddComponent<Button>();
+            button.onClick.AddListener(() => { SetHeldItem(null); });
+        }
     }
 
     public void ShowInventory()
@@ -233,6 +285,6 @@ public class UIManager : MonoBehaviour
         consumables.SetActive(false);
         inventory.SetActive(false);
 
-        UpdateAbilities(null,lookAtIndex);
+        UpdateAbilities(null, lookAtIndex);
     }
 }

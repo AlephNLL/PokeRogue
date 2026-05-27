@@ -24,4 +24,19 @@ public class UnitData : ScriptableObject
         }
         return false;
     }
+
+    public void HoldItem(Item item)
+    {
+        if (heldItem == null)
+        {
+            heldItem = item;
+            PlayerData.Instance.p_items.Remove(item);
+        }
+        else
+        {
+            if (item != null) { PlayerData.Instance.p_items.Remove(item); }
+            PlayerData.Instance.p_items.Add(heldItem);
+            heldItem = item;
+        }
+    }
 }

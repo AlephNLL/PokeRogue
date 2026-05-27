@@ -15,7 +15,7 @@ MonoBehaviour:
   name: LOL
   description: 
   sfx: {fileID: 0}
-  power: 100
+  power: 0
   accuracy: 100
   abilityType: 0
   target: 4
@@ -30,10 +30,10 @@ MonoBehaviour:
   passiveEffects: 0
   passiveExecutionTime: 0
   passiveEffectChance: 0
-  status: 0
-  effect1: 0
+  status: 1
+  effect1: 4
   condition1: 0
-  effect1Chance: 0
+  effect1Chance: 100
   effect2: 0
   condition2: 0
   effect2Chance: 0

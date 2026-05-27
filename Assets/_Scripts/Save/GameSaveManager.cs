@@ -26,18 +26,17 @@ public class GameSaveManager : MonoBehaviour
         if (instance == null) { instance = this; DontDestroyOnLoad(instance); }
         else { Destroy(gameObject); }
 
+        fileDataHandler = new FileDataHandler(Application.persistentDataPath, fileName);
+        saveList = FindAllSaveObjects();
     }
 
     private void Start()
     {
-        fileDataHandler = new FileDataHandler(Application.persistentDataPath, fileName);
-        saveList = FindAllSaveObjects();
-
         foreach (UnitData unit in TeamManager.instance.teamData)
         {
             Debug.Log(unit.name);
             startTeamData.Add(unit.LoadData());
-        }   
+        }
 
         startTeam = startTeamData;
         LoadGame();

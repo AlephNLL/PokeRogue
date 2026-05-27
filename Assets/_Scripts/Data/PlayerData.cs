@@ -41,10 +41,11 @@ public class PlayerData : MonoBehaviour, ISaveData
 
     public void SaveData(ref GameSaveData data)
     {
-        //data.gold = gold;
+        data.gold = gold;
         //data.p_items = this.p_items;
         //data.items = PlayerData.items;
         data.teamData = new();
+        data.tutorial = tutorial;
 
         foreach (UnitData unitData in teamData)
         {
@@ -66,6 +67,7 @@ public class PlayerData : MonoBehaviour, ISaveData
         //PlayerData.items = data.items;
         teamData = new();
         daycareTeamData = new();
+        tutorial = data.tutorial;
 
         foreach (UnitSaveData unitData in data.teamData)
         {

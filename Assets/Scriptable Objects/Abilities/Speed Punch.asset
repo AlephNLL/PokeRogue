@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Speed Punch
   description: A fast jab.
+  sfx: {fileID: 11400000, guid: 79214797fcb65524ca706af2054617bd, type: 2}
   power: 50
   accuracy: 100
   abilityType: 0
@@ -25,15 +26,23 @@ MonoBehaviour:
   multiHitRange: 0
   hits: 0
   hitRange: 
+  endOnMiss: 0
   passiveEffects: 0
   passiveExecutionTime: 0
   passiveEffectChance: 0
   status: 0
   effect1: 0
+  condition1: 0
   effect1Chance: 0
   effect2: 0
+  condition2: 0
   effect2Chance: 0
   affectSelf: 0
   stanceToChangeTo: 0
+  stanceCondition: 0
+  healPercentage: 0
+  statToMod: 
+  statMod: []
+  powerVariables: 0
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

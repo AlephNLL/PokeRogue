@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Large Slash
   m_EditorClassIdentifier: 
   name: Large Slash
-  description: A huge slash that cover a large area.
+  description: A huge slash that covers a large area.
+  sfx: {fileID: 0}
   power: 65
   accuracy: 100
   abilityType: 0
@@ -25,15 +26,23 @@ MonoBehaviour:
   multiHitRange: 0
   hits: 0
   hitRange: 
+  endOnMiss: 0
   passiveEffects: 6
   passiveExecutionTime: 0
   passiveEffectChance: 0
   status: 0
   effect1: 0
+  condition1: 0
   effect1Chance: 100
   effect2: 0
+  condition2: 0
   effect2Chance: 0
   affectSelf: 0
   stanceToChangeTo: 0
+  stanceCondition: 0
+  healPercentage: 0
+  statToMod: 
+  statMod: []
+  powerVariables: 0
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

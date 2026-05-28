@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad8fd7f4346b8414e82c0948690a14a2, type: 3}
-  m_Name: Charge
+  m_Name: Buff
   m_EditorClassIdentifier: Assembly-CSharp::SoundData
-  soundName: Charge
+  soundName: Buff
   clips:
   - {fileID: 8300000, guid: 40e8b7daf58512f44ae3aa81017264a6, type: 3}
   - {fileID: 8300000, guid: 4473b1f1db2117648bbda733d7bbdf8a, type: 3}

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Sacred Light
   description: Heals and cures status
-  sfx: {fileID: 0}
+  sfx: {fileID: 11400000, guid: 31013cbe3ac3a9e40b382f37bcf6fa73, type: 2}
   power: 0
   accuracy: 100
   abilityType: 0

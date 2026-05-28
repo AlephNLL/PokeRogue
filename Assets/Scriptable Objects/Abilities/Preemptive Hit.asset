@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Preemptive Hit
   description: Surprises the foe. If used first turn causes flinching.
-  sfx: {fileID: 0}
+  sfx: {fileID: 11400000, guid: 79214797fcb65524ca706af2054617bd, type: 2}
   power: 40
   accuracy: 100
   abilityType: 0

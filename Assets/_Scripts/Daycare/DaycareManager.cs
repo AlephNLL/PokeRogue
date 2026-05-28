@@ -30,12 +30,14 @@ public class DaycareManager : MonoBehaviour
     [SerializeField]
     List<GameObject> selectedPrefabs = new List<GameObject>();
 
+    [SerializeField] GameObject outOfMonUI;
     bool isBattle;
     private void Start()
     {
         AudioManager.instance.PlayMusic(AudioLibrary.instance.daycareMusic);
         if (units == null)
         {
+            outOfMonUI.gameObject.SetActive(true);
             units = new List<UnitData>();
             unitPrefabs = new List<GameObject>();
 

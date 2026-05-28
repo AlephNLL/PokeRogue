@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Tricked Dice
   description: +7 luck
   cost: 54
-  icon: {fileID: 1176257147109685943, guid: 04b7626b596b1d740a7401110ccd81d8, type: 3}
+  icon: {fileID: 6099888913397317502, guid: 912a7742973998e469878c12f3c37ede, type: 3}
   isConsumible: 0
   effect: 09000000
   condition: 

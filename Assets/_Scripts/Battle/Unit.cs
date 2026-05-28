@@ -908,6 +908,7 @@ public class Unit : MonoBehaviour
 
         for (int i = 0; i < monLevel + 1; i++)
         {
+            if (i > 10) break;
             if (i < abilityPool.Length)
             {
                 abilityList.Add(abilityPool[i]);

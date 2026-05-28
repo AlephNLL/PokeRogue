@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Blood Bag
   description: User leeches 10% of damage dealt
   cost: 54
-  icon: {fileID: 1176257147109685943, guid: 04b7626b596b1d740a7401110ccd81d8, type: 3}
+  icon: {fileID: 2341208927881326147, guid: ee552234cc33f994dacb59568f8186b6, type: 3}
   isConsumible: 0
   effect: 08000000
   condition: 

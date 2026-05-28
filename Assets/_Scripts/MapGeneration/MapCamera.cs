@@ -1,11 +1,12 @@
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using GameData;
 using Cinemachine;
-using Unity.Burst.CompilerServices;
+using GameData;
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 public class MapCamera : MonoBehaviour
 {
     public static MapCamera instance;
@@ -143,9 +144,13 @@ public class MapCamera : MonoBehaviour
 
         if (!enableFollowMode) return;
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("Click");
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
             CheckRaycast();
         }
 

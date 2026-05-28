@@ -815,7 +815,7 @@ MonoBehaviour:
   currentStance: 2
   level: 1
   exp: 0
-  expCurve: {fileID: 0}
+  expCurve: {fileID: 11400000, guid: 42eec143c7464c24889a7a724a74e69f, type: 2}
   status: 0
   recivedDamageMultiplier: 1
   strength: 20
@@ -830,9 +830,16 @@ MonoBehaviour:
   precision: 1
   knownAbilities: []
   abilityPool:
-  - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}
-  - {fileID: 11400000, guid: 1c10fb9f488085d4aaf6c6a22e96fd23, type: 2}
-  - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
+  - {fileID: 11400000, guid: 77bccabd9cf09c342abefb272c8d34bd, type: 2}
+  - {fileID: 11400000, guid: 41b644029128717428d7fee53acd6f5f, type: 2}
+  - {fileID: 11400000, guid: e2d788c65f2b6f540a87a1b9f0616958, type: 2}
+  - {fileID: 11400000, guid: d5c0ca67c7dc28c40953604518014341, type: 2}
+  - {fileID: 11400000, guid: e3bad65477ba3104eaf63e1df5255213, type: 2}
+  - {fileID: 11400000, guid: 0b8036aed22fd6648acfcf5dbfb9cd6b, type: 2}
+  - {fileID: 11400000, guid: 4de5d42472953b242ad9d2db3d5e819b, type: 2}
+  - {fileID: 11400000, guid: d0ad89c7a464fe44b833d72d73b08579, type: 2}
+  - {fileID: 11400000, guid: cfb6d7e915de66f4a84c49be0ef79602, type: 2}
+  - {fileID: 11400000, guid: 0711ac01ad7e45642981e27221c47b02, type: 2}
   - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
   heldItem: {fileID: 0}
   evasive: 0

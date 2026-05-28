@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Alarm Clock
   description: Prevents user from freezing, slightly raises defense instead.
   cost: 68
-  icon: {fileID: 1176257147109685943, guid: 04b7626b596b1d740a7401110ccd81d8, type: 3}
+  icon: {fileID: 519573376967798654, guid: 83603451e926d8548adb8ed6fff6a3e3, type: 3}
   isConsumible: 0
   effect: 0100000006000000
   condition: 0700000007000000

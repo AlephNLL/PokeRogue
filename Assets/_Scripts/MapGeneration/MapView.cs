@@ -4,6 +4,7 @@ using System.Linq;
 using GameData;
 using System.Collections;
 using UnityEditor.MemoryProfiler;
+using UnityEditor;
 
 public class MapView : MonoBehaviour
 {
@@ -382,12 +383,17 @@ public class MapView : MonoBehaviour
 
         team = new List<GameObject>();
 
+        int index = 0;
+
         Debug.LogWarning($"Hay {PlayerData.Instance.GetTeamPrefabs().Length} unidades en el equipo");
         // Get mesh from prefab and instantiate
         foreach (GameObject unit in PlayerData.Instance.GetTeamPrefabs())
         {
-            GameObject unitName = new GameObject(unit.name);
-            unitName.transform.parent = teamGO.transform;
+            GameObject monName = new GameObject(unit.name);
+            monName.transform.parent = teamGO.transform;
+
+            GameObject capsule = new GameObject("Capsule");
+            capsule.transform.parent = monName.transform;
 
             GameObject unitBase = new GameObject("Base");
             unitBase.AddComponent<MeshFilter>(); unitBase.AddComponent<MeshRenderer>();
@@ -398,9 +404,10 @@ public class MapView : MonoBehaviour
             unitBase.GetComponent<MeshFilter>().mesh = baseMeshFilter.sharedMesh;
             unitBase.GetComponent<MeshRenderer>().material = baseMeshRenderer.sharedMaterial;
 
-            unitBase.transform.parent = unitName.transform;
+            unitBase.transform.parent = capsule.transform;
+            FresnelApplier.changeStance(monName, unit.GetComponent<Unit>().currentStance);
 
-            GameObject unitGO = new GameObject(unit.name);
+            GameObject unitGO = new GameObject("Mons");
             unitGO.AddComponent<MeshFilter>();
             unitGO.AddComponent<MeshRenderer>();
 
@@ -408,15 +415,20 @@ public class MapView : MonoBehaviour
             //MeshRenderer meshRenderer = unit.GetComponentInChildren<MeshRenderer>();
             MeshFilter meshFilter = unit.transform.Find("Capsule").Find("Mons").GetComponentInChildren<MeshFilter>();
             MeshRenderer meshRenderer = unit.transform.Find("Capsule").Find("Mons").GetComponentInChildren<MeshRenderer>();
+            float yOffset = unit.transform.Find("Capsule").Find("Mons").transform.localPosition.y;
 
             unitGO.GetComponent<MeshFilter>().mesh = meshFilter.sharedMesh;
             unitGO.GetComponent<MeshRenderer>().material = meshRenderer.sharedMaterial;
 
-            unitGO.transform.parent = unitName.transform;
-            unitName.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
+            unitGO.transform.parent = capsule.transform;
+            capsule.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
+            unitGO.transform.localPosition = new Vector3(0, yOffset);
             unitGO.transform.rotation = Quaternion.Euler(0, 90, 0);
+           
+            // VFXManager.instance.SpawnStatusVFX(PlayerData.teamData[index].status, unitGO);
 
-            team.Add(unitName);
+            team.Add(capsule);
+            index++;
         }
         if (MapManager.instance.currentNode != null)
         {

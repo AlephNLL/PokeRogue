@@ -91,6 +91,5 @@ public class FresnelApplier : MonoBehaviour
         MaterialPropertyBlock mpb = new MaterialPropertyBlock();
         mpb.SetColor("_MaskColor", color);
         baseMesh.SetPropertyBlock(mpb);
-        print("hola");
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GameData;
 using System.Collections;
+using UnityEditor.MemoryProfiler;
 using UnityEditor;
 
 public class MapView : MonoBehaviour
@@ -424,9 +425,10 @@ public class MapView : MonoBehaviour
             unitGO.transform.localPosition = new Vector3(0, yOffset);
             unitGO.transform.rotation = Quaternion.Euler(0, 90, 0);
            
-            // VFXManager.instance.SpawnStatusVFX(PlayerData.teamData[index].status, unitGO);
+            VFXManager.instance.SpawnStatusFresnelOnly(PlayerData.teamData[index].status, monName);
+            //VFXManager.instance.SpawnStatusVFX(unit.GetComponent<Unit>().status, monName);
 
-            team.Add(capsule);
+            team.Add(monName);
             index++;
         }
         if (MapManager.instance.currentNode != null)

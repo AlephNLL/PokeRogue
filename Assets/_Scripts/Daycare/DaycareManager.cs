@@ -36,10 +36,10 @@ public class DaycareManager : MonoBehaviour
     {
         AudioManager.instance.PlayMusic(AudioLibrary.instance.daycareMusic);
         MapManager.instance.ResetMap();
-        if (units == null)
+        if (PlayerData.daycareTeamData == null) PlayerData.daycareTeamData = new List<UnitData>();
+        if (PlayerData.daycareTeamData.Count <= 0)
         {
             outOfMonUI.gameObject.SetActive(true);
-            units = new List<UnitData>();
             unitPrefabs = new List<GameObject>();
 
             for (int i = 0; i < startingUnits.Count; i++)
@@ -53,18 +53,17 @@ public class DaycareManager : MonoBehaviour
                 else unit.knownAbilities = startingUnits[i].prefab.GetComponent<Unit>().GetUnitKnownAbilities(unit.level);
                 unit.heldItem = startingUnits[i].heldItem;
 
-                units.Add(unit);
+                PlayerData.daycareTeamData.Add(unit);
             }
-            startingUnits = units;
         }
-        if (PlayerData.daycareTeamData != null)
-        {
-            units.AddRange(PlayerData.daycareTeamData);
-            PlayerData.daycareTeamData.Clear();
-            startingUnits = units;
-        }
+
+        units = PlayerData.daycareTeamData;
+
         SpawnUnits();
         HealAll();
+
+        
+        GameSaveManager.instance.SaveGame();
     }
     void HealAll()
     {

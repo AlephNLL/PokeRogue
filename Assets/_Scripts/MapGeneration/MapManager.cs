@@ -176,6 +176,7 @@ public class MapManager : MonoBehaviour, ISaveData
     {
         data.mapData = new();
         data.mapCreated = mapCreated;
+        if (currentRoom == null) return;
         data.currentRoom = currentRoom.name;
         foreach (MapNode mapNode in nodes)
         {
@@ -223,11 +224,12 @@ public class MapManager : MonoBehaviour, ISaveData
 
         currentRoom = null;
         currentNode = null;
-        currentRoomName = "";
+        currentRoomName = "Spawn-0";
 
         mapCreated = false;
-        loadRooms = false;
-        canLoadRooms = false;
+
+        //loadRooms = false;
+        //canLoadRooms = false;
 
         if (mapView != null) mapView.ClearMap();
     }

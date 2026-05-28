@@ -2631,9 +2631,25 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: b119c886d460fdd4ab3e4a7484609dbd, type: 2}
     - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'teamData.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: b119c886d460fdd4ab3e4a7484609dbd, type: 2}
+    - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: startTeamData.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: teamStartData.Array.size
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'startTeamData.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: d12a39800ea11eb4ea3fb471883ee7ee, type: 2}
+    - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'startTeamData.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: b119c886d460fdd4ab3e4a7484609dbd, type: 2}
     - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'teamStartData.Array.data[0]'
       value: 

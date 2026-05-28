@@ -38,6 +38,6 @@ public class GameSaveData
         currentRoom = "Spawn-0";
         sceneName = "MapGeneration";
         tutorial = true;
-        beatenFirstBoss = true;
+        beatenFirstBoss = false;
     }
 }

@@ -88,7 +88,6 @@ public class GameSaveManager : MonoBehaviour
         {
             Debug.Log("No data found. Initializing new game data.");
             NewGame();
-            newGame = true;
         }
         lastSceneName = saveData.sceneName;
         // Pass loaded data to other scripts
@@ -102,6 +101,7 @@ public class GameSaveManager : MonoBehaviour
     {
         SetStartTeam();
         saveData = new GameSaveData();
+        newGame = true;
 
         fileDataHandler.Save(saveData);
     }
@@ -117,6 +117,7 @@ public class GameSaveManager : MonoBehaviour
     {
         startTeam = new();
         startTeamData = new();
+        TeamManager.instance.teamData = TeamManager.instance.startTeamData;
         foreach (UnitData unit in TeamManager.instance.teamData)
         {
             Debug.Log(unit.name);

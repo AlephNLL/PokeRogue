@@ -2704,7 +2704,7 @@ PrefabInstance:
       objectReference: {fileID: 919132149155446097, guid: 14a363da30ea15940bf9ad4d3d649f23, type: 3}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: medievalPrefabs.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'forestPrefabs.Array.data[0]'
@@ -2741,15 +2741,19 @@ PrefabInstance:
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'medievalPrefabs.Array.data[0]'
       value: 
-      objectReference: {fileID: 919132149155446097, guid: 2795e73b60cae2f4ca6f5e0328607b82, type: 3}
+      objectReference: {fileID: 551964645734407033, guid: f147180b113f36348aeeaca6b962bdf8, type: 3}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'medievalPrefabs.Array.data[1]'
       value: 
-      objectReference: {fileID: 919132149155446097, guid: 9d9f0acf17820244aab4a2b58068fd09, type: 3}
+      objectReference: {fileID: 3584438159393304340, guid: 5ca8fbfd1c466264b939ec1e24509ca6, type: 3}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'medievalPrefabs.Array.data[2]'
       value: 
-      objectReference: {fileID: 919132149155446097, guid: 797142cb3174c1c4baf2fa237bd7ca4a, type: 3}
+      objectReference: {fileID: 9180605106209372739, guid: 1a1cae5281c8191489aa7fb78f8ed47a, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'medievalPrefabs.Array.data[3]'
+      value: 
+      objectReference: {fileID: 1150851709763496566, guid: 81744c62c975de947b4400025fb6dfbd, type: 3}
     - target: {fileID: 4772832938886564935, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: m_Name
       value: MapManager

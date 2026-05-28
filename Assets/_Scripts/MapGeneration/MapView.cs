@@ -5,6 +5,7 @@ using GameData;
 using System.Collections;
 using UnityEditor.MemoryProfiler;
 using UnityEditor;
+using Unity.VisualScripting;
 
 public class MapView : MonoBehaviour
 {
@@ -215,6 +216,11 @@ public class MapView : MonoBehaviour
         lineCollider.transform.position = midPoint;
 
 
+        Rigidbody rigidBody = collider.AddComponent<Rigidbody>();
+        rigidBody.isKinematic = true;
+
+
+
         //heres the beef of the function, Mathf.Atan2 wants the slope, be careful however because it wants it in a weird form
         //it will divide for you so just plug in your (y2-y1),(x2,x1)
         float angle = Mathf.Atan2((endPoint.z - startPoint.z), (endPoint.x - startPoint.x));
@@ -329,7 +335,10 @@ public class MapView : MonoBehaviour
                 decorationGO.transform.localScale.y + randomScale, 
                 decorationGO.transform.localScale.z + randomScale
                 );
-            decorationGO.transform.Rotate(new Vector3(-90, 0, 0));
+
+            float randomRotationZ = Random.Range(0, 360);
+
+            decorationGO.transform.Rotate(new Vector3(-90, 0, randomRotationZ));
             decorationGO.layer = LayerMask.NameToLayer("Decoration");
 
             decorationGO.AddComponent<CapsuleCollider>();

@@ -5138,7 +5138,10 @@ PrefabInstance:
       value: ForestBattle_1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4282321799539354834, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
+    - {fileID: 7813974131322825988, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
+    - {fileID: 3300886922756315186, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}

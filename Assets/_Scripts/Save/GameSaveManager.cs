@@ -98,6 +98,13 @@ public class GameSaveManager : MonoBehaviour
         fileDataHandler.Save(saveData);
     }
 
+    public void NewMap()
+    {
+        saveData = new GameSaveData();
+
+        fileDataHandler.Save(saveData);
+    }
+
     public void SetStartTeam()
     {
         startTeam = new();

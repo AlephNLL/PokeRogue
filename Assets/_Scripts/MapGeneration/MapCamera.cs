@@ -169,7 +169,10 @@ public class MapCamera : MonoBehaviour
                     break;
                 case GameData.NodeEvents.HEAL:
                     TeamManager.instance.HealTeam(.5f);
-                    VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, MapManager.instance.currentRoom);
+                    for (global::System.Int32 i = 0; i < MapView.instance.team.Count; i++)
+                    {
+                        VFXManager.instance.SpawnGlobalEffect(VFX.HEAL, MapView.instance.team[i]);
+                    }
                     UpdateLayers(MapManager.instance.currentRoom);
                     break;
                 case GameData.NodeEvents.TRANSITION:

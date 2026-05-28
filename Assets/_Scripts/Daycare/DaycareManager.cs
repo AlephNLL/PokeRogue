@@ -35,6 +35,7 @@ public class DaycareManager : MonoBehaviour
     private void Start()
     {
         AudioManager.instance.PlayMusic(AudioLibrary.instance.daycareMusic);
+        MapManager.instance.ResetMap();
         if (units == null)
         {
             outOfMonUI.gameObject.SetActive(true);

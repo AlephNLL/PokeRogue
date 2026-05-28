@@ -4084,7 +4084,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7575809877470388484, guid: a07e1963fb0393740b2225992b2e12a5, type: 3}
       propertyPath: m_Name
-      value: Crastaloceronte
+      value: Capsule
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -17,8 +17,8 @@ public class GameSaveData
     public string currentRoom;
 
     // Progresion
-    public bool tutorial = true;
-    public bool beatenFirstBoss = true;
+    public bool tutorial;
+    public bool beatenFirstBoss;
 
     // Escena
     public string sceneName;
@@ -37,5 +37,7 @@ public class GameSaveData
         mapCreated = false;
         currentRoom = "Spawn-0";
         sceneName = "MapGeneration";
+        tutorial = true;
+        beatenFirstBoss = false;
     }
 }

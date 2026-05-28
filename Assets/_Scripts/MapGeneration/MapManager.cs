@@ -59,7 +59,9 @@ public class MapManager : MonoBehaviour, ISaveData
             {
                 Debug.Log("Mapa Generado en escena de mapa");
                 mapView.DrawMap(nodes);
+                if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.FixDuplicateBoss(); }
                 currentRoom = GameObject.Find(currentRoomName);
+
             } else
             {
                 if (createdRooms.Count() == 0 && nodes.Count() == 0 && mapCreated == false)
@@ -69,6 +71,7 @@ public class MapManager : MonoBehaviour, ISaveData
 
                     mapGenerator.GenerateMap();
 
+                    if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.GenerateNextMap(); }
                     Debug.Log("Mapa Generado");
                 }
                 else if (nodes.Count != 0 && mapLoaded)

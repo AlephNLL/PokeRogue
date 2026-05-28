@@ -11,6 +11,7 @@ public class PlayerData : MonoBehaviour, ISaveData
     public static List<UnitData> daycareTeamData;
 
     public static bool tutorial = false;
+    public bool beatenFirstBoss = false;
 
     private void Awake()
     {
@@ -47,6 +48,7 @@ public class PlayerData : MonoBehaviour, ISaveData
         data.teamData = new();
         data.daycareTeamData = new();
         data.tutorial = tutorial;
+        data.beatenFirstBoss = beatenFirstBoss;
 
         foreach (UnitData unitData in teamData)
         {
@@ -69,6 +71,7 @@ public class PlayerData : MonoBehaviour, ISaveData
         teamData = new();
         daycareTeamData = new();
         tutorial = data.tutorial;
+        beatenFirstBoss = data.beatenFirstBoss;
 
         foreach (UnitSaveData unitData in data.teamData)
         {

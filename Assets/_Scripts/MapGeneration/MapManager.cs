@@ -186,7 +186,7 @@ public class MapManager : MonoBehaviour, ISaveData
     {
         data.mapData = new();
         data.mapCreated = mapCreated;
-        if (currentRoom == null) return;
+        if (SceneManager.GetActiveScene().name == "Daycare") return;
         data.currentRoom = currentRoom.name;
         foreach (MapNode mapNode in nodes)
         {

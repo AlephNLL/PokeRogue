@@ -84,7 +84,7 @@ public class PauseMenuUI : MonoBehaviour
 
             optionsCanvas.SetActive(false);
             exitConfirmation.SetActive(false);
-            mainMenuButtons.SetActive(state);
+            if (mainMenuButtons != null) mainMenuButtons.SetActive(state);
         }
         else
         {

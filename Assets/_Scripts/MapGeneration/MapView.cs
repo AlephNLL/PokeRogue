@@ -19,8 +19,9 @@ public class MapView : MonoBehaviour
     [SerializeField] private GameObject shopPrefab;
     [SerializeField] private GameObject startPrefab;
     [SerializeField] private GameObject randomPrefab;
-    [SerializeField] private GameObject[] decorationPrefabs;
-    [SerializeField] private GameObject[] secondDecorationPrefabs;
+    [SerializeField] private GameObject[] forestPrefabs;
+    [SerializeField] private GameObject[] grassPrefabs;
+    [SerializeField] private GameObject[] medievalPrefabs;
 
     [Header("Configuracion del path")]
     [SerializeField] private Material lineMaterial;
@@ -30,6 +31,7 @@ public class MapView : MonoBehaviour
     [SerializeField] private bool enableDebugRays = false;
     [SerializeField] private float firstDensity = 10f;
     [SerializeField] private float secondiIterationDensity = 30f;
+    [SerializeField] private float medievalDensity = 20f;
     [SerializeField] private float rayDuration = 10f;
 
     [Header("Referencias")]
@@ -65,8 +67,14 @@ public class MapView : MonoBehaviour
         PassConnectedRooms(path);
         DrawTeam();
 
-        StartCoroutine(DrawDecorations(new Vector3(-5, 0, 0), decorationPrefabs, firstDensity));
-        StartCoroutine(DrawDecorations(new Vector3(-5, 0, 0), secondDecorationPrefabs, secondiIterationDensity));
+        StartCoroutine(DrawDecorations(new Vector3(-5, 0, 0), forestPrefabs, firstDensity));
+        StartCoroutine(DrawDecorations(new Vector3(-5, 0, 0), grassPrefabs, secondiIterationDensity));
+
+        if (PlayerData.Instance.beatenFirstBoss)
+        {
+            StartCoroutine(DrawDecorations(new Vector3(MapGenerator.Instance.gridHeight * 3 + 2, 0, 0), medievalPrefabs, medievalDensity));
+            StartCoroutine(DrawDecorations(new Vector3(MapGenerator.Instance.gridHeight * 3 + 2, 0, 0), grassPrefabs, secondiIterationDensity));
+        }
 
         if (!MapManager.instance.mapCreated)
         {
@@ -296,7 +304,7 @@ public class MapView : MonoBehaviour
     {
         GameObject decorationsGO = GameObject.Find("Decorations");
 
-        if (decorationsGO != null && secondDecorationPrefabs == null)
+        if (decorationsGO != null && grassPrefabs == null)
         {
             Destroy(decorationsGO);
         }

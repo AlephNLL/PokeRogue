@@ -10,6 +10,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 public class MapGenerator : MonoBehaviour
 {
+    public static MapGenerator Instance;
     [Header("Ajustes del grid")]
     [SerializeField] public int gridWidth = 10;
     [SerializeField] public int gridHeight = 10;
@@ -28,6 +29,12 @@ public class MapGenerator : MonoBehaviour
     private int lastId = 0;
 
     private MapNode bossRoom;
+
+    private void Awake()
+    {
+        if (Instance == null) { Instance = this; }
+        else { Destroy(gameObject); } 
+    }
 
     public void GenerateMap()
     {
@@ -232,9 +239,9 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateNextMap()
     {
-        currentGrid = InitializeGrid(gridHeight, 10);
+        currentGrid = InitializeGrid(gridHeight, 7);
         path = GeneratePaths(currentGrid, startingPaths);
-        GenerateBossRoom(gridHeight, 10);
+        GenerateBossRoom(gridHeight, 7);
 
         ConnectNextMap(gridHeight);
 

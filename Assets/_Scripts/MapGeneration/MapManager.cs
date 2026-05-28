@@ -224,11 +224,12 @@ public class MapManager : MonoBehaviour, ISaveData
 
         currentRoom = null;
         currentNode = null;
-        currentRoomName = "";
+        currentRoomName = "Spawn-0";
 
         mapCreated = false;
-        loadRooms = false;
-        canLoadRooms = false;
+
+        //loadRooms = false;
+        //canLoadRooms = false;
 
         if (mapView != null) mapView.ClearMap();
     }

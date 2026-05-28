@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GameData;
 using System.Collections;
+using UnityEditor.MemoryProfiler;
 using UnityEditor;
 
 public class MapView : MonoBehaviour

@@ -45,6 +45,7 @@ public class PlayerData : MonoBehaviour, ISaveData
         data.p_items = this.p_items;
         data.items = PlayerData.items;
         data.teamData = new();
+        data.daycareTeamData = new();
         data.tutorial = tutorial;
 
         foreach (UnitData unitData in teamData)

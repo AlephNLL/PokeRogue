@@ -888,9 +888,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleScene
   roomPrefabs:
   - {fileID: 7658715131649156570, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
-  - {fileID: 7658715131649156570, guid: ef631ff533db53142bd7715de65adce1, type: 3}
-  - {fileID: 7658715131649156570, guid: 505a8864a55d9424a9a0987feabb7aa7, type: 3}
-  - {fileID: 7658715131649156570, guid: d0632cb6087e0f3479410e69dc4ecef1, type: 3}
 --- !u!4 &506483158
 Transform:
   m_ObjectHideFlags: 0
@@ -5093,6 +5090,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 506483158}
     m_Modifications:
+    - target: {fileID: 2097007161199914764, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.00279
+      objectReference: {fileID: 0}
+    - target: {fileID: 2097007161199914764, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.00715
+      objectReference: {fileID: 0}
+    - target: {fileID: 5499688148132726401, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.0027
+      objectReference: {fileID: 0}
+    - target: {fileID: 5499688148132726401, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5499688148132726401, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.0015
+      objectReference: {fileID: 0}
     - target: {fileID: 7373085344004819765, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.68755
@@ -5142,6 +5159,8 @@ PrefabInstance:
     - {fileID: 4282321799539354834, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
     - {fileID: 7813974131322825988, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
     - {fileID: 3300886922756315186, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
+    - {fileID: 5445846639132981553, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
+    - {fileID: 6447734100903466396, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}

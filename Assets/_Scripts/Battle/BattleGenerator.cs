@@ -30,7 +30,7 @@ public class BattleGenerator : MonoBehaviour
     {
         int floorLevel = MapManager.instance.currentNode.floorLevel;
 
-        int baseLevel = Mathf.FloorToInt((floorLevel / 3f) + 1);
+        int baseLevel = PlayerData.Instance.GetAverageTeamLevel();
         int levelVariance = 0;// Random.Range(0, 2);
         int finalEnemyLevel = Mathf.Max(1, baseLevel + levelVariance);
 

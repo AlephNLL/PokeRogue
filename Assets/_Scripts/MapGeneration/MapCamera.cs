@@ -297,6 +297,7 @@ public class MapCamera : MonoBehaviour
             MapNode mapNode = MapManager.instance.NodeToMapNode(node);
             MapManager.instance.currentNode = mapNode;
             MapManager.instance.currentRoomName = $"{mapNode.roomType}-{mapNode.id}";
+            GameSaveManager.instance.SaveGame();
         }
     }
 

@@ -40,6 +40,20 @@ public class PlayerData : MonoBehaviour, ISaveData
         return list.ToArray();
     }
 
+    public int GetAverageTeamLevel()
+    {
+        int sum = 0;
+
+        if (teamData == null) return 0;
+        if(teamData.Count <= 0) return 0;
+
+        for (int i = 0; i < teamData.Count; i++)
+        {
+            sum += teamData[i].level;
+        }
+
+        return Mathf.FloorToInt((float)sum/teamData.Count);
+    }
     public void SaveData(ref GameSaveData data)
     {
         data.gold = gold;

@@ -279,7 +279,7 @@ public class UIManager : MonoBehaviour
     {
         UnitData mons = PlayerData.teamData[lookAtIndex];
 
-        mons.ConsumeItem(item);
+        mons.ConsumeItem(item, lookAtIndex);
         UpdateConsumables();
     }
 

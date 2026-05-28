@@ -36,7 +36,9 @@ public class GameSaveManager : MonoBehaviour
 
     private void Start()
     {
-        foreach (UnitData unit in TeamManager.instance.teamData)
+        startTeam = new List<UnitSaveData>();
+        startTeamData = new List<UnitSaveData>();
+        foreach (UnitData unit in TeamManager.instance.teamStartData)
         {
             Debug.Log(unit.name);
             startTeamData.Add(unit.LoadData());
@@ -90,7 +92,22 @@ public class GameSaveManager : MonoBehaviour
 
     public void NewGame()
     {
+        SetStartTeam();
         saveData = new GameSaveData();
+        TeamManager.instance.teamData = TeamManager.instance.teamStartData;
+
         fileDataHandler.Save(saveData);
+    }
+
+    public void SetStartTeam()
+    {
+        startTeam = new();
+        startTeamData = new();
+        foreach (UnitData unit in TeamManager.instance.teamStartData)
+        {
+            Debug.Log(unit.name);
+            startTeamData.Add(unit.LoadData());
+        }
+        startTeam = startTeamData;
     }
 }

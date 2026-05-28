@@ -3369,11 +3369,11 @@ PrefabInstance:
     - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'teamData.Array.data[0]'
       value: 
-      objectReference: {fileID: 11400000, guid: 86a7d95dde3aab04086db209e33f9886, type: 2}
+      objectReference: {fileID: 11400000, guid: d12a39800ea11eb4ea3fb471883ee7ee, type: 2}
     - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'teamData.Array.data[1]'
       value: 
-      objectReference: {fileID: 11400000, guid: 925d57a2d96d39c4999a373ea3ddba4e, type: 2}
+      objectReference: {fileID: 11400000, guid: b119c886d460fdd4ab3e4a7484609dbd, type: 2}
     - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'teamData.Array.data[2]'
       value: 
@@ -3931,6 +3931,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
+    - target: {fileID: 8076780922674567326, guid: ed1f4cfa3d3f8e04ab66b271585aade4, type: 3}
+      propertyPath: trombone
+      value: 
+      objectReference: {fileID: 11400000, guid: 6f702a3553927f440a31c03aeeb71b04, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

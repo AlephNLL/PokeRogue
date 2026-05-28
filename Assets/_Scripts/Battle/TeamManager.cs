@@ -25,8 +25,26 @@ public class TeamManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if (PlayerData.teamData.Count == 0) PlayerData.teamData = teamData;
-        else teamData = PlayerData.teamData;
+        if (PlayerData.teamData.Count <= 0)
+        {
+            PlayerData.teamData = new List<UnitData>();
+
+            for (int i = 0; i < teamData.Count; i++)
+            {
+                UnitData unit = ScriptableObject.CreateInstance<UnitData>();
+                unit.id = i;
+                unit.name = teamData[i].name;
+                unit.prefab = teamData[i].prefab;
+                unit.level = teamData[i].level;
+                unit.currentHp = teamData[i].prefab.GetComponent<Unit>().GetRawStat(Stats.HP, unit.level);
+                if (teamData[i].knownAbilities.Count > 0) unit.knownAbilities = teamData[i].knownAbilities;
+                else unit.knownAbilities = teamData[i].prefab.GetComponent<Unit>().GetUnitKnownAbilities(unit.level);
+                unit.heldItem = teamData[i].heldItem;
+
+                PlayerData.teamData.Add(unit);
+            }
+            teamData = PlayerData.teamData;
+        }
     }
     public void SaveTeamData(List<Unit> playerTeam)
     {

@@ -40,7 +40,7 @@ public class UnitData : ScriptableObject
         }
     }
 
-    public void ConsumeItem(Item item)
+    public void ConsumeItem(Item item, int monsIndex)
     {
         PlayerData.Instance.p_items.Remove(item);
 
@@ -48,6 +48,7 @@ public class UnitData : ScriptableObject
         {
             case ItemEffects.CURESTATUS:
                 status = Status.NONE;
+                FresnelApplier.clearFresnel(MapView.instance.team[monsIndex]);
                 break;
             case ItemEffects.HEAL:
                 currentHp += item.healingAmount;

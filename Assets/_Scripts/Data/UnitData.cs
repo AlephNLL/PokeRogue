@@ -74,6 +74,7 @@ public class UnitData : ScriptableObject
         data.currentHp = currentHp;
         data.knownAbilities = knownAbilities;
         data.isVeteran = isVeteran;
+        data.status = status;
         return data;
     }
 
@@ -88,6 +89,7 @@ public class UnitData : ScriptableObject
         currentHp = data.currentHp;
         knownAbilities = data.knownAbilities;
         isVeteran = data.isVeteran;
+        status = data.status;
         return this;
     }
 }

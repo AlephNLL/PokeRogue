@@ -66,7 +66,9 @@ public class TBBS : MonoBehaviour
         {
             //Calculo del offset en relacion a la cantidad de unidades
             Vector3 offset = new Vector3(4 * (i - (playerPrefabs.Length - 1) / 2f), 0, 0);
-            playerUnits.Add(Instantiate(playerPrefabs[i], playerSide.position + offset, Quaternion.LookRotation(enemySide.position - playerSide.position - offset)).GetComponent<Unit>());
+            Unit playerUnit = Instantiate(playerPrefabs[i], playerSide.position + offset, Quaternion.LookRotation(enemySide.position - playerSide.position - offset)).GetComponent<Unit>();
+            FresnelApplier.changeStance(playerUnit.gameObject, playerUnit.currentStance);
+            playerUnits.Add(playerUnit);
             allUnits.Add(playerUnits[i]);
             playerUnits[i].isPlayerControlled = true;
             playerUnits[i].id = i;
@@ -77,7 +79,9 @@ public class TBBS : MonoBehaviour
         {
             //Calculo del offset en relacion a la cantidad de unidades
             Vector3 offset = new Vector3(4 * (i - (enemyPrefabs.Length - 1) / 2f), 0, 0);
-            enemyUnits.Add(Instantiate(enemyPrefabs[i], enemySide.position + offset, Quaternion.LookRotation(playerSide.position - enemySide.position - offset)).GetComponent<Unit>());
+            Unit enemyUnit = Instantiate(enemyPrefabs[i], enemySide.position + offset, Quaternion.LookRotation(playerSide.position - enemySide.position - offset)).GetComponent<Unit>();
+            FresnelApplier.changeStance(enemyUnit.gameObject, enemyUnit.currentStance);
+            enemyUnits.Add(enemyUnit);
             capturableUnits.Add(enemyPrefabs[i]);
             allUnits.Add(enemyUnits[i]);
         }

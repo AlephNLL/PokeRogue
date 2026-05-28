@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GameData;
 using UnityEngine;
 
 [System.Serializable]
@@ -13,4 +14,5 @@ public class UnitSaveData
     public int currentHp;
     public List<Abilities> knownAbilities;
     public bool isVeteran;
+    public Status status;
 }

@@ -54,9 +54,9 @@ public class PlayerData : MonoBehaviour, ISaveData
 
 
         if (daycareTeamData == null) return;
-        for (int i = 0; i < daycareTeamData.Count; i++)
+        foreach (UnitData unitData in daycareTeamData)
         {
-            data.daycareTeamData[i] = daycareTeamData[i].LoadData();
+            data.daycareTeamData.Add(unitData.LoadData());
         }
     }
 
@@ -78,9 +78,10 @@ public class PlayerData : MonoBehaviour, ISaveData
         TeamManager.instance.teamData = teamData;
 
         if (daycareTeamData == null) return;
-        for (int i = 0; i < data.daycareTeamData.Count; i++)
+        foreach (UnitSaveData unitData in data.daycareTeamData)
         {
-            daycareTeamData[i].SaveData(data.daycareTeamData[i]);
+            UnitData empty = (UnitData)ScriptableObject.CreateInstance(typeof(UnitData));
+            daycareTeamData.Add(empty.SaveData(unitData));
         }
     }
 }

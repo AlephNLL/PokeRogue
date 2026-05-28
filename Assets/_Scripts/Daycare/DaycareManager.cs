@@ -260,6 +260,7 @@ public class DaycareManager : MonoBehaviour
     void StartBattle()
     {
         DaycareUIManager.instance.HideBattleConfirm();
+        PlayerData.teamData.Clear();
         PlayerData.teamData.AddRange(selectedUnits);
         for (int i = 0; i < selectedUnits.Count; i++)
         {

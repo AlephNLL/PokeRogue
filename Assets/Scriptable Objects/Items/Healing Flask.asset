@@ -14,12 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Healing Flask
   description: Heals 20 HP.
-  cost: 10
+  cost: 30
   icon: {fileID: 1176257147109685943, guid: 4a7db4334ae05ee4780d8b100f41de08, type: 3}
   isConsumible: 1
   effect: 04000000
+  condition: 
   effectChance: []
   statusToChangeTo: 0
+  stanceToChangeTo: 0
   healingAmount: 20
   executionTime: 
   statToMod: 

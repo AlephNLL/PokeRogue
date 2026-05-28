@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Silicone Gun
   description: Burns user
   cost: 48
-  icon: {fileID: 1176257147109685943, guid: 04b7626b596b1d740a7401110ccd81d8, type: 3}
+  icon: {fileID: 4718596695142546627, guid: b4f47a3e4c69e2944bbc2f7f2517aa1c, type: 3}
   isConsumible: 0
   effect: 03000000
   condition: 

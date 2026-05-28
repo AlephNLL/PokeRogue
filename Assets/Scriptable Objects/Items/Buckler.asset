@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Buckler
   description: Changes to defensive stance when using a defensive ability
   cost: 68
-  icon: {fileID: 1176257147109685943, guid: 04b7626b596b1d740a7401110ccd81d8, type: 3}
+  icon: {fileID: 9057351123824997690, guid: 5e771f30d5767654bbc6b19c83e78697, type: 3}
   isConsumible: 0
   effect: 0a000000
   condition: 00000000

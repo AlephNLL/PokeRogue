@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Lightning Kick
   description: Dashes forward at the speed of lightning. 10% chance to paralyze foe
-  sfx: {fileID: 11400000, guid: 79214797fcb65524ca706af2054617bd, type: 2}
+  sfx: {fileID: 11400000, guid: 7558af8243ddca646ab524fe47bc460a, type: 2}
   power: 70
   accuracy: 100
   abilityType: 0

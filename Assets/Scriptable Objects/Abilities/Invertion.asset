@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Invertion
   description: Swaps attack and defense
+  sfx: {fileID: 11400000, guid: c53198310651a594591d52b90f6f6585, type: 2}
   power: 0
   accuracy: 100
   abilityType: 0

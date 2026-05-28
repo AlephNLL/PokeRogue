@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Large Slash
   description: A huge slash that covers a large area.
-  sfx: {fileID: 0}
+  sfx: {fileID: 11400000, guid: ebf1015c71f0279408a5eba89fe55077, type: 2}
   power: 65
   accuracy: 100
   abilityType: 0

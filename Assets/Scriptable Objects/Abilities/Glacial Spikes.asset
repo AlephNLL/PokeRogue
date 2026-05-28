@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Glacial Spikes
   description: Summon spikes beneath a foe. 10% chance to freeze foe
-  sfx: {fileID: 0}
+  sfx: {fileID: 11400000, guid: 520a8f477046e1c48bbc2653b6dbe59c, type: 2}
   power: 70
   accuracy: 100
   abilityType: 0

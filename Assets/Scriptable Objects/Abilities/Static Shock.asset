@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Static Shock
   description: Paralyzes a foe.
-  sfx: {fileID: 0}
+  sfx: {fileID: 11400000, guid: 7558af8243ddca646ab524fe47bc460a, type: 2}
   power: 0
   accuracy: 90
   abilityType: 0

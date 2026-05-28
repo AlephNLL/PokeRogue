@@ -11,7 +11,6 @@ public class TeamManager : MonoBehaviour
 {
     public static TeamManager instance;
     public List<UnitData> teamData;
-    public List<UnitData> teamStartData;
 
     //temnporal hasta que se elija el equipo en la guarderia
     private void Awake()
@@ -26,6 +25,7 @@ public class TeamManager : MonoBehaviour
             Destroy(gameObject);
         }
 
+        if (PlayerData.teamData == null) PlayerData.teamData = new List<UnitData>();
         if (PlayerData.teamData.Count <= 0)
         {
             PlayerData.teamData = new List<UnitData>();

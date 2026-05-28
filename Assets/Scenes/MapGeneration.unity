@@ -1531,7 +1531,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1554669770446034163, guid: b38dcf3b2310e2440b40c82e67ea0695, type: 3}
       propertyPath: p_items.Array.size
-      value: 9
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1554669770446034163, guid: b38dcf3b2310e2440b40c82e67ea0695, type: 3}
       propertyPath: 'p_items.Array.data[3]'
@@ -3352,7 +3352,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 407657665994588858, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: skipBattles
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 407657665994588858, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: canLoadRooms
@@ -3440,7 +3440,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: moveSpeed
-      value: 0.2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: teamManager

@@ -10,18 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 16309091af3cd76408deaa6074da1205, type: 3}
-  m_Name: Healing Flask
+  m_Name: Ceremonial Sword
   m_EditorClassIdentifier: Assembly-CSharp::Item
-  name: Healing Flask
-  description: Heals 20 HP.
-  cost: 10
-  icon: {fileID: 1176257147109685943, guid: 4a7db4334ae05ee4780d8b100f41de08, type: 3}
-  isConsumible: 1
-  effect: 04000000
-  effectChance: []
+  name: Ceremonial Sword
+  description: Changes to agressive stance when using a agressive ability
+  cost: 68
+  icon: {fileID: 1176257147109685943, guid: 04b7626b596b1d740a7401110ccd81d8, type: 3}
+  isConsumible: 0
+  effect: 0a000000
+  condition: 00000000
+  effectChance:
+  - 0
   statusToChangeTo: 0
-  healingAmount: 20
-  executionTime: 
+  stanceToChangeTo: 0
+  healingAmount: 0
+  executionTime: 00000000
   statToMod: 
   statMod: []
-  affectSelf: 0
+  affectSelf: 1

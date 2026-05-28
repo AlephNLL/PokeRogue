@@ -10,20 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 16309091af3cd76408deaa6074da1205, type: 3}
-  m_Name: Rusted Knife
+  m_Name: Alarm Clock
   m_EditorClassIdentifier: Assembly-CSharp::Item
-  name: Rusted Knife
-  description: A rusty knife that may posion hit foes
-  cost: 12
+  name: Alarm Clock
+  description: Prevents user from sleeping, slightly raises attack instead.
+  cost: 68
   icon: {fileID: 1176257147109685943, guid: 04b7626b596b1d740a7401110ccd81d8, type: 3}
   isConsumible: 0
-  effect: 03000000
-  condition: 00000000
+  effect: 0100000006000000
+  condition: 0600000006000000
   effectChance:
-  - 10
-  statusToChangeTo: 2
+  - 100
+  - 100
+  statusToChangeTo: 1
   healingAmount: 0
-  executionTime: 03000000
-  statToMod: 
-  statMod: []
-  affectSelf: 0
+  executionTime: 0900000009000000
+  statToMod: 01000000
+  statMod:
+  - 1.1
+  affectSelf: 1

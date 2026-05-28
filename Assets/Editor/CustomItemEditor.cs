@@ -15,9 +15,13 @@ public class CustomItemEditor : Editor
     SerializedProperty isConsumible;
 
     SerializedProperty effect;
+    SerializedProperty condition;
     SerializedProperty effectChance;
     SerializedProperty statusToChangeTo;
+    SerializedProperty stanceToChangeTo;
     SerializedProperty healingAmount;
+    SerializedProperty statToMod;
+    SerializedProperty statMod;
     SerializedProperty executionTime;
     SerializedProperty affectSelf;
 
@@ -34,9 +38,13 @@ public class CustomItemEditor : Editor
         isConsumible = serializedObject.FindProperty("isConsumible");
 
         effect = serializedObject.FindProperty("effect");
+        condition = serializedObject.FindProperty("condition");
         effectChance = serializedObject.FindProperty("effectChance");
         statusToChangeTo = serializedObject.FindProperty("statusToChangeTo");
+        stanceToChangeTo = serializedObject.FindProperty("stanceToChangeTo");
         healingAmount = serializedObject.FindProperty("healingAmount");
+        statToMod = serializedObject.FindProperty("statToMod");
+        statMod = serializedObject.FindProperty("statMod");
         executionTime = serializedObject.FindProperty("executionTime");
         affectSelf = serializedObject.FindProperty("affectSelf");
     }
@@ -63,9 +71,17 @@ public class CustomItemEditor : Editor
         if (effectGroup)
         {
             EditorGUILayout.PropertyField(effect);
+            if (!item.isConsumible) EditorGUILayout.PropertyField(condition);
             if (!item.isConsumible) EditorGUILayout.PropertyField(effectChance);
-            if (item.effect == ItemEffects.APPLYSTATUS) EditorGUILayout.PropertyField(statusToChangeTo);
-            if (item.effect == ItemEffects.HEAL) EditorGUILayout.PropertyField(healingAmount);
+            for (int i = 0; i < item.effect.Length; i++)
+            {
+                if (item.effect[i] == ItemEffects.APPLYSTATUS) EditorGUILayout.PropertyField(statusToChangeTo);
+                if (item.effect[i] == ItemEffects.CHANGESTANCEIFMOVESTANCE) EditorGUILayout.PropertyField(stanceToChangeTo);
+                if (item.effect[i] == ItemEffects.HEAL) EditorGUILayout.PropertyField(healingAmount);
+                if (item.effect[i] == ItemEffects.STATMOD || item.effect[i] == ItemEffects.INCREASESTAT) EditorGUILayout.PropertyField(statToMod);
+                if (item.effect[i] == ItemEffects.STATMOD || item.effect[i] == ItemEffects.INCREASESTAT) EditorGUILayout.PropertyField(statMod);
+            }
+            
             if (!item.isConsumible) EditorGUILayout.PropertyField(executionTime);
             EditorGUILayout.PropertyField(affectSelf);
         }

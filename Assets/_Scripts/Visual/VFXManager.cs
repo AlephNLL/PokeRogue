@@ -170,6 +170,7 @@ public class VFXManager : MonoBehaviour
                 FresnelApplier.applyFresnel(unit, Color.lightBlue);
                 break;
             case Status.ASLEEP:
+                FresnelApplier.clearFresnel(unit);
                 break;
             default:
                 break;

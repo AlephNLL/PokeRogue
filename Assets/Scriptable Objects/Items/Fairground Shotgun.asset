@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Fairground Shotgun
   description: Doubles attack but more likely to miss.
   cost: 100
-  icon: {fileID: 1176257147109685943, guid: 04b7626b596b1d740a7401110ccd81d8, type: 3}
+  icon: {fileID: 6698336994304256519, guid: f879d40e574946b46a044cfca8a2dbef, type: 3}
   isConsumible: 0
   effect: 01000000
   condition: 00000000

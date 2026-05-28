@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Alarm Clock
   description: Prevents user from sleeping, slightly raises attack instead.
   cost: 68
-  icon: {fileID: 1176257147109685943, guid: 04b7626b596b1d740a7401110ccd81d8, type: 3}
+  icon: {fileID: 6348252816621650911, guid: 2bb6a2b02e6249743a299039bb846f17, type: 3}
   isConsumible: 0
   effect: 0100000006000000
   condition: 0600000006000000

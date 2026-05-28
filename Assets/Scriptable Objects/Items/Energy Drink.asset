@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Energy Drink
   description: Crazy mango. Slightly raises speed
   cost: 35
-  icon: {fileID: 1176257147109685943, guid: 04b7626b596b1d740a7401110ccd81d8, type: 3}
+  icon: {fileID: 4698152241234639975, guid: ad8fd780de2496148916d32521456370, type: 3}
   isConsumible: 0
   effect: 01000000
   condition: 00000000

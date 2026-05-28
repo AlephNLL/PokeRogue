@@ -128,9 +128,8 @@ public class TooltipUI : MonoBehaviour
             tooltipBorder.SetActive(false);
             actionQueue.RemoveAt(0);
 
-            if(!activeAction.isForceClosed) yield return new WaitForSeconds(0.15f); 
+            if (!activeAction.isForceClosed) yield return new WaitForSeconds(0.15f); 
         }
-
         isProcessing = false;
     }
 

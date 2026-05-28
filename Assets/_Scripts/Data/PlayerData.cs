@@ -10,7 +10,7 @@ public class PlayerData : MonoBehaviour, ISaveData
     public static List<UnitData> teamData;
     public static List<UnitData> daycareTeamData;
 
-    public static bool tutorial = true;
+    public static bool tutorial = false;
 
     private void Awake()
     {

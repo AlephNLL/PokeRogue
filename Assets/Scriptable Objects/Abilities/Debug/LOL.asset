@@ -30,7 +30,7 @@ MonoBehaviour:
   passiveEffects: 0
   passiveExecutionTime: 0
   passiveEffectChance: 0
-  status: 1
+  status: 5
   effect1: 4
   condition1: 0
   effect1Chance: 100

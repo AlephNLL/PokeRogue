@@ -188,6 +188,8 @@ public class Unit : MonoBehaviour
                 healthBar.value = (float)currentHp / maxHp;
             }
         }
+
+        TooltipUI.instance.EndCurrentAction();
     }
     public bool ActivateCamera()
     {
@@ -308,19 +310,11 @@ public class Unit : MonoBehaviour
         if (itemMenu == null) return;
         itemMenu.gameObject.SetActive(false);
 
-        List<Item> consumables = new List<Item>();
-        for (int i = 0; i < PlayerData.items.Count; i++)
-        {
-            if (PlayerData.items[i].isConsumible)
-            {
-                consumables.Add(PlayerData.items[i]);
-            }
-        }
-
-        for (int i = 0; i < consumables.Count; i++)
+        for (int i = 0; i < itemButtons.Length; i++)
         {
             int index = i;
             itemButtons[index].onClick.RemoveAllListeners();
+            itemButtons[index].gameObject.SetActive(false);
         }
 
         lastMenu = null;
@@ -386,19 +380,15 @@ public class Unit : MonoBehaviour
                 break;
             case Stats.ATK:
                 attack += amount;
-                TooltipUI.instance.AddEffectToCurrentAction($"{name} shares its attack with the team!");
                 break;
             case Stats.DEF:
                 defense += amount;
-                TooltipUI.instance.AddEffectToCurrentAction($"{name} shares its defense with the team!");
                 break;
             case Stats.SPEED:
                 speed += amount;
-                TooltipUI.instance.AddEffectToCurrentAction($"{name} shares its speed with the team!");
                 break;
             case Stats.LUCK:
                 luck += amount;
-                TooltipUI.instance.AddEffectToCurrentAction($"{name} shares its luck with the team!");
                 break;
             case Stats.PRECISION:
                 break;
@@ -737,6 +727,7 @@ public class Unit : MonoBehaviour
                             }
                             break;
                         case PassiveEffects.STACKSTAT:
+                            TooltipUI.instance.AddEffectToCurrentAction($"{name} shares stats with the team!");
                             for (int i = 0; i < ability.statToMod.Length; i++)
                             {
                                 for (int j = 0; j < target.Count; j++)
@@ -766,29 +757,67 @@ public class Unit : MonoBehaviour
 
         Unit target = heldItem.affectSelf ? this : lastHitUnit;
 
-        if (heldItem.executionTime == battleStage && baseEffectChanceMulti * heldItem.effectChance + effectChanceModifier >= Random.Range(1, 100))
+        for (int i = 0; i < heldItem.effect.Length; i++)
         {
-            switch (heldItem.effect)
+            if (heldItem.executionTime[i] == battleStage && baseEffectChanceMulti * heldItem.effectChance[i] + effectChanceModifier >= Random.Range(1, 100))
             {
-                case ItemEffects.UPATK:
-                    target.ApplyStatModifier(Stats.ATK, 1.5f);
-                    break;
-                case ItemEffects.UPDEF:
-                    target.ApplyStatModifier(Stats.DEF, 1.5f);
-                    break;
-                case ItemEffects.UPSPEED:
-                    target.ApplyStatModifier(Stats.SPEED, 1.5f);
-                    break;
-                case ItemEffects.ADDTURN:
-                    target.additionalTurn = true;
-                    break;
-                case ItemEffects.APPLYSTATUS:
-                    target.ApplyStatus(heldItem.statusToChangeTo);
-                    break;
-                default:
-                    break;
+                switch (heldItem.condition[i])
+                {
+                    case AbilityCondition.NONE:
+                        break;
+                    case AbilityCondition.ISBURNED:
+                        if (status != Status.BURNED) continue;
+                        break;
+                    case AbilityCondition.ISASLEEP:
+                        if (status != Status.ASLEEP) continue;
+                        break;
+                    case AbilityCondition.ISFROZEN:
+                        if (status != Status.FROZEN) continue;
+                        break;
+                    case AbilityCondition.ISPARALYZED:
+                        if (status != Status.PARALYZED) continue;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (heldItem.executionTime[i] == ExecutionTime.BATTLESTART || heldItem.executionTime[i] == ExecutionTime.TURNSTART) TooltipUI.instance.StartNewAction($"{name}' item {heldItem.name} activates!");
+                else TooltipUI.instance.AddEffectToCurrentAction($"{name}' item {heldItem.name} activates!");
+
+                switch (heldItem.effect[i])
+                {
+                    case ItemEffects.STATMOD:
+                        for (int j = 0; j < heldItem.statToMod.Length; j++)
+                        {
+                            target.ApplyStatModifier(heldItem.statToMod[j], heldItem.statMod[j]);
+                        }
+                        break;
+                    case ItemEffects.ADDTURN:
+                        target.additionalTurn = true;
+                        break;
+                    case ItemEffects.APPLYSTATUS:
+                        target.ApplyStatus(heldItem.statusToChangeTo);
+                        break;
+                    case ItemEffects.CURESTATUS:
+                        target.CureStatus();
+                            break;
+                    case ItemEffects.FLINCH:
+                        target.skipTurn = true; 
+                        break;
+                    case ItemEffects.INCREASESTAT:
+                        for (int j = 0; j < heldItem.statToMod.Length; j++)
+                        {
+                            target.IncreaseStat(heldItem.statToMod[j], (int)heldItem.statMod[j]);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                if (heldItem.executionTime[i] == ExecutionTime.BATTLESTART || heldItem.executionTime[i] == ExecutionTime.TURNSTART) TooltipUI.instance.EndCurrentAction();
             }
         }
+        
     }
 
     public void ApplyStatus(Status statusToApply)
@@ -805,16 +834,18 @@ public class Unit : MonoBehaviour
         TooltipUI.instance.AddEffectToCurrentAction($"{name} is {statusToApply.ToString().ToLower()}");
         status = statusToApply;
 
+        if (statusToApply == Status.ASLEEP) StartSleepCounter();
+
         ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
         ResolveItemEffect(ExecutionTime.ONSTATUSCHANGE);
-
-        if (statusToApply == Status.ASLEEP) StartSleepCounter();
     }
 
     public void CureStatus()
     {
         if (status == Status.NONE) return;
 
+        TooltipUI.instance.AddEffectToCurrentAction($"{name} is no longer {status.ToString().ToLower()}");
+        if (status == Status.ASLEEP) { skipTurn = false; Debug.Log("Despertao"); }
         status = Status.NONE;
         VFXManager.instance.ClearStatusVFXPrefab(gameObject);
         FresnelApplier.clearFresnel(gameObject);
@@ -840,6 +871,7 @@ public class Unit : MonoBehaviour
             return;
         }
         TooltipUI.instance.StartNewAction(name + " is fast asleep.");
+        TooltipUI.instance.EndCurrentAction();
         skipTurn = true;
         sleepCounter++;
     }
@@ -848,6 +880,7 @@ public class Unit : MonoBehaviour
         TooltipUI.instance.StartNewAction(name + " woke up!");
         CureStatus();
         skipTurn = false;
+        TooltipUI.instance.EndCurrentAction();
     }
     public bool HasAdditionalTurn()
     {

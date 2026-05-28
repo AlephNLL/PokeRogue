@@ -469,24 +469,21 @@ public class TBBS : MonoBehaviour
     {
         Unit currentUnit = allUnits[currentTurnIndex];
 
-        switch (item.effect)
+        switch (item.effect[0])
         {
-            case ItemEffects.UPATK:
-                break;
-            case ItemEffects.UPDEF:
-                break;
-            case ItemEffects.UPSPEED:
-                break;
-            case ItemEffects.ADDTURN:
-                break;
-            case ItemEffects.APPLYSTATUS:
+            case ItemEffects.STATMOD:
                 break;
             case ItemEffects.HEAL:
                 target.Heal(item.healingAmount);
                 break;
+            case ItemEffects.CURESTATUS:
+                target.CureStatus();
+                break;
             default:
                 break;
         }
+
+        PlayerData.items.Remove(item);
 
         yield return new WaitForSeconds(0.3f);
 
@@ -1092,6 +1089,15 @@ public class TBBS : MonoBehaviour
                 if (ability.endOnMiss) return false;
                 continue;
             }
+            if (attacker.heldItem)
+            {
+                if (attacker.heldItem.HasEffect(ItemEffects.CHANGESTANCEIFMOVESTANCE) && attacker.currentStance != attacker.heldItem.stanceToChangeTo 
+                    && ability.stance == attacker.heldItem.stanceToChangeTo)
+                {
+                    attacker.ChangeStance(attacker.heldItem.stanceToChangeTo);
+                }
+            }
+            
             ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1);
             ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf, ability.condition2);
 
@@ -1244,8 +1250,12 @@ public class TBBS : MonoBehaviour
 
         if (damage <= 0) damage = 1;
 
-        if (ability.effect1 == AbilityEffect.LEECH || ability.effect2 == AbilityEffect.LEECH) attacker.Heal((int)(damage * .5f));
-        if (ability.effect1 == AbilityEffect.RECOIL || ability.effect2 == AbilityEffect.RECOIL) attacker.TakeDamage((int)(damage * .5f));
+        if (ability.effect1 == AbilityEffect.LEECH || ability.effect2 == AbilityEffect.LEECH) attacker.Heal(Mathf.Max((int)(damage * .5f), 1));
+        if (ability.effect1 == AbilityEffect.RECOIL || ability.effect2 == AbilityEffect.RECOIL) attacker.TakeDamage(Mathf.Max((int)(damage * .5f), 1));
+        if (attacker.heldItem)
+        {
+            if(attacker.heldItem.HasEffect(ItemEffects.LEECH)) attacker.Heal(Mathf.Max((int)(damage * .1f), 1));
+        }
 
         Debug.Log($"--- REPORTE DE DAÑO ---");
         Debug.Log($"{attacker.name} usó habilidad con Poder: {power} y Stat Ofensivo: {attackStat}");

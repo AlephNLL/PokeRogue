@@ -44,9 +44,9 @@ public class UnitData : ScriptableObject
     {
         PlayerData.Instance.p_items.Remove(item);
 
-        switch (item.effect)
+        switch (item.effect[0])
         {
-            case ItemEffects.CLEARSTATUS:
+            case ItemEffects.CURESTATUS:
                 status = Status.NONE;
                 break;
             case ItemEffects.HEAL:

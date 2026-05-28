@@ -59,7 +59,9 @@ public class MapManager : MonoBehaviour, ISaveData
             {
                 Debug.Log("Mapa Generado en escena de mapa");
                 mapView.DrawMap(nodes);
+                if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.FixDuplicateBoss(); }
                 currentRoom = GameObject.Find(currentRoomName);
+
             } else
             {
                 if (createdRooms.Count() == 0 && nodes.Count() == 0 && mapCreated == false)
@@ -69,6 +71,7 @@ public class MapManager : MonoBehaviour, ISaveData
 
                     mapGenerator.GenerateMap();
 
+                    if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.GenerateNextMap(); }
                     Debug.Log("Mapa Generado");
                 }
                 else if (nodes.Count != 0 && mapLoaded)
@@ -176,6 +179,7 @@ public class MapManager : MonoBehaviour, ISaveData
     {
         data.mapData = new();
         data.mapCreated = mapCreated;
+        if (currentRoom == null) return;
         data.currentRoom = currentRoom.name;
         foreach (MapNode mapNode in nodes)
         {
@@ -223,11 +227,12 @@ public class MapManager : MonoBehaviour, ISaveData
 
         currentRoom = null;
         currentNode = null;
-        currentRoomName = "";
+        currentRoomName = "Spawn-0";
 
         mapCreated = false;
-        loadRooms = false;
-        canLoadRooms = false;
+
+        //loadRooms = false;
+        //canLoadRooms = false;
 
         if (mapView != null) mapView.ClearMap();
     }

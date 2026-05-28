@@ -54,7 +54,7 @@ public class PauseMenuUI : MonoBehaviour
 
     public void ExitToMenu()
     {
-        SceneManager.LoadSceneAsync("MainMenu");
+        Application.Quit();
     }
 
     public void ShowExitConfirmation(bool state = true)

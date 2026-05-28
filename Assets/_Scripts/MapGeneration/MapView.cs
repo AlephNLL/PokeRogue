@@ -19,14 +19,16 @@ public class MapView : MonoBehaviour
     [SerializeField] private GameObject startPrefab;
     [SerializeField] private GameObject randomPrefab;
     [SerializeField] private GameObject[] decorationPrefabs;
+    [SerializeField] private GameObject[] secondDecorationPrefabs;
 
     [Header("Configuracion del path")]
     [SerializeField] private Material lineMaterial;
     [SerializeField] private float lineThickness = 0.1f;
 
-    [Header("Debug")]
+    [Header("Debug Decoracion")]
     [SerializeField] private bool enableDebugRays = false;
-    [SerializeField] private float density = 10f;
+    [SerializeField] private float firstDensity = 10f;
+    [SerializeField] private float secondiIterationDensity = 30f;
     [SerializeField] private float rayDuration = 10f;
 
     [Header("Referencias")]
@@ -62,7 +64,8 @@ public class MapView : MonoBehaviour
         PassConnectedRooms(path);
         DrawTeam();
 
-        StartCoroutine(DrawDecorations());
+        StartCoroutine(DrawDecorations(new Vector3(-5, 0, 0), decorationPrefabs, firstDensity));
+        StartCoroutine(DrawDecorations(new Vector3(-5, 0, 0), secondDecorationPrefabs, secondiIterationDensity));
 
         if (!MapManager.instance.mapCreated)
         {
@@ -218,8 +221,10 @@ public class MapView : MonoBehaviour
         lineCollider.gameObject.layer = LayerMask.NameToLayer("Path");
     }
 
-    private IEnumerator DrawDecorations()
+    private IEnumerator DrawDecorations(Vector2 startPos, GameObject[] prefabs, float density)
     {
+        float startX = startPos.x;
+        float startY = startPos.y;
 
         yield return new WaitForSeconds(0.2f);
         // Get map size
@@ -233,7 +238,7 @@ public class MapView : MonoBehaviour
 
         List<Vector3> decorationPositions = new List<Vector3>();
 
-        for (float height = -6; height < mapSize.x + 8; height = height + stepX)
+        for (float height = startX; height < mapSize.x + startX + 8; height = height + stepX)
         {
             // Cast
 
@@ -283,14 +288,14 @@ public class MapView : MonoBehaviour
                 }
             }
         }
-        InstantiateDecorations(decorationPositions, stepX, stepZ);
+        InstantiateDecorations(decorationPositions, stepX, stepZ, prefabs);
     }
 
-    private void InstantiateDecorations(List<Vector3> decorationPositions, float stepX, float stepZ)
+    private void InstantiateDecorations(List<Vector3> decorationPositions, float stepX, float stepZ, GameObject[] prefabs)
     {
         GameObject decorationsGO = GameObject.Find("Decorations");
 
-        if (decorationsGO != null)
+        if (decorationsGO != null && secondDecorationPrefabs == null)
         {
             Destroy(decorationsGO);
         }
@@ -300,9 +305,9 @@ public class MapView : MonoBehaviour
 
         foreach (Vector3 position in decorationPositions)
         {
-            int randomPrefab = UnityEngine.Random.Range(0, decorationPrefabs.Length);
+            int randomPrefab = UnityEngine.Random.Range(0, prefabs.Length);
 
-            GameObject decorationGO = Instantiate(decorationPrefabs[randomPrefab], position, Quaternion.identity, decorations.transform);
+            GameObject decorationGO = Instantiate(prefabs[randomPrefab], position, Quaternion.identity, decorations.transform);
 
             FresnelApplier.SetMapDecorationShader(decorationGO);
 

@@ -6,6 +6,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using GameData;
 using UnityEditor.MemoryProfiler;
+using UnityEngine.SceneManagement;
 public class MapGenerator : MonoBehaviour
 {
     [Header("Ajustes del grid")]
@@ -32,6 +33,10 @@ public class MapGenerator : MonoBehaviour
 
         roomAssigner.AssignRoomTypes(path);
 
+        MapManager.instance.nodes = path;
+        MapManager.instance.mapCreated = true;
+
+        if (SceneManager.GetActiveScene().name != "MapGeneration") return;
         mapView.DrawMap(path);
         MapManager.instance.currentRoom = GameObject.Find(MapManager.instance.currentRoomName);
         MapCamera.SetSelectedObject(MapManager.instance.currentRoom);

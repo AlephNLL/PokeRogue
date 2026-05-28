@@ -27,7 +27,7 @@ public class MapView : MonoBehaviour
 
     [Header("Debug Decoracion")]
     [SerializeField] private bool enableDebugRays = false;
-    [SerializeField] private float density = 10f;
+    [SerializeField] private float firstDensity = 10f;
     [SerializeField] private float secondiIterationDensity = 30f;
     [SerializeField] private float rayDuration = 10f;
 
@@ -64,8 +64,8 @@ public class MapView : MonoBehaviour
         PassConnectedRooms(path);
         DrawTeam();
 
-        StartCoroutine(DrawDecorations(Vector3.zero, decorationPrefabs));
-        StartCoroutine(DrawDecorations(Vector3.zero, secondDecorationPrefabs));
+        StartCoroutine(DrawDecorations(new Vector3(-5, 0, 0), decorationPrefabs, firstDensity));
+        StartCoroutine(DrawDecorations(new Vector3(-5, 0, 0), secondDecorationPrefabs, secondiIterationDensity));
 
         if (!MapManager.instance.mapCreated)
         {
@@ -221,7 +221,7 @@ public class MapView : MonoBehaviour
         lineCollider.gameObject.layer = LayerMask.NameToLayer("Path");
     }
 
-    private IEnumerator DrawDecorations(Vector2 startPos, GameObject[] prefabs)
+    private IEnumerator DrawDecorations(Vector2 startPos, GameObject[] prefabs, float density)
     {
         float startX = startPos.x;
         float startY = startPos.y;
@@ -238,7 +238,7 @@ public class MapView : MonoBehaviour
 
         List<Vector3> decorationPositions = new List<Vector3>();
 
-        for (float height = startX; height < mapSize.x + startX; height = height + stepX)
+        for (float height = startX; height < mapSize.x + startX + 8; height = height + stepX)
         {
             // Cast
 

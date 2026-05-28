@@ -3432,7 +3432,7 @@ PrefabInstance:
       objectReference: {fileID: 426288676}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: density
-      value: 20
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: moveDelay
@@ -3446,6 +3446,10 @@ PrefabInstance:
       propertyPath: teamManager
       value: 
       objectReference: {fileID: 1861837860}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: firstDensity
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: lineMaterial
       value: 
@@ -3464,24 +3468,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: secondiIterationDensity
-      value: 50
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: decorationPrefabs.Array.size
-      value: 8
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'decorationPrefabs.Array.data[0]'
       value: 
-      objectReference: {fileID: 919132149155446097, guid: 529a0296afe586249958cf0ca9850671, type: 3}
+      objectReference: {fileID: 919132149155446097, guid: 76f757e6fa56fe04baa6d10573fc9f9f, type: 3}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'decorationPrefabs.Array.data[1]'
       value: 
-      objectReference: {fileID: 919132149155446097, guid: 463923497d6d8cd4f8090d6ec2e7f009, type: 3}
+      objectReference: {fileID: 919132149155446097, guid: 52c70da2d69b9fa4b965dca70a2a7d11, type: 3}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'decorationPrefabs.Array.data[2]'
       value: 
-      objectReference: {fileID: 919132149155446097, guid: bf1ab3925851e2548b57c2f595d0216e, type: 3}
+      objectReference: {fileID: 919132149155446097, guid: 1bba009e265da4d4ca383371b8e710c4, type: 3}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'decorationPrefabs.Array.data[3]'
       value: 
@@ -3493,19 +3497,19 @@ PrefabInstance:
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'decorationPrefabs.Array.data[5]'
       value: 
-      objectReference: {fileID: 919132149155446097, guid: 76f757e6fa56fe04baa6d10573fc9f9f, type: 3}
+      objectReference: {fileID: 919132149155446097, guid: 5e58e991d05a13943997100827fc41b5, type: 3}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'decorationPrefabs.Array.data[6]'
       value: 
-      objectReference: {fileID: 919132149155446097, guid: 76f757e6fa56fe04baa6d10573fc9f9f, type: 3}
+      objectReference: {fileID: 919132149155446097, guid: 5e58e991d05a13943997100827fc41b5, type: 3}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'decorationPrefabs.Array.data[7]'
       value: 
-      objectReference: {fileID: 919132149155446097, guid: 76f757e6fa56fe04baa6d10573fc9f9f, type: 3}
+      objectReference: {fileID: 919132149155446097, guid: 5e58e991d05a13943997100827fc41b5, type: 3}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'decorationPrefabs.Array.data[8]'
       value: 
-      objectReference: {fileID: 919132149155446097, guid: 280e6bce6fbe9bf489f6051caad3c33c, type: 3}
+      objectReference: {fileID: 919132149155446097, guid: 5e58e991d05a13943997100827fc41b5, type: 3}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'decorationPrefabs.Array.data[9]'
       value: 
@@ -3520,16 +3524,16 @@ PrefabInstance:
       objectReference: {fileID: 919132149155446097, guid: bf1ab3925851e2548b57c2f595d0216e, type: 3}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: secondDecorationPrefabs.Array.size
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'secondDecorationPrefabs.Array.data[0]'
       value: 
-      objectReference: {fileID: 919132149155446097, guid: 280e6bce6fbe9bf489f6051caad3c33c, type: 3}
+      objectReference: {fileID: 919132149155446097, guid: 14a363da30ea15940bf9ad4d3d649f23, type: 3}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'secondDecorationPrefabs.Array.data[1]'
       value: 
-      objectReference: {fileID: 919132149155446097, guid: 280e6bce6fbe9bf489f6051caad3c33c, type: 3}
+      objectReference: {fileID: 919132149155446097, guid: b9a6cbf320bfda74d86636bfae8a0cfa, type: 3}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'secondDecorationPrefabs.Array.data[2]'
       value: 
@@ -3537,7 +3541,7 @@ PrefabInstance:
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'secondDecorationPrefabs.Array.data[3]'
       value: 
-      objectReference: {fileID: 919132149155446097, guid: b9a6cbf320bfda74d86636bfae8a0cfa, type: 3}
+      objectReference: {fileID: 919132149155446097, guid: 14a363da30ea15940bf9ad4d3d649f23, type: 3}
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'secondDecorationPrefabs.Array.data[4]'
       value: 
@@ -3545,7 +3549,7 @@ PrefabInstance:
     - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'secondDecorationPrefabs.Array.data[5]'
       value: 
-      objectReference: {fileID: 919132149155446097, guid: 2e85905dc06bac7409994466846e083a, type: 3}
+      objectReference: {fileID: 919132149155446097, guid: 7cc0d658f43e99e4e9739fd60335a288, type: 3}
     - target: {fileID: 3413889519824911466, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: p_items.Array.size
       value: 3

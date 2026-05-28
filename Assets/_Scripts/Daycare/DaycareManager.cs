@@ -271,6 +271,8 @@ public class DaycareManager : MonoBehaviour
 
         TooltipUI.instance.EndCurrentAction(true);
 
+        PlayerData.daycareTeamData = units;
+
         if (MapManager.instance)
         {
             MapManager.instance.LoadMapSceneFromStart();

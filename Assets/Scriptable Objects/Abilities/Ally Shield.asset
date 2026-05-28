@@ -15,6 +15,7 @@ MonoBehaviour:
   name: Ally Shield
   description: Set an ally as a guardian this round. Any attacks targetting the user
     redirect to the guardian.
+  sfx: {fileID: 11400000, guid: a3ca5b585c7493f43a7e994a1fb79a6d, type: 2}
   power: 0
   accuracy: 100
   abilityType: 0
@@ -26,6 +27,7 @@ MonoBehaviour:
   multiHitRange: 0
   hits: 0
   hitRange: 
+  endOnMiss: 0
   passiveEffects: 0
   passiveExecutionTime: 0
   passiveEffectChance: 0

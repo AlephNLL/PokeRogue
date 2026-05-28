@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Bear With It
   description: Ups attack and defense if user has any status.
+  sfx: {fileID: 11400000, guid: 5695e15e12a54d24e98ffe178cbf410c, type: 2}
   power: 60
   accuracy: 90
   abilityType: 0
@@ -25,6 +26,7 @@ MonoBehaviour:
   multiHitRange: 0
   hits: 0
   hitRange: 
+  endOnMiss: 0
   passiveEffects: 0
   passiveExecutionTime: 0
   passiveEffectChance: 0

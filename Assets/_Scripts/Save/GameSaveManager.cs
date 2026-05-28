@@ -65,7 +65,16 @@ public class GameSaveManager : MonoBehaviour
         {
             saveDataObj.SaveData(ref saveData);
         }
-        saveData.sceneName = SceneManager.GetActiveScene().name;
+        string lastSceneName = SceneManager.GetActiveScene().name;
+
+        if (lastSceneName == "Daycare")
+        {
+            saveData.sceneName = lastSceneName;
+        } else
+        {
+            saveData.sceneName = "MapGeneration";
+        }
+
         // Save data to file
         fileDataHandler.Save(saveData);
     }

@@ -138,13 +138,13 @@ public class Unit : MonoBehaviour
         switch (stat)
         {
             case Stats.HP:
-                return (int)(constitution * monLevel/10f + monLevel + 1);
+                return (int)(constitution * monLevel/5f + monLevel + 1);
             case Stats.ATK:
-                return (int)(strength * monLevel/10f + 1);
+                return (int)(strength * monLevel/5f + 1);
             case Stats.DEF:
-                return (int)((.5f * constitution + .5f * dexterity) * monLevel/10f + 1);
+                return (int)((.5f * constitution + .5f * dexterity) * monLevel/5f + 1);
             case Stats.SPEED:
-                return (int)(dexterity * monLevel/10f + 1);
+                return (int)(dexterity * monLevel/5f + 1);
             default:
                 return 0;
         }
@@ -156,10 +156,10 @@ public class Unit : MonoBehaviour
             currentHp = PlayerData.teamData.Find(item => item.id == id).currentHp;
             level = PlayerData.teamData.Find(item => item.id == id).level;
 
-            maxHp = (int)(constitution * level + 1);
-            attack = (int)(strength / 5f * level + 1);
-            defense = (int)((.5f * constitution + .5f * dexterity) / 5f * level + 1);
-            speed = (int)(dexterity / 5f * level + 1);
+            maxHp = GetRawStat(Stats.HP, level);
+            attack = GetRawStat(Stats.ATK, level);
+            defense = GetRawStat(Stats.DEF, level);
+            speed = GetRawStat(Stats.SPEED, level);
 
             knownAbilities = PlayerData.teamData.Find(item => item.id == id).knownAbilities.ToArray();
             ApplyStatus(PlayerData.teamData.Find(item => item.id == id).status);
@@ -169,10 +169,10 @@ public class Unit : MonoBehaviour
         {
             level = BattleData.enemyLevel;
 
-            maxHp = (int)(constitution * level + 1);
-            attack = (int)(strength / 5f * level + 1);
-            defense = (int)((.5f * constitution + .5f * dexterity) / 5f * level + 1);
-            speed = (int)(dexterity / 5f * level + 1);
+            maxHp = GetRawStat(Stats.HP, level);
+            attack = GetRawStat(Stats.ATK, level);
+            defense = GetRawStat(Stats.DEF, level);
+            speed = GetRawStat(Stats.SPEED, level);
 
             currentHp = maxHp;
             knownAbilities = GetUnitKnownAbilities(level).ToArray();

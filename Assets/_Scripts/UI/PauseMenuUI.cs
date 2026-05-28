@@ -14,6 +14,7 @@ public class PauseMenuUI : MonoBehaviour
     public GameObject mainMenuButtons;
 
     private bool isPaused = false;
+    public SettingsMenu settings;
 
     private void Start()
     {
@@ -74,6 +75,7 @@ public class PauseMenuUI : MonoBehaviour
         }
         exitConfirmation.SetActive(false);
         optionsCanvas.SetActive(state);
+        settings.UpdateResolutionDropdown();
     }
 
     public void ShowMenuButtons(bool state)

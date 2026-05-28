@@ -5,7 +5,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using GameData;
-using UnityEditor.MemoryProfiler;
 using UnityEngine.SceneManagement;
 public class MapGenerator : MonoBehaviour
 {

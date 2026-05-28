@@ -453,7 +453,7 @@ public class TBBS : MonoBehaviour
         int selection = -1;
 
         // Esperamos a que el jugador elija objetivo
-        yield return Run<int>(SelectTarget(false), (output) => selection = output);
+        yield return Run<int>(SelectTarget(false, false), (output) => selection = output);
 
         if (selection >= 0)
         {
@@ -639,7 +639,7 @@ public class TBBS : MonoBehaviour
         }
     }
 
-    IEnumerator SelectTarget(bool enemySide = true)
+    IEnumerator SelectTarget(bool enemySide = true, bool removeAttacker = true)
     {
         int selection = 0;
         Unit attacker = allUnits[currentTurnIndex];
@@ -689,7 +689,7 @@ public class TBBS : MonoBehaviour
         else
         {
             List<Unit> targets = new List<Unit>(playerUnits);
-            targets.Remove(attacker);
+            if(removeAttacker) targets.Remove(attacker);
             if (targets.Count > 0) attacker.SelectTarget(targets[selection].gameObject);
             else
             {

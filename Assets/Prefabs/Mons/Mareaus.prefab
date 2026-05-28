@@ -4044,7 +4044,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4558371611868809564, guid: 400b05a73be9b0a458fff3fd2844a63c, type: 3}
       propertyPath: m_Name
-      value: Mareaus
+      value: Capsule
       objectReference: {fileID: 0}
     - target: {fileID: 4776740991585679903, guid: 400b05a73be9b0a458fff3fd2844a63c, type: 3}
       propertyPath: m_LocalPosition.x

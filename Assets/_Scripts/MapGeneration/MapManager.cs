@@ -204,4 +204,31 @@ public class MapManager : MonoBehaviour, ISaveData
             currentNode = NodeToMapNode(currentRoom.GetComponent<Node>());
         }
     }
+
+    public void ResetMap()
+    {
+        Debug.Log("Reseteando el mapa...");
+
+        foreach (GameObject room in createdRooms)
+        {
+            if (room != null)
+            {
+                Destroy(room);
+            }
+        }
+
+        createdRooms.Clear();
+        selectedRooms.Clear();
+        nodes.Clear();
+
+        currentRoom = null;
+        currentNode = null;
+        currentRoomName = "";
+
+        mapCreated = false;
+        loadRooms = false;
+        canLoadRooms = false;
+
+        if (mapView != null) mapView.ClearMap();
+    }
 }

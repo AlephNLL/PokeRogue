@@ -225,7 +225,7 @@ public class HandAnimatorHelper : MonoBehaviour
     public Vector3 HandBehindCamera()
     {
         GameObject cameraBrain = GameObject.FindGameObjectWithTag("MainCamera");
-        Vector3 position = new Vector3(cameraBrain.transform.position.x, 0.45f, (cameraBrain.transform.position.z)) - new Vector3(3, 0, 1);
+        Vector3 position = new Vector3(cameraBrain.transform.position.x, 0.45f, (cameraBrain.transform.position.z)) - new Vector3(3, 0, 5);
 
         return position;
     }

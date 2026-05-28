@@ -1,6 +1,7 @@
 using GameData;
 using System.Collections.Generic;
 using System.Linq; // Necesario para filtrar listas fácilmente
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BattleGenerator : MonoBehaviour
@@ -86,7 +87,9 @@ public class BattleGenerator : MonoBehaviour
         {
             generatedTeam.Clear();
             generatedTeam.AddRange(bossTeams[Random.Range(0, bossTeams.Length)].team);
+            BattleData.isBoss = true;
         }
+        else BattleData.isBoss = false;
 
         if (PlayerData.tutorial)
         {

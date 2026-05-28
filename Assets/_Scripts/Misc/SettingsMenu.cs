@@ -35,7 +35,6 @@ public class SettingsMenu : MonoBehaviour
     {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-        UpdateResolutionDropdown();
     }
 
     public void UpdateResolutionDropdown()
@@ -49,7 +48,7 @@ public class SettingsMenu : MonoBehaviour
         int currentResolutionIndex = 0;
         for (int i = 0; i < resolutions.Length; i++)
         {
-            string option = resolutions[i].width + "x" + resolutions[i].height;
+            string option = resolutions[i].width.ToString() + "x" + resolutions[i].height.ToString();
             options.Add(option);
 
             if (resolutions[i].width == Screen.width &&

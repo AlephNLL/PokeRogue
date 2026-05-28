@@ -888,9 +888,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleScene
   roomPrefabs:
   - {fileID: 7658715131649156570, guid: 8858e8cc93c353a49ac7c72b5148d7e3, type: 3}
-  - {fileID: 7658715131649156570, guid: ef631ff533db53142bd7715de65adce1, type: 3}
-  - {fileID: 7658715131649156570, guid: 505a8864a55d9424a9a0987feabb7aa7, type: 3}
-  - {fileID: 7658715131649156570, guid: d0632cb6087e0f3479410e69dc4ecef1, type: 3}
 --- !u!4 &506483158
 Transform:
   m_ObjectHideFlags: 0

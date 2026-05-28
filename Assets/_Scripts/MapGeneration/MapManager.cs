@@ -42,19 +42,7 @@ public class MapManager : MonoBehaviour, ISaveData
 
    private void Start()
     {
-        ControlsUI.instance.ShowSummaryControls();
-        if (createdRooms.Count() == 0 && nodes.Count() == 0 && mapCreated == false)
-        {
-            nodes.Clear();
-            createdRooms.Clear();
 
-            mapGenerator.GenerateMap();
-            Debug.Log("Mapa Generado");
-        }
-        else if (nodes.Count != 0)
-        {
-            mapView.DrawMap(nodes);
-        }
     }
 
     void OnEnable()
@@ -72,12 +60,29 @@ public class MapManager : MonoBehaviour, ISaveData
                 Debug.Log("Mapa Generado en escena de mapa");
                 mapView.DrawMap(nodes);
                 currentRoom = GameObject.Find(currentRoomName);
+            } else
+            {
+                if (createdRooms.Count() == 0 && nodes.Count() == 0 && mapCreated == false)
+                {
+                    nodes.Clear();
+                    createdRooms.Clear();
+
+                    mapGenerator.GenerateMap();
+
+                    Debug.Log("Mapa Generado");
+                }
+                else if (nodes.Count != 0 && mapLoaded)
+                {
+                    mapView.DrawMap(nodes);
+                }
             }
 
         } else
         {
             mapLoaded = false;
         }
+
+
     }
 
     public void UnlockStartingPaths()
@@ -194,6 +199,9 @@ public class MapManager : MonoBehaviour, ISaveData
     {
         yield return new WaitForEndOfFrame();
         currentRoom = GameObject.Find(name);
-        currentNode = NodeToMapNode(currentRoom.GetComponent<Node>());
+        if (currentRoom != null)
+        {
+            currentNode = NodeToMapNode(currentRoom.GetComponent<Node>());
+        }
     }
 }

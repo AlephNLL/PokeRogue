@@ -20,6 +20,9 @@ public class GameSaveData
     public bool tutorial = true;
     public bool beatenFirstBoss = true;
 
+    // Escena
+    public string sceneName;
+
     // Constructor valores iniciales
     public GameSaveData()
     {
@@ -33,5 +36,6 @@ public class GameSaveData
         mapData = new List<MapNodeData>();
         mapCreated = false;
         currentRoom = "Spawn-0";
+        sceneName = "MapGeneration";
     }
 }

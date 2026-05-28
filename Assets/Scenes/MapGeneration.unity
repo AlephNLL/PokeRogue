@@ -3584,7 +3584,7 @@ PrefabInstance:
       objectReference: {fileID: 1717970170875167366, guid: f3e52fa21ac5cc74dae5f132d416ebf1, type: 3}
     - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: enemyPool.Array.size
-      value: 14
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: normalEnemyExtraCost
@@ -3661,7 +3661,7 @@ PrefabInstance:
     - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'enemyPool.Array.data[14]'
       value: 
-      objectReference: {fileID: 1717970170875167366, guid: 171b72f5768651c47b0125b063724a16, type: 3}
+      objectReference: {fileID: 1717970170875167366, guid: 60537506af6c6424d95e43dca987bf6e, type: 3}
     - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'enemyPool.Array.data[15]'
       value: 
@@ -3704,7 +3704,7 @@ PrefabInstance:
       objectReference: {fileID: 1717970170875167366, guid: 1cb1ad5d88cb08249b6f88bb300d1c01, type: 3}
     - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: expensiveEnemies.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'normalEnemies.Array.data[0]'
@@ -3745,7 +3745,7 @@ PrefabInstance:
     - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'expensiveEnemies.Array.data[2]'
       value: 
-      objectReference: {fileID: 1717970170875167366, guid: 171b72f5768651c47b0125b063724a16, type: 3}
+      objectReference: {fileID: 1717970170875167366, guid: 60537506af6c6424d95e43dca987bf6e, type: 3}
     - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'expensiveEnemies.Array.data[3]'
       value: 

@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+#if UNITY_EDITOR
 public class BulkReplaceSelected : EditorWindow
 {
     private enum ReplacementKind
@@ -404,3 +405,5 @@ public class BulkReplaceSelected : EditorWindow
 
     }
 }
+
+#endif

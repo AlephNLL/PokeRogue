@@ -10,7 +10,7 @@ public class ShopManager : MonoBehaviour
     public GameObject[] slots;
     [SerializeField] Item[] itemPool;
     [SerializeField] List<Item> items;
-    
+
     public Item selectedItem;
 
     private Coroutine returnHandCoroutine;
@@ -62,13 +62,14 @@ public class ShopManager : MonoBehaviour
     }
     void BuyItem()
     {
-        if(!selectedItem) return;
-        if(selectedItem.cost < PlayerData.Instance.gold)
+        if (!selectedItem) return;
+        if (selectedItem.cost < PlayerData.Instance.gold)
         {
             GraphicRaycasting.instance.GetObjectUnderMouse().SetActive(false);
             PlayerData.items.Add(selectedItem);
+            PlayerData.Instance.p_items.Add(selectedItem);
             PlayerData.Instance.gold -= selectedItem.cost;
-            if(PlayerData.Instance.gold < 0) PlayerData.Instance.gold = 0;
+            if (PlayerData.Instance.gold < 0) PlayerData.Instance.gold = 0;
             ShopManagerUI.instance.UpdatePlayerGold();
             HandAnimatorHelper.instance.SetHandTriggerParameter("Sold");
         }
@@ -92,50 +93,57 @@ public class ShopManager : MonoBehaviour
     void UpdateSelectedItem()
     {
         GameObject itemUnderMouse = GraphicRaycasting.instance.GetObjectUnderMouse();
-
-        if (itemUnderMouse != null && itemUnderMouse.layer != 2) 
+        if (itemUnderMouse != null)
         {
-            if (returnHandCoroutine != null)
+            if (itemUnderMouse.GetComponentInParent<InventoryTooltip>() != null)
             {
-                StopCoroutine(returnHandCoroutine);
-                returnHandCoroutine = null;
+                itemUnderMouse.GetComponentInParent<InventoryTooltip>().DestroyTooltip();
+                Destroy(itemUnderMouse.GetComponentInParent<InventoryTooltip>());
             }
 
-            int itemSlotIndex = GetItemSlotIndex(itemUnderMouse);
-            float handXPos = itemSlotIndex - 3.75f;
-            if (itemSlotIndex >= 3) handXPos += 2f;
-            if (!HandAnimatorHelper.instance.IsHandAtXPos(handXPos))
+            if (itemUnderMouse != null && itemUnderMouse.layer != 2)
             {
-                selectedItem = items[itemSlotIndex];
-                HandAnimatorHelper.instance.MoveToPosition(new Vector3(handXPos, 4.5f, HandAnimatorHelper.instance.transform.position.z), .2f);
-                HandAnimatorHelper.instance.SetHandBoolParameter("point", true);
-                lastIndex = itemSlotIndex;
-                ShopManagerUI.instance.ShowItemDescription(selectedItem);
+                if (returnHandCoroutine != null)
+                {
+                    StopCoroutine(returnHandCoroutine);
+                    returnHandCoroutine = null;
+                }
+
+                int itemSlotIndex = GetItemSlotIndex(itemUnderMouse);
+                float handXPos = itemSlotIndex - 3.75f;
+                if (itemSlotIndex >= 3) handXPos += 2f;
+                if (!HandAnimatorHelper.instance.IsHandAtXPos(handXPos))
+                {
+                    selectedItem = items[itemSlotIndex];
+                    HandAnimatorHelper.instance.MoveToPosition(new Vector3(handXPos, 4.5f, HandAnimatorHelper.instance.transform.position.z), .2f);
+                    HandAnimatorHelper.instance.SetHandBoolParameter("point", true);
+                    lastIndex = itemSlotIndex;
+                    ShopManagerUI.instance.ShowItemDescription(selectedItem);
+                }
+            }
+            else
+            {
+                selectedItem = null;
+                if (!HandAnimatorHelper.instance.IsHandAtXPos(0) && returnHandCoroutine == null)
+                {
+                    returnHandCoroutine = StartCoroutine(ReturnHandToDefautlPos());
+                }
             }
         }
-        else
+
+        IEnumerator ReturnHandToDefautlPos()
         {
-            selectedItem = null;
-            if (!HandAnimatorHelper.instance.IsHandAtXPos(0) && returnHandCoroutine == null)
-            {
-                returnHandCoroutine = StartCoroutine(ReturnHandToDefautlPos());
-            }
+            yield return new WaitForSeconds(.2f);
+            HandAnimatorHelper.instance.MoveToDefaultPosition(.5f);
+            HandAnimatorHelper.instance.SetHandBoolParameter("point", false);
+            ShopManagerUI.instance.HideItemDescription();
+            returnHandCoroutine = null;
         }
     }
-
-    IEnumerator ReturnHandToDefautlPos()
-    {
-        yield return new WaitForSeconds(.2f);
-        HandAnimatorHelper.instance.MoveToDefaultPosition(.5f);
-        HandAnimatorHelper.instance.SetHandBoolParameter("point", false);
-        ShopManagerUI.instance.HideItemDescription();
-        returnHandCoroutine = null;
-    }
-
     public void ExitShop()
     {
         AudioManager.instance.StopMusic();
-        if(MapManager.instance != null)
+        if (MapManager.instance != null)
         {
             MapManager.instance.LoadMapScene();
         }

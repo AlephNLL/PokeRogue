@@ -197,10 +197,11 @@ public class MapView : MonoBehaviour
 
     private void AddColliderToLine(LineRenderer line, Vector3 startPoint, Vector3 endPoint)
     {
+        GameObject collider = new GameObject("Collider");
         //create the collider for the line
-        BoxCollider lineCollider = new GameObject("Collider").AddComponent<BoxCollider>();
+        BoxCollider lineCollider = collider.AddComponent<BoxCollider>();
         //set the collider as a child of your line
-        lineCollider.transform.parent = line.transform;
+        collider.transform.parent = line.transform;
         // get width of collider from line 
         float lineWidth = line.endWidth;
         // get the length of the line using the Distance method
@@ -228,6 +229,8 @@ public class MapView : MonoBehaviour
         // in 3d space you don't wan't to rotate on your y axis
         lineCollider.transform.Rotate(0, angle, 0);
         lineCollider.gameObject.layer = LayerMask.NameToLayer("Path");
+
+        collider.AddComponent<PathCollision>();
     }
 
     private IEnumerator DrawDecorations(Vector2 startPos, GameObject[] prefabs, float density)

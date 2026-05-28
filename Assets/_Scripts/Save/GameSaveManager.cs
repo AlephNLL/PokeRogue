@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEditor.Overlays;
+using UnityEngine.SceneManagement;
 
 public class GameSaveManager : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class GameSaveManager : MonoBehaviour
 
     // Data
     public static GameSaveManager instance;
-    [SerializeReference] private GameSaveData saveData;
+    [SerializeReference] public GameSaveData saveData;
 
     [SerializeReference] public List<UnitSaveData> startTeamData;
     public List<UnitData> teamReferences;
@@ -20,6 +21,9 @@ public class GameSaveManager : MonoBehaviour
     private List<ISaveData> saveList;
 
     private FileDataHandler fileDataHandler;
+
+    public string lastSceneName;
+    public bool newGame;
 
     private void Awake()
     {
@@ -53,19 +57,19 @@ public class GameSaveManager : MonoBehaviour
         SaveGame();
     }
 
-    private void SaveGame()
+    public void SaveGame()
     {
         // Pass data to other scripts
         foreach (ISaveData saveDataObj in saveList)
         {
             saveDataObj.SaveData(ref saveData);
         }
-
+        saveData.sceneName = SceneManager.GetActiveScene().name;
         // Save data to file
         fileDataHandler.Save(saveData);
     }
 
-    private void LoadGame()
+    public void LoadGame()
     {
         // Read data from file
         saveData = fileDataHandler.Load();
@@ -74,8 +78,9 @@ public class GameSaveManager : MonoBehaviour
         {
             Debug.Log("No data found. Initializing new game data.");
             NewGame();
+            newGame = true;
         }
-
+        lastSceneName = saveData.sceneName;
         // Pass loaded data to other scripts
         foreach (ISaveData saveDataObj in saveList)
         {
@@ -83,20 +88,9 @@ public class GameSaveManager : MonoBehaviour
         }
     }
 
-    private void NewGame()
+    public void NewGame()
     {
         saveData = new GameSaveData();
-    }
-
-    public UnitData GetUnitReference(string name)
-    {
-        foreach (UnitData unit in teamReferences)
-        {
-            if (unit.name == name)
-            {
-                return unit;
-            }
-        }
-        return null;
+        fileDataHandler.Save(saveData);
     }
 }

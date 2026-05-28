@@ -48,6 +48,13 @@ MonoBehaviour:
   nerfVFX: {fileID: 1415702235763318915, guid: 6ebd16979f190894cb09c40bd554a898, type: 3}
   hitVFX: {fileID: 5797870068611623674, guid: 4d0ea5beaa1b8e24398a6549709ba29e, type: 3}
   healVFX: {fileID: 5797870068611623674, guid: 438aabcdf0c606744a0729a318422f6f, type: 3}
+  freezeVFX: {fileID: 5797870068611623674, guid: 10c237f2c960e1441b71d2143a50638d, type: 3}
+  burnedVFX: {fileID: 5797870068611623674, guid: d6b70fb9b95afae44a3875fbe2a5ed91, type: 3}
+  poisonedVFX: {fileID: 5797870068611623674, guid: 488e2f6e974fb7249a414ef258571e1c, type: 3}
+  paralyzedVFX: {fileID: 5797870068611623674, guid: d3d3bf7985765ae47ae8456244ac239a, type: 3}
+  asleepVFX: {fileID: 5797870068611623674, guid: b18858282fc50a34291b0dc26ef8e363, type: 3}
+  scheduledActions: []
+  onGoingActions: []
 --- !u!1 &1661897503764095301
 GameObject:
   m_ObjectHideFlags: 0
@@ -94,12 +101,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 076033569317ffb4c8346b2d141a1e78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleGenerator
-  easyEnemyPool:
+  enemyPool:
+  - {fileID: 1717970170875167366, guid: 5fe7b7b1ca0968e45bf3704276764ea9, type: 3}
+  - {fileID: 1717970170875167366, guid: 5f943b2c635652a45adf0add8a4d9a11, type: 3}
+  - {fileID: 1717970170875167366, guid: 3e56377424e78be4890cdb6ba75c6eab, type: 3}
+  - {fileID: 1717970170875167366, guid: 2470fb1e28ee7b1439f2577f52247346, type: 3}
   - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
-  normalEnemyPool:
-  - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
-  hardEnemyPool:
+  - {fileID: 1717970170875167366, guid: b992b5942d8d7384980f0e7231fcdc9f, type: 3}
+  - {fileID: 1717970170875167366, guid: 87588304c2b5af44ca152b832eca0b75, type: 3}
+  - {fileID: 1717970170875167366, guid: 25050988c599b9e4e8f75589a74a5d28, type: 3}
+  - {fileID: 1717970170875167366, guid: 0ba7ba03ce074af4dbbfa66f4aa20c78, type: 3}
   - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
+  - {fileID: 1717970170875167366, guid: 783abb16d1735ff46ba52cbef726d81b, type: 3}
+  - {fileID: 1717970170875167366, guid: b4bd1548d8e9f1849a896d6a024fcd36, type: 3}
+  - {fileID: 1717970170875167366, guid: 1cb1ad5d88cb08249b6f88bb300d1c01, type: 3}
+  - {fileID: 1717970170875167366, guid: 171b72f5768651c47b0125b063724a16, type: 3}
+  cheapEnemies:
+  - {fileID: 1717970170875167366, guid: 3e56377424e78be4890cdb6ba75c6eab, type: 3}
+  - {fileID: 1717970170875167366, guid: 2470fb1e28ee7b1439f2577f52247346, type: 3}
+  - {fileID: 1717970170875167366, guid: 0171a3ce88a86814ba23e49e26992c4e, type: 3}
+  - {fileID: 1717970170875167366, guid: 1cb1ad5d88cb08249b6f88bb300d1c01, type: 3}
+  - {fileID: 1717970170875167366, guid: 25050988c599b9e4e8f75589a74a5d28, type: 3}
+  - {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
+  - {fileID: 1717970170875167366, guid: 5f943b2c635652a45adf0add8a4d9a11, type: 3}
+  cheapEnemyExtraCost: 0
+  normalEnemies:
+  - {fileID: 1717970170875167366, guid: b992b5942d8d7384980f0e7231fcdc9f, type: 3}
+  - {fileID: 1717970170875167366, guid: 0ba7ba03ce074af4dbbfa66f4aa20c78, type: 3}
+  - {fileID: 1717970170875167366, guid: 783abb16d1735ff46ba52cbef726d81b, type: 3}
+  - {fileID: 1717970170875167366, guid: 5fe7b7b1ca0968e45bf3704276764ea9, type: 3}
+  - {fileID: 1717970170875167366, guid: 87588304c2b5af44ca152b832eca0b75, type: 3}
+  normalEnemyExtraCost: 50
+  expensiveEnemies:
+  - {fileID: 1717970170875167366, guid: b4bd1548d8e9f1849a896d6a024fcd36, type: 3}
+  - {fileID: 1717970170875167366, guid: 171b72f5768651c47b0125b063724a16, type: 3}
+  expensiveEnemyExtraCost: 100
+  bossTeams:
+  - team:
+    - {fileID: 1717970170875167366, guid: 3e56377424e78be4890cdb6ba75c6eab, type: 3}
+    - {fileID: 1717970170875167366, guid: f3e52fa21ac5cc74dae5f132d416ebf1, type: 3}
+    - {fileID: 1717970170875167366, guid: 3e56377424e78be4890cdb6ba75c6eab, type: 3}
+    - {fileID: 1717970170875167366, guid: 25050988c599b9e4e8f75589a74a5d28, type: 3}
+  - team:
+    - {fileID: 1717970170875167366, guid: 0ba7ba03ce074af4dbbfa66f4aa20c78, type: 3}
+    - {fileID: 1717970170875167366, guid: f3e52fa21ac5cc74dae5f132d416ebf1, type: 3}
+    - {fileID: 1717970170875167366, guid: 3e56377424e78be4890cdb6ba75c6eab, type: 3}
+    - {fileID: 1717970170875167366, guid: 25050988c599b9e4e8f75589a74a5d28, type: 3}
+  - team:
+    - {fileID: 1717970170875167366, guid: 25050988c599b9e4e8f75589a74a5d28, type: 3}
+    - {fileID: 1717970170875167366, guid: f3e52fa21ac5cc74dae5f132d416ebf1, type: 3}
+    - {fileID: 1717970170875167366, guid: b992b5942d8d7384980f0e7231fcdc9f, type: 3}
+    - {fileID: 1717970170875167366, guid: 25050988c599b9e4e8f75589a74a5d28, type: 3}
+  tutorialTeam:
+  - {fileID: 1717970170875167366, guid: 1cb1ad5d88cb08249b6f88bb300d1c01, type: 3}
 --- !u!114 &7245667063205552328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da2c3d2615873e848bfe5385e0a219b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::test
-  battleDifficulty: 0
+  battleDifficulty: 1
 --- !u!114 &8791268885502988988
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,9 +224,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomAssigner
   mapGenerator: {fileID: 4813112271845761888}
-  enemyProb: 0.85
-  healProb: 0.95
-  treasureProb: 1
+  enemyProb: 0.8
+  healProb: 0.85
+  treasureProb: 0.9
+  randomProb: 1
 --- !u!1 &4557352148545598928
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,6 +340,8 @@ MonoBehaviour:
   canLoadRooms: 1
   mapCreated: 0
   mapLoaded: 0
+  skipBattles: 0
+  currentRoomName: 
 --- !u!1 &7441689563388695802
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,13 +393,22 @@ MonoBehaviour:
   healPrefab: {fileID: 5162666568920561364, guid: 106bcf60de3f49644badf155d1c5768b, type: 3}
   shopPrefab: {fileID: 5162666568920561364, guid: 5a0095d15954ec346bcb7d32447cf431, type: 3}
   startPrefab: {fileID: 5162666568920561364, guid: 18de11c10aa950c42b8e844ef28cd81e, type: 3}
+  randomPrefab: {fileID: 5162666568920561364, guid: fd4dfe3bbad1df142bbedae5420b7ad9, type: 3}
   decorationPrefabs:
-  - {fileID: 8648017369631506551, guid: 8918a56ab01687a478c2a02c7eace7c3, type: 3}
-  - {fileID: 2373034889375519765, guid: a03b778113a66e442a0bdb713e43bf6e, type: 3}
-  lineMaterial: {fileID: 2100000, guid: 36ccf668458b1194181950ef872475fd, type: 2}
-  lineThickness: 1
+  - {fileID: 919132149155446097, guid: 76f757e6fa56fe04baa6d10573fc9f9f, type: 3}
+  - {fileID: 919132149155446097, guid: 52c70da2d69b9fa4b965dca70a2a7d11, type: 3}
+  - {fileID: 919132149155446097, guid: 1bba009e265da4d4ca383371b8e710c4, type: 3}
+  - {fileID: 919132149155446097, guid: 76f757e6fa56fe04baa6d10573fc9f9f, type: 3}
+  - {fileID: 919132149155446097, guid: 76f757e6fa56fe04baa6d10573fc9f9f, type: 3}
+  - {fileID: 919132149155446097, guid: 5e58e991d05a13943997100827fc41b5, type: 3}
+  secondDecorationPrefabs:
+  - {fileID: 919132149155446097, guid: 14a363da30ea15940bf9ad4d3d649f23, type: 3}
+  - {fileID: 919132149155446097, guid: b9a6cbf320bfda74d86636bfae8a0cfa, type: 3}
+  lineMaterial: {fileID: 2100000, guid: 5892bad877d988b42b542cdeff7761cd, type: 2}
+  lineThickness: 0.75
   enableDebugRays: 1
-  density: 20
+  firstDensity: 20
+  secondiIterationDensity: 40
   rayDuration: 10
   teamManager: {fileID: 796922449868520641}
   team: []
@@ -393,5 +459,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TeamManager
   teamData:
-  - {fileID: 11400000, guid: 925d57a2d96d39c4999a373ea3ddba4e, type: 2}
   - {fileID: 11400000, guid: 86a7d95dde3aab04086db209e33f9886, type: 2}
+  - {fileID: 11400000, guid: d12a39800ea11eb4ea3fb471883ee7ee, type: 2}

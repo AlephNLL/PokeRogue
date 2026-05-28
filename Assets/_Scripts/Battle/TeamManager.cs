@@ -11,6 +11,7 @@ public class TeamManager : MonoBehaviour
 {
     public static TeamManager instance;
     public List<UnitData> teamData;
+    public List<UnitData> teamStartData;
 
     //temnporal hasta que se elija el equipo en la guarderia
     private void Awake()

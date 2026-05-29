@@ -61,7 +61,7 @@ public class MapManager : MonoBehaviour, ISaveData
                 mapView.DrawMap(nodes);
                 if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.FixDuplicateBoss(); }
                 currentRoom = GameObject.Find(currentRoomName);
-
+                currentNode = NodeToMapNode(currentRoom.GetComponent<Node>());
             } else
             {
                 if (createdRooms.Count() == 0 && nodes.Count() == 0 && mapCreated == false)

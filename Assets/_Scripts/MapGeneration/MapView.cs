@@ -550,8 +550,6 @@ public class MapView : MonoBehaviour
 
     private IEnumerator MoveTo(GameObject obj, Vector3 targetPosition, float delay, bool last = false)
     {
-        Debug.Log("moving");
-
         yield return new WaitForSeconds(delay);
 
 

@@ -35,7 +35,6 @@ public class TBBS : MonoBehaviour
     private Coroutine currentTurnCoroutine;
     private Coroutine menuCoroutine;
     private bool isActionExecuting;
-    public bool isBoss = false;
 
     private void Awake()
     {
@@ -44,7 +43,6 @@ public class TBBS : MonoBehaviour
 
     private void Start()
     {
-        if (BattleData.isBoss) { isBoss = true; }
         StartCoroutine(SetupBattleField());
         enemyHandPos = new Vector3(GameObject.Find("enemyHandPos").transform.position.x, 0, GameObject.Find("enemyHandPos").transform.position.z);
     }
@@ -184,7 +182,6 @@ public class TBBS : MonoBehaviour
         while (LeftHandAnimatorHelper.instance.figuresToFling.Count > 0) yield return null;
         EndScreenManager.instance.ShowVictoryScreen(playerUnits.ToArray(), capturableUnits.ToArray(), BattleData.goldReward, BattleData.expReward);
         PlayerData.Instance.gold += BattleData.goldReward;
-        if (isBoss && !PlayerData.Instance.beatenFirstBoss) { PlayerData.Instance.beatenFirstBoss = true; }
     }
 
     IEnumerator PlayerTurn(Unit currentUnit, bool activateTurnStartEffect = true)

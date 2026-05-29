@@ -141,8 +141,17 @@ public class EndScreenManager : MonoBehaviour
         AudioManager.instance.StopMusic();
         if (MapManager.instance.currentNode.roomType == GameData.RoomType.Boss)
         {
-            PlayerData.daycareTeamData.AddRange(PlayerData.teamData);
-            SceneManager.LoadSceneAsync("Daycare");
+            print(MapManager.instance.currentNode.floorLevel);
+            if (!PlayerData.Instance.beatenFirstBoss || MapManager.instance.currentNode.floorLevel > 10 )
+            {
+                PlayerData.daycareTeamData.AddRange(PlayerData.teamData);
+                SceneManager.LoadSceneAsync("Daycare");
+                if(!PlayerData.Instance.beatenFirstBoss) { PlayerData.Instance.beatenFirstBoss = true; }
+            }
+            else
+            {
+                MapManager.instance.LoadMapScene();
+            }
         }
         else
         {

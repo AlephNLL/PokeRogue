@@ -1,4 +1,4 @@
-using System;
+    using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -33,7 +33,7 @@ public class MapGenerator : MonoBehaviour
     private void Awake()
     {
         if (Instance == null) { Instance = this; }
-        else { Destroy(gameObject); } 
+        else { Destroy(gameObject); }
     }
 
     public void GenerateMap()
@@ -208,6 +208,8 @@ public class MapGenerator : MonoBehaviour
         int secondBossOffset = 0;
         if (startFloor != 0) { bossRoom.id = lastId++; secondBossOffset = 1; }
 
+        bossRoom.floorLevel = gridHeight + startFloor + secondBossOffset;
+
         foreach (MapNode room in path)
         {
             if (room.floorLevel == gridHeight - 1 + startFloor + secondBossOffset)
@@ -255,6 +257,7 @@ public class MapGenerator : MonoBehaviour
         Node bossNode = bossGO.GetComponent<Node>();
         bossRoom = MapManager.instance.NodeToMapNode(bossNode);
         bossRoom.id = -2;
+        bossRoom.floorLevel = startFloor + 1;
 
         foreach (MapNode room in path)
         {
@@ -275,6 +278,7 @@ public class MapGenerator : MonoBehaviour
     {
         yield return new WaitForNextFrameUnit();
         MapManager.instance.currentRoom = GameObject.Find("Spawn-0");
+        MapCamera.SetSelectedObject(MapManager.instance.currentRoom);
         MapCamera.UpdateLayers(MapManager.instance.currentRoom);
         FixDuplicateBoss();
     }

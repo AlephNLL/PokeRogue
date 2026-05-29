@@ -43,6 +43,6 @@ public class MenuSceneLoader : MonoBehaviour
     private IEnumerator Wait(string sceneName)
     {
         yield return new WaitForSeconds(1f);
-        SceneManager.LoadSceneAsync("MapGeneration");
+        SceneManager.LoadSceneAsync(sceneName);
     }
 }

@@ -9,7 +9,6 @@ public class FresnelApplier : MonoBehaviour
     public static void applyFresnel(GameObject unit, Color color)
     {
         MeshRenderer capsule = unit.transform.Find("Capsule").Find("Mons").GetComponentInChildren<MeshRenderer>();
-        print(capsule.name);
         MaterialPropertyBlock mpb = new MaterialPropertyBlock();
         mpb.SetFloat("_ApplyFresnel", 1);
         mpb.SetColor("_FresnelColor", color * 5f);

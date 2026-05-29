@@ -13,6 +13,12 @@ public class FileDataHandler
         this.dataFileName = dataFileName;
     }
 
+    public string FilePath()
+    {
+        string fullPath = Path.Combine(dataDirPath, dataFileName);
+        return fullPath;
+    }
+
     public GameSaveData Load()
     {
         string fullPath = Path.Combine(dataDirPath, dataFileName);
@@ -65,4 +71,27 @@ public class FileDataHandler
             Debug.LogError("Failed trying to write save data file: " + fullPath + "\n" + e);
         }
     }
+
+    public void DeleteSave(string path)
+    {
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+            Debug.Log("deleted file at: " + path);
+        }
+        else
+        {
+            Debug.Log("no file foudn at: " + path);
+        }
+    }
+
+    public bool DoesSaveFileExist()
+    {
+        string path = Path.Combine(dataDirPath, dataFileName);
+
+        bool exists = File.Exists(path);    
+        Debug.Log(exists);
+        return exists;
+    }
+
 }

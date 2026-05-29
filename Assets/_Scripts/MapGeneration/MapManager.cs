@@ -74,12 +74,15 @@ public class MapManager : MonoBehaviour, ISaveData
                     if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.GenerateNextMap(); }
                     Debug.Log("Mapa Generado");
 
-                    foreach (UnitData unit in TeamManager.instance.teamData)
-                    {
-                        unit.knownAbilities.Clear();
-                        MoveLearner.instance.LearnMove(unit, 1);
-                        MoveLearner.instance.LearnMove(unit, 0);
-                    }
+                    //foreach (UnitData unit in TeamManager.instance.teamData)
+                    //{
+                    //    if (!unit.isVeteran)
+                    //    {
+                    //        unit.knownAbilities.Clear();
+                    //        MoveLearner.instance.LearnMove(unit, 1);
+                    //        MoveLearner.instance.LearnMove(unit, 0);
+                    //    }
+                    //}
                 }
                 else if (nodes.Count != 0 && mapLoaded)
                 {

@@ -346,7 +346,10 @@ public class MapView : MonoBehaviour
 
     public void ClearMap()
     {
-        if (map != null && MapManager.instance.nodes.Count() != 0) { Destroy(map); MapManager.instance.createdRooms.Clear(); MapManager.instance.nodes.Clear(); }
+        // if (map != null && MapManager.instance.nodes.Count() != 0) { Destroy(map); MapManager.instance.createdRooms.Clear(); MapManager.instance.nodes.Clear(); }
+
+        if (map != null) { Destroy(map); }
+        MapManager.instance.createdRooms.Clear();
     }
 
     public void PassNodeData(GameObject mapNode, MapNode node)

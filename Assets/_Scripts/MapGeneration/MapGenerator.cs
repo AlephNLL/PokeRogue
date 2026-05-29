@@ -38,6 +38,9 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
+        worldPath.Clear();
+        lastId = 0;
+
         MapManager.instance.mapCreated = false;
         currentGrid = InitializeGrid();
         path = GeneratePaths(currentGrid, startingPaths);

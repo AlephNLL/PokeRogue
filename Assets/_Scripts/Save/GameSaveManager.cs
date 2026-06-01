@@ -22,7 +22,7 @@ public class GameSaveManager : MonoBehaviour
     private FileDataHandler fileDataHandler;
 
     public string lastSceneName;
-    public bool newGame;
+    public bool newGame = false;
 
     private void Awake()
     {
@@ -35,16 +35,18 @@ public class GameSaveManager : MonoBehaviour
 
     private void Start()
     {
-        startTeam = new List<UnitSaveData>();
-        startTeamData = new List<UnitSaveData>();
-        foreach (UnitData unit in TeamManager.instance.teamData)
-        {
-            Debug.Log(unit.name);
-            startTeamData.Add(unit.LoadData());
-        }
+        //startTeam = new List<UnitSaveData>();
+        //startTeamData = new List<UnitSaveData>();
+        //foreach (UnitData unit in TeamManager.instance.teamData)
+        //{
+        //    Debug.Log(unit.name);
+        //    startTeamData.Add(unit.LoadData());
+        //}
 
-        startTeam = startTeamData;
-        LoadGame();
+        //startTeam = startTeamData;
+        //LoadGame();
+
+        if (!fileDataHandler.DoesSaveFileExist()) newGame = true;
     }
 
     private List<ISaveData> FindAllSaveObjects()
@@ -66,11 +68,13 @@ public class GameSaveManager : MonoBehaviour
             saveDataObj.SaveData(ref saveData);
         }
         string lastSceneName = SceneManager.GetActiveScene().name;
+        print(lastSceneName);
 
         if (lastSceneName == "Daycare")
         {
             saveData.sceneName = lastSceneName;
-        } else
+        }
+        else
         {
             saveData.sceneName = "MapGeneration";
         }
@@ -100,10 +104,12 @@ public class GameSaveManager : MonoBehaviour
 
     public void NewGame()
     {
+        fileDataHandler.DeleteSave(fileDataHandler.FilePath());
         SetStartTeam();
         saveData = new GameSaveData();
 
         fileDataHandler.Save(saveData);
+        LoadGame();
     }
 
     public void NewMap()

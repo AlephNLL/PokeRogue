@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Shoot Web
   description: Shoots a sticky web against foes halving their speed
+  sfx: {fileID: 11400000, guid: 8a8b2cd13f308924bb2d5fcdc411aa31, type: 2}
   power: 30
   accuracy: 100
   abilityType: 0
@@ -25,6 +26,7 @@ MonoBehaviour:
   multiHitRange: 0
   hits: 0
   hitRange: 
+  endOnMiss: 0
   passiveEffects: 0
   passiveExecutionTime: 0
   passiveEffectChance: 0

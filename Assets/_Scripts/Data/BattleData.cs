@@ -10,4 +10,5 @@ public class BattleData : MonoBehaviour
     public static int enemyLevel;
     public static int goldReward;
     public static int expReward;
+    public static bool isBoss;
 }

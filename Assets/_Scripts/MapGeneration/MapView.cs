@@ -4,6 +4,7 @@ using System.Linq;
 using GameData;
 using System.Collections;
 using UnityEditor;
+using Unity.VisualScripting;
 
 public class MapView : MonoBehaviour
 {
@@ -18,8 +19,9 @@ public class MapView : MonoBehaviour
     [SerializeField] private GameObject shopPrefab;
     [SerializeField] private GameObject startPrefab;
     [SerializeField] private GameObject randomPrefab;
-    [SerializeField] private GameObject[] decorationPrefabs;
-    [SerializeField] private GameObject[] secondDecorationPrefabs;
+    [SerializeField] private GameObject[] forestPrefabs;
+    [SerializeField] private GameObject[] grassPrefabs;
+    [SerializeField] private GameObject[] medievalPrefabs;
 
     [Header("Configuracion del path")]
     [SerializeField] private Material lineMaterial;
@@ -29,6 +31,7 @@ public class MapView : MonoBehaviour
     [SerializeField] private bool enableDebugRays = false;
     [SerializeField] private float firstDensity = 10f;
     [SerializeField] private float secondiIterationDensity = 30f;
+    [SerializeField] private float medievalDensity = 20f;
     [SerializeField] private float rayDuration = 10f;
 
     [Header("Referencias")]
@@ -64,8 +67,14 @@ public class MapView : MonoBehaviour
         PassConnectedRooms(path);
         DrawTeam();
 
-        StartCoroutine(DrawDecorations(new Vector3(-5, 0, 0), decorationPrefabs, firstDensity));
-        StartCoroutine(DrawDecorations(new Vector3(-5, 0, 0), secondDecorationPrefabs, secondiIterationDensity));
+        StartCoroutine(DrawDecorations(new Vector3(-5, 0, 0), forestPrefabs, firstDensity));
+        StartCoroutine(DrawDecorations(new Vector3(-5, 0, 0), grassPrefabs, secondiIterationDensity));
+
+        if (PlayerData.Instance.beatenFirstBoss)
+        {
+            StartCoroutine(DrawDecorations(new Vector3(MapGenerator.Instance.gridHeight * 3 + 2, 0, 0), medievalPrefabs, medievalDensity));
+            StartCoroutine(DrawDecorations(new Vector3(MapGenerator.Instance.gridHeight * 3 + 2, 0, 0), grassPrefabs, secondiIterationDensity));
+        }
 
         if (!MapManager.instance.mapCreated)
         {
@@ -188,10 +197,11 @@ public class MapView : MonoBehaviour
 
     private void AddColliderToLine(LineRenderer line, Vector3 startPoint, Vector3 endPoint)
     {
+        GameObject collider = new GameObject("Collider");
         //create the collider for the line
-        BoxCollider lineCollider = new GameObject("Collider").AddComponent<BoxCollider>();
+        BoxCollider lineCollider = collider.AddComponent<BoxCollider>();
         //set the collider as a child of your line
-        lineCollider.transform.parent = line.transform;
+        collider.transform.parent = line.transform;
         // get width of collider from line 
         float lineWidth = line.endWidth;
         // get the length of the line using the Distance method
@@ -203,6 +213,11 @@ public class MapView : MonoBehaviour
         Vector3 midPoint = (startPoint + endPoint) / 2;
         // move the created collider to the midPoint
         lineCollider.transform.position = midPoint;
+
+
+        Rigidbody rigidBody = collider.AddComponent<Rigidbody>();
+        rigidBody.isKinematic = true;
+
 
 
         //heres the beef of the function, Mathf.Atan2 wants the slope, be careful however because it wants it in a weird form
@@ -219,6 +234,8 @@ public class MapView : MonoBehaviour
         // in 3d space you don't wan't to rotate on your y axis
         lineCollider.transform.Rotate(0, angle, 0);
         lineCollider.gameObject.layer = LayerMask.NameToLayer("Path");
+
+        collider.AddComponent<PathCollision>();
     }
 
     private IEnumerator DrawDecorations(Vector2 startPos, GameObject[] prefabs, float density)
@@ -295,7 +312,7 @@ public class MapView : MonoBehaviour
     {
         GameObject decorationsGO = GameObject.Find("Decorations");
 
-        if (decorationsGO != null && secondDecorationPrefabs == null)
+        if (decorationsGO != null && grassPrefabs == null)
         {
             Destroy(decorationsGO);
         }
@@ -317,7 +334,10 @@ public class MapView : MonoBehaviour
                 decorationGO.transform.localScale.y + randomScale, 
                 decorationGO.transform.localScale.z + randomScale
                 );
-            decorationGO.transform.Rotate(new Vector3(-90, 0, 0));
+
+            float randomRotationZ = Random.Range(0, 360);
+
+            decorationGO.transform.Rotate(new Vector3(-90, 0, randomRotationZ));
             decorationGO.layer = LayerMask.NameToLayer("Decoration");
 
             decorationGO.AddComponent<CapsuleCollider>();
@@ -326,7 +346,10 @@ public class MapView : MonoBehaviour
 
     public void ClearMap()
     {
-        if (map != null && MapManager.instance.nodes.Count() != 0) { Destroy(map); MapManager.instance.createdRooms.Clear(); MapManager.instance.nodes.Clear(); }
+        // if (map != null && MapManager.instance.nodes.Count() != 0) { Destroy(map); MapManager.instance.createdRooms.Clear(); MapManager.instance.nodes.Clear(); }
+
+        if (map != null) { Destroy(map); }
+        MapManager.instance.createdRooms.Clear();
     }
 
     public void PassNodeData(GameObject mapNode, MapNode node)
@@ -530,8 +553,6 @@ public class MapView : MonoBehaviour
 
     private IEnumerator MoveTo(GameObject obj, Vector3 targetPosition, float delay, bool last = false)
     {
-        Debug.Log("moving");
-
         yield return new WaitForSeconds(delay);
 
 

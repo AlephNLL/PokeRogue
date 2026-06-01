@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Quake
   description: Earth shatter beneath your feet.
+  sfx: {fileID: 11400000, guid: ace67e81660a6a144a31fd71b25d9446, type: 2}
   power: 50
   accuracy: 100
   abilityType: 0
@@ -25,6 +26,7 @@ MonoBehaviour:
   multiHitRange: 0
   hits: 0
   hitRange: 
+  endOnMiss: 0
   passiveEffects: 0
   passiveExecutionTime: 0
   passiveEffectChance: 0

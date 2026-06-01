@@ -23,14 +23,16 @@ public class MenuSceneLoader : MonoBehaviour
     public void NewGame()
     {
         GameSaveManager.instance.NewGame();
-        GameSaveManager.instance.LoadGame();
 
-        StartCoroutine(Wait());
+        StartCoroutine(Wait("MapGeneration"));
     }
 
     public void LoadGame()
     {
-        SceneManager.LoadSceneAsync(GameSaveManager.instance.lastSceneName);
+        GameSaveManager.instance.LoadGame();
+
+        StartCoroutine(Wait(GameSaveManager.instance.lastSceneName));
+       //SceneManager.LoadSceneAsync(GameSaveManager.instance.lastSceneName);
     }
 
     public void Exit()
@@ -38,9 +40,9 @@ public class MenuSceneLoader : MonoBehaviour
         Application.Quit();
     }
 
-    private IEnumerator Wait()
+    private IEnumerator Wait(string sceneName)
     {
         yield return new WaitForSeconds(1f);
-        SceneManager.LoadSceneAsync("MapGeneration");
+        SceneManager.LoadSceneAsync(sceneName);
     }
 }

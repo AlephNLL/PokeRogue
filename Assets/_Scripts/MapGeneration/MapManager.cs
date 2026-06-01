@@ -59,7 +59,9 @@ public class MapManager : MonoBehaviour, ISaveData
             {
                 Debug.Log("Mapa Generado en escena de mapa");
                 mapView.DrawMap(nodes);
+                if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.FixDuplicateBoss(); }
                 currentRoom = GameObject.Find(currentRoomName);
+                currentNode = NodeToMapNode(currentRoom.GetComponent<Node>());
             } else
             {
                 if (createdRooms.Count() == 0 && nodes.Count() == 0 && mapCreated == false)
@@ -69,7 +71,18 @@ public class MapManager : MonoBehaviour, ISaveData
 
                     mapGenerator.GenerateMap();
 
+                    if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.GenerateNextMap(); }
                     Debug.Log("Mapa Generado");
+
+                    //foreach (UnitData unit in TeamManager.instance.teamData)
+                    //{
+                    //    if (!unit.isVeteran)
+                    //    {
+                    //        unit.knownAbilities.Clear();
+                    //        MoveLearner.instance.LearnMove(unit, 1);
+                    //        MoveLearner.instance.LearnMove(unit, 0);
+                    //    }
+                    //}
                 }
                 else if (nodes.Count != 0 && mapLoaded)
                 {

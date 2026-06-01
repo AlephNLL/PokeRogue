@@ -1,6 +1,7 @@
 using GameData;
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -65,11 +66,13 @@ public class RandomEventManager : MonoBehaviour
                     {
                         Item itemToAdd = currentEvent.itemsToGive[Random.Range(0, currentEvent.itemsToGive.Length)];
                         PlayerData.items.Add(itemToAdd);
+                        PlayerData.Instance.p_items.Add(itemToAdd);
                         eventIcon.sprite = itemToAdd.icon.GetComponent<Image>().sprite;
                     }
                     else
                     {
                         PlayerData.items.AddRange(currentEvent.itemsToGive);
+                        PlayerData.Instance.p_items.AddRange(currentEvent.itemsToGive);
                     }
                     break;
                 case Events.LOSEGOLD:
@@ -116,10 +119,12 @@ public class RandomEventManager : MonoBehaviour
                     if (currentEvent.giveRandomItem)
                     {
                         PlayerData.items.Add(currentEvent.itemsToGive[Random.Range(0, currentEvent.itemsToGive.Length)]);
+                        PlayerData.Instance.p_items.Add(currentEvent.itemsToGive[Random.Range(0, currentEvent.itemsToGive.Length)]);
                     }
                     else
                     {
                         PlayerData.items.AddRange(currentEvent.itemsToGive);
+                        PlayerData.Instance.p_items.Add(currentEvent.itemsToGive[Random.Range(0, currentEvent.itemsToGive.Length)]);
                     }
                     break;
                 case Events.LOSEGOLD:

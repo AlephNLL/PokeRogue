@@ -2631,9 +2631,25 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: b119c886d460fdd4ab3e4a7484609dbd, type: 2}
     - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'teamData.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: b119c886d460fdd4ab3e4a7484609dbd, type: 2}
+    - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: startTeamData.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: teamStartData.Array.size
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'startTeamData.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: d12a39800ea11eb4ea3fb471883ee7ee, type: 2}
+    - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'startTeamData.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: b119c886d460fdd4ab3e4a7484609dbd, type: 2}
     - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'teamStartData.Array.data[0]'
       value: 
@@ -2686,6 +2702,74 @@ PrefabInstance:
       propertyPath: moveSpeed
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: medievalDensity
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: grassPrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: forestPrefabs.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'grassPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 919132149155446097, guid: 14a363da30ea15940bf9ad4d3d649f23, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: medievalPrefabs.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'forestPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 919132149155446097, guid: 76f757e6fa56fe04baa6d10573fc9f9f, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'forestPrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 919132149155446097, guid: 52c70da2d69b9fa4b965dca70a2a7d11, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'forestPrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 919132149155446097, guid: 1bba009e265da4d4ca383371b8e710c4, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'forestPrefabs.Array.data[3]'
+      value: 
+      objectReference: {fileID: 919132149155446097, guid: 1bba009e265da4d4ca383371b8e710c4, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'forestPrefabs.Array.data[4]'
+      value: 
+      objectReference: {fileID: 919132149155446097, guid: 1bba009e265da4d4ca383371b8e710c4, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'forestPrefabs.Array.data[5]'
+      value: 
+      objectReference: {fileID: 919132149155446097, guid: 27955d27a6fda614b8772227c4853c31, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'forestPrefabs.Array.data[6]'
+      value: 
+      objectReference: {fileID: 919132149155446097, guid: 280e6bce6fbe9bf489f6051caad3c33c, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'forestPrefabs.Array.data[7]'
+      value: 
+      objectReference: {fileID: 919132149155446097, guid: 23d614d14cabe0341b525735485b868b, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'medievalPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 551964645734407033, guid: f147180b113f36348aeeaca6b962bdf8, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'medievalPrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 3584438159393304340, guid: 5ca8fbfd1c466264b939ec1e24509ca6, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'medievalPrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 9180605106209372739, guid: 1a1cae5281c8191489aa7fb78f8ed47a, type: 3}
+    - target: {fileID: 2052074662127099001, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: 'medievalPrefabs.Array.data[3]'
+      value: 
+      objectReference: {fileID: 1150851709763496566, guid: 81744c62c975de947b4400025fb6dfbd, type: 3}
     - target: {fileID: 4772832938886564935, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: m_Name
       value: MapManager

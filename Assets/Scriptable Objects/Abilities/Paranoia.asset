@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Paranoia
   description: Sets an ally into tricky stance.
+  sfx: {fileID: 11400000, guid: c53198310651a594591d52b90f6f6585, type: 2}
   power: 0
   accuracy: 100
   abilityType: 0
@@ -25,6 +26,7 @@ MonoBehaviour:
   multiHitRange: 0
   hits: 0
   hitRange: 
+  endOnMiss: 0
   passiveEffects: 0
   passiveExecutionTime: 0
   passiveEffectChance: 0

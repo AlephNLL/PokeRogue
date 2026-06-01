@@ -15,7 +15,7 @@ MonoBehaviour:
   name: LOL
   description: 
   sfx: {fileID: 0}
-  power: 1000
+  power: 100000
   accuracy: 100
   abilityType: 0
   target: 3

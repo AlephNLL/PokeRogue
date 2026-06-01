@@ -34,7 +34,7 @@ public class TreasureUIManager : MonoBehaviour
         Vector2 startSize = itemSlotGrid.cellSize;
         Vector3 targetSize = new Vector2(400, 400);
 
-        itemIcon.GetComponent<InventoryTooltip>().itemDescription = item.description;
+        Destroy(itemIcon.GetComponent<InventoryTooltip>());
 
         float t = 0;
         while (t < 1)

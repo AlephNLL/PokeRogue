@@ -1,13 +1,16 @@
-using System;
+    using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using GameData;
+using UnityEditor.Experimental.GraphView;
+using System.Collections;
 using UnityEngine.SceneManagement;
 public class MapGenerator : MonoBehaviour
 {
+    public static MapGenerator Instance;
     [Header("Ajustes del grid")]
     [SerializeField] public int gridWidth = 10;
     [SerializeField] public int gridHeight = 10;
@@ -21,9 +24,23 @@ public class MapGenerator : MonoBehaviour
 
     private MapNode[,] currentGrid;
     List<MapNode> path;
+    List<MapNode> worldPath = new();
+
+    private int lastId = 0;
+
+    private MapNode bossRoom;
+
+    private void Awake()
+    {
+        if (Instance == null) { Instance = this; }
+        else { Destroy(gameObject); }
+    }
 
     public void GenerateMap()
     {
+        worldPath.Clear();
+        lastId = 0;
+
         MapManager.instance.mapCreated = false;
         currentGrid = InitializeGrid();
         path = GeneratePaths(currentGrid, startingPaths);
@@ -41,10 +58,9 @@ public class MapGenerator : MonoBehaviour
         MapCamera.SetSelectedObject(MapManager.instance.currentRoom);
     }
 
-    private MapNode[,] InitializeGrid()
+    private MapNode[,] InitializeGrid(int startFloor = 0, int offset = 0)
     {
         currentGrid = new MapNode[gridHeight, gridWidth];
-        int nextId = 1;
 
         // Inicializar matriz de nodos vacios
         for (int floor = 0; floor < gridHeight; floor++)
@@ -52,18 +68,20 @@ public class MapGenerator : MonoBehaviour
             for (int room = 0; room < gridWidth; room++)
             {
                 currentGrid[floor, room] = new MapNode();
-                currentGrid[floor, room].id = nextId++;
+                currentGrid[floor, room].id = lastId++;
                 currentGrid[floor, room].gridPosition = new Vector2Int(floor, room);
-                currentGrid[floor, room].floorLevel = floor;
+                currentGrid[floor, room].floorLevel = floor + startFloor;
 
-                float floorPosRandomized = Random.Range(floor * 3 - randomRange, floor * 3 + randomRange);
+                if (startFloor != 0) { currentGrid[floor, room].floorLevel = floor + startFloor + 1; }
+
+                float floorPosRandomized = Random.Range((floor + startFloor) * 3 + offset - randomRange, (floor + startFloor) * 3 + offset + randomRange);
                 float roomPosRandomized = Random.Range(room * 3 - randomRange, room * 3 + randomRange);
                 currentGrid[floor, room].position = new Vector3(floorPosRandomized, 0, roomPosRandomized);
             }
         }
         return currentGrid;
     }
-    private List<MapNode> GeneratePaths(MapNode[,] grid, int startingPaths) 
+    private List<MapNode> GeneratePaths(MapNode[,] grid, int startingPaths)
     {
         path = new();
 
@@ -72,6 +90,7 @@ public class MapGenerator : MonoBehaviour
         {
             int randomStartRoom = SelectRandomNode(path, grid);
             path.Add(grid[0, randomStartRoom]);
+            worldPath.Add(grid[0, randomStartRoom]);
 
             for (int iteration = 0; iteration < iterations; iteration++)
             {
@@ -122,10 +141,10 @@ public class MapGenerator : MonoBehaviour
             nextRoom = currentGrid[nextFloor, randomRoom];
             attempt++;
         }
-        if (nextRoom != null) 
+        if (nextRoom != null)
         {
             if (!currentRoom.connectedNodesIds.Contains(nextRoom.id)) { currentRoom.AddConnection(nextRoom); }
-            if (!path.Contains(nextRoom)) { path.Add(nextRoom); }
+            if (!path.Contains(nextRoom)) { path.Add(nextRoom); worldPath.Add(nextRoom); }
         }
 
         return randomRoom;
@@ -181,21 +200,28 @@ public class MapGenerator : MonoBehaviour
         return false;
     }
 
-    private void GenerateBossRoom()
+    private void GenerateBossRoom(int startFloor = 0, int offset = 0)
     {
-        MapNode bossRoom = new MapNode();
+        bossRoom = new MapNode();
         bossRoom.roomType = RoomType.Boss;
-        bossRoom.position = new Vector3(gridHeight * 3 + 2, 0, (gridWidth * 3)/2);
+        bossRoom.position = new Vector3((startFloor + gridHeight) * 3 + 2 + offset, 0, (gridWidth * 3) / 2);
         bossRoom.floorLevel = gridHeight;
+        bossRoom.id = -1;
+
+        int secondBossOffset = 0;
+        if (startFloor != 0) { bossRoom.id = lastId++; secondBossOffset = 1; }
+
+        bossRoom.floorLevel = gridHeight + startFloor + secondBossOffset;
 
         foreach (MapNode room in path)
         {
-            if (room.floorLevel == gridHeight - 1)
+            if (room.floorLevel == gridHeight - 1 + startFloor + secondBossOffset)
             {
                 room.AddConnection(bossRoom);
             }
         }
         path.Add(bossRoom);
+        worldPath.Add(bossRoom);
     }
 
     private void GenerateStartRoom()
@@ -213,5 +239,70 @@ public class MapGenerator : MonoBehaviour
             }
         }
         path.Add(start);
+        worldPath.Add(start);
+    }
+
+    public void GenerateNextMap()
+    {
+        currentGrid = InitializeGrid(gridHeight, 7);
+        path = GeneratePaths(currentGrid, startingPaths);
+        GenerateBossRoom(gridHeight, 7);
+
+        ConnectNextMap(gridHeight);
+
+        roomAssigner.AssignRoomTypes(path);
+        mapView.DrawMap(worldPath);
+    }
+
+    private void ConnectNextMap(int startFloor = 0)
+    {
+        GameObject bossGO = GameObject.Find("Boss--1");
+        Node bossNode = bossGO.GetComponent<Node>();
+        bossRoom = MapManager.instance.NodeToMapNode(bossNode);
+        bossRoom.id = -2;
+        bossRoom.floorLevel = startFloor + 1;
+
+        foreach (MapNode room in path)
+        {
+            if (room.floorLevel == startFloor + 1)
+            {
+                bossRoom.AddConnection(room);
+            }
+        }
+        path.Add(bossRoom);
+        MapNode oldBossRoom = worldPath.FirstOrDefault(x => x.roomType == RoomType.Boss);
+        Debug.Log(oldBossRoom.id);
+        worldPath.Add(bossRoom);
+
+        StartCoroutine(FindSpawn());
+    }
+
+    private IEnumerator FindSpawn()
+    {
+        yield return new WaitForNextFrameUnit();
+        MapManager.instance.currentRoom = GameObject.Find("Spawn-0");
+        MapCamera.SetSelectedObject(MapManager.instance.currentRoom);
+        MapCamera.UpdateLayers(MapManager.instance.currentRoom);
+        FixDuplicateBoss();
+    }
+
+    public void FixDuplicateBoss()
+    {
+        GameObject boss0 = GameObject.Find("Boss--1");
+        GameObject boss1 = GameObject.Find("Boss--2");
+
+        Node node0 = boss0.GetComponent<Node>();
+        Node node1 = boss1.GetComponent<Node>();
+
+        foreach (GameObject node in node1.connectedNodes)
+        {
+            node0.connectedNodes.Add(node);
+            Debug.Log("Connected boss to next map");
+        }
+
+        MapManager.instance.createdRooms.Remove(boss1);
+
+        //MapManager.instance.UpdatePathNodes(MapManager.instance.createdRooms);
+        Destroy(boss1);
     }
 }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Accelerating Charge
   description: Charges quickly raising speed.
-  sfx: {fileID: 11400000, guid: 5695e15e12a54d24e98ffe178cbf410c, type: 2}
+  sfx: {fileID: 11400000, guid: 79214797fcb65524ca706af2054617bd, type: 2}
   power: 30
   accuracy: 100
   abilityType: 0

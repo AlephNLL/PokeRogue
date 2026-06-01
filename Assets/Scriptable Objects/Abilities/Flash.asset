@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Flash
   description: Flashes foes lowering their precision.
+  sfx: {fileID: 11400000, guid: 7558af8243ddca646ab524fe47bc460a, type: 2}
   power: 0
   accuracy: 100
   abilityType: 0
@@ -25,6 +26,7 @@ MonoBehaviour:
   multiHitRange: 0
   hits: 0
   hitRange: 
+  endOnMiss: 0
   passiveEffects: 0
   passiveExecutionTime: 0
   passiveEffectChance: 0

@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Tackle
   description: Tackles foe with its body.
   sfx: {fileID: 11400000, guid: 79214797fcb65524ca706af2054617bd, type: 2}
-  power: 100000000
+  power: 30
   accuracy: 100
   abilityType: 0
   target: 3

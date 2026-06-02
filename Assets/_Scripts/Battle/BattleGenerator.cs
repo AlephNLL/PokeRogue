@@ -41,16 +41,16 @@ public class BattleGenerator : MonoBehaviour
         switch (difficulty)
         {
             case Difficulty.EASY:
-                minSize = 1; maxSize = 3;
-                budget = 150 + (floorLevel * 10);
+                minSize = 1; maxSize = 4;
+                budget = 1500 + (floorLevel * 10);
                 break;
             case Difficulty.NORMAL:
                 minSize = 2; maxSize = 4;
-                budget = 170 + (floorLevel * 15);
+                budget = 1700 + (floorLevel * 15);
                 break;
             case Difficulty.HARD:
                 minSize = 2; maxSize = 5;
-                budget = 200 + (floorLevel * 20);
+                budget = 2000 + (floorLevel * 20);
                 break;
             default:
                 return;
@@ -99,8 +99,8 @@ public class BattleGenerator : MonoBehaviour
         BattleData.enemyTeam = generatedTeam.ToArray();
         BattleData.enemyLevel = finalEnemyLevel;
 
-        BattleData.goldReward = Mathf.RoundToInt((totalBstInTeam * 0.1f));
-        BattleData.expReward = Mathf.RoundToInt((totalBstInTeam * 0.2f) * finalEnemyLevel);
+        BattleData.goldReward = Mathf.RoundToInt((totalBstInTeam * 0.01f));
+        BattleData.expReward = Mathf.RoundToInt((totalBstInTeam * 0.02f) * finalEnemyLevel);
     }
 
     private int GetEnemyCost(GameObject enemyPrefab)
@@ -109,7 +109,7 @@ public class BattleGenerator : MonoBehaviour
         if (unitStats != null)
         {
             
-            int total = unitStats.strength + unitStats.constitution + unitStats.dexterity + unitStats.luck;
+            int total = unitStats.strength + unitStats.constitution + unitStats.dexterity;
             if (cheapEnemies.Contains(enemyPrefab)) total += cheapEnemyExtraCost;
             else if (normalEnemies.Contains(enemyPrefab)) total += normalEnemyExtraCost;
             else if (expensiveEnemies.Contains(enemyPrefab)) total += expensiveEnemyExtraCost;

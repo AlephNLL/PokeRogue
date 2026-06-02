@@ -138,13 +138,13 @@ public class Unit : MonoBehaviour
         switch (stat)
         {
             case Stats.HP:
-                return (int)(constitution * monLevel/10f + monLevel + 5);
+                return (int)(constitution * monLevel/20f + monLevel + 5);
             case Stats.ATK:
-                return (int)(strength * monLevel/10f + 5);
+                return (int)(strength * monLevel/ 20f + 5);
             case Stats.DEF:
-                return (int)((.5f * constitution + .5f * dexterity) * monLevel/10f + 5);
+                return (int)((.5f * constitution + .5f * dexterity) * monLevel/ 20f + 5);
             case Stats.SPEED:
-                return (int)(dexterity * monLevel/10f + 5);
+                return (int)(dexterity * monLevel/ 20f + 5);
             default:
                 return 0;
         }

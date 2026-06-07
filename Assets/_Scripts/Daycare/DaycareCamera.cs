@@ -8,6 +8,8 @@ public class DaycareCamera : MonoBehaviour
 
     public CinemachineVirtualCamera daycareCamera;
     public CinemachineVirtualCamera fusionCamera;
+
+    private Transform lastTarget;
     private void Awake()
     {
         instance = this;
@@ -26,9 +28,13 @@ public class DaycareCamera : MonoBehaviour
     }
     public void SetCameraTarget(Transform target)
     {
+        if (lastTarget != null) Destroy(lastTarget.gameObject);
+
         Transform transform = new GameObject().transform;
         transform.position = target.position - new Vector3(0, -1f, 3f);
         transform.rotation = Quaternion.identity;
+
+        lastTarget = transform;
 
         fusionCamera.LookAt = transform;
         fusionCamera.Follow = transform;

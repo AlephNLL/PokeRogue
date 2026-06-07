@@ -1,10 +1,12 @@
 
+using Cinemachine;
 using GameData;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -29,6 +31,7 @@ public class DaycareManager : MonoBehaviour
     List<UnitData> selectedUnits = new List<UnitData>();
     [SerializeField]
     List<GameObject> selectedPrefabs = new List<GameObject>();
+    public GameObject hoveredPrefab;
 
     [SerializeField] GameObject outOfMonUI;
     bool isBattle;
@@ -62,7 +65,7 @@ public class DaycareManager : MonoBehaviour
         SpawnUnits();
         HealAll();
 
-        
+
         GameSaveManager.instance.SaveGame();
     }
     void HealAll()
@@ -302,11 +305,20 @@ public class DaycareManager : MonoBehaviour
 
         DaycareUIManager.instance.ShowConfirmScreen();
     }
+
+    private void ToggleSelectionScript(bool toggle)
+    {
+        foreach (GameObject unitPrefab in unitPrefabs)
+        {
+            unitPrefab.GetComponent<SelectUnit>().enabled = toggle;
+        }
+    }
     IEnumerator SelectMon(int monSelection)
     {
         int selection = monSelection;
 
         bool toggle = true;
+        ToggleSelectionScript(toggle);
 
         while (true)
         {
@@ -342,10 +354,21 @@ public class DaycareManager : MonoBehaviour
                     UIManager.Instance.UpdateAbilities(units[selection]);
                 }
             }
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
             {
-                yield return selection;
-                yield break;
+                if (hoveredPrefab != null)
+                {
+                    selection = unitPrefabs.IndexOf(hoveredPrefab);
+
+                    DaycareCamera.instance.SetCameraTarget(unitPrefabs[selection].transform);
+                    UIManager.Instance.UpdateStats(units[selection]);
+                    if (UIManager.Instance.abilities.activeInHierarchy)
+                    {
+                        UIManager.Instance.UpdateAbilities(units[selection]);
+                    }
+                    yield return selection;
+                    yield break;
+                }
             }
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1))
             {
@@ -362,6 +385,7 @@ public class DaycareManager : MonoBehaviour
                     UIManager.Instance.UpdateAbilities(units[selection]);
                     StartCoroutine(DaycareCamera.instance.LerpCameraOffset(2, .3f));
                     toggle = false;
+                    ToggleSelectionScript(toggle);
                 }
                 else
                 {
@@ -369,7 +393,6 @@ public class DaycareManager : MonoBehaviour
                     UIManager.Instance.ShowCanvas(false);
                     toggle = true;
                 }
-
             }
 
             yield return null;

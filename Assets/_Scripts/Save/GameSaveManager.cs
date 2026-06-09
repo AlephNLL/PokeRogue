@@ -86,6 +86,8 @@ public class GameSaveManager : MonoBehaviour
             saveData.sceneName = "MapGeneration";
         }
 
+        saveData.difficulty = (int)BattleData.Difficulty;
+
         // Save data to file
         fileDataHandler.Save(saveData);
     }
@@ -102,6 +104,7 @@ public class GameSaveManager : MonoBehaviour
             newGame = true;
         }
         lastSceneName = saveData.sceneName;
+        BattleData.Difficulty = (GameData.Difficulty)saveData.difficulty;
         // Pass loaded data to other scripts
         foreach (ISaveData saveDataObj in saveList)
         {

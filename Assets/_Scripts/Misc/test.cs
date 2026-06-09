@@ -8,7 +8,7 @@ public class test : MonoBehaviour
 
     private void Start()
     {
-        BattleData.Difficulty = battleDifficulty;
+            // BattleData.Difficulty = battleDifficulty;
     }
     // Update is called once per frame
     void Update()

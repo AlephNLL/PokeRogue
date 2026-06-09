@@ -8,6 +8,7 @@ public class SettingsMenu : MonoBehaviour
     public AudioMixer audioMixer;
 
     public TMPro.TMP_Dropdown resolutionDropdown;
+    public TMPro.TMP_Dropdown difficultyDropdown;
 
     Resolution[] resolutions;
 
@@ -61,5 +62,31 @@ public class SettingsMenu : MonoBehaviour
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
+    }
+
+    public void SetDifficulty(int difficultyIndex)
+    {
+        switch (difficultyDropdown.value)
+        {
+            case 0:
+                BattleData.Difficulty = GameData.Difficulty.EASY;
+                print(BattleData.Difficulty);
+                break;
+            case 1:
+                BattleData.Difficulty = GameData.Difficulty.NORMAL;
+                print(BattleData.Difficulty);
+                break;
+            case 2:
+                BattleData.Difficulty = GameData.Difficulty.HARD;
+                print(BattleData.Difficulty);
+                break;
+        }
+    }
+
+    public void UpdateDifficultyDropdown()
+    {
+        difficultyDropdown.value = (int)BattleData.Difficulty;
+        resolutionDropdown.RefreshShownValue();
+        print(BattleData.Difficulty);
     }
 }

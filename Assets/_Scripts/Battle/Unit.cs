@@ -693,8 +693,8 @@ public class Unit : MonoBehaviour
                         break;
                 }
 
-                if(ability.passiveExecutionTime != ExecutionTime.ONHIT) TooltipUI.instance.StartNewAction($"{name}' ability {ability.name} activates!");
-                else TooltipUI.instance.AddEffectToCurrentAction($"{name}' ability {ability.name} activates!");
+                if(ability.passiveExecutionTime == ExecutionTime.ONHIT || ability.passiveExecutionTime == ExecutionTime.ONHURT) TooltipUI.instance.AddEffectToCurrentAction($"{name}' ability {ability.name} activates!");
+                else TooltipUI.instance.StartNewAction($"{name}' ability {ability.name} activates!");
 
                 switch (ability.passiveEffects)
                     {
@@ -746,7 +746,8 @@ public class Unit : MonoBehaviour
                             break;
                     }
 
-                TooltipUI.instance.EndCurrentAction();
+                if (ability.passiveExecutionTime == ExecutionTime.ONHIT || ability.passiveExecutionTime == ExecutionTime.ONHURT) return;
+                else TooltipUI.instance.EndCurrentAction();
             }
         }
     }

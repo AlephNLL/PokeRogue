@@ -90,7 +90,7 @@ public class EndScreenManager : MonoBehaviour
 
                 monData.level = currentLevel;
 
-                TeamManager.instance.HealMon(monData, 1);
+                TeamManager.instance.HealMon(monData, .3f);
                 MoveLearner.instance.LearnMove(monData, currentLevel);
             }
             else

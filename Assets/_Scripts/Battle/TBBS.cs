@@ -1157,6 +1157,8 @@ public class TBBS : MonoBehaviour
 
                 attacker.ResolvePassiveEffect(ExecutionTime.ONHIT, targets[i]);
                 attacker.ResolveItemEffect(ExecutionTime.ONHIT, targets[i]);
+
+                targets[i].ResolvePassiveEffect(ExecutionTime.ONHURT);
             }
         }
 

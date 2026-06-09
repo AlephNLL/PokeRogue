@@ -2871,9 +2871,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4310761224615290429, guid: 05162eeda8dbd7c44907719b371e3d86, type: 3}
+      propertyPath: 'abilities.Array.data[80]'
+      value: 
+      objectReference: {fileID: 11400000, guid: ef163d4b1bbf7714aadd67c3b3b060e1, type: 2}
     - target: {fileID: 4853431703264260242, guid: 05162eeda8dbd7c44907719b371e3d86, type: 3}
       propertyPath: m_Name
       value: SaveManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009965524901178075, guid: 05162eeda8dbd7c44907719b371e3d86, type: 3}
+      propertyPath: startTeamData.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009965524901178075, guid: 05162eeda8dbd7c44907719b371e3d86, type: 3}
+      propertyPath: 'startTeamData.Array.data[0]'
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5009965524901178075, guid: 05162eeda8dbd7c44907719b371e3d86, type: 3}
+      propertyPath: 'startTeamData.Array.data[1]'
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 8672639327556790515, guid: 05162eeda8dbd7c44907719b371e3d86, type: 3}
       propertyPath: m_LocalPosition.x

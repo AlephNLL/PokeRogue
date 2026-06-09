@@ -2629,7 +2629,7 @@ PrefabInstance:
     - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'teamData.Array.data[1]'
       value: 
-      objectReference: {fileID: 11400000, guid: b119c886d460fdd4ab3e4a7484609dbd, type: 2}
+      objectReference: {fileID: 11400000, guid: c6f28d7ef82f1c147a25193d8147b26e, type: 2}
     - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'teamData.Array.data[2]'
       value: 
@@ -2649,7 +2649,7 @@ PrefabInstance:
     - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'startTeamData.Array.data[1]'
       value: 
-      objectReference: {fileID: 11400000, guid: b119c886d460fdd4ab3e4a7484609dbd, type: 2}
+      objectReference: {fileID: 11400000, guid: c6f28d7ef82f1c147a25193d8147b26e, type: 2}
     - target: {fileID: 796922449868520641, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'teamStartData.Array.data[0]'
       value: 
@@ -2793,7 +2793,7 @@ PrefabInstance:
     - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'tutorialTeam.Array.data[0]'
       value: 
-      objectReference: {fileID: 1717970170875167366, guid: 5fe7b7b1ca0968e45bf3704276764ea9, type: 3}
+      objectReference: {fileID: 1717970170875167366, guid: d48079d3e9e6b7140890e97aea1920f6, type: 3}
     - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: expensiveEnemies.Array.size
       value: 3

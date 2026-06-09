@@ -369,6 +369,17 @@ public class DaycareManager : MonoBehaviour
                     yield return selection;
                     yield break;
                 }
+                else if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    DaycareCamera.instance.SetCameraTarget(unitPrefabs[selection].transform);
+                    UIManager.Instance.UpdateStats(units[selection]);
+                    if (UIManager.Instance.abilities.activeInHierarchy)
+                    {
+                        UIManager.Instance.UpdateAbilities(units[selection]);
+                    }
+                    yield return selection;
+                    yield break;
+                }
             }
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1))
             {

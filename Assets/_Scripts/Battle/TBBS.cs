@@ -690,7 +690,7 @@ public class TBBS : MonoBehaviour
                             attacker.SelectTarget(enemyUnits[selection].gameObject);
                         }
                     }
-                    else
+                    else if (Input.GetKeyDown(KeyCode.Space))
                     {
                         ControlsUI.instance.HideSelectionControls();
                         yield return selection;

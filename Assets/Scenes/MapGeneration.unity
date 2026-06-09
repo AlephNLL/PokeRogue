@@ -426,10 +426,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1137582138}
-        m_TargetAssemblyTypeName: PauseMenuUI, Assembly-CSharp
-        m_MethodName: ShowPauseMenu
-        m_Mode: 6
+      - m_Target: {fileID: 1949438565}
+        m_TargetAssemblyTypeName: MapButtonsUI, Assembly-CSharp
+        m_MethodName: Pause
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2143,17 +2143,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5400850354992837496, guid: ce1adb8c73abf3845abd5be35db9f0b8, type: 3}
   m_PrefabInstance: {fileID: 2088161223984979973}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1137582138 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5981330212842925964, guid: 43d99d140bca94643ac04b44f9eb574d, type: 3}
-  m_PrefabInstance: {fileID: 6232500488270719684}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 533e97ea57a727f4198b72a0625c67cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PauseMenuUI
 --- !u!1 &1160803198
 GameObject:
   m_ObjectHideFlags: 0
@@ -3186,6 +3175,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1949438564}
+  - component: {fileID: 1949438565}
   m_Layer: 0
   m_Name: MapButtons
   m_TagString: Untagged
@@ -3209,6 +3199,18 @@ Transform:
   - {fileID: 199727258}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1949438565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1949438563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a8fc3a98c0ee4743afc765bff74c8d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MapButtonsUI
 --- !u!1 &2017229619
 GameObject:
   m_ObjectHideFlags: 0

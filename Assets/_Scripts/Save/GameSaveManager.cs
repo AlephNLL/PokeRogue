@@ -29,6 +29,11 @@ public class GameSaveManager : MonoBehaviour
         if (instance == null) { instance = this; DontDestroyOnLoad(instance); }
         else { Destroy(gameObject); }
 
+        if (SaveReferenceDatabase.Instance == null && GetComponent<SaveReferenceDatabase>() == null)
+        {
+            gameObject.AddComponent<SaveReferenceDatabase>();
+        }
+
         fileDataHandler = new FileDataHandler(Application.persistentDataPath, fileName);
         saveList = FindAllSaveObjects();
     }
@@ -57,12 +62,14 @@ public class GameSaveManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
+        if (SceneManager.GetActiveScene().name == "BattleScene") return;
         SaveGame();
     }
 
     public void SaveGame()
     {
         // Pass data to other scripts
+        print("SAVING");
         foreach (ISaveData saveDataObj in saveList)
         {
             saveDataObj.SaveData(ref saveData);

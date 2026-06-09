@@ -224,8 +224,8 @@ public class Unit : MonoBehaviour
         battleMenu.gameObject.SetActive(true);
 
         attackButton.onClick.AddListener(delegate { TBBS.instance.AbilityMenu(this); });
-        itemButton.onClick.AddListener(delegate { TBBS.instance.ItemMenu(this); });
-        runButton.onClick.AddListener(delegate { TBBS.instance.Skip(this); });
+        if (!PlayerData.tutorial) itemButton.onClick.AddListener(delegate { TBBS.instance.ItemMenu(this); });
+        if (!PlayerData.tutorial) runButton.onClick.AddListener(delegate { TBBS.instance.Skip(this); });
 
         lastMenu = battleMenu.gameObject;
     }

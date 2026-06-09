@@ -6,8 +6,8 @@ public class GameSaveData
 {
     // Mons y Stats
     public int gold;
-    public List<Item> p_items;
-    public List<Item> items;
+    public List<string> p_itemIds;
+    public List<string> itemIds;
     public List<UnitSaveData> teamData;
     public List<UnitSaveData> daycareTeamData;
 
@@ -27,8 +27,24 @@ public class GameSaveData
     public GameSaveData()
     {
         gold = 0;
-        p_items = PlayerData.Instance.p_items;
-        items = PlayerData.items;
+        p_itemIds = new List<string>();
+        itemIds = new List<string>();
+        if (PlayerData.Instance != null && PlayerData.Instance.p_items != null)
+        {
+            foreach (Item item in PlayerData.Instance.p_items)
+            {
+                p_itemIds.Add(SaveReferenceDatabase.GetId(item));
+            }
+        }
+
+        if (PlayerData.items != null)
+        {
+            foreach (Item item in PlayerData.items)
+            {
+                itemIds.Add(SaveReferenceDatabase.GetId(item));
+            }
+        }
+
         teamData = GameSaveManager.startTeam;
 
         daycareTeamData = new List<UnitSaveData>();

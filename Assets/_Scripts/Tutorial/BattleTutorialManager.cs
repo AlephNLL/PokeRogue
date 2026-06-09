@@ -171,7 +171,7 @@ public class BattleTutorialManager : MonoBehaviour
 
         tutorialSteps[TutorialState.ExplainPassives] = new TutorialStep
         {
-            message = "Abilities can be <color=#00FFFF>passive</color>, like this one. <color=#00FFFF>Passives</color> triger automatically on battle.",
+            message = "Abilities can be <color=#00FFFF>passive</color>, like this one. <color=#00FFFF>Passives</color> trigger automatically on battle.",
             waitForPlayerAction = false,
             handPose = HandPose.Point,
             targetKey = "Passives",
@@ -199,7 +199,7 @@ public class BattleTutorialManager : MonoBehaviour
 
         tutorialSteps[TutorialState.Targeting] = new TutorialStep
         {
-            message = "Now you have to chose your target, click when you are ready!",
+            message = "Now you have to chose your target, press space or click once you're ready!",
             waitForPlayerAction = true,
             handPose = HandPose.Idle,
             targetKey = "None",

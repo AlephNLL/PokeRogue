@@ -68,12 +68,19 @@ public class UnitData : ScriptableObject
         UnitSaveData data = new UnitSaveData();
         data.id = id;
         data.name = name;
-        data.prefab = prefab;
+        data.prefabId = SaveReferenceDatabase.GetId(prefab);
         data.level = level;
         data.currentExp = currentExp;
-        data.heldItem = heldItem;
+        data.heldItemId = SaveReferenceDatabase.GetId(heldItem);
         data.currentHp = currentHp;
-        data.knownAbilities = knownAbilities;
+        data.knownAbilityIds = new List<string>();
+        if (knownAbilities != null)
+        {
+            foreach (Abilities ability in knownAbilities)
+            {
+                data.knownAbilityIds.Add(SaveReferenceDatabase.GetId(ability));
+            }
+        }
         data.isVeteran = isVeteran;
         data.status = status;
         return data;
@@ -83,12 +90,20 @@ public class UnitData : ScriptableObject
     {
         id = data.id;
         name = data.name;
-        prefab = data.prefab;
+        prefab = SaveReferenceDatabase.Instance != null ? SaveReferenceDatabase.Instance.GetUnitPrefab(data.prefabId) : null;
         level = data.level;
         currentExp = data.currentExp;
-        heldItem = data.heldItem;
+        heldItem = SaveReferenceDatabase.Instance != null ? SaveReferenceDatabase.Instance.GetItem(data.heldItemId) : null;
         currentHp = data.currentHp;
-        knownAbilities = data.knownAbilities;
+        knownAbilities = new List<Abilities>();
+        if (data.knownAbilityIds != null && SaveReferenceDatabase.Instance != null)
+        {
+            foreach (string abilityId in data.knownAbilityIds)
+            {
+                Abilities ability = SaveReferenceDatabase.Instance.GetAbility(abilityId);
+                if (ability != null) knownAbilities.Add(ability);
+            }
+        }
         isVeteran = data.isVeteran;
         status = data.status;
         return this;

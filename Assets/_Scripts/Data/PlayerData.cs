@@ -57,8 +57,8 @@ public class PlayerData : MonoBehaviour, ISaveData
     public void SaveData(ref GameSaveData data)
     {
         data.gold = gold;
-        data.p_items = this.p_items;
-        data.items = PlayerData.items;
+        data.p_itemIds = SaveItemIds(this.p_items);
+        data.itemIds = SaveItemIds(PlayerData.items);
         data.teamData = new();
         data.daycareTeamData = new();
         data.tutorial = tutorial;
@@ -80,8 +80,8 @@ public class PlayerData : MonoBehaviour, ISaveData
     public void LoadData(GameSaveData data)
     {
         this.gold = data.gold;
-        this.p_items = data.p_items;
-        PlayerData.items = data.items;
+        this.p_items = LoadItems(data.p_itemIds);
+        PlayerData.items = LoadItems(data.itemIds);
         teamData = new();
         daycareTeamData = new();
         tutorial = data.tutorial;
@@ -101,5 +101,32 @@ public class PlayerData : MonoBehaviour, ISaveData
             UnitData empty = (UnitData)ScriptableObject.CreateInstance(typeof(UnitData));
             daycareTeamData.Add(empty.SaveData(unitData));
         }
+    }
+
+    private List<string> SaveItemIds(List<Item> itemList)
+    {
+        List<string> itemIds = new();
+        if (itemList == null) return itemIds;
+
+        foreach (Item item in itemList)
+        {
+            itemIds.Add(SaveReferenceDatabase.GetId(item));
+        }
+
+        return itemIds;
+    }
+
+    private List<Item> LoadItems(List<string> itemIds)
+    {
+        List<Item> itemList = new();
+        if (itemIds == null || SaveReferenceDatabase.Instance == null) return itemList;
+
+        foreach (string itemId in itemIds)
+        {
+            Item item = SaveReferenceDatabase.Instance.GetItem(itemId);
+            if (item != null) itemList.Add(item);
+        }
+
+        return itemList;
     }
 }

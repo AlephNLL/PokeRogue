@@ -10,7 +10,7 @@ public class MapNodeData
     public Vector2Int gridPosition;
     public List<string> connectedNodesNames;
     public RoomType roomType;
-    public GameObject roomPrefab;
+    public string roomPrefabId;
     public int floorLevel;
     public string sceneName;
 }

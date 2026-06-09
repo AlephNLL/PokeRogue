@@ -25,6 +25,8 @@ public class TBBS : MonoBehaviour
 
     public List<Unit> playerUnits;
     public List<Unit> enemyUnits;
+    public Unit hoveredUnit;
+
     public List<GameObject> capturableUnits;
 
     public int currentTurnIndex = 0;
@@ -186,7 +188,7 @@ public class TBBS : MonoBehaviour
 
     IEnumerator PlayerTurn(Unit currentUnit, bool activateTurnStartEffect = true)
     {
-        while(TooltipUI.instance.isProcessing) yield return null;
+        while (TooltipUI.instance.isProcessing) yield return null;
 
         if (PlayerData.tutorial) BattleTutorialManager.instance.StartTutorial();
 
@@ -362,7 +364,7 @@ public class TBBS : MonoBehaviour
         // Limpiamos cualquier corrutina de menú abierta previamente
         if (menuCoroutine != null) StopCoroutine(menuCoroutine);
 
-        if(BattleTutorialManager.instance != null)
+        if (BattleTutorialManager.instance != null)
         {
             BattleTutorialManager.instance.PlayerPerformedAction(TutorialState.WaitForAttackClick);
         }
@@ -510,7 +512,7 @@ public class TBBS : MonoBehaviour
             UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
         }
 
-        if(BattleTutorialManager.instance != null)
+        if (BattleTutorialManager.instance != null)
         {
             BattleTutorialManager.instance.PlayerPerformedAction(TutorialState.WaitForAbility);
         }
@@ -638,7 +640,6 @@ public class TBBS : MonoBehaviour
             yield return null;
         }
     }
-
     IEnumerator SelectTarget(bool enemySide = true, bool removeAttacker = true)
     {
         int selection = 0;
@@ -651,6 +652,8 @@ public class TBBS : MonoBehaviour
         if (enemySide)
         {
             attacker.SelectTarget(enemyUnits[selection].gameObject);
+
+            foreach (Unit unit in enemyUnits) { unit.GetComponent<SelectUnit>().enabled = true; }
 
             while (true)
             {
@@ -670,15 +673,36 @@ public class TBBS : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
                 {
-                    ControlsUI.instance.HideSelectionControls();
-                    yield return selection;
-                    yield break;
+                    if (hoveredUnit != null)
+                    {
+                        int newSelection = enemyUnits.IndexOf(hoveredUnit);
+
+                        if (newSelection == selection)
+                        {
+                            ControlsUI.instance.HideSelectionControls();
+                            foreach (Unit unit in enemyUnits) { unit.GetComponent<SelectUnit>().enabled = false; }
+                            yield return selection;
+                            yield break;
+                        }
+                        else
+                        {
+                            selection = newSelection;
+                            attacker.SelectTarget(enemyUnits[selection].gameObject);
+                        }
+                    }
+                    else
+                    {
+                        ControlsUI.instance.HideSelectionControls();
+                        yield return selection;
+                        yield break;
+                    }
                 }
 
-                if (Input.GetMouseButtonDown(1))
+                if (Input.GetMouseButtonDown(1) && !PlayerData.tutorial)
                 {
                     ControlsUI.instance.HideSelectionControls();
                     selection = -1;
+                    foreach (Unit unit in enemyUnits) { unit.GetComponent<SelectUnit>().enabled = false; }
                     yield return selection;
                     yield break;
                 }
@@ -689,11 +713,14 @@ public class TBBS : MonoBehaviour
         else
         {
             List<Unit> targets = new List<Unit>(playerUnits);
-            if(removeAttacker) targets.Remove(attacker);
+            foreach (Unit unit in targets) { unit.GetComponent<SelectUnit>().enabled = true; }
+
+            if (removeAttacker) targets.Remove(attacker);
             if (targets.Count > 0) attacker.SelectTarget(targets[selection].gameObject);
             else
             {
                 selection = -1;
+                foreach (Unit unit in targets) { unit.GetComponent<SelectUnit>().enabled = false; }
                 yield return selection;
                 yield break;
             }
@@ -716,15 +743,27 @@ public class TBBS : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
                 {
-                    ControlsUI.instance.HideSelectionControls();
-                    yield return selection;
-                    yield break;
+                    int newSelection = targets.IndexOf(hoveredUnit);
+
+                    if (newSelection == selection)
+                    {
+                        ControlsUI.instance.HideSelectionControls();
+                        foreach (Unit unit in targets) { unit.GetComponent<SelectUnit>().enabled = false; }
+                        yield return selection;
+                        yield break;
+                    }
+                    else
+                    {
+                        selection = newSelection;
+                        attacker.SelectTarget(targets[selection].gameObject);
+                    }
                 }
 
                 if (Input.GetMouseButtonDown(1))
                 {
                     ControlsUI.instance.HideSelectionControls();
                     selection = -1;
+                    foreach (Unit unit in targets) { unit.GetComponent<SelectUnit>().enabled = false; }
                     yield return selection;
                     yield break;
                 }
@@ -1095,13 +1134,13 @@ public class TBBS : MonoBehaviour
             }
             if (attacker.heldItem)
             {
-                if (attacker.heldItem.HasEffect(ItemEffects.CHANGESTANCEIFMOVESTANCE) && attacker.currentStance != attacker.heldItem.stanceToChangeTo 
+                if (attacker.heldItem.HasEffect(ItemEffects.CHANGESTANCEIFMOVESTANCE) && attacker.currentStance != attacker.heldItem.stanceToChangeTo
                     && ability.stance == attacker.heldItem.stanceToChangeTo)
                 {
                     attacker.ChangeStance(attacker.heldItem.stanceToChangeTo);
                 }
             }
-            
+
             ResolveAbilityEffect(attacker, targets[i], ability, ability.effect1, ability.effect1Chance, ability.affectSelf, ability.condition1);
             ResolveAbilityEffect(attacker, targets[i], ability, ability.effect2, ability.effect2Chance, ability.affectSelf, ability.condition2);
 
@@ -1258,7 +1297,7 @@ public class TBBS : MonoBehaviour
         if (ability.effect1 == AbilityEffect.RECOIL || ability.effect2 == AbilityEffect.RECOIL) attacker.TakeDamage(Mathf.Max((int)(damage * .5f), 1));
         if (attacker.heldItem)
         {
-            if(attacker.heldItem.HasEffect(ItemEffects.LEECH)) attacker.Heal(Mathf.Max((int)(damage * .1f), 1));
+            if (attacker.heldItem.HasEffect(ItemEffects.LEECH)) attacker.Heal(Mathf.Max((int)(damage * .1f), 1));
         }
 
         Debug.Log($"--- REPORTE DE DAÑO ---");

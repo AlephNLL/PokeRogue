@@ -35,7 +35,7 @@ public class MapNode : ScriptableObject
         data.position = position;
         data.gridPosition = gridPosition;
         data.roomType = roomType;
-        data.roomPrefab = roomPrefab;
+        data.roomPrefabId = SaveReferenceDatabase.GetId(roomPrefab);
         data.floorLevel = floorLevel;
         data.sceneName = sceneName;
 
@@ -53,7 +53,7 @@ public class MapNode : ScriptableObject
         position = data.position;
         gridPosition = data.gridPosition;
         roomType = data.roomType;
-        roomPrefab = data.roomPrefab;
+        roomPrefab = SaveReferenceDatabase.Instance != null ? SaveReferenceDatabase.Instance.GetRoomPrefab(data.roomPrefabId) : null;
         floorLevel = data.floorLevel;
         sceneName = data.sceneName;
 

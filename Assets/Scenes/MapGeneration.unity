@@ -593,7 +593,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 10
     m_Bottom: 0
-  m_ChildAlignment: 2
+  m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 100}
@@ -3538,6 +3538,14 @@ PrefabInstance:
       propertyPath: monLevelUpWindowPrefab
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7284244569512433936, guid: ce1adb8c73abf3845abd5be35db9f0b8, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 29.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284244569512433936, guid: ce1adb8c73abf3845abd5be35db9f0b8, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 34
+      objectReference: {fileID: 0}
     - target: {fileID: 7345885413768070708, guid: ce1adb8c73abf3845abd5be35db9f0b8, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3601,6 +3609,26 @@ PrefabInstance:
     - target: {fileID: 8647059249806855967, guid: ce1adb8c73abf3845abd5be35db9f0b8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134874276567597776, guid: ce1adb8c73abf3845abd5be35db9f0b8, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134874276567597776, guid: ce1adb8c73abf3845abd5be35db9f0b8, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: fabb306e9b3422f4eb2e3eac46c9df66, type: 3}
+    - target: {fileID: 9134874276567597776, guid: ce1adb8c73abf3845abd5be35db9f0b8, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134874276567597776, guid: ce1adb8c73abf3845abd5be35db9f0b8, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9134874276567597776, guid: ce1adb8c73abf3845abd5be35db9f0b8, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

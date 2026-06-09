@@ -96,58 +96,49 @@ public class MapView : MonoBehaviour
     {
         foreach (MapNode node in path)
         {
-            switch (node.roomType)
+            GameObject prefab = node.roomPrefab != null ? node.roomPrefab : GetDefaultPrefab(node.roomType);
+            if (prefab == null)
             {
-                case RoomType.NOT_ASSIGNED:
-                    GameObject mapNode = Instantiate(notAssignedPrefab, node.position, Quaternion.identity);
-                    mapNode.name = node.roomType + "-" + node.id;
-                    PassNodeData(mapNode, node);
-                    MapManager.instance.createdRooms.Add(mapNode);
-                    break;
-                case RoomType.Spawn:
-                    GameObject startNode = Instantiate(startPrefab, node.position, Quaternion.identity);
-                    startNode.name = node.roomType + "-" + node.id;
-                    PassNodeData(startNode, node);
-                    MapManager.instance.createdRooms.Add(startNode);
-                    break;
-                case RoomType.Boss:
-                    GameObject bossNode = Instantiate(bossPrefab, node.position, Quaternion.identity);
-                    bossNode.name = node.roomType + "-" + node.id;
-                    PassNodeData(bossNode, node);
-                    MapManager.instance.createdRooms.Add(bossNode);
-                    break;
-                case RoomType.Heal:
-                    GameObject healNode = Instantiate(healPrefab, node.position, Quaternion.identity);
-                    healNode.name = node.roomType + "-" + node.id;
-                    PassNodeData(healNode, node);
-                    MapManager.instance.createdRooms.Add(healNode);
-                    break;
-                case RoomType.Enemy:
-                    GameObject enemyNode = Instantiate(enemyPrefab, node.position, Quaternion.identity);
-                    enemyNode.name = node.roomType + "-" + node.id;
-                    enemyNode.GetComponent<Node>().sceneName = "BattleScene";
-                    PassNodeData(enemyNode, node);
-                    MapManager.instance.createdRooms.Add(enemyNode);
-                    break;
-                case RoomType.Shop:
-                    GameObject shopNode = Instantiate(shopPrefab, node.position, Quaternion.identity);
-                    shopNode.name = node.roomType + "-" + node.id;
-                    PassNodeData(shopNode, node);
-                    MapManager.instance.createdRooms.Add(shopNode);
-                    break;
-                case RoomType.Treasure:
-                    GameObject treasureNode = Instantiate(treasurePrefab, node.position, Quaternion.identity);
-                    treasureNode.name = node.roomType + "-" + node.id;
-                    PassNodeData(treasureNode, node);
-                    MapManager.instance.createdRooms.Add(treasureNode);
-                    break;
-                case RoomType.Random:
-                    GameObject randomNode = Instantiate(randomPrefab, node.position, Quaternion.identity);
-                    randomNode.name = node.roomType + "-" + node.id;
-                    PassNodeData(randomNode, node);
-                    MapManager.instance.createdRooms.Add(randomNode);
-                    break;
+                Debug.LogError($"No map prefab found for room type {node.roomType} and node {node.id}");
+                continue;
             }
+
+            node.roomPrefab = prefab;
+
+            GameObject mapNode = Instantiate(prefab, node.position, Quaternion.identity);
+            mapNode.name = node.roomType + "-" + node.id;
+            if (node.roomType == RoomType.Enemy)
+            {
+                mapNode.GetComponent<Node>().sceneName = "BattleScene";
+            }
+
+            PassNodeData(mapNode, node);
+            MapManager.instance.createdRooms.Add(mapNode);
+        }
+    }
+
+    private GameObject GetDefaultPrefab(RoomType roomType)
+    {
+        switch (roomType)
+        {
+            case RoomType.NOT_ASSIGNED:
+                return notAssignedPrefab;
+            case RoomType.Spawn:
+                return startPrefab;
+            case RoomType.Boss:
+                return bossPrefab;
+            case RoomType.Heal:
+                return healPrefab;
+            case RoomType.Enemy:
+                return enemyPrefab;
+            case RoomType.Shop:
+                return shopPrefab;
+            case RoomType.Treasure:
+                return treasurePrefab;
+            case RoomType.Random:
+                return randomPrefab;
+            default:
+                return notAssignedPrefab;
         }
     }
 

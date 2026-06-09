@@ -90,7 +90,6 @@ public class FileDataHandler
         string path = Path.Combine(dataDirPath, dataFileName);
 
         bool exists = File.Exists(path);    
-        Debug.Log(exists);
         return exists;
     }
 

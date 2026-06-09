@@ -26,7 +26,7 @@ public class BattleScene : MonoBehaviour
         GameObject newRoom;
 
         print(MapManager.instance.currentNode.floorLevel);
-        if (MapManager.instance.currentNode.floorLevel < 10)
+        if (MapManager.instance.currentNode.floorLevel > 10)
         {
             chosenRoom = Random.Range(0, room2Prefabs.Length - 1);
             newRoom = Instantiate(room2Prefabs[chosenRoom], transform.position, transform.rotation, transform);

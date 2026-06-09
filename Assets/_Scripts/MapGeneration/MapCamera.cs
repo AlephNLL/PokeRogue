@@ -17,6 +17,7 @@ public class MapCamera : MonoBehaviour
     public float smoothSpeed = 15.0f;
     public LayerMask nodeLayerMask;
     private static bool reachedTarget = false;
+    private bool clickedTarget = false;
 
     [Header("Opciones de Interacción")]
     public bool enableFollowMode = true;
@@ -250,6 +251,9 @@ public class MapCamera : MonoBehaviour
             Debug.Log($"Selección: {hit.collider.gameObject.name}");
             GameObject obj = hit.collider.gameObject;
 
+            if (!clickedTarget) GameSaveManager.instance.SaveGame();
+            clickedTarget = true;
+            
             MapManager.instance.BlockOtherPaths(obj);
             SetSelectedObject(obj);
             MapManager.instance.selectedRooms.Add(obj);
@@ -297,7 +301,6 @@ public class MapCamera : MonoBehaviour
             MapNode mapNode = MapManager.instance.NodeToMapNode(node);
             MapManager.instance.currentNode = mapNode;
             MapManager.instance.currentRoomName = $"{mapNode.roomType}-{mapNode.id}";
-            GameSaveManager.instance.SaveGame();
         }
     }
 

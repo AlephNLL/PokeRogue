@@ -85,22 +85,33 @@ public class BattleGenerator : MonoBehaviour
 
         if (isBoss)
         {
+            totalBstInTeam = 0;
             generatedTeam.Clear();
             generatedTeam.AddRange(bossTeams[Random.Range(0, bossTeams.Length)].team);
+            for (global::System.Int32 i = 0; i < generatedTeam.Count; i++)
+            {
+                totalBstInTeam += GetEnemyCost(generatedTeam[i]);
+            }
             BattleData.isBoss = true;
         }
         else BattleData.isBoss = false;
 
         if (PlayerData.tutorial)
         {
+            totalBstInTeam = 0;
             generatedTeam.Clear();
             generatedTeam.AddRange(tutorialTeam);
+            for (global::System.Int32 i = 0; i < generatedTeam.Count; i++)
+            {
+                totalBstInTeam += GetEnemyCost(generatedTeam[i]);
+            }
         }
-        BattleData.enemyTeam = generatedTeam.ToArray();
-        BattleData.enemyLevel = finalEnemyLevel;
 
         BattleData.goldReward = Mathf.RoundToInt((totalBstInTeam * 0.01f));
         BattleData.expReward = Mathf.RoundToInt((totalBstInTeam * 0.02f) * finalEnemyLevel);
+
+        BattleData.enemyTeam = generatedTeam.ToArray();
+        BattleData.enemyLevel = finalEnemyLevel;
     }
 
     private int GetEnemyCost(GameObject enemyPrefab)

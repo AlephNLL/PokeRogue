@@ -381,7 +381,7 @@ public class DaycareManager : MonoBehaviour
                     yield break;
                 }
             }
-            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1))
             {
                 UIManager.Instance.ShowCanvas(false);
                 yield return -1;

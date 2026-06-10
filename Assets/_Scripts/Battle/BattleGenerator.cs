@@ -107,7 +107,7 @@ public class BattleGenerator : MonoBehaviour
             }
         }
 
-        BattleData.goldReward = Mathf.RoundToInt((totalBstInTeam * 0.01f));
+        BattleData.goldReward = Mathf.RoundToInt((totalBstInTeam * 0.014f));
         BattleData.expReward = Mathf.RoundToInt((totalBstInTeam * 0.02f) * finalEnemyLevel);
 
         BattleData.enemyTeam = generatedTeam.ToArray();

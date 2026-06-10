@@ -736,6 +736,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1880888419145442071}
   - component: {fileID: 7571199883488435960}
+  - component: {fileID: -58934270599523369}
+  - component: {fileID: -7891705780858063079}
   m_Layer: 0
   m_Name: Ojofago
   m_TagString: Untagged
@@ -752,7 +754,7 @@ Transform:
   m_GameObject: {fileID: 1717970170875167366}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3, y: 0.25, z: 9.55}
+  m_LocalPosition: {x: -3, y: 0, z: 9.55}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -785,9 +787,10 @@ MonoBehaviour:
   exp: 0
   expCurve: {fileID: 11400000, guid: 42eec143c7464c24889a7a724a74e69f, type: 2}
   status: 0
-  strength: 13
-  constitution: 10
-  dexterity: 15
+  recivedDamageMultiplier: 1
+  strength: 130
+  constitution: 100
+  dexterity: 150
   luck: 13
   maxHp: 0
   currentHp: 0
@@ -836,6 +839,41 @@ MonoBehaviour:
   takingDamage: 0
   baseEffectChanceMulti: 1
   effectChanceModifier: 0
+--- !u!114 &-58934270599523369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1717970170875167366}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e05965b89d209c4dbb24903c9ef3562, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SelectUnit
+--- !u!136 &-7891705780858063079
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1717970170875167366}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.8
+  m_Height: 3.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.25, z: 0}
 --- !u!1 &1760726793352929564
 GameObject:
   m_ObjectHideFlags: 0
@@ -4051,7 +4089,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8665074616251168620, guid: c850d3422f8cc6a44add5dd76e3b239c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 8665074616251168620, guid: c850d3422f8cc6a44add5dd76e3b239c, type: 3}
       propertyPath: m_LocalPosition.z

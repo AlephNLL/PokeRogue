@@ -10,10 +10,25 @@ public class Item : ScriptableObject
     public GameObject icon;
     public bool isConsumible;
 
-    public ItemEffects effect;
-    public float effectChance;
+    public ItemEffects[] effect;
+    public AbilityCondition[] condition;
+    public float[] effectChance;
     public Status statusToChangeTo;
+    public Stance stanceToChangeTo;
     public int healingAmount;
-    public ExecutionTime executionTime;
+    public ExecutionTime[] executionTime;
+    public Stats[] statToMod;
+    public float[] statMod;
     public bool affectSelf;
+
+
+    public bool HasEffect(ItemEffects eff)
+    {
+        for (int i = 0; i < effect.Length; i++)
+        {
+            if (effect[i] == eff) return true;
+        }
+
+        return false;
+    }
 }

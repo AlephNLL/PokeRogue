@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16309091af3cd76408deaa6074da1205, type: 3}
+  m_Name: Silicone Gun
+  m_EditorClassIdentifier: Assembly-CSharp::Item
+  name: Silicone Gun
+  description: Burns user
+  cost: 48
+  icon: {fileID: 4718596695142546627, guid: b4f47a3e4c69e2944bbc2f7f2517aa1c, type: 3}
+  isConsumible: 0
+  effect: 03000000
+  condition: 
+  effectChance:
+  - 100
+  statusToChangeTo: 1
+  stanceToChangeTo: 0
+  healingAmount: 0
+  executionTime: 00000000
+  statToMod: 
+  statMod: []
+  affectSelf: 1

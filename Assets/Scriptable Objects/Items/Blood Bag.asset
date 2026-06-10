@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16309091af3cd76408deaa6074da1205, type: 3}
+  m_Name: Blood Bag
+  m_EditorClassIdentifier: Assembly-CSharp::Item
+  name: Blood Bag
+  description: User leeches 10% of damage dealt
+  cost: 54
+  icon: {fileID: 2341208927881326147, guid: ee552234cc33f994dacb59568f8186b6, type: 3}
+  isConsumible: 0
+  effect: 08000000
+  condition: 
+  effectChance:
+  - 0
+  statusToChangeTo: 0
+  healingAmount: 0
+  executionTime: 00000000
+  statToMod: 
+  statMod: []
+  affectSelf: 1

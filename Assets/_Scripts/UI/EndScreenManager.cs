@@ -4,6 +4,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class EndScreenManager : MonoBehaviour
@@ -16,7 +17,6 @@ public class EndScreenManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI goldText;
     [SerializeField] TextMeshProUGUI expText;
     [SerializeField] TextMeshProUGUI selectMonText;
-    GameObject monToCapture;
     static bool dontShowConfirmScreen = false;
     public static bool monSelected = false;
     List<GameObject> monButtons;
@@ -39,7 +39,10 @@ public class EndScreenManager : MonoBehaviour
             GameObject monButton = Instantiate(monSelectionButtonPrefab, endScreen.transform);
             monButton.GetComponent<RectTransform>().localPosition = new Vector3(250 * (i - (enemyMons.Length - 1) / 2f), -250, 0);
             monButton.GetComponentInChildren<TextMeshProUGUI>().text = enemyMons[i].name;
-            monToCapture = enemyMons[i];
+            
+            int index = i;
+            GameObject monToCapture = enemyMons[index];
+
             monButton.GetComponent<Button>().onClick.AddListener(delegate { TeamManager.instance.AddNewTeamMember(monToCapture); });
             monButtons.Add(monButton);
             monButton.GetComponent<Image>().sprite = monToCapture.GetComponent<Unit>().icon;
@@ -87,7 +90,7 @@ public class EndScreenManager : MonoBehaviour
 
                 monData.level = currentLevel;
 
-                TeamManager.instance.HealMon(monData, 1);
+                TeamManager.instance.HealMon(monData, .3f);
                 MoveLearner.instance.LearnMove(monData, currentLevel);
             }
             else
@@ -136,7 +139,24 @@ public class EndScreenManager : MonoBehaviour
     public void BackToMapScreen()
     {
         AudioManager.instance.StopMusic();
-        MapManager.instance.LoadMapScene();
+        if (MapManager.instance.currentNode.roomType == GameData.RoomType.Boss)
+        {
+            print(MapManager.instance.currentNode.floorLevel);
+            if (!PlayerData.Instance.beatenFirstBoss || MapManager.instance.currentNode.floorLevel > 10 )
+            {
+                PlayerData.daycareTeamData.AddRange(PlayerData.teamData);
+                SceneManager.LoadSceneAsync("Daycare");
+                if(!PlayerData.Instance.beatenFirstBoss) { PlayerData.Instance.beatenFirstBoss = true; }
+            }
+            else
+            {
+                MapManager.instance.LoadMapScene();
+            }
+        }
+        else
+        {
+            MapManager.instance.LoadMapScene();
+        }
     }
 
     public void ReturnToVictoryScreen()
@@ -150,20 +170,86 @@ public class EndScreenManager : MonoBehaviour
         dontShowConfirmScreen = true;
     }
 
-    public void EndMonSelection(Unit monSelected, bool sentToDayCare = false)
+    public void EndMonSelection(Unit monSelected, bool sentToDayCare = false, string boxedName = "")
     {
         for (int i = 0; i < monButtons.Count; i++)
         {
             monButtons[i].GetComponent<Button>().onClick.RemoveAllListeners();
             Destroy(monButtons[i]);
         }
-        selectMonText.text = $"You captured a {monSelected.name}";
+        monButtons.Clear();
 
-        if (sentToDayCare) 
+        if (sentToDayCare && !string.IsNullOrEmpty(boxedName))
+        {
+            selectMonText.text = $"{boxedName} was sent to the Daycare.";
+        }
+        else if (sentToDayCare)
         {
             selectMonText.text = $"Your party is full, {monSelected.name} was sent to the Daycare.";
         }
-        
+        else
+        {
+            selectMonText.text = $"You captured a {monSelected.name}";
+        }
+
+        EndScreenManager.monSelected = true;
+    }
+
+    public void PromptDaycareSelection(UnitData newMonData, Unit newMonUnit)
+    {
+        for (int i = 0; i < monButtons.Count; i++)
+        {
+            Destroy(monButtons[i]);
+        }
         monButtons.Clear();
+
+        selectMonText.text = "Party is full! Choose who to send to the Daycare:";
+
+        List<UnitData> allOptions = new List<UnitData>(PlayerData.teamData);
+        allOptions.Add(newMonData);
+
+        for (int i = 0; i < allOptions.Count; i++)
+        {
+            GameObject monButton = Instantiate(monSelectionButtonPrefab, endScreen.transform);
+
+            monButton.GetComponent<RectTransform>().localPosition = new Vector3(200 * (i - (allOptions.Count - 1) / 2f), -250, 0);
+            monButton.GetComponentInChildren<TextMeshProUGUI>().text = allOptions[i].name;
+
+            int index = i;
+            UnitData selectedData = allOptions[index];
+
+            monButton.GetComponent<Button>().onClick.AddListener(delegate {
+                ResolveDaycareSelection(selectedData, newMonData, newMonUnit);
+            });
+
+            monButtons.Add(monButton);
+            monButton.GetComponent<Image>().sprite = selectedData.prefab.GetComponent<Unit>().icon;
+        }
+    }
+
+    private void ResolveDaycareSelection(UnitData chosenToBox, UnitData newMonData, Unit newMonUnit)
+    {
+        if (PlayerData.daycareTeamData == null) PlayerData.daycareTeamData = new List<UnitData>();
+
+        if (chosenToBox != newMonData)
+        {
+            PlayerData.teamData.Remove(chosenToBox);
+            PlayerData.daycareTeamData.Add(chosenToBox);
+
+            PlayerData.teamData.Add(newMonData);
+
+            EndMonSelection(newMonUnit, true, chosenToBox.name);
+        }
+        else
+        {
+            PlayerData.daycareTeamData.Add(newMonData);
+
+            EndMonSelection(newMonUnit, true, newMonData.name);
+        }
+
+        for (int i = 0; i < PlayerData.teamData.Count; i++)
+        {
+            PlayerData.teamData[i].id = i;
+        }
     }
 }

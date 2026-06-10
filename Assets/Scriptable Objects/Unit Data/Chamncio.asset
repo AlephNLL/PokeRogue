@@ -15,14 +15,14 @@ MonoBehaviour:
   id: 1
   name: Chamancio
   prefab: {fileID: 1717970170875167366, guid: b992b5942d8d7384980f0e7231fcdc9f, type: 3}
-  level: 1
-  currentExp: 0
+  level: 2
+  currentExp: 23
   heldItem: {fileID: 0}
-  currentHp: 10
+  currentHp: 23
   status: 0
   knownAbilities:
   - {fileID: 11400000, guid: 723a75a4d1c375948bd4ffb24467d9fa, type: 2}
-  - {fileID: 11400000, guid: 732483a76a59d7d48a24b4adacfc88cd, type: 2}
+  - {fileID: 11400000, guid: 1e1eb35cd1587e44c88161415cb68e04, type: 2}
   - {fileID: 11400000, guid: 059a4631f8bd5b04e99d4f8d3c921817, type: 2}
-  - {fileID: 11400000, guid: 5bea5b4745397354cb76917bc0ac6f14, type: 2}
+  - {fileID: 11400000, guid: d6392f7c4dac4294ca4aa2bb5164884e, type: 2}
   isVeteran: 0

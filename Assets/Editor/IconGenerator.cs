@@ -8,8 +8,11 @@ public class IconGenerator : EditorWindow
     private Camera targetCamera;
     private string folderPath = "Assets/Sprites/Monstruos/";
 
-    // Cambiamos a una lista estándar para que sea más fácil de manejar sin errores
+    [SerializeField]
     private List<GameObject> monsterPrefabs = new List<GameObject>();
+
+    private SerializedObject serializedWindow;
+    private SerializedProperty monsterPrefabsProperty;
 
     [MenuItem("Tools/Generador de Iconos de Monstruos")]
     public static void ShowWindow()
@@ -17,8 +20,16 @@ public class IconGenerator : EditorWindow
         GetWindow<IconGenerator>("Generador de Iconos");
     }
 
+    private void OnEnable()
+    {
+        serializedWindow = new SerializedObject(this);
+        monsterPrefabsProperty = serializedWindow.FindProperty(nameof(monsterPrefabs));
+    }
+
     void OnGUI()
     {
+        serializedWindow.Update();
+
         GUILayout.Label("Configuración del Generador", EditorStyles.boldLabel);
         GUILayout.Space(5);
 
@@ -28,31 +39,8 @@ public class IconGenerator : EditorWindow
         GUILayout.Space(15);
         GUILayout.Label("Lista de Monstruos (Prefabs):", EditorStyles.boldLabel);
 
-        // Dibujamos la lista de forma manual y segura
-        for (int i = 0; i < monsterPrefabs.Count; i++)
-        {
-            EditorGUILayout.BeginHorizontal();
-
-            // Campo para cada monstruo
-            monsterPrefabs[i] = (GameObject)EditorGUILayout.ObjectField($"Monstruo {i + 1}", monsterPrefabs[i], typeof(GameObject), false);
-
-            // Botón por si quieres eliminar un monstruo de la lista
-            if (GUILayout.Button("X", GUILayout.Width(25)))
-            {
-                monsterPrefabs.RemoveAt(i);
-                break;
-            }
-
-            EditorGUILayout.EndHorizontal();
-        }
-
-        GUILayout.Space(5);
-
-        // Botón para añadir un nuevo espacio a la lista
-        if (GUILayout.Button("+ Añadir Espacio para Monstruo"))
-        {
-            monsterPrefabs.Add(null);
-        }
+        EditorGUILayout.PropertyField(monsterPrefabsProperty, true);
+        serializedWindow.ApplyModifiedProperties();
 
         GUILayout.Space(20);
 

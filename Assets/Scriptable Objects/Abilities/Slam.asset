@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Slam
   description: Attacks a foe with full body.
-  sfx: {fileID: 0}
+  sfx: {fileID: 11400000, guid: 79214797fcb65524ca706af2054617bd, type: 2}
   power: 65
   accuracy: 85
   abilityType: 0

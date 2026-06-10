@@ -156,6 +156,8 @@ public class AIManager : MonoBehaviour
             //Habilidades ofensivas
             if (ability.power > 0 && !ability.HasEffect(AbilityEffect.HEALATTACK))
             {
+                score.scores[i] += 1;
+
                 if (CalculateAttackDamage(controlledUnit, score.targets[i], ability) >= score.targets[i].currentHp)
                 {
                     score.scores[i] += 12;
@@ -387,7 +389,11 @@ public class AIManager : MonoBehaviour
         {
             if (mon.knownAbilities[i].abilityType == AbilityType.ACTIVE)
             {
-                actives.Add(mon.knownAbilities[i]);
+                if(!mon.knownAbilities[i].mustUseStance) actives.Add(mon.knownAbilities[i]);
+                else if (mon.currentStance == mon.knownAbilities[i].stance)
+                {
+                    actives.Add(mon.knownAbilities[i]);
+                }
             }
         }
 

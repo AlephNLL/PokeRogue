@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using GameData;
 using NUnit.Framework;
 using TMPro;
+using Unity.VectorGraphics;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -15,9 +18,11 @@ public class UIManager : MonoBehaviour
     public GameObject inventory;
     public GameObject slot;
     public GameObject abilitySlot;
-    
+    public GameObject heldItemSlot;
     public GameObject consumables;
     public GameObject abilities;
+
+    public GameObject itemTooltipUI;
 
     public List<GameObject> instantiatedItems;
 
@@ -37,14 +42,15 @@ public class UIManager : MonoBehaviour
         Instance = this;
     }
 
-    public void ShowCanvas(bool state)
+    public void ShowCanvas(bool state, float delay = 2f)
     {
         if (canvas != null)
         {
             if (state)
             {
-                StartCoroutine(WaitAndShow(2f, canvas));
-            } else
+                StartCoroutine(WaitAndShow(delay, canvas));
+            }
+            else
             {
                 canvas.enabled = state;
             }
@@ -55,8 +61,6 @@ public class UIManager : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         canvas.enabled = true;
-        ShowAbilities();
-        UpdateAbilities();
     }
 
     private void UpdateInventory()
@@ -80,10 +84,14 @@ public class UIManager : MonoBehaviour
             GameObject newSlot = Instantiate(slot);
             newSlot.transform.parent = inventory.transform;
             newSlot.transform.localScale = Vector3.one;
+            newSlot.GetComponent<InventoryTooltip>().itemDescription = item.description;
 
             GameObject itemIcon = Instantiate(item.icon);
             itemIcon.transform.parent = newSlot.transform;
             itemIcon.transform.localScale = Vector3.one;
+
+            Button slotButton = newSlot.AddComponent<Button>();
+            slotButton.onClick.AddListener(() => { SetHeldItem(item); });
 
             instantiatedItems.Add(newSlot);
         }
@@ -109,16 +117,24 @@ public class UIManager : MonoBehaviour
             GameObject newSlot = Instantiate(slot);
             newSlot.transform.parent = consumables.transform;
             newSlot.transform.localScale = Vector3.one;
+            newSlot.GetComponent<InventoryTooltip>().itemDescription = item.description;
 
             GameObject itemIcon = Instantiate(item.icon);
             itemIcon.transform.parent = newSlot.transform;
             itemIcon.transform.localScale = Vector3.one;
 
+            string currentScene = SceneManager.GetActiveScene().name;
+            if (currentScene != "BattleScene")
+            {
+                Button slotButton = newSlot.AddComponent<Button>();
+                slotButton.onClick.AddListener(() => { MakeConsumeItem(item); });
+            }
+
             instantiatedItems.Add(newSlot);
         }
     }
 
-    public void UpdateAbilities(int index = 0)
+    public void UpdateAbilities(UnitData mon, int index = 0)
     {
         if (instantiatedItems != null)
         {
@@ -131,7 +147,18 @@ public class UIManager : MonoBehaviour
 
         instantiatedItems = new List<GameObject>();
 
-        foreach (Abilities ability in PlayerData.teamData[index].knownAbilities)
+        UnitData viewMon = mon;
+
+        if (!viewMon)
+        {
+            if (PlayerData.teamData.Count > 0)
+            {
+                viewMon = PlayerData.teamData[index];
+            }
+            else return;
+        }
+
+        foreach (Abilities ability in viewMon.knownAbilities)
         {
             GameObject newAbility = Instantiate(abilitySlot);
             newAbility.transform.parent = abilities.transform;
@@ -167,15 +194,26 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void UpdateStats(int index)
+    public void UpdateStats(UnitData mon, int index = 0)
     {
-        string health = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.HP, PlayerData.teamData[index].level).ToString();
-        string defense = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.DEF, PlayerData.teamData[index].level).ToString();
-        string attack = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.ATK, PlayerData.teamData[index].level).ToString();
-        string speed = PlayerData.teamData[index].prefab.GetComponent<Unit>().GetRawStat(Stats.SPEED, PlayerData.teamData[index].level).ToString();
-        string luck = PlayerData.teamData[index].prefab.GetComponent<Unit>().luck.ToString();
-        string name = PlayerData.teamData[index].name.ToUpper();
-        string level = PlayerData.teamData[index].level.ToString();
+        UnitData viewMon = mon;
+
+        if (!viewMon)
+        {
+            if (PlayerData.teamData.Count > 0)
+            {
+                viewMon = PlayerData.teamData[index];
+            }
+            else return;
+        }
+
+        string health = viewMon.prefab.GetComponent<Unit>().GetRawStat(Stats.HP, viewMon.level).ToString();
+        string defense = viewMon.prefab.GetComponent<Unit>().GetRawStat(Stats.DEF, viewMon.level).ToString();
+        string attack = viewMon.prefab.GetComponent<Unit>().GetRawStat(Stats.ATK, viewMon.level).ToString();
+        string speed = viewMon.prefab.GetComponent<Unit>().GetRawStat(Stats.SPEED, viewMon.level).ToString();
+        string luck = viewMon.prefab.GetComponent<Unit>().luck.ToString();
+        string name = viewMon.name.ToUpper();
+        string level = viewMon.level.ToString();
 
         nameText.text = name;
         levelText.text = "LVL: " + level;
@@ -184,6 +222,64 @@ public class UIManager : MonoBehaviour
         healthText.text = "HP: " + health;
         speedText.text = "SPD: " + speed;
         luckText.text = "LCK: " + luck;
+
+        string currentScene = SceneManager.GetActiveScene().name;
+        if (currentScene != "Daycare") UpdateHeldItem();
+    }
+
+    private void UpdateHeldItem()
+    {
+        if (heldItemSlot.transform.childCount > 0)
+        {
+            foreach (Transform child in heldItemSlot.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        if (PlayerData.teamData[lookAtIndex].heldItem != null)
+        {
+            Item item = PlayerData.teamData[lookAtIndex].heldItem;
+
+            GameObject itemIcon = Instantiate(item.icon);
+            RectTransform rect = itemIcon.GetComponent<RectTransform>();
+            RectTransform rectHeldItemSlot = heldItemSlot.GetComponent<RectTransform>();
+
+            itemIcon.transform.parent = heldItemSlot.transform;
+            rect.anchoredPosition = Vector3.zero;
+            rect.localPosition = Vector3.zero;
+            rect.sizeDelta = new Vector2(rectHeldItemSlot.sizeDelta.x * 0.8f, rectHeldItemSlot.sizeDelta.y * 0.8f);
+            rect.localScale = Vector3.one;
+
+            InventoryTooltip tooltip = itemIcon.AddComponent<InventoryTooltip>();
+            tooltip.itemDescriptionBox = itemTooltipUI;
+            tooltip.itemDescription = item.description;
+
+            string currentScene = SceneManager.GetActiveScene().name;
+            if (currentScene != "BattleScene")
+            {
+                Button button = itemIcon.AddComponent<Button>();
+                button.onClick.AddListener(() => { SetHeldItem(null); });
+            }
+        }
+        else return;
+    }
+
+    private void SetHeldItem(Item item)
+    {
+        UnitData mons = PlayerData.teamData[lookAtIndex];
+
+        mons.HoldItem(item);
+        UpdateInventory();
+        UpdateHeldItem();
+    }
+
+    private void MakeConsumeItem(Item item)
+    {
+        UnitData mons = PlayerData.teamData[lookAtIndex];
+
+        mons.ConsumeItem(item, lookAtIndex);
+        UpdateConsumables();
     }
 
     public void ShowInventory()
@@ -213,6 +309,6 @@ public class UIManager : MonoBehaviour
         consumables.SetActive(false);
         inventory.SetActive(false);
 
-        UpdateAbilities(lookAtIndex);
+        UpdateAbilities(null, lookAtIndex);
     }
 }

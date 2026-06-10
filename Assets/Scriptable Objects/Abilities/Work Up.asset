@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Work Up
   description: Motivates himself into agressive stance
-  sfx: {fileID: 0}
+  sfx: {fileID: 11400000, guid: c53198310651a594591d52b90f6f6585, type: 2}
   power: 0
   accuracy: 100
   abilityType: 0

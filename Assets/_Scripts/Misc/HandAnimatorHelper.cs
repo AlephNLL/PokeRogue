@@ -1,10 +1,7 @@
 using System;
 using System.Collections;
-using Unity.Hierarchy;
-using UnityEditor;
-using UnityEditor.Animations;
+using System.Timers;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class HandAnimatorHelper : MonoBehaviour
 {
@@ -33,6 +30,43 @@ public class HandAnimatorHelper : MonoBehaviour
         grabbedObject = GO;
         grabbedObject.transform.parent = baseFigureJoint.transform;
         //grabbedObject.transform.localPosition = new Vector3(0,0,0);
+    }
+
+    public void RotateHandAround(float rotation, Vector3 pivotPoint, float duration)
+    {
+        StartCoroutine(RotateAroundPivot(rotation, pivotPoint, duration));
+    }
+
+    IEnumerator RotateAroundPivot(float rotation, Vector3 pivotPoint, float duration)
+    {
+
+
+        float t = 0;
+        float rotated = 0;
+
+        print(rotation);
+        print(transform.eulerAngles.y);
+
+        Vector3 direction = transform.position - pivotPoint;
+        float currentAngle = transform.eulerAngles.y;
+        float totalRotation = Mathf.DeltaAngle(currentAngle, rotation);
+
+
+        while (t < duration)
+        {
+
+            t += Time.deltaTime;
+            float progress = Mathf.Clamp01(t / duration);
+
+            float currentRotation = Mathf.Lerp(0f, totalRotation, progress);
+            float rotationStep = currentRotation - rotated;
+            rotated = currentRotation;
+
+            transform.RotateAround(pivotPoint, Vector3.up, rotationStep);
+            yield return null;
+        }
+
+        print((float)Math.Atan2(direction.x, direction.z) * Mathf.Rad2Deg);
     }
 
     void ResetRotation()
@@ -78,6 +112,10 @@ public class HandAnimatorHelper : MonoBehaviour
             StartCoroutine(Move(defaultPosition, duration));
             //StartCoroutine(LerpRotation(Quaternion.Euler(0, 180, 0)));
         }
+    }
+    public void SetDefaultPosition()
+    {
+        defaultPosition = transform.position;
     }
     IEnumerator Move(Vector3 destination, float duration)
     {
@@ -184,10 +222,12 @@ public class HandAnimatorHelper : MonoBehaviour
         gameObject.GetComponent<Animator>().SetTrigger(name);
     }
 
-    public void TeleportHandBehindCamera()
+    public Vector3 HandBehindCamera()
     {
         GameObject cameraBrain = GameObject.FindGameObjectWithTag("MainCamera");
-        gameObject.transform.position = new Vector3(cameraBrain.transform.position.x, 0.45f, (cameraBrain.transform.position.z)) - new Vector3(3, 0, 1);
+        Vector3 position = new Vector3(cameraBrain.transform.position.x, 0.45f, (cameraBrain.transform.position.z)) - new Vector3(3, 0, 5);
+
+        return position;
     }
 
     public Vector3 offsetFromFigureJoint()

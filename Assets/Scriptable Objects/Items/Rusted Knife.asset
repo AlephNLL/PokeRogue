@@ -17,9 +17,13 @@ MonoBehaviour:
   cost: 12
   icon: {fileID: 1176257147109685943, guid: 04b7626b596b1d740a7401110ccd81d8, type: 3}
   isConsumible: 0
-  effect: 4
-  effectChance: 10
+  effect: 03000000
+  condition: 00000000
+  effectChance:
+  - 10
   statusToChangeTo: 2
   healingAmount: 0
-  executionTime: 3
+  executionTime: 03000000
+  statToMod: 
+  statMod: []
   affectSelf: 0

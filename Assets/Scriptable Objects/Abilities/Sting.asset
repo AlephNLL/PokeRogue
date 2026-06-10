@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Sting
   description: Pierces a foe with its stinger.
-  sfx: {fileID: 0}
+  sfx: {fileID: 11400000, guid: 8a8b2cd13f308924bb2d5fcdc411aa31, type: 2}
   power: 30
   accuracy: 100
   abilityType: 0

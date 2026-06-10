@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16309091af3cd76408deaa6074da1205, type: 3}
+  m_Name: Antifreeze
+  m_EditorClassIdentifier: Assembly-CSharp::Item
+  name: Alarm Clock
+  description: Prevents user from freezing, slightly raises defense instead.
+  cost: 68
+  icon: {fileID: 519573376967798654, guid: 83603451e926d8548adb8ed6fff6a3e3, type: 3}
+  isConsumible: 0
+  effect: 0100000006000000
+  condition: 0700000007000000
+  effectChance:
+  - 100
+  - 100
+  statusToChangeTo: 1
+  healingAmount: 0
+  executionTime: 0900000009000000
+  statToMod: 02000000
+  statMod:
+  - 1.1
+  affectSelf: 1

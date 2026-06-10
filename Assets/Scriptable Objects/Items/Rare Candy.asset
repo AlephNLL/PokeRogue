@@ -14,12 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Rare Candy
   description: Level up a mon.
-  cost: 20
+  cost: 200
   icon: {fileID: 1176257147109685943, guid: 990673f9d1f0ea547a6625fd19c4797f, type: 3}
   isConsumible: 1
-  effect: 6
-  effectChance: 10
+  effect: 05000000
+  condition: 
+  effectChance: []
   statusToChangeTo: 0
+  stanceToChangeTo: 0
   healingAmount: 0
-  executionTime: 3
+  executionTime: 
+  statToMod: 
+  statMod: []
   affectSelf: 0

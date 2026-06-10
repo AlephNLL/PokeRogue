@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad8fd7f4346b8414e82c0948690a14a2, type: 3}
+  m_Name: ChangeStance
+  m_EditorClassIdentifier: Assembly-CSharp::SoundData
+  soundName: ChangeStance
+  clips:
+  - {fileID: 8300000, guid: 31c0a1d2eed9a8f46a58d87f0366b1c6, type: 3}
+  - {fileID: 8300000, guid: bf501c0dacdf7b74aaa172f89d06a656, type: 3}
+  mixerGroup: {fileID: 1964608657630053071, guid: 640fd1f8dede075488c645de6069675c, type: 2}
+  volume: 1
+  pitch: 1
+  randomVolume: 0.05
+  randomPitch: 0.1
+  loop: 0

@@ -1,9 +1,7 @@
-using NUnit.Framework.Internal.Execution;
 using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class TreasureUIManager : MonoBehaviour
 {
@@ -35,6 +33,8 @@ public class TreasureUIManager : MonoBehaviour
         itemSlotGrid.cellSize = new Vector2 (40, 40);
         Vector2 startSize = itemSlotGrid.cellSize;
         Vector3 targetSize = new Vector2(400, 400);
+
+        Destroy(itemIcon.GetComponent<InventoryTooltip>());
 
         float t = 0;
         while (t < 1)

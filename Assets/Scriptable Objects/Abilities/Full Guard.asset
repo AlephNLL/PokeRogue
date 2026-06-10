@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Full Guard
   description: Raises defense but lowers attack
+  sfx: {fileID: 11400000, guid: 5695e15e12a54d24e98ffe178cbf410c, type: 2}
   power: 0
   accuracy: 100
   abilityType: 0
@@ -25,6 +26,7 @@ MonoBehaviour:
   multiHitRange: 0
   hits: 0
   hitRange: 
+  endOnMiss: 0
   passiveEffects: 0
   passiveExecutionTime: 1
   passiveEffectChance: 0
@@ -43,5 +45,6 @@ MonoBehaviour:
   statMod:
   - 0.75
   - 1.5
+  powerVariables: 0
   vfxPrefab: {fileID: 0}
   spawnVfxOnSelf: 0

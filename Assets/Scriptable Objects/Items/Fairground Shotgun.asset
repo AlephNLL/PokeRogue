@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16309091af3cd76408deaa6074da1205, type: 3}
+  m_Name: Fairground Shotgun
+  m_EditorClassIdentifier: Assembly-CSharp::Item
+  name: Fairground Shotgun
+  description: Doubles attack but more likely to miss.
+  cost: 100
+  icon: {fileID: 6698336994304256519, guid: f879d40e574946b46a044cfca8a2dbef, type: 3}
+  isConsumible: 0
+  effect: 01000000
+  condition: 00000000
+  effectChance:
+  - 100
+  statusToChangeTo: 0
+  stanceToChangeTo: 0
+  healingAmount: 0
+  executionTime: 00000000
+  statToMod: 0100000005000000
+  statMod:
+  - 2
+  - 0.7
+  affectSelf: 1

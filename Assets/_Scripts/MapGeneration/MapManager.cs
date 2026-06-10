@@ -2,8 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using System.Collections;
 
-public class MapManager : MonoBehaviour
+public class MapManager : MonoBehaviour, ISaveData
 {
     public static MapManager instance;
 
@@ -21,9 +22,11 @@ public class MapManager : MonoBehaviour
     [Header("Debug")]
     public bool loadRooms = false;
     public bool canLoadRooms = false;
-    public bool mapCreated = false;
+    public bool mapCreated;
     public bool mapLoaded = false;
     public bool skipBattles = false;
+
+    public string currentRoomName = "";
 
     private void Awake()
     {
@@ -39,14 +42,7 @@ public class MapManager : MonoBehaviour
 
    private void Start()
     {
-        if (createdRooms.Count() == 0 && nodes.Count() == 0 && mapCreated == false)
-        {
-            nodes.Clear();
-            createdRooms.Clear();
 
-            mapGenerator.GenerateMap();
-            Debug.Log("Mapa Generado");
-        }
     }
 
     void OnEnable()
@@ -59,21 +55,47 @@ public class MapManager : MonoBehaviour
         if (scene.name == "MapGeneration")
         {
             mapLoaded = true;
-            Debug.Log("Mapa Generado en escena de mapa");
             if (mapCreated == true)
             {
+                Debug.Log("Mapa Generado en escena de mapa");
                 mapView.DrawMap(nodes);
-            }
-
-            if (mapCreated)
+                if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.FixDuplicateBoss(); }
+                currentRoom = GameObject.Find(currentRoomName);
+                currentNode = NodeToMapNode(currentRoom.GetComponent<Node>());
+            } else
             {
-                FindCurrentRoom(currentNode);
+                if (createdRooms.Count() == 0 && nodes.Count() == 0 && mapCreated == false)
+                {
+                    nodes.Clear();
+                    createdRooms.Clear();
+
+                    mapGenerator.GenerateMap();
+
+                    if (PlayerData.Instance.beatenFirstBoss) { mapGenerator.GenerateNextMap(); }
+                    Debug.Log("Mapa Generado");
+
+                    //foreach (UnitData unit in TeamManager.instance.teamData)
+                    //{
+                    //    if (!unit.isVeteran)
+                    //    {
+                    //        unit.knownAbilities.Clear();
+                    //        MoveLearner.instance.LearnMove(unit, 1);
+                    //        MoveLearner.instance.LearnMove(unit, 0);
+                    //    }
+                    //}
+                }
+                else if (nodes.Count != 0 && mapLoaded)
+                {
+                    mapView.DrawMap(nodes);
+                }
             }
 
         } else
         {
             mapLoaded = false;
         }
+
+
     }
 
     public void UnlockStartingPaths()
@@ -105,13 +127,25 @@ public class MapManager : MonoBehaviour
     {
         if (loadRooms && canLoadRooms && sceneName != "TestScene")
         {
-            if(sceneName == "BattleScene") BattleGenerator.Instance.GenerateTeam(BattleData.Difficulty);
+            ControlsUI.instance.HideSummaryControls();
+            if (sceneName == "BattleScene") 
+            { 
+                if(currentNode.roomType == GameData.RoomType.Boss)
+                {
+                    BattleGenerator.Instance.GenerateTeam(BattleData.Difficulty, true);
+                }
+                else
+                {
+                    BattleGenerator.Instance.GenerateTeam(BattleData.Difficulty);
+                }     
+            }
             SceneManager.LoadSceneAsync(sceneName);
         }
     }
 
     public void LoadMapScene()
     {
+        ControlsUI.instance.ShowSummaryControls();
         createdRooms.Clear();
         loadRooms = false;
         SceneManager.LoadSceneAsync("MapGeneration");
@@ -150,5 +184,66 @@ public class MapManager : MonoBehaviour
                 currentRoom = nodeprefab;
             }
         }
+    }
+    public void SaveData(ref GameSaveData data)
+    {
+        data.mapData = new();
+        data.mapCreated = mapCreated;
+        if (SceneManager.GetActiveScene().name == "Daycare") return;
+        data.currentRoom = currentRoom.name;
+        foreach (MapNode mapNode in nodes)
+        {
+            data.mapData.Add(mapNode.LoadData());
+        }
+    }
+
+    public void LoadData(GameSaveData data)
+    {
+        nodes = new();
+        this.mapCreated = data.mapCreated;
+        foreach (MapNodeData mapNode in data.mapData)
+        {
+            nodes.Add(new MapNode().SaveData(mapNode, data));
+        }
+        currentRoomName = data.currentRoom;
+        StartCoroutine(WaitAndFind(currentRoomName));
+    }
+
+    private IEnumerator WaitAndFind(string name)
+    {
+        yield return new WaitForEndOfFrame();
+        currentRoom = GameObject.Find(name);
+        if (currentRoom != null)
+        {
+            currentNode = NodeToMapNode(currentRoom.GetComponent<Node>());
+        }
+    }
+
+    public void ResetMap()
+    {
+        Debug.Log("Reseteando el mapa...");
+
+        foreach (GameObject room in createdRooms)
+        {
+            if (room != null)
+            {
+                Destroy(room);
+            }
+        }
+
+        createdRooms.Clear();
+        selectedRooms.Clear();
+        nodes.Clear();
+
+        currentRoom = null;
+        currentNode = null;
+        currentRoomName = "Spawn-0";
+
+        mapCreated = false;
+
+        //loadRooms = false;
+        //canLoadRooms = false;
+
+        if (mapView != null) mapView.ClearMap();
     }
 }

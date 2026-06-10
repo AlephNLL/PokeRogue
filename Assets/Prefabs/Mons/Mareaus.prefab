@@ -768,6 +768,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1880888419145442071}
   - component: {fileID: 7571199883488435960}
+  - component: {fileID: -4978477788543610126}
+  - component: {fileID: 4160598107682154265}
   m_Layer: 0
   m_Name: Mareaus
   m_TagString: Untagged
@@ -808,29 +810,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82c0dcb3fbdb35f40bf6f64fede1a51d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  icon: {fileID: 21300000, guid: f0156b4925d3db64386d8eab7799a653, type: 3}
   id: 0
   name: Mareaus
   description: 
   currentStance: 2
   level: 1
   exp: 0
+  expCurve: {fileID: 11400000, guid: 42eec143c7464c24889a7a724a74e69f, type: 2}
   status: 0
-  strength: 20
-  constitution: 14
-  dexterity: 28
+  recivedDamageMultiplier: 1
+  strength: 200
+  constitution: 140
+  dexterity: 280
   luck: 13
   maxHp: 0
   currentHp: 0
   attack: 0
   defense: 0
   speed: 0
+  precision: 1
   knownAbilities: []
   abilityPool:
-  - {fileID: 11400000, guid: bfd994c91a48d0844ad7c3f1cff0ad31, type: 2}
-  - {fileID: 11400000, guid: 1c10fb9f488085d4aaf6c6a22e96fd23, type: 2}
-  - {fileID: 11400000, guid: 38471c49bda5ad244b757be0437fe94b, type: 2}
+  - {fileID: 11400000, guid: 77bccabd9cf09c342abefb272c8d34bd, type: 2}
+  - {fileID: 11400000, guid: 41b644029128717428d7fee53acd6f5f, type: 2}
+  - {fileID: 11400000, guid: e2d788c65f2b6f540a87a1b9f0616958, type: 2}
+  - {fileID: 11400000, guid: d5c0ca67c7dc28c40953604518014341, type: 2}
+  - {fileID: 11400000, guid: e3bad65477ba3104eaf63e1df5255213, type: 2}
+  - {fileID: 11400000, guid: 0b8036aed22fd6648acfcf5dbfb9cd6b, type: 2}
+  - {fileID: 11400000, guid: 4de5d42472953b242ad9d2db3d5e819b, type: 2}
+  - {fileID: 11400000, guid: d0ad89c7a464fe44b833d72d73b08579, type: 2}
+  - {fileID: 11400000, guid: cfb6d7e915de66f4a84c49be0ef79602, type: 2}
+  - {fileID: 11400000, guid: 0711ac01ad7e45642981e27221c47b02, type: 2}
   - {fileID: 11400000, guid: c4bd0aebfae3d674d9d00059eda8fac5, type: 2}
   heldItem: {fileID: 0}
+  evasive: 0
+  provoking: 0
+  guardedBy: {fileID: 0}
+  timesBuffed: 0
   actionCamera: {fileID: 0}
   selectionCamera: {fileID: 0}
   battleMenu: {fileID: 0}
@@ -852,7 +869,43 @@ MonoBehaviour:
   additionalTurn: 0
   skipTurn: 0
   takingDamage: 0
+  baseEffectChanceMulti: 1
   effectChanceModifier: 0
+--- !u!114 &-4978477788543610126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1717970170875167366}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e05965b89d209c4dbb24903c9ef3562, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SelectUnit
+--- !u!136 &4160598107682154265
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1717970170875167366}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.8
+  m_Height: 3.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.25, z: 0}
 --- !u!1 &1760726793352929564
 GameObject:
   m_ObjectHideFlags: 0
@@ -4028,7 +4081,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4558371611868809564, guid: 400b05a73be9b0a458fff3fd2844a63c, type: 3}
       propertyPath: m_Name
-      value: Mareaus
+      value: Capsule
       objectReference: {fileID: 0}
     - target: {fileID: 4776740991585679903, guid: 400b05a73be9b0a458fff3fd2844a63c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4036,7 +4089,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4776740991585679903, guid: 400b05a73be9b0a458fff3fd2844a63c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4776740991585679903, guid: 400b05a73be9b0a458fff3fd2844a63c, type: 3}
       propertyPath: m_LocalPosition.z

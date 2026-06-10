@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Flame Asault
   description: 'A flame burst that incinerates every foe. 10% chance to burn '
+  sfx: {fileID: 11400000, guid: 948cc0885f00beb41bfa1def989c2014, type: 2}
   power: 60
   accuracy: 90
   abilityType: 0
@@ -25,6 +26,7 @@ MonoBehaviour:
   multiHitRange: 0
   hits: 5
   hitRange: 
+  endOnMiss: 0
   passiveEffects: 6
   passiveExecutionTime: 0
   passiveEffectChance: 0

@@ -1,10 +1,11 @@
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PauseMenuUI : MonoBehaviour
 {
-    static PauseMenuUI instance;
+    public static PauseMenuUI instance;
 
     public GameObject pauseCanvas;
     public GameObject optionsCanvas;
@@ -13,6 +14,7 @@ public class PauseMenuUI : MonoBehaviour
     public GameObject mainMenuButtons;
 
     private bool isPaused = false;
+    public SettingsMenu settings;
 
     private void Start()
     {
@@ -41,6 +43,11 @@ public class PauseMenuUI : MonoBehaviour
         pauseCanvas.SetActive(state);
     }
 
+    public void PauseGame()
+    {
+        isPaused = true;
+    }
+
     public void Resume()
     {
         ShowPauseMenu(false);
@@ -48,7 +55,7 @@ public class PauseMenuUI : MonoBehaviour
 
     public void ExitToMenu()
     {
-        SceneManager.LoadSceneAsync("MainMenu");
+        Application.Quit();
     }
 
     public void ShowExitConfirmation(bool state = true)
@@ -68,6 +75,8 @@ public class PauseMenuUI : MonoBehaviour
         }
         exitConfirmation.SetActive(false);
         optionsCanvas.SetActive(state);
+        settings.UpdateResolutionDropdown();
+        settings.UpdateDifficultyDropdown();
     }
 
     public void ShowMenuButtons(bool state)
@@ -78,7 +87,7 @@ public class PauseMenuUI : MonoBehaviour
 
             optionsCanvas.SetActive(false);
             exitConfirmation.SetActive(false);
-            mainMenuButtons.SetActive(state);
+            if (mainMenuButtons != null) mainMenuButtons.SetActive(state);
         }
         else
         {

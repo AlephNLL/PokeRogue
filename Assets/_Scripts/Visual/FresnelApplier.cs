@@ -1,14 +1,14 @@
+using GameData;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static UnityEngine.UI.CanvasScaler;
 
 public class FresnelApplier : MonoBehaviour
 {
-    static Color lastColor;
     public static void applyFresnel(GameObject unit, Color color)
     {
         MeshRenderer capsule = unit.transform.Find("Capsule").Find("Mons").GetComponentInChildren<MeshRenderer>();
-        print(capsule.name);
         MaterialPropertyBlock mpb = new MaterialPropertyBlock();
         mpb.SetFloat("_ApplyFresnel", 1);
         mpb.SetColor("_FresnelColor", color * 5f);
@@ -20,5 +20,75 @@ public class FresnelApplier : MonoBehaviour
         MaterialPropertyBlock mpb = new MaterialPropertyBlock();
         mpb.SetFloat("_ApplyFresnel", 0);
         capsule.SetPropertyBlock(mpb);
+    }
+
+    public static void SetMapDecorationShader(GameObject GO)
+    {
+        MeshRenderer objMR = GO.GetComponentInChildren<MeshRenderer>();
+        Shader transparencyShader = Shader.Find("Shader Graphs/MapDecoration");
+
+        foreach (Material material in objMR.materials)
+        {
+            Texture oldMainText = material.mainTexture;
+            Color oldColor = material.color;
+            float oldSmoothness = material.GetFloat("_Smoothness");
+            Texture oldNormal = material.GetTexture("_BumpMap");
+
+            material.shader = transparencyShader;
+
+            if (oldMainText != null) { material.SetTexture("_MainTexture", oldMainText); };
+            material.color = oldColor;
+            material.SetFloat("_Smoothness", oldSmoothness);
+            if (oldNormal != null) material.SetTexture("_BumpMap", oldNormal);
+        }
+    }
+
+    public static void SetTransparencyToMapDecoration(GameObject GO, float transparencyValue)
+    {
+        MeshRenderer objMR = GO.GetComponent<MeshRenderer>();
+        if (objMR == null) return;
+
+        transparencyValue = Mathf.Clamp01(transparencyValue);
+
+        Mathf.Clamp01(transparencyValue);
+
+
+        foreach (Material material in objMR.materials)
+        {
+            if (!material.HasFloat("_Transparency")) return;
+            material.SetFloat("_Transparency", transparencyValue);
+        }
+    }
+
+    public static void changeStance(GameObject unit, Stance stance)
+    {
+        switch (stance)
+        {
+            case Stance.AGRESSIVE:
+                changeBase(unit, Color.darkRed);
+                break;
+            case Stance.DEFENSIVE:
+                changeBase(unit, Color.blue);
+                break;
+            case Stance.AGILE:
+                changeBase(unit, Color.green);
+                break;
+            case Stance.CAUTIOUS:
+                changeBase(unit, Color.cyan);
+                break;
+            case Stance.TRICKY:
+                changeBase(unit, Color.purple);
+                break;
+            default:
+                break;
+        }
+
+    }
+    public static void changeBase(GameObject unit, Color color)
+    {
+        MeshRenderer baseMesh = unit.transform.Find("Capsule").Find("Base").GetComponent<MeshRenderer>();
+        MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+        mpb.SetColor("_MaskColor", color);
+        baseMesh.SetPropertyBlock(mpb);
     }
 }

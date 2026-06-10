@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16309091af3cd76408deaa6074da1205, type: 3}
+  m_Name: Alarm Clock
+  m_EditorClassIdentifier: Assembly-CSharp::Item
+  name: Alarm Clock
+  description: Prevents user from sleeping, slightly raises attack instead.
+  cost: 68
+  icon: {fileID: 6348252816621650911, guid: 2bb6a2b02e6249743a299039bb846f17, type: 3}
+  isConsumible: 0
+  effect: 0100000006000000
+  condition: 0600000006000000
+  effectChance:
+  - 100
+  - 100
+  statusToChangeTo: 1
+  healingAmount: 0
+  executionTime: 0900000009000000
+  statToMod: 01000000
+  statMod:
+  - 1.1
+  affectSelf: 1

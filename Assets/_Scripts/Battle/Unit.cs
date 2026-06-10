@@ -2,17 +2,9 @@ using Cinemachine;
 using GameData;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.Animations;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
-using static Unity.Collections.Unicode;
-using static UnityEngine.UI.CanvasScaler;
 public class Unit : MonoBehaviour
 {
     public Sprite icon;
@@ -70,9 +62,9 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private Canvas itemMenu;
     [SerializeField]
-    private Canvas statusMenu;
+    public Canvas statusMenu;
     [SerializeField]
-    private Button attackButton;
+    public Button attackButton;
     [SerializeField]
     private Button itemButton;
     [SerializeField]
@@ -82,7 +74,7 @@ public class Unit : MonoBehaviour
     [SerializeField]
     private Button[] itemButtons;
     [SerializeField]
-    private Slider healthBar;
+    public Slider healthBar;
     [SerializeField]
     private GameObject nameText;
 
@@ -99,6 +91,8 @@ public class Unit : MonoBehaviour
 
     int sleepCounter;
     int sleepMaxTurns = 3;
+
+    GameObject lastMenu;
     private void Start()
     {
         InitializeVariables();
@@ -135,10 +129,8 @@ public class Unit : MonoBehaviour
         {
             nameText = statusMenu.transform.Find("Panel").gameObject;
             nameText.gameObject.SetActive(true);
-            nameText.GetComponentInChildren<TextMeshProUGUI>(true).text = $"{name} Lvl: {level}";
+            nameText.GetComponentInChildren<TextMeshProUGUI>(true).text = $"{name} Lvl: {BattleData.enemyLevel}";
             nameText.GetComponentInChildren<TextMeshProUGUI>(true).gameObject.SetActive(true);
-
-
         }
     }
     public int GetRawStat(Stats stat, int monLevel)
@@ -146,13 +138,13 @@ public class Unit : MonoBehaviour
         switch (stat)
         {
             case Stats.HP:
-                return (int)(constitution * level + 1);
+                return (int)(constitution * monLevel/20f + monLevel + 5);
             case Stats.ATK:
-                return (int)(strength / 5f * monLevel + 1);
+                return (int)(strength * monLevel/ 20f + 5);
             case Stats.DEF:
-                return (int)((.5f * constitution + .5f * dexterity) / 5f * monLevel + 1);
+                return (int)((.5f * constitution + .5f * dexterity) * monLevel/ 20f + 5);
             case Stats.SPEED:
-                return (int)(dexterity / 5f * monLevel + 1);
+                return (int)(dexterity * monLevel/ 20f + 5);
             default:
                 return 0;
         }
@@ -164,10 +156,10 @@ public class Unit : MonoBehaviour
             currentHp = PlayerData.teamData.Find(item => item.id == id).currentHp;
             level = PlayerData.teamData.Find(item => item.id == id).level;
 
-            maxHp = (int)(constitution * level + 1);
-            attack = (int)(strength / 5f * level + 1);
-            defense = (int)((.5f * constitution + .5f * dexterity) / 5f * level + 1);
-            speed = (int)(dexterity / 5f * level + 1);
+            maxHp = GetRawStat(Stats.HP, level);
+            attack = GetRawStat(Stats.ATK, level);
+            defense = GetRawStat(Stats.DEF, level);
+            speed = GetRawStat(Stats.SPEED, level);
 
             knownAbilities = PlayerData.teamData.Find(item => item.id == id).knownAbilities.ToArray();
             ApplyStatus(PlayerData.teamData.Find(item => item.id == id).status);
@@ -177,10 +169,10 @@ public class Unit : MonoBehaviour
         {
             level = BattleData.enemyLevel;
 
-            maxHp = (int)(constitution * level + 1);
-            attack = (int)(strength / 5f * level + 1);
-            defense = (int)((.5f * constitution + .5f * dexterity) / 5f * level + 1);
-            speed = (int)(dexterity / 5f * level + 1);
+            maxHp = GetRawStat(Stats.HP, level);
+            attack = GetRawStat(Stats.ATK, level);
+            defense = GetRawStat(Stats.DEF, level);
+            speed = GetRawStat(Stats.SPEED, level);
 
             currentHp = maxHp;
             knownAbilities = GetUnitKnownAbilities(level).ToArray();
@@ -196,6 +188,8 @@ public class Unit : MonoBehaviour
                 healthBar.value = (float)currentHp / maxHp;
             }
         }
+
+        TooltipUI.instance.EndCurrentAction();
     }
     public bool ActivateCamera()
     {
@@ -230,8 +224,10 @@ public class Unit : MonoBehaviour
         battleMenu.gameObject.SetActive(true);
 
         attackButton.onClick.AddListener(delegate { TBBS.instance.AbilityMenu(this); });
-        itemButton.onClick.AddListener(delegate { TBBS.instance.ItemMenu(this); });
-        runButton.onClick.AddListener(delegate { TBBS.instance.Skip(this); });
+        if (!PlayerData.tutorial) itemButton.onClick.AddListener(delegate { TBBS.instance.ItemMenu(this); });
+        if (!PlayerData.tutorial) runButton.onClick.AddListener(delegate { TBBS.instance.Skip(this); });
+
+        lastMenu = battleMenu.gameObject;
     }
     public void CloseBattleMenu()
     {
@@ -240,6 +236,8 @@ public class Unit : MonoBehaviour
 
         attackButton.onClick.RemoveAllListeners();
         runButton.onClick.RemoveAllListeners();
+
+        lastMenu = null;
     }
 
     public void OpenAbilityMenu()
@@ -261,6 +259,8 @@ public class Unit : MonoBehaviour
 
             if (knownAbilities[i].mustUseStance && currentStance != knownAbilities[i].stance) abilityButtons[i].interactable = false;
         }
+
+        lastMenu = abilityMenu.gameObject;
     }
 
     public void CloseAbilityMenu()
@@ -273,6 +273,8 @@ public class Unit : MonoBehaviour
             int index = i;
             abilityButtons[index].onClick.RemoveAllListeners();
         }
+
+        lastMenu = null;
     }
 
     public void OpenItemMenu()
@@ -299,6 +301,8 @@ public class Unit : MonoBehaviour
 
             itemButtons[index].onClick.AddListener(delegate { TBBS.instance.SelectItem(consumables[index]); });
         }
+
+        lastMenu = itemMenu.gameObject;
     }
 
     public void CloseItemMenu()
@@ -306,20 +310,14 @@ public class Unit : MonoBehaviour
         if (itemMenu == null) return;
         itemMenu.gameObject.SetActive(false);
 
-        List<Item> consumables = new List<Item>();
-        for (int i = 0; i < PlayerData.items.Count; i++)
-        {
-            if (PlayerData.items[i].isConsumible)
-            {
-                consumables.Add(PlayerData.items[i]);
-            }
-        }
-
-        for (int i = 0; i < consumables.Count; i++)
+        for (int i = 0; i < itemButtons.Length; i++)
         {
             int index = i;
             itemButtons[index].onClick.RemoveAllListeners();
+            itemButtons[index].gameObject.SetActive(false);
         }
+
+        lastMenu = null;
     }
 
     public void ApplyStatModifier(Stats stat, float mod, bool contaged = false)
@@ -335,26 +333,27 @@ public class Unit : MonoBehaviour
         {
             case Stats.ATK:
                 attack = Mathf.FloorToInt(attack * mod);
-                TooltipUI.instance.ShowTooltipText($"{name} attack {modAction}");
+                TooltipUI.instance.AddEffectToCurrentAction($"{name}'s attack {modAction}");
                 break;
             case Stats.DEF:
                 defense = Mathf.FloorToInt(defense * mod);
-                TooltipUI.instance.ShowTooltipText($"{name} defense {modAction}");
+                TooltipUI.instance.AddEffectToCurrentAction($"{name}'s defense {modAction}");
                 break;
             case Stats.SPEED:
                 speed = Mathf.FloorToInt(speed * mod);
-                TooltipUI.instance.ShowTooltipText($"{name} speed {modAction}");
+                TooltipUI.instance.AddEffectToCurrentAction($"{name}'s speed {modAction}");
                 break;
             case Stats.LUCK:
                 luck = Mathf.FloorToInt(luck * mod);
-                TooltipUI.instance.ShowTooltipText($"{name} luck {modAction}");
+                TooltipUI.instance.AddEffectToCurrentAction($"{name}'s luck {modAction}");
                 break;
             case Stats.PRECISION:
                 precision = precision * mod;
-                TooltipUI.instance.ShowTooltipText($"{name} precision {modAction}");
+                TooltipUI.instance.AddEffectToCurrentAction($"{name}'s precision {modAction}");
                 break;
             case Stats.EFFECTCHANCEMOD:
                 baseEffectChanceMulti = baseEffectChanceMulti * mod;
+                TooltipUI.instance.AddEffectToCurrentAction($"{name}'s abilities secondary effect chance {modAction}");
                 break;
             default:
                 break;
@@ -364,8 +363,8 @@ public class Unit : MonoBehaviour
         {
             List<Unit> allies = new List<Unit>(TBBS.instance.playerUnits);
             allies.Remove(this);
-
-            TooltipUI.instance.ShowTooltipText($"{name} shares stat changes");
+            TooltipUI.instance.EndCurrentAction();
+            TooltipUI.instance.StartNewAction($"{name} shares stat changes");
             foreach (Unit ally in allies)
             {
                 ally.ApplyStatModifier(stat, mod, true);
@@ -428,7 +427,7 @@ public class Unit : MonoBehaviour
 
         // Opcional: Feedback visual o logs
         VFXManager.instance.SpawnGlobalEffect(VFX.BUFF, gameObject); // O un efecto de "espejo/cambio"
-        TooltipUI.instance.ShowTooltipText($"{name} swapped {statA} and {statB}!");
+        TooltipUI.instance.AddEffectToCurrentAction($"{name} swapped {statA} and {statB}!");
 
         Debug.Log($"{name} intercambió {statA} por {statB}. Nuevos valores -> {statA}: {GetSetStat(statA)} | {statB}: {GetSetStat(statB)}");
     }
@@ -455,11 +454,21 @@ public class Unit : MonoBehaviour
     public void ChangeStance(Stance stance)
     {
         currentStance = stance;
+        FresnelApplier.changeStance(this.gameObject, currentStance);
         if (currentStance == Stance.TRICKY) effectChanceModifier = trickyStanceEffectChanceModifier;
         else effectChanceModifier = 0;
 
-        TooltipUI.instance.ShowTooltipText($"{name} changes to a {stance.ToString().ToLower()} stance");
+        TooltipUI.instance.AddEffectToCurrentAction($"{name} changes to a {stance.ToString().ToLower()} stance");
     }
+
+    public void GetInitialStance(Stance stance)
+    {
+        currentStance = stance;
+        FresnelApplier.changeStance(this.gameObject, currentStance);
+        if (currentStance == Stance.TRICKY) effectChanceModifier = trickyStanceEffectChanceModifier;
+        else effectChanceModifier = 0;
+    }
+
     public void Heal(int healAmount)
     {
         if (currentHp >= maxHp) return;
@@ -562,7 +571,7 @@ public class Unit : MonoBehaviour
         {
             case Stats.ATK:
                 int atk = attack;
-                if (HasPassive("Double Trouble")) atk = Mathf.FloorToInt(atk * .6f);
+                if (HasPassive("Double Trouble")) atk = Mathf.FloorToInt(atk * .5f);
                 if (status == Status.BURNED)
                 {
                     atk = HasPassive("Pyromaniac") ? atk : Mathf.FloorToInt(atk * .5f);
@@ -587,6 +596,7 @@ public class Unit : MonoBehaviour
     {
         ResolvePassiveEffect(ExecutionTime.BATTLESTART);
         ResolveItemEffect(ExecutionTime.BATTLESTART);
+        GetInitialStance(currentStance);
     }
 
     public void OnTurnStart()
@@ -607,16 +617,17 @@ public class Unit : MonoBehaviour
                 break;
             case Status.BURNED:
                 TakeDamage((Mathf.FloorToInt(maxHp * .1f) + 1));
-                TooltipUI.instance.ShowTooltipText(name + " lost " + (Mathf.FloorToInt(maxHp * .1f) + 1) + " hp due to his burns");
+                TooltipUI.instance.StartNewAction(name + " lost " + (Mathf.FloorToInt(maxHp * .1f) + 1) + " hp due to his burns");
                 break;
             case Status.POISONED:
                 TakeDamage((Mathf.FloorToInt(maxHp * .2f) + 1));
-                TooltipUI.instance.ShowTooltipText(name + " lost " + (Mathf.FloorToInt(maxHp * .2f) + 1) + " hp due to poison");
+                TooltipUI.instance.StartNewAction(name + " lost " + (Mathf.FloorToInt(maxHp * .2f) + 1) + " hp due to poison");
                 break;
             default:
                 break;
         }
 
+        TooltipUI.instance.EndCurrentAction();
         ResolvePassiveEffect(ExecutionTime.TURNEND);
         ResolveItemEffect(ExecutionTime.TURNEND);
     }
@@ -682,56 +693,61 @@ public class Unit : MonoBehaviour
                         break;
                 }
 
-                TooltipUI.instance.ShowTooltipText($"{name}' ability {ability.name} activates!");
+                if(ability.passiveExecutionTime == ExecutionTime.ONHIT || ability.passiveExecutionTime == ExecutionTime.ONHURT) TooltipUI.instance.AddEffectToCurrentAction($"{name}' ability {ability.name} activates!");
+                else TooltipUI.instance.StartNewAction($"{name}' ability {ability.name} activates!");
 
                 switch (ability.passiveEffects)
-                {
-                    case PassiveEffects.STATMOD:
-                        for (int i = 0; i < ability.statToMod.Length; i++)
-                        {
-                            for (int j = 0; j < target.Count; j++)
+                    {
+                        case PassiveEffects.STATMOD:
+                            for (int i = 0; i < ability.statToMod.Length; i++)
                             {
-                                target[j].ApplyStatModifier(ability.statToMod[i], ability.statMod[i]);
+                                for (int j = 0; j < target.Count; j++)
+                                {
+                                    target[j].ApplyStatModifier(ability.statToMod[i], ability.statMod[i]);
+                                }
                             }
-                        }
-                        break;
-                    case PassiveEffects.ADDTURN:
-                        additionalTurn = true;
-                        break;
-                    case PassiveEffects.SKIPTURN:
-                        Debug.Log(name + " is slacking.");
-                        skipTurn = true;
-                        break;
-                    case PassiveEffects.APPLYSTATUS:
-                        foreach (var unit in target)
-                        {
-                            unit.ApplyStatus(ability.status);
-                        }
-                        break;
-                    case PassiveEffects.HEAL:
-                        foreach (var unit in target)
-                        {
-                            unit.HealPercent(ability.healPercentage);
-                        }
-                        break;
-                    case PassiveEffects.STACKSTAT:
-                        for (int i = 0; i < ability.statToMod.Length; i++)
-                        {
-                            for (int j = 0; j < target.Count; j++)
+                            break;
+                        case PassiveEffects.ADDTURN:
+                            additionalTurn = true;
+                            break;
+                        case PassiveEffects.SKIPTURN:
+                            Debug.Log(name + " is slacking.");
+                            skipTurn = true;
+                            break;
+                        case PassiveEffects.APPLYSTATUS:
+                            foreach (var unit in target)
                             {
-                                target[j].IncreaseStat(ability.statToMod[i], GetStat(ability.statToMod[i]));
+                                unit.ApplyStatus(ability.status);
                             }
-                        }
-                        break;
-                    case PassiveEffects.DAMAGE:
-                        foreach (var unit in target)
-                        {
-                            unit.TakeDamagePercent(ability.healPercentage);
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                            break;
+                        case PassiveEffects.HEAL:
+                            foreach (var unit in target)
+                            {
+                                unit.HealPercent(ability.healPercentage);
+                            }
+                            break;
+                        case PassiveEffects.STACKSTAT:
+                            TooltipUI.instance.AddEffectToCurrentAction($"{name} shares stats with the team!");
+                            for (int i = 0; i < ability.statToMod.Length; i++)
+                            {
+                                for (int j = 0; j < target.Count; j++)
+                                {
+                                    target[j].IncreaseStat(ability.statToMod[i], GetStat(ability.statToMod[i]));
+                                }
+                            }
+                            break;
+                        case PassiveEffects.DAMAGE:
+                            foreach (var unit in target)
+                            {
+                                unit.TakeDamagePercent(ability.healPercentage);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+
+                if (ability.passiveExecutionTime == ExecutionTime.ONHIT || ability.passiveExecutionTime == ExecutionTime.ONHURT) return;
+                else TooltipUI.instance.EndCurrentAction();
             }
         }
     }
@@ -742,29 +758,67 @@ public class Unit : MonoBehaviour
 
         Unit target = heldItem.affectSelf ? this : lastHitUnit;
 
-        if (heldItem.executionTime == battleStage && baseEffectChanceMulti * heldItem.effectChance + effectChanceModifier >= Random.Range(1, 100))
+        for (int i = 0; i < heldItem.effect.Length; i++)
         {
-            switch (heldItem.effect)
+            if (heldItem.executionTime[i] == battleStage && baseEffectChanceMulti * heldItem.effectChance[i] + effectChanceModifier >= Random.Range(1, 100))
             {
-                case ItemEffects.UPATK:
-                    target.ApplyStatModifier(Stats.ATK, 1.5f);
-                    break;
-                case ItemEffects.UPDEF:
-                    target.ApplyStatModifier(Stats.DEF, 1.5f);
-                    break;
-                case ItemEffects.UPSPEED:
-                    target.ApplyStatModifier(Stats.SPEED, 1.5f);
-                    break;
-                case ItemEffects.ADDTURN:
-                    target.additionalTurn = true;
-                    break;
-                case ItemEffects.APPLYSTATUS:
-                    target.ApplyStatus(heldItem.statusToChangeTo);
-                    break;
-                default:
-                    break;
+                switch (heldItem.condition[i])
+                {
+                    case AbilityCondition.NONE:
+                        break;
+                    case AbilityCondition.ISBURNED:
+                        if (status != Status.BURNED) continue;
+                        break;
+                    case AbilityCondition.ISASLEEP:
+                        if (status != Status.ASLEEP) continue;
+                        break;
+                    case AbilityCondition.ISFROZEN:
+                        if (status != Status.FROZEN) continue;
+                        break;
+                    case AbilityCondition.ISPARALYZED:
+                        if (status != Status.PARALYZED) continue;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (heldItem.executionTime[i] == ExecutionTime.BATTLESTART || heldItem.executionTime[i] == ExecutionTime.TURNSTART) TooltipUI.instance.StartNewAction($"{name}' item {heldItem.name} activates!");
+                else TooltipUI.instance.AddEffectToCurrentAction($"{name}' item {heldItem.name} activates!");
+
+                switch (heldItem.effect[i])
+                {
+                    case ItemEffects.STATMOD:
+                        for (int j = 0; j < heldItem.statToMod.Length; j++)
+                        {
+                            target.ApplyStatModifier(heldItem.statToMod[j], heldItem.statMod[j]);
+                        }
+                        break;
+                    case ItemEffects.ADDTURN:
+                        target.additionalTurn = true;
+                        break;
+                    case ItemEffects.APPLYSTATUS:
+                        target.ApplyStatus(heldItem.statusToChangeTo);
+                        break;
+                    case ItemEffects.CURESTATUS:
+                        target.CureStatus();
+                            break;
+                    case ItemEffects.FLINCH:
+                        target.skipTurn = true; 
+                        break;
+                    case ItemEffects.INCREASESTAT:
+                        for (int j = 0; j < heldItem.statToMod.Length; j++)
+                        {
+                            target.IncreaseStat(heldItem.statToMod[j], (int)heldItem.statMod[j]);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                if (heldItem.executionTime[i] == ExecutionTime.BATTLESTART || heldItem.executionTime[i] == ExecutionTime.TURNSTART) TooltipUI.instance.EndCurrentAction();
             }
         }
+        
     }
 
     public void ApplyStatus(Status statusToApply)
@@ -774,23 +828,25 @@ public class Unit : MonoBehaviour
 
         if (HasPassive("Elusive Presence"))
         {
-            TooltipUI.instance.ShowTooltipText($"{name}'s elusive presence blocks status changes");
+            TooltipUI.instance.AddEffectToCurrentAction($"{name}'s elusive presence blocks status changes");
             return;
         }
         VFXManager.instance.SpawnStatusVFX(statusToApply, gameObject);
-        TooltipUI.instance.ShowTooltipText($"{name} is {statusToApply.ToString().ToLower()}");
+        TooltipUI.instance.AddEffectToCurrentAction($"{name} is {statusToApply.ToString().ToLower()}");
         status = statusToApply;
+
+        if (statusToApply == Status.ASLEEP) StartSleepCounter();
 
         ResolvePassiveEffect(ExecutionTime.ONSTATUSCHANGE);
         ResolveItemEffect(ExecutionTime.ONSTATUSCHANGE);
-
-        if (statusToApply == Status.ASLEEP) StartSleepCounter();
     }
 
     public void CureStatus()
     {
         if (status == Status.NONE) return;
 
+        TooltipUI.instance.AddEffectToCurrentAction($"{name} is no longer {status.ToString().ToLower()}");
+        if (status == Status.ASLEEP) { skipTurn = false; Debug.Log("Despertao"); }
         status = Status.NONE;
         VFXManager.instance.ClearStatusVFXPrefab(gameObject);
         FresnelApplier.clearFresnel(gameObject);
@@ -815,15 +871,17 @@ public class Unit : MonoBehaviour
             WakeUp();
             return;
         }
-        TooltipUI.instance.ShowTooltipText(name + " is fast asleep.");
+        TooltipUI.instance.StartNewAction(name + " is fast asleep.");
+        TooltipUI.instance.EndCurrentAction();
         skipTurn = true;
         sleepCounter++;
     }
     void WakeUp()
     {
-        TooltipUI.instance.ShowTooltipText(name + " woke up!");
+        TooltipUI.instance.StartNewAction(name + " woke up!");
         CureStatus();
         skipTurn = false;
+        TooltipUI.instance.EndCurrentAction();
     }
     public bool HasAdditionalTurn()
     {
@@ -851,6 +909,7 @@ public class Unit : MonoBehaviour
 
         for (int i = 0; i < monLevel + 1; i++)
         {
+            if (i > 10) break;
             if (i < abilityPool.Length)
             {
                 abilityList.Add(abilityPool[i]);
@@ -875,5 +934,39 @@ public class Unit : MonoBehaviour
         }
 
         return abilityList;
+    }
+
+    public bool OpenLastMenu()
+    {
+        if(!lastMenu) return false;
+        lastMenu.SetActive(true);
+        return true;
+    }
+
+    public bool CloseLastMenu()
+    {
+        if (!lastMenu) return false;
+        lastMenu.SetActive(false);
+        return true;
+    }
+
+    public void RegisterUIButtons()
+    {
+        List<RectTransform> buttons = new List<RectTransform>();
+        buttons.Add(attackButton.gameObject.GetComponent<RectTransform>());
+        buttons.Add(itemButton.gameObject.GetComponent<RectTransform>());
+        buttons.Add(runButton.gameObject.GetComponent<RectTransform>());
+
+        if (knownAbilities[0].abilityType == AbilityType.PASSIVE)
+        {
+            buttons.Add(abilityButtons[1].gameObject.GetComponent<RectTransform>());
+            buttons.Add(abilityButtons[0].gameObject.GetComponent<RectTransform>());
+        }
+        else
+        {
+            buttons.Add(abilityButtons[0].gameObject.GetComponent<RectTransform>());
+            buttons.Add(abilityButtons[1].gameObject.GetComponent<RectTransform>());
+        }
+        BattleTutorialManager.instance.RegisterPlayerUI(buttons.ToArray());
     }
 }

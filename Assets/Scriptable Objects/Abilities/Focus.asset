@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Focus
   description: Test your combat skills to raise attack.
-  sfx: {fileID: 0}
+  sfx: {fileID: 11400000, guid: 5695e15e12a54d24e98ffe178cbf410c, type: 2}
   power: 0
   accuracy: 100
   abilityType: 0

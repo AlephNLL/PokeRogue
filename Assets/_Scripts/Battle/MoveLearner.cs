@@ -27,6 +27,7 @@ public class MoveLearner : MonoBehaviour
     }
     public void LearnMove(UnitData unitData, int level)
     {
+        if(level > 10) return;
         Unit unit = unitData.prefab.GetComponent<Unit>();
 
         if (unitData.knownAbilities.Count < 4)

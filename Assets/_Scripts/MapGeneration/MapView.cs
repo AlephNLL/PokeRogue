@@ -1,14 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.MemoryProfiler;
 using System.Linq;
 using GameData;
-using Unity.VisualScripting;
 using System.Collections;
-using UnityEngine.Rendering;
-using UnityEngine.UIElements;
+using UnityEditor;
+using Unity.VisualScripting;
 
 public class MapView : MonoBehaviour
 {
@@ -22,15 +18,20 @@ public class MapView : MonoBehaviour
     [SerializeField] private GameObject healPrefab;
     [SerializeField] private GameObject shopPrefab;
     [SerializeField] private GameObject startPrefab;
-    [SerializeField] private GameObject[] decorationPrefabs;
+    [SerializeField] private GameObject randomPrefab;
+    [SerializeField] private GameObject[] forestPrefabs;
+    [SerializeField] private GameObject[] grassPrefabs;
+    [SerializeField] private GameObject[] medievalPrefabs;
 
     [Header("Configuracion del path")]
     [SerializeField] private Material lineMaterial;
     [SerializeField] private float lineThickness = 0.1f;
 
-    [Header("Debug")]
+    [Header("Debug Decoracion")]
     [SerializeField] private bool enableDebugRays = false;
-    [SerializeField] private float density = 10f;
+    [SerializeField] private float firstDensity = 10f;
+    [SerializeField] private float secondiIterationDensity = 30f;
+    [SerializeField] private float medievalDensity = 20f;
     [SerializeField] private float rayDuration = 10f;
 
     [Header("Referencias")]
@@ -66,7 +67,14 @@ public class MapView : MonoBehaviour
         PassConnectedRooms(path);
         DrawTeam();
 
-        StartCoroutine(DrawDecorations());
+        StartCoroutine(DrawDecorations(new Vector3(-5, 0, 0), forestPrefabs, firstDensity));
+        StartCoroutine(DrawDecorations(new Vector3(-5, 0, 0), grassPrefabs, secondiIterationDensity));
+
+        if (PlayerData.Instance.beatenFirstBoss)
+        {
+            StartCoroutine(DrawDecorations(new Vector3(MapGenerator.Instance.gridHeight * 3 + 2, 0, 0), medievalPrefabs, medievalDensity));
+            StartCoroutine(DrawDecorations(new Vector3(MapGenerator.Instance.gridHeight * 3 + 2, 0, 0), grassPrefabs, secondiIterationDensity));
+        }
 
         if (!MapManager.instance.mapCreated)
         {
@@ -88,52 +96,49 @@ public class MapView : MonoBehaviour
     {
         foreach (MapNode node in path)
         {
-            switch (node.roomType)
+            GameObject prefab = node.roomPrefab != null ? node.roomPrefab : GetDefaultPrefab(node.roomType);
+            if (prefab == null)
             {
-                case RoomType.NOT_ASSIGNED:
-                    GameObject mapNode = Instantiate(notAssignedPrefab, node.position, Quaternion.identity);
-                    mapNode.name = node.roomType + "-" + node.id;
-                    PassNodeData(mapNode, node);
-                    MapManager.instance.createdRooms.Add(mapNode);
-                    break;
-                case RoomType.Spawn:
-                    GameObject startNode = Instantiate(startPrefab, node.position, Quaternion.identity);
-                    startNode.name = node.roomType + "-" + node.id;
-                    PassNodeData(startNode, node);
-                    MapManager.instance.createdRooms.Add(startNode);
-                    break;
-                case RoomType.Boss:
-                    GameObject bossNode = Instantiate(bossPrefab, node.position, Quaternion.identity);
-                    bossNode.name = node.roomType + "-" + node.id;
-                    PassNodeData(bossNode, node);
-                    MapManager.instance.createdRooms.Add(bossNode);
-                    break;
-                case RoomType.Heal:
-                    GameObject healNode = Instantiate(healPrefab, node.position, Quaternion.identity);
-                    healNode.name = node.roomType + "-" + node.id;
-                    PassNodeData(healNode, node);
-                    MapManager.instance.createdRooms.Add(healNode);
-                    break;
-                case RoomType.Enemy:
-                    GameObject enemyNode = Instantiate(enemyPrefab, node.position, Quaternion.identity);
-                    enemyNode.name = node.roomType + "-" + node.id;
-                    enemyNode.GetComponent<Node>().sceneName = "BattleScene";
-                    PassNodeData(enemyNode, node);
-                    MapManager.instance.createdRooms.Add(enemyNode);
-                    break;
-                case RoomType.Shop:
-                    GameObject shopNode = Instantiate(shopPrefab, node.position, Quaternion.identity);
-                    shopNode.name = node.roomType + "-" + node.id;
-                    PassNodeData(shopNode, node);
-                    MapManager.instance.createdRooms.Add(shopNode);
-                    break;
-                case RoomType.Treasure:
-                    GameObject treasureNode = Instantiate(treasurePrefab, node.position, Quaternion.identity);
-                    treasureNode.name = node.roomType + "-" + node.id;
-                    PassNodeData(treasureNode, node);
-                    MapManager.instance.createdRooms.Add(treasureNode);
-                    break;
+                Debug.LogError($"No map prefab found for room type {node.roomType} and node {node.id}");
+                continue;
             }
+
+            node.roomPrefab = prefab;
+
+            GameObject mapNode = Instantiate(prefab, node.position, Quaternion.identity);
+            mapNode.name = node.roomType + "-" + node.id;
+            if (node.roomType == RoomType.Enemy)
+            {
+                mapNode.GetComponent<Node>().sceneName = "BattleScene";
+            }
+
+            PassNodeData(mapNode, node);
+            MapManager.instance.createdRooms.Add(mapNode);
+        }
+    }
+
+    private GameObject GetDefaultPrefab(RoomType roomType)
+    {
+        switch (roomType)
+        {
+            case RoomType.NOT_ASSIGNED:
+                return notAssignedPrefab;
+            case RoomType.Spawn:
+                return startPrefab;
+            case RoomType.Boss:
+                return bossPrefab;
+            case RoomType.Heal:
+                return healPrefab;
+            case RoomType.Enemy:
+                return enemyPrefab;
+            case RoomType.Shop:
+                return shopPrefab;
+            case RoomType.Treasure:
+                return treasurePrefab;
+            case RoomType.Random:
+                return randomPrefab;
+            default:
+                return notAssignedPrefab;
         }
     }
 
@@ -141,8 +146,10 @@ public class MapView : MonoBehaviour
     {
         foreach (MapNode node in path)
         {
-            foreach (MapNode connection in node.connectedNodes)
+            foreach (int connectionId in node.connectedNodesIds)
             {
+                MapNode connection = path.FirstOrDefault(g => g.id == connectionId);
+
                 //GameObject childGO = new("Collider");
                 GameObject connectionGO = new("Connection", typeof(LineRenderer));
                 //childGO.transform.parent = connectionGO.transform;
@@ -181,10 +188,11 @@ public class MapView : MonoBehaviour
 
     private void AddColliderToLine(LineRenderer line, Vector3 startPoint, Vector3 endPoint)
     {
+        GameObject collider = new GameObject("Collider");
         //create the collider for the line
-        BoxCollider lineCollider = new GameObject("Collider").AddComponent<BoxCollider>();
+        BoxCollider lineCollider = collider.AddComponent<BoxCollider>();
         //set the collider as a child of your line
-        lineCollider.transform.parent = line.transform;
+        collider.transform.parent = line.transform;
         // get width of collider from line 
         float lineWidth = line.endWidth;
         // get the length of the line using the Distance method
@@ -196,6 +204,11 @@ public class MapView : MonoBehaviour
         Vector3 midPoint = (startPoint + endPoint) / 2;
         // move the created collider to the midPoint
         lineCollider.transform.position = midPoint;
+
+
+        Rigidbody rigidBody = collider.AddComponent<Rigidbody>();
+        rigidBody.isKinematic = true;
+
 
 
         //heres the beef of the function, Mathf.Atan2 wants the slope, be careful however because it wants it in a weird form
@@ -212,10 +225,14 @@ public class MapView : MonoBehaviour
         // in 3d space you don't wan't to rotate on your y axis
         lineCollider.transform.Rotate(0, angle, 0);
         lineCollider.gameObject.layer = LayerMask.NameToLayer("Path");
+
+        collider.AddComponent<PathCollision>();
     }
 
-    private IEnumerator DrawDecorations()
+    private IEnumerator DrawDecorations(Vector2 startPos, GameObject[] prefabs, float density)
     {
+        float startX = startPos.x;
+        float startY = startPos.y;
 
         yield return new WaitForSeconds(0.2f);
         // Get map size
@@ -229,7 +246,7 @@ public class MapView : MonoBehaviour
 
         List<Vector3> decorationPositions = new List<Vector3>();
 
-        for (float height = -6; height < mapSize.x + 8; height = height + stepX)
+        for (float height = startX; height < mapSize.x + startX + 8; height = height + stepX)
         {
             // Cast
 
@@ -279,14 +296,14 @@ public class MapView : MonoBehaviour
                 }
             }
         }
-        InstantiateDecorations(decorationPositions, stepX, stepZ);
+        InstantiateDecorations(decorationPositions, stepX, stepZ, prefabs);
     }
 
-    private void InstantiateDecorations(List<Vector3> decorationPositions, float stepX, float stepZ)
+    private void InstantiateDecorations(List<Vector3> decorationPositions, float stepX, float stepZ, GameObject[] prefabs)
     {
         GameObject decorationsGO = GameObject.Find("Decorations");
 
-        if (decorationsGO != null)
+        if (decorationsGO != null && grassPrefabs == null)
         {
             Destroy(decorationsGO);
         }
@@ -296,9 +313,11 @@ public class MapView : MonoBehaviour
 
         foreach (Vector3 position in decorationPositions)
         {
-            int randomPrefab = UnityEngine.Random.Range(0, decorationPrefabs.Length);
+            int randomPrefab = UnityEngine.Random.Range(0, prefabs.Length);
 
-            GameObject decorationGO = Instantiate(decorationPrefabs[randomPrefab], position, Quaternion.identity, decorations.transform);
+            GameObject decorationGO = Instantiate(prefabs[randomPrefab], position, Quaternion.identity, decorations.transform);
+
+            FresnelApplier.SetMapDecorationShader(decorationGO);
 
             float randomScale = UnityEngine.Random.Range(-3, 3);
             decorationGO.transform.localScale = new Vector3 (
@@ -306,13 +325,22 @@ public class MapView : MonoBehaviour
                 decorationGO.transform.localScale.y + randomScale, 
                 decorationGO.transform.localScale.z + randomScale
                 );
-            decorationGO.transform.Rotate(new Vector3(-90, 0, 0));
+
+            float randomRotationZ = Random.Range(0, 360);
+
+            decorationGO.transform.Rotate(new Vector3(-90, 0, randomRotationZ));
+            decorationGO.layer = LayerMask.NameToLayer("Decoration");
+
+            decorationGO.AddComponent<CapsuleCollider>();
         }
     }
 
     public void ClearMap()
     {
-        if (map != null && MapManager.instance.nodes.Count() != 0) { Destroy(map); MapManager.instance.createdRooms.Clear(); MapManager.instance.nodes.Clear(); }
+        // if (map != null && MapManager.instance.nodes.Count() != 0) { Destroy(map); MapManager.instance.createdRooms.Clear(); MapManager.instance.nodes.Clear(); }
+
+        if (map != null) { Destroy(map); }
+        MapManager.instance.createdRooms.Clear();
     }
 
     public void PassNodeData(GameObject mapNode, MapNode node)
@@ -341,9 +369,10 @@ public class MapView : MonoBehaviour
 
             if (mapNode != null)
             {
-                foreach (MapNode connectionTarget in node.connectedNodes)
+                foreach (int connectionTargetId in node.connectedNodesIds)
                 {
-                    GameObject targetInstance = MapManager.instance.createdRooms.FirstOrDefault(g => g.name == $"{connectionTarget.roomType}-{connectionTarget.id}");
+                    MapNode connection = path.FirstOrDefault(g => g.id == connectionTargetId);
+                    GameObject targetInstance = MapManager.instance.createdRooms.FirstOrDefault(g => g.name == $"{connection.roomType}-{connection.id}");
 
                     if (targetInstance != null)
                     {
@@ -367,12 +396,17 @@ public class MapView : MonoBehaviour
 
         team = new List<GameObject>();
 
+        int index = 0;
+
         Debug.LogWarning($"Hay {PlayerData.Instance.GetTeamPrefabs().Length} unidades en el equipo");
         // Get mesh from prefab and instantiate
         foreach (GameObject unit in PlayerData.Instance.GetTeamPrefabs())
         {
-            GameObject unitName = new GameObject(unit.name);
-            unitName.transform.parent = teamGO.transform;
+            GameObject monName = new GameObject(unit.name);
+            monName.transform.parent = teamGO.transform;
+
+            GameObject capsule = new GameObject("Capsule");
+            capsule.transform.parent = monName.transform;
 
             GameObject unitBase = new GameObject("Base");
             unitBase.AddComponent<MeshFilter>(); unitBase.AddComponent<MeshRenderer>();
@@ -383,9 +417,10 @@ public class MapView : MonoBehaviour
             unitBase.GetComponent<MeshFilter>().mesh = baseMeshFilter.sharedMesh;
             unitBase.GetComponent<MeshRenderer>().material = baseMeshRenderer.sharedMaterial;
 
-            unitBase.transform.parent = unitName.transform;
+            unitBase.transform.parent = capsule.transform;
+            FresnelApplier.changeStance(monName, unit.GetComponent<Unit>().currentStance);
 
-            GameObject unitGO = new GameObject(unit.name);
+            GameObject unitGO = new GameObject("Mons");
             unitGO.AddComponent<MeshFilter>();
             unitGO.AddComponent<MeshRenderer>();
 
@@ -393,15 +428,21 @@ public class MapView : MonoBehaviour
             //MeshRenderer meshRenderer = unit.GetComponentInChildren<MeshRenderer>();
             MeshFilter meshFilter = unit.transform.Find("Capsule").Find("Mons").GetComponentInChildren<MeshFilter>();
             MeshRenderer meshRenderer = unit.transform.Find("Capsule").Find("Mons").GetComponentInChildren<MeshRenderer>();
+            float yOffset = unit.transform.Find("Capsule").Find("Mons").transform.localPosition.y;
 
             unitGO.GetComponent<MeshFilter>().mesh = meshFilter.sharedMesh;
             unitGO.GetComponent<MeshRenderer>().material = meshRenderer.sharedMaterial;
 
-            unitGO.transform.parent = unitName.transform;
-            unitName.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
+            unitGO.transform.parent = capsule.transform;
+            capsule.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
+            unitGO.transform.localPosition = new Vector3(0, yOffset);
             unitGO.transform.rotation = Quaternion.Euler(0, 90, 0);
+           
+            VFXManager.instance.SpawnStatusFresnelOnly(PlayerData.teamData[index].status, monName);
+            //VFXManager.instance.SpawnStatusVFX(unit.GetComponent<Unit>().status, monName);
 
-            team.Add(unitName);
+            team.Add(monName);
+            index++;
         }
         if (MapManager.instance.currentNode != null)
         {
@@ -415,11 +456,11 @@ public class MapView : MonoBehaviour
         UpdateTeamPositions(team, position);
     }
 
-    private void UpdateTeamPositions(List<GameObject> team, Vector3 position)
+    public void UpdateTeamPositions(List<GameObject> team, Vector3 position)
     {
         int count = team.Count;
         Vector3 offset = Vector3.zero;
-        Vector3 offsetY = new(0, 0f, 0);
+        Vector3 offsetY = new(0, 0.0275f, 0);
 
         switch (count)
         {
@@ -503,8 +544,6 @@ public class MapView : MonoBehaviour
 
     private IEnumerator MoveTo(GameObject obj, Vector3 targetPosition, float delay, bool last = false)
     {
-        Debug.Log("moving");
-
         yield return new WaitForSeconds(delay);
 
 

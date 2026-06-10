@@ -5,14 +5,14 @@ namespace GameData
     public enum AbilityType { ACTIVE, PASSIVE }
     public enum AbilityPowerVariables { NONE, REMAININGHP, DUPEONALLYDOWNED}
     public enum AbilityTarget { SELF, ONEENEMY, ONEALLY, ALLENEMIES, ALLALLIES, ALL, EXECUTIONER, LASTHIT }
-    public enum AbilityCondition { NONE, HASSTANCE, ISFIRSTROUND, HASANYSTATUS, ATTACKMISSED, ISBURNED, ISASLEEP}
+    public enum AbilityCondition { NONE, HASSTANCE, ISFIRSTROUND, HASANYSTATUS, ATTACKMISSED, ISBURNED, ISASLEEP, ISFROZEN, ISPARALYZED}
     public enum Status { NONE, BURNED, POISONED, PARALYZED, FROZEN, ASLEEP }
 
     public enum Stats { HP, ATK, DEF, SPEED, LUCK, PRECISION, EFFECTCHANCEMOD }
 
     public enum PassiveEffects { NONE, STATMOD, ADDTURN, SKIPTURN, APPLYSTATUS, HEAL, STACKSTAT, DAMAGE }
 
-    public enum ItemEffects { UPATK, UPDEF, UPSPEED, ADDTURN, APPLYSTATUS, HEAL, LEVELUP }
+    public enum ItemEffects { NONE, STATMOD, ADDTURN, APPLYSTATUS, HEAL, LEVELUP, CURESTATUS, FLINCH, LEECH, INCREASESTAT, CHANGESTANCEIFMOVESTANCE }
 
     public enum ExecutionTime { BATTLESTART, TURNSTART, TURNEND, ONHIT, ONHURT, OUTSIDEBATTLE, ONDEATH, ONKILL, ONSTANCECHANGE, ONSTATUSCHANGE }
 
@@ -20,9 +20,9 @@ namespace GameData
 
     public enum Difficulty { EASY, NORMAL, HARD}
 
-    public enum RoomType {NOT_ASSIGNED, Enemy, Shop, HardEnemy, Treasure, Boss, Heal, Spawn}
+    public enum RoomType {NOT_ASSIGNED, Enemy, Shop, HardEnemy, Treasure, Boss, Heal, Spawn, Random}
 
-    public enum NodeEvents { NONE, GOLD, HEAL, TRANSITION, SPECIAL}
+    public enum NodeEvents { NONE, GOLD, HEAL, TRANSITION, SPECIAL, RANDOM}
 
     public enum Events { NONE, GAINGOLD, GAINITEM, LOSEGOLD, LOSEITEM, HEAL, LEVELUP, DAMAGE, APPLYSTATUS}
 }

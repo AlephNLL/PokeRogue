@@ -768,6 +768,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1880888419145442071}
   - component: {fileID: 7571199883488435960}
+  - component: {fileID: -3004757188814655736}
+  - component: {fileID: -7373474799868962767}
   m_Layer: 0
   m_Name: Umbrura
   m_TagString: Untagged
@@ -818,9 +820,9 @@ MonoBehaviour:
   expCurve: {fileID: 11400000, guid: 42eec143c7464c24889a7a724a74e69f, type: 2}
   status: 0
   recivedDamageMultiplier: 0
-  strength: 17
-  constitution: 11
-  dexterity: 23
+  strength: 170
+  constitution: 110
+  dexterity: 230
   luck: 13
   maxHp: 0
   currentHp: 0
@@ -869,6 +871,41 @@ MonoBehaviour:
   takingDamage: 0
   baseEffectChanceMulti: 1
   effectChanceModifier: 0
+--- !u!114 &-3004757188814655736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1717970170875167366}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e05965b89d209c4dbb24903c9ef3562, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SelectUnit
+--- !u!136 &-7373474799868962767
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1717970170875167366}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.8
+  m_Height: 3.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.25, z: 0}
 --- !u!1 &1760726793352929564
 GameObject:
   m_ObjectHideFlags: 0
@@ -4048,7 +4085,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6098019138881072044, guid: c8957fdcb41cca840ae9f12bc73f2983, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 6098019138881072044, guid: c8957fdcb41cca840ae9f12bc73f2983, type: 3}
       propertyPath: m_LocalPosition.z

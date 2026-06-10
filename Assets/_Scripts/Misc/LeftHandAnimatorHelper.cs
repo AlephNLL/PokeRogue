@@ -1,12 +1,7 @@
-using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Hierarchy;
-using UnityEditor;
-using UnityEditor.Animations;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class LeftHandAnimatorHelper : MonoBehaviour
 {
@@ -85,6 +80,11 @@ public class LeftHandAnimatorHelper : MonoBehaviour
             StartCoroutine(Move(defaultPosition, duration));
             //StartCoroutine(LerpRotation(Quaternion.Euler(0, 180, 0)));
         }
+    }
+
+    public void SetDefaultPosition()
+    {
+        defaultPosition = transform.position;
     }
     IEnumerator Move(Vector3 destination, float duration)
     {
@@ -214,7 +214,6 @@ public class LeftHandAnimatorHelper : MonoBehaviour
 
     public void TryFlick(Unit unit)
     {
-
        startBaseJointPosition = baseFigureJoint.transform.localPosition;
        startBaseJointRotation = baseFigureJoint.transform.localRotation;
 
@@ -231,7 +230,6 @@ public class LeftHandAnimatorHelper : MonoBehaviour
 
     IEnumerator Flick()
     {
-
         baseFigureJoint.transform.SetLocalPositionAndRotation(startBaseJointPosition, startBaseJointRotation);
 
         MoveToPosition(figuresToFling[0].transform.position + offsetFromFigureJoint(), .8f);
@@ -240,9 +238,17 @@ public class LeftHandAnimatorHelper : MonoBehaviour
         SetHandTriggerParameter("flick");
         yield return new WaitForSeconds(.8f);
         UnparentGrabbedObject();
-        //MoveToDefaultPosition(1f);
         figuresToFling[0].GetComponent<Unit>().Death();
         figuresToFling.RemoveAt(0);
-        if (figuresToFling.Count > 0) StartCoroutine(Flick());
+        if (figuresToFling.Count > 0)
+        {
+            StartCoroutine(Flick());
+            yield break;
+        }
+        else
+        {
+            yield return new WaitForSeconds(.8f);
+            MoveToDefaultPosition(1f);
+        }
     }
 }

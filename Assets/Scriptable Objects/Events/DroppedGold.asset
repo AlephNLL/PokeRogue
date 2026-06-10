@@ -20,7 +20,7 @@ MonoBehaviour:
   eventCancelEffect: 00000000
   cancelText: 
   cancelIcon: {fileID: 0}
-  goldToGive: 10
+  goldToGive: 15
   checkGoldToConfirm: 0
   itemsToGive: []
   giveRandomItem: 0

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Car Battery
   description: Prevents user from paralyzing, slightly raises speed instead.
-  cost: 68
+  cost: 35
   icon: {fileID: 5544876754319435604, guid: 501fc3896aa50494fa8804724f70743a, type: 3}
   isConsumible: 0
   effect: 0100000006000000
@@ -23,6 +23,7 @@ MonoBehaviour:
   - 100
   - 100
   statusToChangeTo: 1
+  stanceToChangeTo: 0
   healingAmount: 0
   executionTime: 0900000009000000
   statToMod: 02000000

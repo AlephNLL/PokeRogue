@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Blood Bag
   description: User leeches 10% of damage dealt
-  cost: 54
+  cost: 35
   icon: {fileID: 2341208927881326147, guid: ee552234cc33f994dacb59568f8186b6, type: 3}
   isConsumible: 0
   effect: 08000000
@@ -22,6 +22,7 @@ MonoBehaviour:
   effectChance:
   - 0
   statusToChangeTo: 0
+  stanceToChangeTo: 0
   healingAmount: 0
   executionTime: 00000000
   statToMod: 

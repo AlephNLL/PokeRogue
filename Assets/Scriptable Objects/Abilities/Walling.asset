@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 953d3ce2828e11d42ac5c9f5c76d04e9, type: 3}
-  m_Name: Mure
+  m_Name: Walling
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
-  name: Mure
+  name: Walling
   description: Sets user into defensive stance
   sfx: {fileID: 11400000, guid: c53198310651a594591d52b90f6f6585, type: 2}
   power: 50

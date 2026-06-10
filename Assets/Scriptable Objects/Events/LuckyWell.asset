@@ -26,6 +26,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ffeadc88ed3fbc84bbea59fb0ee0cc16, type: 2}
   - {fileID: 11400000, guid: 3bf009a713319d74189d8b6c1caed682, type: 2}
   - {fileID: 11400000, guid: 48b2bd8b7dd0faf479e8690223ffffa2, type: 2}
+  - {fileID: 11400000, guid: 9a853d2c84a6f83428ebc5c15b10a9e0, type: 2}
+  - {fileID: 11400000, guid: 4c2746d0fcabf3d4ca4b6d04056109e5, type: 2}
+  - {fileID: 11400000, guid: f78ae0ff3edceba4aa93c3d04d3e74b9, type: 2}
   - {fileID: 11400000, guid: bac0691f52b866b4fbfea9ac56a3d840, type: 2}
   giveRandomItem: 1
   statusToApply: 0
+  healingPercent: 0

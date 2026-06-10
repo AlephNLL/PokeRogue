@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Alarm Clock
   description: Prevents user from sleeping, slightly raises attack instead.
-  cost: 68
+  cost: 30
   icon: {fileID: 6348252816621650911, guid: 2bb6a2b02e6249743a299039bb846f17, type: 3}
   isConsumible: 0
   effect: 0100000006000000
@@ -23,6 +23,7 @@ MonoBehaviour:
   - 100
   - 100
   statusToChangeTo: 1
+  stanceToChangeTo: 0
   healingAmount: 0
   executionTime: 0900000009000000
   statToMod: 01000000

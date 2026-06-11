@@ -4003,6 +4003,14 @@ PrefabInstance:
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: normalEnemyExtraCost
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
+      propertyPath: expensiveEnemyExtraCost
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971218897398941522, guid: 241a7317966b2634e8957412fa87c146, type: 3}
       propertyPath: 'enemyPool.Array.data[14]'
       value: 
       objectReference: {fileID: 1717970170875167366, guid: 60537506af6c6424d95e43dca987bf6e, type: 3}

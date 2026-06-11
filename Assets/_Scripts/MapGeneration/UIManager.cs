@@ -34,6 +34,7 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI attackText;
     public TextMeshProUGUI speedText;
     public TextMeshProUGUI luckText;
+    public Slider expSlider;
 
     public int lookAtIndex = 0;
 
@@ -220,18 +221,22 @@ public class UIManager : MonoBehaviour
         }
 
         string health = viewMon.prefab.GetComponent<Unit>().GetRawStat(Stats.HP, viewMon.level).ToString();
+        string currentHealth = viewMon.currentHp.ToString();
         string defense = viewMon.prefab.GetComponent<Unit>().GetRawStat(Stats.DEF, viewMon.level).ToString();
         string attack = viewMon.prefab.GetComponent<Unit>().GetRawStat(Stats.ATK, viewMon.level).ToString();
         string speed = viewMon.prefab.GetComponent<Unit>().GetRawStat(Stats.SPEED, viewMon.level).ToString();
         string luck = viewMon.prefab.GetComponent<Unit>().luck.ToString();
         string name = viewMon.name.ToUpper();
         string level = viewMon.level.ToString();
+        string currentExp = viewMon.currentExp.ToString();
+        string expToLevelUp = viewMon.prefab.GetComponent<Unit>().expCurve.expPerLevel[viewMon.level - 1].ToString();
 
+        expSlider.value = (float)viewMon.currentExp / viewMon.prefab.GetComponent<Unit>().expCurve.expPerLevel[viewMon.level - 1];
         nameText.text = name;
-        levelText.text = "LVL: " + level;
+        levelText.text = $"LVL: {level} ({currentExp} / {expToLevelUp})";
         defenseText.text = "DEF: " + defense;
         attackText.text = "ATK: " + attack;
-        healthText.text = "HP: " + health;
+        healthText.text = "HP: " + currentHealth + "/" + health;
         speedText.text = "SPD: " + speed;
         luckText.text = "LCK: " + luck;
 

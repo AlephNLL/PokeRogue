@@ -18,7 +18,7 @@ MonoBehaviour:
   icon: {fileID: 2341208927881326147, guid: ee552234cc33f994dacb59568f8186b6, type: 3}
   isConsumible: 0
   effect: 08000000
-  condition: 
+  condition: 00000000
   effectChance:
   - 0
   statusToChangeTo: 0

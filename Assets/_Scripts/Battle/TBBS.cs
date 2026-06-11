@@ -744,19 +744,28 @@ public class TBBS : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
                 {
-                    int newSelection = targets.IndexOf(hoveredUnit);
+                    if (hoveredUnit != null)
+                    {
+                        int newSelection = targets.IndexOf(hoveredUnit);
 
-                    if (newSelection == selection)
+                        if (newSelection == selection)
+                        {
+                            ControlsUI.instance.HideSelectionControls();
+                            foreach (Unit unit in targets) { unit.GetComponent<SelectUnit>().enabled = false; }
+                            yield return selection;
+                            yield break;
+                        }
+                        else
+                        {
+                            selection = newSelection;
+                            attacker.SelectTarget(targets[selection].gameObject);
+                        }
+                    }
+                    else if (Input.GetKeyDown(KeyCode.Space))
                     {
                         ControlsUI.instance.HideSelectionControls();
-                        foreach (Unit unit in targets) { unit.GetComponent<SelectUnit>().enabled = false; }
                         yield return selection;
                         yield break;
-                    }
-                    else
-                    {
-                        selection = newSelection;
-                        attacker.SelectTarget(targets[selection].gameObject);
                     }
                 }
 

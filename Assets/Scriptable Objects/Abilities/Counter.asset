@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Counter
   m_EditorClassIdentifier: Assembly-CSharp::Abilities
   name: Counter
-  description: Power depends on remaining hp.
+  description: Power depends on remaining hp. Changes stance to aggresive.
   sfx: {fileID: 11400000, guid: 79214797fcb65524ca706af2054617bd, type: 2}
   power: 20
   accuracy: 100

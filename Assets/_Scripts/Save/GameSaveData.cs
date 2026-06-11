@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GameData;
 using UnityEngine;
 
 [System.Serializable]
@@ -22,6 +23,9 @@ public class GameSaveData
 
     // Escena
     public string sceneName;
+
+    // Opciones
+    public int difficulty;
 
     // Constructor valores iniciales
     public GameSaveData()
@@ -55,5 +59,7 @@ public class GameSaveData
         sceneName = "MapGeneration";
         tutorial = true;
         beatenFirstBoss = false;
+
+        difficulty = (int)Difficulty.EASY;
     }
 }

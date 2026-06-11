@@ -199,7 +199,7 @@ public class BattleTutorialManager : MonoBehaviour
 
         tutorialSteps[TutorialState.Targeting] = new TutorialStep
         {
-            message = "Now you have to chose your target, press space or click once you're ready!",
+            message = "Now you have to chose your target, press space once you're ready!",
             waitForPlayerAction = true,
             handPose = HandPose.Idle,
             targetKey = "None",

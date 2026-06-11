@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Ceremonial Sword
   description: Changes to agressive stance when using a agressive ability
-  cost: 68
+  cost: 30
   icon: {fileID: 1375879355761333289, guid: 74f98e43f7cc6a042a11bebb0c04cdfb, type: 3}
   isConsumible: 0
   effect: 0a000000

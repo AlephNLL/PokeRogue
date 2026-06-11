@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Silicone Gun
   description: Burns user
-  cost: 48
+  cost: 35
   icon: {fileID: 4718596695142546627, guid: b4f47a3e4c69e2944bbc2f7f2517aa1c, type: 3}
   isConsumible: 0
   effect: 03000000

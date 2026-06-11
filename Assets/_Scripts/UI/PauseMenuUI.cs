@@ -76,6 +76,7 @@ public class PauseMenuUI : MonoBehaviour
         exitConfirmation.SetActive(false);
         optionsCanvas.SetActive(state);
         settings.UpdateResolutionDropdown();
+        settings.UpdateDifficultyDropdown();
     }
 
     public void ShowMenuButtons(bool state)

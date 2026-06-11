@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Purifying Flask
   description: Cures any status effect.
-  cost: 30
+  cost: 20
   icon: {fileID: 1176257147109685943, guid: 8d168d0528cf249479c3cf0987ad20b0, type: 3}
   isConsumible: 1
   effect: 06000000

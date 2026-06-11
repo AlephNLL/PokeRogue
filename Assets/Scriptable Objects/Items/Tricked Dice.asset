@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Tricked Dice
   description: +7 luck
-  cost: 54
+  cost: 40
   icon: {fileID: 6099888913397317502, guid: 912a7742973998e469878c12f3c37ede, type: 3}
   isConsumible: 0
   effect: 09000000
@@ -22,6 +22,7 @@ MonoBehaviour:
   effectChance:
   - 100
   statusToChangeTo: 0
+  stanceToChangeTo: 0
   healingAmount: 0
   executionTime: 00000000
   statToMod: 04000000

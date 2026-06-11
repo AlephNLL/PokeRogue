@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Adrenaline Pill
   description: Pain is no more. Slightly raises attack.
-  cost: 35
+  cost: 25
   icon: {fileID: 1176257147109685943, guid: 5a7ba5be4b7642e49bd373aaa4065493, type: 3}
   isConsumible: 0
   effect: 01000000
@@ -22,6 +22,7 @@ MonoBehaviour:
   effectChance:
   - 100
   statusToChangeTo: 0
+  stanceToChangeTo: 0
   healingAmount: 0
   executionTime: 00000000
   statToMod: 01000000

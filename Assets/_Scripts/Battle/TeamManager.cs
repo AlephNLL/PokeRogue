@@ -90,6 +90,7 @@ public class TeamManager : MonoBehaviour
     {
         for (int i = 0; i < teamData.Count; i++)
         {
+            teamData[i].status = Status.NONE;
             teamData[i].currentHp = (int)(teamData[i].currentHp + teamData[i].prefab.GetComponent<Unit>().GetRawStat(Stats.HP, teamData[i].level) * healingPercent);
             int maxHp = teamData[i].prefab.GetComponent<Unit>().GetRawStat(Stats.HP, teamData[i].level);
             if (teamData[i].currentHp > maxHp) teamData[i].currentHp = maxHp;

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Fairground Shotgun
   description: Doubles attack but more likely to miss.
-  cost: 100
+  cost: 55
   icon: {fileID: 6698336994304256519, guid: f879d40e574946b46a044cfca8a2dbef, type: 3}
   isConsumible: 0
   effect: 01000000

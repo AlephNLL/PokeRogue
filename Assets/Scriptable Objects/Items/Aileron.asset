@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Aileron
   description: Changes to agile stance when using an agile ability
-  cost: 68
+  cost: 30
   icon: {fileID: 1176257147109685943, guid: 415f516d771b59941939ee6458a9f6ac, type: 3}
   isConsumible: 0
   effect: 0a000000

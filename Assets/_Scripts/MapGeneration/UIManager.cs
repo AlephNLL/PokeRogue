@@ -63,7 +63,7 @@ public class UIManager : MonoBehaviour
         canvas.enabled = true;
     }
 
-    private void UpdateInventory()
+    public void UpdateInventory()
     {
         if (instantiatedItems != null)
         {
@@ -91,7 +91,7 @@ public class UIManager : MonoBehaviour
             itemIcon.transform.localScale = Vector3.one;
 
             Button slotButton = newSlot.AddComponent<Button>();
-            slotButton.onClick.AddListener(() => { SetHeldItem(item); });
+            slotButton.onClick.AddListener(() => { SetHeldItem(item, lookAtIndex); });
 
             instantiatedItems.Add(newSlot);
         }
@@ -151,9 +151,21 @@ public class UIManager : MonoBehaviour
 
         if (!viewMon)
         {
-            if (PlayerData.teamData.Count > 0)
+            string sceneName = SceneManager.GetActiveScene().name;
+
+            if (sceneName != "Daycare")
             {
-                viewMon = PlayerData.teamData[index];
+                if (PlayerData.teamData.Count > 0)
+                {
+                    viewMon = PlayerData.teamData[index];
+                }
+            }
+            else if (sceneName == "Daycare")
+            {
+                if (PlayerData.daycareTeamData.Count > 0)
+                {
+                    viewMon = PlayerData.daycareTeamData[index];
+                }
             }
             else return;
         }
@@ -196,8 +208,8 @@ public class UIManager : MonoBehaviour
 
     public void UpdateStats(UnitData mon, int index = 0)
     {
+        lookAtIndex = index;
         UnitData viewMon = mon;
-
         if (!viewMon)
         {
             if (PlayerData.teamData.Count > 0)
@@ -223,12 +235,14 @@ public class UIManager : MonoBehaviour
         speedText.text = "SPD: " + speed;
         luckText.text = "LCK: " + luck;
 
-        string currentScene = SceneManager.GetActiveScene().name;
-        if (currentScene != "Daycare") UpdateHeldItem();
+        UpdateHeldItem(index);
     }
 
-    private void UpdateHeldItem()
-    {
+    public void UpdateHeldItem(int index)
+        {
+        int monIndex = GetMonIndex(index);
+        string currentScene = SceneManager.GetActiveScene().name;
+
         if (heldItemSlot.transform.childCount > 0)
         {
             foreach (Transform child in heldItemSlot.transform)
@@ -237,41 +251,74 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        if (PlayerData.teamData[lookAtIndex].heldItem != null)
+        if (currentScene != "Daycare")
         {
-            Item item = PlayerData.teamData[lookAtIndex].heldItem;
-
-            GameObject itemIcon = Instantiate(item.icon);
-            RectTransform rect = itemIcon.GetComponent<RectTransform>();
-            RectTransform rectHeldItemSlot = heldItemSlot.GetComponent<RectTransform>();
-
-            itemIcon.transform.parent = heldItemSlot.transform;
-            rect.anchoredPosition = Vector3.zero;
-            rect.localPosition = Vector3.zero;
-            rect.sizeDelta = new Vector2(rectHeldItemSlot.sizeDelta.x * 0.8f, rectHeldItemSlot.sizeDelta.y * 0.8f);
-            rect.localScale = Vector3.one;
-
-            InventoryTooltip tooltip = itemIcon.AddComponent<InventoryTooltip>();
-            tooltip.itemDescriptionBox = itemTooltipUI;
-            tooltip.itemDescription = item.description;
-
-            string currentScene = SceneManager.GetActiveScene().name;
-            if (currentScene != "BattleScene")
+            if (PlayerData.teamData[monIndex].heldItem != null)
             {
-                Button button = itemIcon.AddComponent<Button>();
-                button.onClick.AddListener(() => { SetHeldItem(null); });
+                Item item = PlayerData.teamData[monIndex].heldItem;
+
+                GameObject itemIcon = Instantiate(item.icon);
+                RectTransform rect = itemIcon.GetComponent<RectTransform>();
+                RectTransform rectHeldItemSlot = heldItemSlot.GetComponent<RectTransform>();
+
+                itemIcon.transform.parent = heldItemSlot.transform;
+                rect.anchoredPosition = Vector3.zero;
+                rect.localPosition = Vector3.zero;
+                rect.sizeDelta = new Vector2(rectHeldItemSlot.sizeDelta.x * 0.8f, rectHeldItemSlot.sizeDelta.y * 0.8f);
+                rect.localScale = Vector3.one;
+
+                InventoryTooltip tooltip = itemIcon.AddComponent<InventoryTooltip>();
+                tooltip.itemDescriptionBox = itemTooltipUI;
+                tooltip.itemDescription = item.description;
+
+
+                if (currentScene != "BattleScene")
+                {
+                    Button button = itemIcon.AddComponent<Button>();
+                    button.onClick.AddListener(() => { SetHeldItem(null, monIndex); });
+                }
             }
         }
-        else return;
+        else if (currentScene == "Daycare")
+        {
+            if (PlayerData.daycareTeamData[monIndex].heldItem != null)
+            {
+                Item item = PlayerData.daycareTeamData[monIndex].heldItem;
+
+                GameObject itemIcon = Instantiate(item.icon);
+                RectTransform rect = itemIcon.GetComponent<RectTransform>();
+                RectTransform rectHeldItemSlot = heldItemSlot.GetComponent<RectTransform>();
+
+                itemIcon.transform.parent = heldItemSlot.transform;
+                rect.anchoredPosition = Vector3.zero;
+                rect.localPosition = Vector3.zero;
+                rect.sizeDelta = new Vector2(rectHeldItemSlot.sizeDelta.x * 0.8f, rectHeldItemSlot.sizeDelta.y * 0.8f);
+                rect.localScale = Vector3.one;
+
+                InventoryTooltip tooltip = itemIcon.AddComponent<InventoryTooltip>();
+                tooltip.itemDescriptionBox = itemTooltipUI;
+                tooltip.itemDescription = item.description;
+
+                Button button = itemIcon.AddComponent<Button>();
+                button.onClick.AddListener(() => { SetHeldItem(null, monIndex); });
+
+            }
+        }
     }
 
-    private void SetHeldItem(Item item)
+    private void SetHeldItem(Item item, int index)
     {
-        UnitData mons = PlayerData.teamData[lookAtIndex];
+        print(index);
+        string currentScene = SceneManager.GetActiveScene().name;
+        int monIndex = GetMonIndex(index);
+        print(monIndex);
+        UnitData mons;
+        if (currentScene == "Daycare") mons = PlayerData.daycareTeamData[monIndex]; else mons = PlayerData.teamData[monIndex];
+        print(mons);
 
         mons.HoldItem(item);
         UpdateInventory();
-        UpdateHeldItem();
+        UpdateHeldItem(monIndex);
     }
 
     private void MakeConsumeItem(Item item)
@@ -310,5 +357,15 @@ public class UIManager : MonoBehaviour
         inventory.SetActive(false);
 
         UpdateAbilities(null, lookAtIndex);
+    }
+
+    private int GetMonIndex(int index)
+    {
+        int monIndex = 0;
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        if (currentScene == "MapGeneration") monIndex = lookAtIndex; else monIndex = index;
+
+        return monIndex;
     }
 }

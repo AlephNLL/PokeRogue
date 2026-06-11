@@ -223,6 +223,7 @@ public class TBBS : MonoBehaviour
                 UIManager.Instance.ShowCanvas(toggle, 0);
                 UIManager.Instance.UpdateAbilities(null, currentUnit.id);
                 UIManager.Instance.UpdateStats(null, currentUnit.id);
+                UIManager.Instance.UpdateHeldItem(currentUnit.id);
                 bool success;
                 if (toggle) success = currentUnit.CloseLastMenu();
                 else success = currentUnit.OpenLastMenu();

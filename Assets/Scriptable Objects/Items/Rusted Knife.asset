@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Rusted Knife
   description: A rusty knife that may posion hit foes
-  cost: 12
+  cost: 25
   icon: {fileID: 1176257147109685943, guid: 04b7626b596b1d740a7401110ccd81d8, type: 3}
   isConsumible: 0
   effect: 03000000
@@ -22,6 +22,7 @@ MonoBehaviour:
   effectChance:
   - 10
   statusToChangeTo: 2
+  stanceToChangeTo: 0
   healingAmount: 0
   executionTime: 03000000
   statToMod: 

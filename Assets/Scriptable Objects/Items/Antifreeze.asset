@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   name: Alarm Clock
   description: Prevents user from freezing, slightly raises defense instead.
-  cost: 68
+  cost: 40
   icon: {fileID: 519573376967798654, guid: 83603451e926d8548adb8ed6fff6a3e3, type: 3}
   isConsumible: 0
   effect: 0100000006000000
@@ -23,9 +23,10 @@ MonoBehaviour:
   - 100
   - 100
   statusToChangeTo: 1
+  stanceToChangeTo: 0
   healingAmount: 0
   executionTime: 0900000009000000
   statToMod: 02000000
   statMod:
-  - 1.1
+  - 1.5
   affectSelf: 1

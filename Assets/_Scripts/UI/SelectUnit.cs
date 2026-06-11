@@ -26,23 +26,23 @@ public class SelectUnit : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     }
     public void OnPointerEnter(PointerEventData pointerEventData)
     {
-        if (spawned || !pointerEventData.pointerCurrentRaycast.gameObject.GetComponent<Unit>()) return;
-        else
+        if (spawned) return;
+        Unit unit = pointerEventData.pointerCurrentRaycast.gameObject.GetComponentInParent<Unit>();
+        if (!unit) return;
+
+        spawned = true;
+
+        if (SceneManager.GetActiveScene().name == "Daycare")
         {
-            spawned = true;
-            
-            if (SceneManager.GetActiveScene().name == "Daycare")
-            {
-                DaycareManager.hoveredPrefab = pointerEventData.pointerCurrentRaycast.gameObject;
-            }
-
-            if (SceneManager.GetActiveScene().name == "BattleScene")
-            {
-                TBBS.hoveredUnit = pointerEventData.pointerCurrentRaycast.gameObject.GetComponent<Unit>();
-            }
-
-            print("Cursor Entering " + pointerEventData.pointerCurrentRaycast.gameObject);
+            DaycareManager.hoveredPrefab = pointerEventData.pointerCurrentRaycast.gameObject;
         }
+
+        if (SceneManager.GetActiveScene().name == "BattleScene")
+        {
+            TBBS.hoveredUnit = pointerEventData.pointerCurrentRaycast.gameObject.GetComponent<Unit>();
+        }
+
+        print("Cursor Entering " + pointerEventData.pointerCurrentRaycast.gameObject);
     }
 
     //Detect when Cursor leaves the GameObject

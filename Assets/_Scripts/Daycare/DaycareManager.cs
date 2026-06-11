@@ -32,6 +32,7 @@ public class DaycareManager : MonoBehaviour
     [SerializeField]
     List<GameObject> selectedPrefabs = new List<GameObject>();
     public GameObject hoveredPrefab;
+    private bool inventoryOpen = false;
 
     [SerializeField] GameObject outOfMonUI;
     bool isBattle;
@@ -103,6 +104,9 @@ public class DaycareManager : MonoBehaviour
 
     UnitData GenerateNewUnit(UnitData unit1, UnitData unit2)
     {
+        if (unit1.heldItem != null) { PlayerData.Instance.p_items.Add(unit1.heldItem); unit1.heldItem = null; }
+        if (unit2.heldItem != null) { PlayerData.Instance.p_items.Add(unit2.heldItem); unit2.heldItem = null; }
+
         UnitData speciesParent = Random.Range(0, 2) == 0 ? unit1 : unit2;
         UnitData abilityParent = speciesParent == unit1 ? unit2 : unit1;
 
@@ -332,7 +336,7 @@ public class DaycareManager : MonoBehaviour
                 }
 
                 DaycareCamera.instance.SetCameraTarget(unitPrefabs[selection].transform);
-                UIManager.Instance.UpdateStats(units[selection]);
+                UIManager.Instance.UpdateStats(units[selection], selection);
                 if (UIManager.Instance.abilities.activeInHierarchy)
                 {
                     UIManager.Instance.UpdateAbilities(units[selection]);
@@ -348,7 +352,7 @@ public class DaycareManager : MonoBehaviour
                 }
 
                 DaycareCamera.instance.SetCameraTarget(unitPrefabs[selection].transform);
-                UIManager.Instance.UpdateStats(units[selection]);
+                UIManager.Instance.UpdateStats(units[selection], selection);
                 if (UIManager.Instance.abilities.activeInHierarchy)
                 {
                     UIManager.Instance.UpdateAbilities(units[selection]);
@@ -356,12 +360,12 @@ public class DaycareManager : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
             {
-                if (hoveredPrefab != null)
+                if (hoveredPrefab != null && !inventoryOpen)
                 {
                     selection = unitPrefabs.IndexOf(hoveredPrefab);
 
                     DaycareCamera.instance.SetCameraTarget(unitPrefabs[selection].transform);
-                    UIManager.Instance.UpdateStats(units[selection]);
+                    UIManager.Instance.UpdateStats(units[selection], selection);
                     if (UIManager.Instance.abilities.activeInHierarchy)
                     {
                         UIManager.Instance.UpdateAbilities(units[selection]);
@@ -372,7 +376,7 @@ public class DaycareManager : MonoBehaviour
                 else if (Input.GetKeyDown(KeyCode.Space))
                 {
                     DaycareCamera.instance.SetCameraTarget(unitPrefabs[selection].transform);
-                    UIManager.Instance.UpdateStats(units[selection]);
+                    UIManager.Instance.UpdateStats(units[selection], selection);
                     if (UIManager.Instance.abilities.activeInHierarchy)
                     {
                         UIManager.Instance.UpdateAbilities(units[selection]);
@@ -391,15 +395,27 @@ public class DaycareManager : MonoBehaviour
             {
                 if (toggle)
                 {
+                    inventoryOpen = true;
                     UIManager.Instance.ShowCanvas(true, .3f);
-                    UIManager.Instance.UpdateStats(units[selection]);
-                    UIManager.Instance.UpdateAbilities(units[selection]);
+                    UIManager.Instance.UpdateStats(units[selection], selection);
+
+                    if (UIManager.Instance.abilities.activeInHierarchy)
+                    {
+                        UIManager.Instance.UpdateAbilities(units[selection]);
+                    }
+
+                    if (UIManager.Instance.inventory.activeInHierarchy)
+                    {
+                        UIManager.Instance.UpdateInventory();
+                    }
+
                     StartCoroutine(DaycareCamera.instance.LerpCameraOffset(2, .3f));
                     toggle = false;
                     ToggleSelectionScript(toggle);
                 }
                 else
                 {
+                    inventoryOpen = false;
                     yield return DaycareCamera.instance.LerpCameraOffset(0, .3f);
                     UIManager.Instance.ShowCanvas(false);
                     toggle = true;

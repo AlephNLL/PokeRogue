@@ -34,6 +34,7 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI attackText;
     public TextMeshProUGUI speedText;
     public TextMeshProUGUI luckText;
+    public Slider expSlider;
 
     public int lookAtIndex = 0;
 
@@ -230,6 +231,7 @@ public class UIManager : MonoBehaviour
         string currentExp = viewMon.currentExp.ToString();
         string expToLevelUp = viewMon.prefab.GetComponent<Unit>().expCurve.expPerLevel[viewMon.level - 1].ToString();
 
+        expSlider.value = (float)viewMon.currentExp / viewMon.prefab.GetComponent<Unit>().expCurve.expPerLevel[viewMon.level - 1];
         nameText.text = name;
         levelText.text = $"LVL: {level} ({currentExp} / {expToLevelUp})";
         defenseText.text = "DEF: " + defense;

@@ -54,6 +54,7 @@ public class MapManager : MonoBehaviour, ISaveData
     {
         if (scene.name == "MapGeneration")
         {
+            AudioManager.instance.PlayMusic(AudioLibrary.instance.daycareMusic);
             mapLoaded = true;
             if (mapCreated == true)
             {

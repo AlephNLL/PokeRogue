@@ -24,6 +24,8 @@ public class InventoryTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExi
     {
         Debug.Log("Cursor Entering " + name + " GameObject");
 
+        DestroyPreviousTooltips();
+
         item = pointerEventData.pointerCurrentRaycast.gameObject;
 
         if (spawned) return;
@@ -62,4 +64,13 @@ public class InventoryTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExi
         DestroyTooltip();
     }
 
+    private void DestroyPreviousTooltips()
+    {
+        GameObject[] previousTooltips = GameObject.FindGameObjectsWithTag("ItemTooltip");
+
+        foreach (GameObject tooltip in previousTooltips)
+        {
+            Destroy(tooltip.gameObject);
+        }
+    }
 }

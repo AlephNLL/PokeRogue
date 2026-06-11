@@ -40,6 +40,9 @@ public class PauseMenuUI : MonoBehaviour
         if (pauseCanvas == null) { return; }
 
         isPaused = state;
+
+        optionsCanvas.SetActive(false);
+        ShowMenuButtons(state);
         pauseCanvas.SetActive(state);
     }
 

@@ -226,7 +226,7 @@ public class BattleTutorialManager : MonoBehaviour
         tutorialSteps[TutorialState.ExplainStance] = new TutorialStep
         {
             message = "There are 5 stances: <color=#FF0000>Agressive</color> (raises attack), <color=#0000FF>Defensive</color> (raises defense), " +
-            "<color=#00FF00>Agile</color> (raises speed), <color=#00FFFF>Cautious</color> (user is inmune to abilities with 0 power), <color=#FF00FF>Tricky</color> (increases secondary effect chance)",
+            "<color=#00FF00>Agile</color> (raises speed), <color=#00FFFF>Cautious</color> (user is inmune to non damaging abilities), <color=#FF00FF>Tricky</color> (increases secondary effect chance)",
             waitForPlayerAction = false,
             pauseGame = true,
             handPose = HandPose.Idle,
